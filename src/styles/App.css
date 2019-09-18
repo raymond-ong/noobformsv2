@@ -1,0 +1,11 @@
+#root {
+    height: calc(100vh);
+    overflow-y: hidden;
+}
+
+#mainContent {
+    /* margin-Top: 3em; */
+    padding-top: 3em;
+    /* height: calc(100vh - 3em); */
+    height: calc(100vh);
+}
