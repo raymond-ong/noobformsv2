@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {Responsive, Sidebar, Menu} from 'semantic-ui-react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from "redux";
+import { menuClicked } from '../actions/index';
 
 class NavBarMobile extends Component {    
     constructor(props) {
@@ -21,6 +24,13 @@ class NavBarMobile extends Component {
         this.setState({burgerPushed: !this.state.burgerPushed})
     }
 
+    // Create a separate function for the mobile version because we need to hide the sidebar afterwards
+    // Also, next time maybe we need a dirty check
+    handleMenuClick = (menuName) => {
+        this.props.menuClickDispatcher(menuName);
+        this.handleSidebarToggle();
+    }
+
     render() {
         return <Sidebar.Pushable>
                 {/* Put here the sidebar that appears in and out */}
@@ -35,7 +45,8 @@ class NavBarMobile extends Component {
                     icon='labeled'
                     size='mini'
                 >
-                    {getNavBarMenuItemElements(false)}
+                    {/* {getNavBarMenuItemElements(this.props.menuClickDispatcher, false)} */}
+                    {getNavBarMenuItemElements(this.handleMenuClick, false)}
                 </Sidebar>
 
                 {/* Put here the application content, including the fixed menu...basically this is the whole screen */}
@@ -57,26 +68,31 @@ class NavBarMobile extends Component {
     }
 }
 
-const NavBarDesktop = () => {
+const NavBarDesktop = (props) => {
     // Note: putting fixed makes the menu position to be absolute. therefore child elemnets need to adjust manually
     return <div className="ui menu inverted fixed top">
         <div className="header item">
             Noobforms v2.0
         </div>
-        {getNavBarMenuItemElements(true)}
+        {getNavBarMenuItemElements(props.menuClickDispatcher, true)}
     </div>;
 }
 
-const getNavBarMenuItemElements = (withAlignment) => {
+// const onMenuClicked = (evt, menuName, ) => {
+//     // Dispatch an action to the redux store
+//     console.log(this.props);
+// }
+
+const getNavBarMenuItemElements = (menuClickDispatcher, withAlignment) => {
     return navBarMenuItems.map(child => {
         let itemClass = `item`;
         if (withAlignment && child.alignment === 'right') {
             itemClass += ' right';
         }
 
-        return <a key={`${child.icon}`} className={itemClass}>
+        return <a key={`${child.name}`} className={itemClass} onClick={(evt) => menuClickDispatcher(child.name)}>
             <i className={`icon ${child.icon}`}/>
-            {child.content}
+            {child.title}
         </a>});
 }
 
@@ -84,31 +100,37 @@ const getNavbarChildren = (children) => {
     return <div>{children}</div>
 }
 
-const settingsChildren = []; // TODO, for 2nd level children
+//const settingsChildren = []; // TODO, for 2nd level children
 
 const navBarMenuItems = [
-    { content: 'Home',      icon: 'home',   alignment: '', },
-    { content: 'Designer',  icon: 'edit',   alignment: '' },
-    { content: 'Settings',  icon: 'cog',    alignment: 'right' },
+    { name: 'home',     title: 'Home',      icon: 'home',   alignment: '', },
+    { name: 'designer', title: 'Designer',  icon: 'edit',   alignment: '' },
+    { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]
 
 const NavBar = (props) => {
     // a. For mobile, the children should be nested inside the Navbar
     // b. For desktop, the children can be a sibling of the Navbar
-
+    console.log('[NavBar] render...', props);
     return (
         <div>            
             <Responsive {...Responsive.onlyMobile}>
-                <NavBarMobile>
+                <NavBarMobile menuClickDispatcher={props.menuClicked}>
                     {getNavbarChildren(props.children)}
                 </NavBarMobile>
             </Responsive>
             <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                <NavBarDesktop></NavBarDesktop>
+                <NavBarDesktop menuClickDispatcher={props.menuClicked}></NavBarDesktop>
                 {getNavbarChildren(props.children)}
             </Responsive>
         </div>
     );
 }
 
-export default NavBar;
+// this will become the component props
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ menuClicked }, dispatch);
+}
+
+//export default NavBar;
+export default connect(null, mapDispatchToProps)(NavBar)

@@ -2,24 +2,19 @@ import React, {Component} from 'react';
 import Split from 'react-split';
 import "../styles/Split.css";
 
-import ToolPanel from '../components/toolPanel';
-// import ScrollTracker from '../components/scrollTracker';
-//import DocumentSample from '../components/documentSample';
-
-
-const ID_SPLITTER = "homeContentSplitter";
-const ID_GUTTER_AROW = "homeContentGutterArrow";
+const ID_PREFIX_SPLITTER = "noobSplitter";
+const ID_PREFIX_GUTTER_AROW = "noobSplitterGutterArrow";
 const DEFAULT_SPLIT_SIZES = [20, 80];
 
-class HomeContent extends Component {
+class NoobSplitter extends Component {
 
     // *** START: SPLITTER CUSTOMIZATION ***
-    // Maybe should move this to another class instead
     constructor(props) {
         super(props);
         this.state = {
             collapseIdx: null,
-            sizes: DEFAULT_SPLIT_SIZES
+            sizes: DEFAULT_SPLIT_SIZES,
+            id: props.id
         };
 
         this.onSplitDragEnd = this.onSplitDragEnd.bind(this);
@@ -52,13 +47,13 @@ class HomeContent extends Component {
     }
 
     showExpandArrow() {
-        let gutterBtnArrow = document.getElementById(ID_GUTTER_AROW);
+        let gutterBtnArrow = document.getElementById(ID_PREFIX_GUTTER_AROW + this.state.id);
         gutterBtnArrow.classList.remove('arrow-left');
         gutterBtnArrow.classList.add('arrow-right');
     }
 
     showCollapseArrow() {
-        let gutterBtnArrow = document.getElementById(ID_GUTTER_AROW);
+        let gutterBtnArrow = document.getElementById(ID_PREFIX_GUTTER_AROW + this.state.id);
         gutterBtnArrow.classList.remove('arrow-right');
         gutterBtnArrow.classList.add('arrow-left');
     }
@@ -112,7 +107,7 @@ class HomeContent extends Component {
 
         let gutterBtnArrow = document.createElement('div');
         gutterBtnArrow.classList.add('arrow-left');
-        gutterBtnArrow.id = ID_GUTTER_AROW;
+        gutterBtnArrow.id = ID_PREFIX_GUTTER_AROW + this.state.id;
         gutterBtn.appendChild(gutterBtnArrow);
 
         gutterElem.appendChild(gutterBtn);
@@ -124,9 +119,8 @@ class HomeContent extends Component {
     // *** END: SPLITTER CUSTOMIZATION ***    
 
     render() {
-        console.log('render homeContent');
         return <Split className="split"
-            id={ID_SPLITTER}
+            id={ID_PREFIX_SPLITTER + this.state.id}
             direction="horizontal"
             sizes={this.state.sizes}
             minSize={0}
@@ -150,4 +144,4 @@ class HomeContent extends Component {
     }
 }
 
-export default HomeContent;
+export default NoobSplitter;

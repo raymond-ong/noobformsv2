@@ -1,0 +1,4 @@
+/* For hiding the tab header; Usually its the first child of the tab control */
+#mainTab .ui.attached.tabular.menu {
+    display: none;
+}
