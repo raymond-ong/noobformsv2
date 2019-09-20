@@ -1,8 +1,8 @@
 import { CLICK_MENU } from "../actions/index";
 
 const defaultState = {
-    activeMenu: 'designer',
-    tabIndex: 1
+    activeMenu: 'home',
+    tabIndex: 0
 }
 
 const tabIndexMapping = {

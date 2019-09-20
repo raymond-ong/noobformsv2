@@ -15,7 +15,7 @@ class NoobSplitter extends Component {
         super(props);
         this.state = {
             collapseIdx: null,
-            sizes: DEFAULT_SPLIT_SIZES,
+            sizes: this.getDefaultSizes(),
             id: props.id
         };
 
@@ -25,13 +25,21 @@ class NoobSplitter extends Component {
         this.createGutter = this.createGutter.bind(this);
     }
 
+    getDefaultSizes() {
+        if (this.props && this.props.defaultSize) {
+            return this.props.defaultSize;
+        }
+
+        return DEFAULT_SPLIT_SIZES;
+    }
+
     handleSplitterBtnClick() {
         this.addRemoveContentTransition(true);
         if (this.state.sizes[0] < 1) {
             // Expand it
             this.setState({
                 collapseIdx: null,
-                sizes: DEFAULT_SPLIT_SIZES
+                sizes: this.getDefaultSizes()
             });
             // Show the Collapse arrow after expanding
             this.showCollapseArrow();
@@ -74,6 +82,10 @@ class NoobSplitter extends Component {
         }
 
         this.addRemoveContentTransition(false);
+
+        if (this.props.onDragEnd) {
+            this.props.onDragEnd(args);
+        }
     }
 
     onSplitDragStart(args) {
@@ -138,7 +150,7 @@ class NoobSplitter extends Component {
             id={ID_PREFIX_SPLITTER + this.state.id}
             direction="horizontal"
             sizes={this.state.sizes}
-            minSize={0}
+            minSize={this.props.minSize ? this.props.minSize : 0}
             gutterSize={8}
             collapsed={this.state.collapseIdx}
             onDragEnd={this.onSplitDragEnd}

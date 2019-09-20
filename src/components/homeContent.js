@@ -1,152 +1,84 @@
 import React, {Component} from 'react';
 import Split from 'react-split';
 import "../styles/Split.css";
-
-import ToolPanel from '../components/toolPanel';
-// import ScrollTracker from '../components/scrollTracker';
-//import DocumentSample from '../components/documentSample';
+import NoobSplitter from './noobSplitter';
+import VerticalList, {MODE_SMALL, MODE_NORMAL} from './verticalList';
 
 
-const ID_SPLITTER = "homeContentSplitter";
-const ID_GUTTER_AROW = "homeContentGutterArrow";
-const DEFAULT_SPLIT_SIZES = [20, 80];
+const items = [
+    {
+        name: 'dashboard',
+        title: 'Dashboard',
+        icon: 'chart pie'
+    },
+    {
+        name: 'logs',
+        title: 'Logs',
+        icon: 'book'
+    },
+    {
+        name: 'tasks',
+        title: 'Tasks',
+        icon: 'tasks'
+    },
+    {
+        name: 'reports',
+        title: 'Reports',
+        icon: 'file pdf outline'
+    },
+]
 
-class HomeContent extends Component {
-
-    // *** START: SPLITTER CUSTOMIZATION ***
-    // Maybe should move this to another class instead
+class HomeContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            collapseIdx: null,
-            sizes: DEFAULT_SPLIT_SIZES
-        };
-
-        this.onSplitDragEnd = this.onSplitDragEnd.bind(this);
-        this.onSplitDragStart = this.onSplitDragStart.bind(this);
-        this.handleSplitterBtnClick = this.handleSplitterBtnClick.bind(this);
-        this.createGutter = this.createGutter.bind(this);
+            menuMode: this.getInitialMenuMode(),
+            currLeftPercent: 10.0
+        }
+        window.addEventListener('resize', this.onWindowResize);
     }
 
-    handleSplitterBtnClick() {
-        this.addRemoveContentTransition(true);
-        if (this.state.sizes[0] < 1) {
-            // Expand it
-            this.setState({
-                collapseIdx: null,
-                sizes: DEFAULT_SPLIT_SIZES
-            });
-            // Show the Collapse arrow after expanding
-            this.showCollapseArrow();
+    onWindowResize = () => {
+        //console.log('onWindowResize', this);
+        // let leftPixels = this.state
+        // this.setState({
+        //     menuMode: this.getMode(leftPixels)
+        // });
+    }
+
+    computeInitialPixels = () => {return 10 / 100.0 * window.innerWidth};
+
+    getInitialMenuMode = () => {
+        let leftPixels = this.computeInitialPixels();  // todo: define a const for 10
+        return this.getMode(leftPixels);
+    }
+
+    getMode(leftPixels) {
+        if (leftPixels < 150) {
+            return MODE_SMALL;
         }
         else {
-            // Collapse it
-            this.setState({
-                collapseIdx: 0,
-                sizes: [0, 100]
-            });    
-
-            // Show the expand button after expanding
-            this.showExpandArrow();
-        }    
+            return MODE_NORMAL;
+        }
     }
 
-    showExpandArrow() {
-        let gutterBtnArrow = document.getElementById(ID_GUTTER_AROW);
-        gutterBtnArrow.classList.remove('arrow-left');
-        gutterBtnArrow.classList.add('arrow-right');
-    }
-
-    showCollapseArrow() {
-        let gutterBtnArrow = document.getElementById(ID_GUTTER_AROW);
-        gutterBtnArrow.classList.remove('arrow-right');
-        gutterBtnArrow.classList.add('arrow-left');
-    }
-
-    onSplitDragEnd(args) {
-        console.log('onSplitDrageEnd', args);
+    onSplitDragEnd = (sizes) => {        
+        let leftPixels = sizes[0] / 100.0 * window.innerWidth;    
+        let mode = this.getMode(leftPixels);    
         this.setState({
-            sizes: args
+            menuMode: mode
         });
-
-        if (this.state.sizes[0] < 1) {
-            this.showExpandArrow();
-        }
-        else {
-            this.showCollapseArrow();
-        }
-
-        this.addRemoveContentTransition(false);
     }
-
-    onSplitDragStart(args) {
-        console.log('onSplitDrageStart', args);
-        this.addRemoveContentTransition(false);
-    }
-
-    addRemoveContentTransition(bAdd) {
-        // Adds or Removes transition effects from the content classes
-        let contentElems = document.getElementsByClassName('content');
-        for (let i = 0; i < contentElems.length; i++) {
-            let elem = contentElems[i];
-            if (bAdd) {
-                elem.style.transition = '0.5s';
-            }
-            else {
-                elem.style.transition = '0.0s';
-            }
-        }
-    }
-
-    // Custom gutter with small expand/collapse button
-    // TODO: prevent splitter from being dragged from the small button
-    createGutter() {
-        let gutterElem = document.createElement('div');
-        // These 2 class names are the original class names of the gutter from react-split
-        gutterElem.classList.add('gutter');
-        gutterElem.classList.add('gutter-horizontal');
-
-        // Add the small collapse/expand button
-        let gutterBtn = document.createElement('div');
-        gutterBtn.classList.add('gutterBtn');
-
-        let gutterBtnArrow = document.createElement('div');
-        gutterBtnArrow.classList.add('arrow-left');
-        gutterBtnArrow.id = ID_GUTTER_AROW;
-        gutterBtn.appendChild(gutterBtnArrow);
-
-        gutterElem.appendChild(gutterBtn);
-        gutterBtn.addEventListener("click", this.handleSplitterBtnClick);
-
-        return gutterElem;
-    }
-
-    // *** END: SPLITTER CUSTOMIZATION ***    
 
     render() {
         console.log('render homeContent');
-        return <Split className="split"
-            id={ID_SPLITTER}
-            direction="horizontal"
-            sizes={this.state.sizes}
-            minSize={0}
-            gutterSize={8}
-            collapsed={this.state.collapseIdx}
+        return <NoobSplitter 
+            id="homePanel" 
+            defaultSize={[10, 90]} 
             onDragEnd={this.onSplitDragEnd}
-            onDragStart={this.onSplitDragStart}
-            snapOffset={0}
-            cursor="col-resize"
-            gutter={this.createGutter}
-            >
-            <div id="homeLeft" className="content" style={{backgroundColor: '#ffeecc'}}>
-                {/* <ToolPanel/> */}
-                {/* <ScrollTracker/> */}
-            </div>
-
-            <div id="homeRight" className="content" style={{backgroundColor: '#D0D0D0'}}>
-                {/* <DocumentSample/> */}
-            </div>
-        </Split>;
+            minSize={100}>
+            <VerticalList items={items} activeItem={'dashboard'} mode={this.state.menuMode}/>
+        </NoobSplitter>    
     }
 }
 
