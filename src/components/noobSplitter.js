@@ -6,6 +6,8 @@ const ID_PREFIX_SPLITTER = "noobSplitter";
 const ID_PREFIX_GUTTER_AROW = "noobSplitterGutterArrow";
 const DEFAULT_SPLIT_SIZES = [20, 80];
 
+// Small reusable class for creating a splitter with a gutter button
+// Currently, only limited to 2 items, and direction is only horizontal
 class NoobSplitter extends Component {
 
     // *** START: SPLITTER CUSTOMIZATION ***
@@ -119,6 +121,19 @@ class NoobSplitter extends Component {
     // *** END: SPLITTER CUSTOMIZATION ***    
 
     render() {
+        console.log('[noobSplitter][render()] ', this.props.children);
+        let child1 = <div/>;
+        let child2 = <div/>;
+        if (this.props.children) {
+            if (!Array.isArray(this.props.children)) {
+                child1 = this.props.children;
+            }
+            else if (this.props.children.length > 1) {
+                child1 = this.props.children[0];
+                child2 = this.props.children[1];
+            }
+        }
+
         return <Split className="split"
             id={ID_PREFIX_SPLITTER + this.state.id}
             direction="horizontal"
@@ -135,10 +150,12 @@ class NoobSplitter extends Component {
             <div id="homeLeft" className="content" style={{backgroundColor: '#ffeecc'}}>
                 {/* <ToolPanel/> */}
                 {/* <ScrollTracker/> */}
+                {child1}
             </div>
 
             <div id="homeRight" className="content" style={{backgroundColor: '#D0D0D0'}}>
                 {/* <DocumentSample/> */}
+                {child2}
             </div>
         </Split>;
     }

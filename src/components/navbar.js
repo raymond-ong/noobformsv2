@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { menuClicked } from '../actions/index';
 
+// START: Mobile View
 class NavBarMobile extends Component {    
     constructor(props) {
         super(props);
@@ -25,6 +26,7 @@ class NavBarMobile extends Component {
     }
 
     // Create a separate function for the mobile version because we need to hide the sidebar afterwards
+    // We also set the active menu item
     // Also, next time maybe we need a dirty check
     handleMenuClick = (menuName) => {
         this.props.menuClickDispatcher(menuName);
@@ -45,8 +47,7 @@ class NavBarMobile extends Component {
                     icon='labeled'
                     size='mini'
                 >
-                    {/* {getNavBarMenuItemElements(this.props.menuClickDispatcher, false)} */}
-                    {getNavBarMenuItemElements(this.handleMenuClick, false)}
+                    {getNavBarMenuItemElements(this.handleMenuClick, this.props.activeItem, false)}
                 </Sidebar>
 
                 {/* Put here the application content, including the fixed menu...basically this is the whole screen */}
@@ -67,34 +68,41 @@ class NavBarMobile extends Component {
             </Sidebar.Pushable>;
     }
 }
+// END: Mobile View
 
+// START: Desktop View
 const NavBarDesktop = (props) => {
     // Note: putting fixed makes the menu position to be absolute. therefore child elemnets need to adjust manually
     return <div className="ui menu inverted fixed top">
         <div className="header item">
             Noobforms v2.0
         </div>
-        {getNavBarMenuItemElements(props.menuClickDispatcher, true)}
+        {getNavBarMenuItemElements(props.menuClickDispatcher, props.activeItem, true)}
     </div>;
 }
 
-// const onMenuClicked = (evt, menuName, ) => {
-//     // Dispatch an action to the redux store
-//     console.log(this.props);
-// }
+const onMenuClicked = (menuName, menuClickDispatcher) => {
+    // Dispatch an action to the redux store
+    menuClickDispatcher(menuName);
+    // Set the active item
+}
 
-const getNavBarMenuItemElements = (menuClickDispatcher, withAlignment) => {
+const getNavBarMenuItemElements = (menuClickDispatcher, activeItem, withAlignment) => {
     return navBarMenuItems.map(child => {
         let itemClass = `item`;
         if (withAlignment && child.alignment === 'right') {
             itemClass += ' right';
         }
+        if (activeItem == child.name) {
+            itemClass += ' active';
+        }
 
-        return <a key={`${child.name}`} className={itemClass} onClick={(evt) => menuClickDispatcher(child.name)}>
+        return <a key={`${child.name}`} className={itemClass} onClick={(evt) => onMenuClicked(child.name, menuClickDispatcher)}>
             <i className={`icon ${child.icon}`}/>
             {child.title}
         </a>});
 }
+// END: Desktop View
 
 const getNavbarChildren = (children) => {
     return <div>{children}</div>
@@ -109,18 +117,18 @@ const navBarMenuItems = [
 ]
 
 const NavBar = (props) => {
+    let activeItem = props.activeMenu;
     // a. For mobile, the children should be nested inside the Navbar
     // b. For desktop, the children can be a sibling of the Navbar
-    console.log('[NavBar] render...', props);
     return (
         <div>            
             <Responsive {...Responsive.onlyMobile}>
-                <NavBarMobile menuClickDispatcher={props.menuClicked}>
+                <NavBarMobile menuClickDispatcher={props.menuClicked} activeItem={activeItem}>
                     {getNavbarChildren(props.children)}
                 </NavBarMobile>
             </Responsive>
             <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                <NavBarDesktop menuClickDispatcher={props.menuClicked}></NavBarDesktop>
+                <NavBarDesktop menuClickDispatcher={props.menuClicked} activeItem={activeItem}></NavBarDesktop>
                 {getNavbarChildren(props.children)}
             </Responsive>
         </div>
@@ -132,5 +140,9 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ menuClicked }, dispatch);
 }
 
+function mapStateToProps(state) {
+    return { activeMenu: state.mainApp.activeMenu };
+  }
+
 //export default NavBar;
-export default connect(null, mapDispatchToProps)(NavBar)
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar)

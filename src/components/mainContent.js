@@ -37,7 +37,6 @@ const panes = [
 
 const MainContent = (props) => {
     // Decide which content to show as active, based on selected item from NavBar (stored in the redux store)    
-    console.log("render: MainContent");
     return <div id="mainContent">
         <Tab id="mainTab" panes={panes} renderActiveOnly={false} style={{height: '100%'}} activeIndex={props.mainAppState.tabIndex}/>
     </div>;

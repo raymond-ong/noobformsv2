@@ -33,12 +33,6 @@ const AccordionPanel = ({title, onClickCollapseExpand, id, isCollapsed}) => {
 
 const defaultPanelData = [
     {
-        title: 'Table of Contents',
-        id: 'panelA',
-        isCollapsed: false,
-        size: 0,        
-    },    
-    {
         title: 'Toolbox',
         id: 'panelB',
         isCollapsed: false,
