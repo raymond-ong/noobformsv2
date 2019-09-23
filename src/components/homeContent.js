@@ -39,7 +39,7 @@ class HomeContent extends React.Component {
     }
 
     onWindowResize = () => {
-        //console.log('onWindowResize', this);
+        console.log('onWindowResize', this);
         // let leftPixels = this.state
         // this.setState({
         //     menuMode: this.getMode(leftPixels)
