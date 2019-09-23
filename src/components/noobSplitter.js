@@ -14,9 +14,8 @@ class NoobSplitter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            collapseIdx: null,
             sizes: this.getDefaultSizes(),
-            id: props.id
+            id: props.id,        
         };
 
         this.onSplitDragEnd = this.onSplitDragEnd.bind(this);
@@ -35,25 +34,34 @@ class NoobSplitter extends Component {
 
     handleSplitterBtnClick() {
         this.addRemoveContentTransition(true);
-        if (this.state.sizes[0] < 1) {
+        let currPixels = this.getCurrentPixels(this.state.sizes[0]);
+        console.log('handleSplitterBtnClick', currPixels, 'small? ' + this.isVerySmall(currPixels));
+        let newSize = null;
+        if (this.isVerySmall(currPixels)) {
             // Expand it
             this.setState({
-                collapseIdx: null,
-                sizes: this.getDefaultSizes()
+                sizes: this.getDefaultSizes(),
             });
             // Show the Collapse arrow after expanding
             this.showCollapseArrow();
+            newSize = this.getDefaultSizes();
         }
         else {
             // Collapse it
             this.setState({
-                collapseIdx: 0,
-                sizes: [0, 100]
+                sizes: [0, 100],             
             });    
 
             // Show the expand button after expanding
             this.showExpandArrow();
-        }    
+            newSize = [0, 100];
+        }
+
+        // Fire the callback also.
+        // React-split currently does not have any callback when size is changed, so we manually fire the callback
+        if (this.props.onDragEnd) {
+            this.props.onDragEnd(newSize);
+        }
     }
 
     showExpandArrow() {
@@ -68,13 +76,18 @@ class NoobSplitter extends Component {
         gutterBtnArrow.classList.add('arrow-left');
     }
 
-    onSplitDragEnd(args) {
-        console.log('onSplitDrageEnd', args);
+    getCurrentPixels = (currPercent) => {return currPercent / 100.00 * window.innerWidth; }
+    isVerySmall = (currPixels) => { return currPixels < 10 || currPixels - this.getMinsize() < 10; }
+
+
+    onSplitDragEnd(args) {        
         this.setState({
             sizes: args
         });
 
-        if (this.state.sizes[0] < 1) {
+        let currPixels = this.getCurrentPixels(this.state.sizes[0]);
+        console.log('onSplitDrageEnd', args, currPixels, 'small? ' + this.isVerySmall(currPixels));
+        if (this.isVerySmall(currPixels)) {
             this.showExpandArrow();
         }
         else {
@@ -132,6 +145,10 @@ class NoobSplitter extends Component {
 
     // *** END: SPLITTER CUSTOMIZATION ***    
 
+    getMinsize () {
+        return this.props.minSize ? this.props.minSize : 0;
+    }
+
     render() {
         console.log('[noobSplitter][render()] ', this.props.children);
         let child1 = <div/>;
@@ -150,9 +167,8 @@ class NoobSplitter extends Component {
             id={ID_PREFIX_SPLITTER + this.state.id}
             direction="horizontal"
             sizes={this.state.sizes}
-            minSize={this.props.minSize ? this.props.minSize : 0}
+            minSize={this.getMinsize()}
             gutterSize={8}
-            collapsed={this.state.collapseIdx}
             onDragEnd={this.onSplitDragEnd}
             onDragStart={this.onSplitDragStart}
             snapOffset={0}

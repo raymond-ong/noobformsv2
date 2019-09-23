@@ -69,10 +69,13 @@ class HomeContent extends React.Component {
         let leftPixels = sizes[0] / 100.0 * window.innerWidth;    
         let mode = this.getMode(leftPixels);    
         //console.log('onSplitDragEnd homeContent callback', sizes, leftPixels, mode);   
-        this.setState({
-            menuMode: mode,
-            currLeftPercent: sizes[0]
-        });
+        // if there are differences, call setState. We minimize rerenders
+        if (this.state.menuMode !== mode || this.state.currLeftPercent - sizes[0] > 0.001) {
+            this.setState({
+                menuMode: mode,
+                currLeftPercent: sizes[0]
+            });    
+        }
     }
 
     render() {
@@ -81,7 +84,7 @@ class HomeContent extends React.Component {
             id="homePanel" 
             defaultSize={[DEFAULT_PERCENT, 100-DEFAULT_PERCENT]} 
             onDragEnd={this.onSplitDragEnd}
-            minSize={100}>
+            minSize={50}>
             <VerticalList items={items} activeItem={'dashboard'} mode={this.state.menuMode}/>
         </NoobSplitter>    
     }
