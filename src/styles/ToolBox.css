@@ -1,0 +1,48 @@
+.toolboxContainer {
+    padding: 10px;    
+    overflow: auto;
+    width: 100%;
+    position: relative;
+}
+
+.toolBox {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    width: 100%;
+    grid-gap: 1px;
+    position: relative;
+    overflow: visible;
+    overflow-y: visible;
+    padding-top: 3px;
+}
+
+.toolItem {
+    background-color: #cacaca;
+    margin: 2px;
+    border-radius: 3px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 5px;
+    min-width: 80px;
+}
+
+/* .toolItemContainer {
+    display: block;
+} */
+
+.toolboxTitle {
+    border-radius: 4px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    /* background-color: #0b79e0; */
+    font-size: 0.9rem;
+    background-color: #999999;
+    color: white;
+    padding-left: 8px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}

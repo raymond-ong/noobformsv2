@@ -23,7 +23,7 @@ const createMenuItems = (items, activeItem, mode) => {
             iconElem = [<i key={'icon' + item.name} style={{display: 'block', verticalAlign: 'middle', marginLeft: 'auto', marginRight: 'auto'}} className={iconClass}/>]
         }
 
-        return <div className={itemClass} key={item.name}>
+        return <div className={itemClass} key={item.name}>            
             {iconElem}
             {titleElem}
         </div>

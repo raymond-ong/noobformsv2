@@ -1,0 +1,9 @@
+.verticalList {
+    background-color: lightgrey;
+    height: 100%
+}
+
+.verticalList .item {
+    font-weight: 600;
+    vertical-align: middle;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import Split from 'react-split';
+import Toolbox from './toolbox';
 
 import '../styles/Accordion.css';
 import "../styles/Split.css";
@@ -9,11 +10,13 @@ import ScrollTracker from '../components/scrollTracker';
 const DEFAULT_SIZES = [33.33,33.33,33.33];
 const CLASS_ACCORDION = "accordionPanel";
 
+// Basically this class contains the left hand panel that contains the toolbox and properties box
+
 // TODOS:
 // [1] Do not allow all panels to be collapsed
 // [2] Implement preferred ratio
 
-const AccordionPanel = ({title, onClickCollapseExpand, id, isCollapsed}) => {
+const AccordionPanel = ({title, onClickCollapseExpand, id, isCollapsed, panelContent}) => {
     //console.log('[render] AccordionPanel, id: ', id);
     let iconName = isCollapsed ? "down" : "up";
 
@@ -26,7 +29,7 @@ const AccordionPanel = ({title, onClickCollapseExpand, id, isCollapsed}) => {
         </div>
         <div className="panelBody">
             {/* <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div> */}
-            
+            {panelContent}
         </div>
     </div>;
 }
@@ -34,13 +37,13 @@ const AccordionPanel = ({title, onClickCollapseExpand, id, isCollapsed}) => {
 const defaultPanelData = [
     {
         title: 'Toolbox',
-        id: 'panelB',
+        id: 'toolbox',
         isCollapsed: false,
         size: 0,
     },
     {
         title: 'Properties',
-        id: 'panelC',
+        id: 'properties',
         isCollapsed: false,
         size: 0,
     },
@@ -145,14 +148,25 @@ class ToolPanel extends React.Component {
         })
     }
 
+    getPanelContent = (panelId) => {
+        switch(panelId) {
+            case 'toolbox':
+                return <Toolbox/>
+        }
+
+        return null;
+    }
+
     createPanels = () => {
         return this.state.panelsData.map(panel => {
+            let panelContent = this.getPanelContent(panel.id);            
             return <AccordionPanel 
                         key={panel.id}
                         id={panel.id}
                         title={panel.title}
                         isCollapsed={panel.isCollapsed}
-                        onClickCollapseExpand= {this.onClickCollapseExpand}
+                        onClickCollapseExpand={this.onClickCollapseExpand}
+                        panelContent={panelContent}
                     >
                     </AccordionPanel>
         })
