@@ -28,25 +28,28 @@ const items = [
     },
 ]
 
+const DEFAULT_PERCENT = 10.0;
+
 class HomeContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             menuMode: this.getInitialMenuMode(),
-            currLeftPercent: 10.0
+            currLeftPercent: DEFAULT_PERCENT
         }
         window.addEventListener('resize', this.onWindowResize);
     }
 
-    onWindowResize = () => {
-        console.log('onWindowResize', this);
-        // let leftPixels = this.state
-        // this.setState({
-        //     menuMode: this.getMode(leftPixels)
-        // });
+    onWindowResize = () => {        
+        let leftPixels = this.computeCurrentPixels(this.state.currLeftPercent);
+        // console.log('onWindowResize', window.innerWidth, this.state.currLeftPercent, leftPixels, this.getMode(leftPixels));
+        this.setState({
+            menuMode: this.getMode(leftPixels)
+        });
     }
 
-    computeInitialPixels = () => {return 10 / 100.0 * window.innerWidth};
+    computeInitialPixels = () => {return this.computeCurrentPixels(DEFAULT_PERCENT)};
+    computeCurrentPixels = (currPerent) => {return currPerent / 100.0 * window.innerWidth};
 
     getInitialMenuMode = () => {
         let leftPixels = this.computeInitialPixels();  // todo: define a const for 10
@@ -62,11 +65,13 @@ class HomeContent extends React.Component {
         }
     }
 
-    onSplitDragEnd = (sizes) => {        
+    onSplitDragEnd = (sizes) => {             
         let leftPixels = sizes[0] / 100.0 * window.innerWidth;    
         let mode = this.getMode(leftPixels);    
+        //console.log('onSplitDragEnd homeContent callback', sizes, leftPixels, mode);   
         this.setState({
-            menuMode: mode
+            menuMode: mode,
+            currLeftPercent: sizes[0]
         });
     }
 
@@ -74,7 +79,7 @@ class HomeContent extends React.Component {
         console.log('render homeContent');
         return <NoobSplitter 
             id="homePanel" 
-            defaultSize={[10, 90]} 
+            defaultSize={[DEFAULT_PERCENT, 100-DEFAULT_PERCENT]} 
             onDragEnd={this.onSplitDragEnd}
             minSize={100}>
             <VerticalList items={items} activeItem={'dashboard'} mode={this.state.menuMode}/>
