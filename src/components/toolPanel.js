@@ -42,6 +42,16 @@ const defaultPanelData = [
         size: 0,
     },
     {
+        // Show the Hierarchy tree view
+        // Underneath, add the available data (dfferent icon from folders and targets)
+        // When the user drags it to the designer, should popup the control appropriate control type
+        // Except for the size, there must be some preconfigurations already in the control
+        title: 'Available Data',
+        id: 'databox',
+        isCollapsed: true,
+        size: 0,
+    },
+    {
         title: 'Properties',
         id: 'properties',
         isCollapsed: false,

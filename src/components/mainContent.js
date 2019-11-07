@@ -6,7 +6,6 @@ import DesignerContent from './designerContent';
 import SettingsContent from './settingsContent';
 import {connect} from 'react-redux';
 import {Tab} from 'semantic-ui-react';
-import StackedPanel from './stackedPanel';
 
 const panes = [
     {

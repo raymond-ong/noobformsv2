@@ -4,7 +4,7 @@ import "../styles/Split.css";
 
 const ID_PREFIX_SPLITTER = "noobSplitter";
 const ID_PREFIX_GUTTER_AROW = "noobSplitterGutterArrow";
-const DEFAULT_SPLIT_SIZES = [20, 80];
+const DEFAULT_SPLIT_SIZES = [15, 85];
 
 // Small reusable class for creating a splitter with a gutter button
 // Currently, only limited to 2 items, and direction is only horizontal
@@ -175,13 +175,13 @@ class NoobSplitter extends Component {
             cursor="col-resize"
             gutter={this.createGutter}
             >
-            <div id="homeLeft" className="content" style={{backgroundColor: '#ffeecc'}}>
+            <div className="content-left content" style={{backgroundColor: '#ffeecc'}}>
                 {/* <ToolPanel/> */}
                 {/* <ScrollTracker/> */}
                 {child1}
             </div>
 
-            <div id="homeRight" className="content" style={{backgroundColor: '#D0D0D0'}}>
+            <div className="content" style={{backgroundColor: '#f0f0f0', width: "100%"}}>
                 {/* <DocumentSample/> */}
                 {child2}
             </div>

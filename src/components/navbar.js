@@ -73,7 +73,7 @@ class NavBarMobile extends Component {
 // START: Desktop View
 const NavBarDesktop = (props) => {
     // Note: putting fixed makes the menu position to be absolute. therefore child elemnets need to adjust manually
-    return <div className="ui menu inverted fixed top">
+    return <div className="ui menu inverted fixed top" style={{'backgroundImage': 'linear-gradient(#454545, black)'}}>
         <div className="header item">
             Noobforms v2.0
         </div>
@@ -112,7 +112,8 @@ const getNavbarChildren = (children) => {
 
 const navBarMenuItems = [
     { name: 'home',     title: 'Home',      icon: 'home',   alignment: '', },
-    { name: 'designer', title: 'Designer',  icon: 'edit',   alignment: '' },
+    { name: 'designer', title: 'Page Designer',  icon: 'edit',   alignment: '' },
+    { name: 'hierDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
     { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]
 

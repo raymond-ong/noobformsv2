@@ -29,6 +29,10 @@
     cursor: pointer;
 }
 
+.collExpBtn:hover {
+    background-color: rgb(195, 226, 240);
+}
+
 .titleBarText {
 
     /* avoid overflow, show ellipsis */

@@ -1,0 +1,21 @@
+/* override the pinkish placeholder from react-grid-layout */
+.react-grid-item.react-grid-placeholder {
+    background-color: lime;
+  }
+
+.editBtn {
+    display: inline-block;
+    margin: 0 auto;
+    color: gray;
+    border-radius: 10px;
+    position: absolute;
+    top: 3px;
+    right: 0px;
+    cursor: pointer;
+}
+
+.editBtn:hover {
+    background-color: lightgray;
+    color: rgb(83, 128, 53);
+}
+

@@ -9,40 +9,30 @@ export const toolBoxItems = [
          icon: 'wpforms',
     },    
     {
-         name: 'textbox',
-         displayName: 'Textbox',
-         icon: 'font',
+         name: 'barchart',
+         displayName: 'Bar Chart',
+         icon: 'chart bar',
     },
     {
-         name: 'richText',
-         displayName: 'Rich Text',
-         icon: 'paint brush'
+         name: 'pie',
+         displayName: 'Pie Chart',
+         icon: 'chart pie'
     },
     {
+         // Should support expressions, like the Target Name, Vendor, Model etc.
        name: 'label',
        displayName: 'Label',
        icon: 'info'
-  },
-
+     },
+     {
+          name: 'kpi',
+          displayName: 'KPI',
+          icon: 'check circle outline'
+     },   
     {
-         name: 'numeric',
-         displayName: 'Number',
-         icon: 'sort numeric up'
-    },
-    {
-         name: 'date',
-         displayName: 'Date',
-         icon: 'calendar alternate'
-    },
-    {
-         name: 'combo',
-         displayName: 'Combo',
-         icon: 'dropdown'
-    },
-    {
-         name: 'checkbox',
-         displayName: 'Check',
-         icon: 'check square outline'
+         name: 'line',
+         displayName: 'Line Chart',
+         icon: 'chart line'
     },
     {
          name: 'table',
@@ -50,19 +40,15 @@ export const toolBoxItems = [
          icon: 'table'
     },
     {
-         name: 'user',
-         displayName: 'User',
-         icon: 'user circle'
+         name: 'frame',
+         displayName: 'Frame',
+         icon: 'window maximize outline'
     },
     {
+          // Should provide a configurable URL
        name: 'image',
        displayName: 'Image',
        icon: 'image outline'
-   },
-   {
-       name: 'video',
-       displayName: 'Video',
-       icon: 'video play'
    },
 ];
 
