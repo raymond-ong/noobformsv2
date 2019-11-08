@@ -1,6 +1,7 @@
 import React from 'react';
 import Split from 'react-split';
 import Toolbox from './toolbox';
+import DemoTree from './treeView';
 
 import '../styles/Accordion.css';
 import "../styles/Split.css";
@@ -40,22 +41,25 @@ const defaultPanelData = [
         id: 'toolbox',
         isCollapsed: false,
         size: 0,
+        helpText: 'Drag an item to the Designer Area'
     },
     {
         // Show the Hierarchy tree view
         // Underneath, add the available data (dfferent icon from folders and targets)
         // When the user drags it to the designer, should popup the control appropriate control type
         // Except for the size, there must be some preconfigurations already in the control
-        title: 'Available Data',
-        id: 'databox',
-        isCollapsed: true,
-        size: 0,
-    },
-    {
-        title: 'Properties',
-        id: 'properties',
+        title: 'Hierarchy',
+        id: 'toolHierarchy',
         isCollapsed: false,
         size: 0,
+        helpText: 'Select an item in the hierarchy to show the available data below'
+    },
+    {
+        title: 'Available Data',
+        id: 'availableData',
+        isCollapsed: false,
+        size: 0,
+        helpText: 'Drag an item to the Designer Area'
     },
 ];
 
@@ -161,7 +165,10 @@ class ToolPanel extends React.Component {
     getPanelContent = (panelId) => {
         switch(panelId) {
             case 'toolbox':
-                return <Toolbox/>
+                return <Toolbox/>;
+            case 'toolHierarchy':
+                return <DemoTree/>
+                
         }
 
         return null;
