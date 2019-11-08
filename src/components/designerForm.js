@@ -9,10 +9,17 @@ import Example from '../charts/pieChart';
 import {connect} from 'react-redux';
 
 
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
+//const ResponsiveReactGridLayout = WidthProvider(Responsive);
+const ResponsiveReactGridLayout = Responsive;
 
 // try playing around recharts
 class designerForm extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.ReactGridLayout = React.createRef();
+  }
+
   static defaultProps = {
     className: "layout",
     rowHeight: 30,
@@ -113,19 +120,25 @@ class designerForm extends React.Component {
   };
 
   onDrop = (elemParams, arg2) => {
+    let internalLayout = null;
     if (!arg2) {
         // I manually modified the params of OnDrop from the STRML library
         // The second arg is the temp layout
         console.log('[onDrop] arg2 is null. Please modify the STRML library to pass the layout as 2nd argument');
         return;
     }
+    internalLayout = arg2;
 
     if (!this.props.draggingToolItem) {
       console.log('[onDrop] Did not detect any dragging item from toolbox');
       return;
     }
 
-    let newLayout = arg2.filter(x => x.i !== '__dropping-elem__').map(item => {
+    if (this.ReactGridLayout) {
+      //internalLayout = this.ReactGridLayout.state.layout 
+    }
+
+    let newLayout = internalLayout.filter(x => x.i !== '__dropping-elem__').map(item => {
         return {
             x: item.x,
             y: item.y,
@@ -151,9 +164,14 @@ class designerForm extends React.Component {
   };
 
   render() {
+
+    console.log('render RGL');
     return (
-      <div>        
-        <ResponsiveReactGridLayout
+      <div>
+        <ResponsiveReactGridLayout style={{width: "100%", border: "1px dashed dimgray"}}
+          //ref={r => this.ReactGridLayout = r}
+          ref={this.ReactGridLayout}
+          width={this.props.containerWidth}
           {...this.props}
           layouts={this.state.layouts}
           onBreakpointChange={this.onBreakpointChange}
@@ -184,7 +202,7 @@ function generateLayout() {
       return [
         {i: 'a', x: 0, y: 2, w: 4, h: 10},
         {i: 'b', x: 4, y: 2, w: 4, h: 10},
-        {i: 'c', x: 0, y: 0, w: 8, h: 2}
+        {i: 'c', x: 0, y: 0, w: 12, h: 2}
       ];
 }
 

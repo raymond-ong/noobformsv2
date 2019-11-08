@@ -86,7 +86,7 @@ class NoobSplitter extends Component {
         });
 
         let currPixels = this.getCurrentPixels(this.state.sizes[0]);
-        console.log('onSplitDrageEnd', args, currPixels, 'small? ' + this.isVerySmall(currPixels));
+        //console.log('onSplitDrageEnd', args, currPixels, 'small? ' + this.isVerySmall(currPixels));
         if (this.isVerySmall(currPixels)) {
             this.showExpandArrow();
         }
@@ -102,7 +102,7 @@ class NoobSplitter extends Component {
     }
 
     onSplitDragStart(args) {
-        console.log('onSplitDrageStart', args);
+        //console.log('onSplitDrageStart', args);
         this.addRemoveContentTransition(false);
     }
 
@@ -181,7 +181,7 @@ class NoobSplitter extends Component {
                 {child1}
             </div>
 
-            <div className="content" style={{backgroundColor: '#f0f0f0', width: "100%"}}>
+            <div className="content" style={{backgroundColor: '#f0f0f0', width: "100%", overflow: "auto"}}>
                 {/* <DocumentSample/> */}
                 {child2}
             </div>
