@@ -4,6 +4,10 @@ import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import "./designerForm.css";
 import BarChart from '../charts/barChart';
+import Example from '../charts/pieChart';
+
+import {connect} from 'react-redux';
+
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -51,10 +55,10 @@ class designerForm extends React.Component {
         </div>
       }
       else if (i === 1) {
-        return <BarChart/>
+        return <Example/>
       }
       else if (i === 2) {
-        return <div style={{textAlign: "center", fontSize: "30px"}}>Chart Samples</div>
+        return <div style={{textAlign: "center", fontSize: "30px"}}>Overall Plant Performance</div>
       }
 
       return null;
@@ -97,13 +101,6 @@ class designerForm extends React.Component {
     this.props.onDragStart(item);
   }
 
-  onDrag = (item) => {
-    //this.props.onDrag(item);
-    // this.setState({
-    //     potentialLayout: item
-    // });
-  }
-
   onDragStop = (item, item2) => {
       console.log('dragend1', item2);
       console.log('dragend2', item);
@@ -116,14 +113,16 @@ class designerForm extends React.Component {
   };
 
   onDrop = (elemParams, arg2) => {
-    console.log('onDrop', elemParams)
-    console.log('onDrop2', arg2)
-    debugger
-
     if (!arg2) {
         // I manually modified the params of OnDrop from the STRML library
         // The second arg is the temp layout
+        console.log('[onDrop] arg2 is null. Please modify the STRML library to pass the layout as 2nd argument');
         return;
+    }
+
+    if (!this.props.draggingToolItem) {
+      console.log('[onDrop] Did not detect any dragging item from toolbox');
+      return;
     }
 
     let newLayout = arg2.filter(x => x.i !== '__dropping-elem__').map(item => {
@@ -144,7 +143,7 @@ class designerForm extends React.Component {
               y: elemParams.y,
               w: elemParams.w,
               h: elemParams.h,
-              i: "newItem!" + this.state.layouts.lg.length,
+              i: this.props.draggingToolItem.name + this.state.layouts.lg.length,
               static: false
           }, ]
         }
@@ -189,4 +188,14 @@ function generateLayout() {
       ];
 }
 
-export default designerForm;
+/* TODO
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ toolItemDragged }, dispatch);
+} */
+
+function mapStateToProps(state) {
+  return { draggingToolItem: state.mainApp.draggingToolItem };
+}
+
+//export default designerForm;
+export default connect(mapStateToProps)(designerForm);

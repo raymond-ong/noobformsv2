@@ -1,8 +1,10 @@
-import { CLICK_MENU } from "../actions/index";
+import { CLICK_MENU, DRAG_TOOLITEM_START } from "../actions/index";
 
 const defaultState = {
     activeMenu: 'designer',
-    tabIndex: 1
+    tabIndex: 1,
+    // temp state only, until react-grid-layout fixes the bug for onDrop parameters
+    draggingToolItem: null
 }
 
 const tabIndexMapping = {
@@ -19,6 +21,11 @@ export default function(state = defaultState, action) {
           activeMenu: action.payload,
           tabIndex: tabIndexMapping[action.payload]
       };
+    case DRAG_TOOLITEM_START:
+      return {
+        ...state,
+        draggingToolItem: action.payload
+      }
   }
   return state;
 }

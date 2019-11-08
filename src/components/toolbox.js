@@ -50,6 +50,12 @@ export const toolBoxItems = [
        displayName: 'Image',
        icon: 'image outline'
    },
+   {
+     // Should provide a configurable URL
+     name: 'treemap',
+     displayName: 'Tree Map',
+     icon: 'map pin'
+     },
 ];
 
 const drawToolItems = () => {
