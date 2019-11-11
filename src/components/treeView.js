@@ -94,7 +94,7 @@ class DemoTree extends React.Component {
   };
 
   Icon = (props) => {
-      console.log('icon', props)
+      //console.log('icon', props)
       if (props.children.length === 0) {
         return <i className='ui icon genderless'></i>
       }
@@ -108,7 +108,7 @@ class DemoTree extends React.Component {
   // It only highlights the node, instead of hiding everything else.
   // TODO: change this behaviour
   Filterer = (node) => {
-      console.log('Filterer', node);
+      //console.log('Filterer', node);
       if (node.props.title === 'Apple') {
           return true
       }

@@ -33,10 +33,10 @@ class designerForm extends React.Component {
     initialLayout: generateLayout(),
     compactType: 'vertical', // It's better to have a vertical compaction, because the drag behaviour is weird without it
     onDragStart: function(item) {
-        console.log('onDragStart', item);
+        //console.log('onDragStart', item);
     },
     onDragStop: function(item) {
-        console.log('onDragStop', item);
+        //console.log('onDragStop', item);
     },
 
   };
@@ -73,13 +73,17 @@ class designerForm extends React.Component {
       return null;
   }
 
+  onClickEditBtn(id) {
+    console.log('onClickEditBtn', id);
+  }
+
   generateDOM() {
     var me = this;
     return _.map(this.state.layouts.lg, function(l, i) {
       return (
         <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px solid lightgray", borderRadius: "3px"}}>
             {/* <span className="text">{i} - {l.i}</span> */}
-            <i className="editBtn icon cog large"/>
+            <i className="hide-button editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>            
             {me.getRechartSample(i)}
         </div>
       );
@@ -111,8 +115,8 @@ class designerForm extends React.Component {
   }
 
   onDragStop = (item, item2) => {
-      console.log('dragend1', item2);
-      console.log('dragend2', item);
+      //console.log('dragend1', item2);
+      //console.log('dragend2', item);
       this.props.onDragStop(item);
   }
   onNewLayout = () => {
@@ -178,8 +182,8 @@ class designerForm extends React.Component {
           layouts={this.state.layouts}
           onBreakpointChange={this.onBreakpointChange}
           onLayoutChange={this.onLayoutChange}
-          onDragStart={this.onDragStart}
-          onDragStop={this.onDragStop}
+          //onDragStart={this.onDragStart}
+          //onDragStop={this.onDragStop}
           //onDrag={this.onDrag}
           onDrop={this.onDrop}
           // WidthProvider option
@@ -204,7 +208,8 @@ function generateLayout() {
       return [
         {i: 'a', x: 0, y: 2, w: 4, h: 10},
         {i: 'b', x: 4, y: 2, w: 4, h: 10},
-        {i: 'c', x: 0, y: 0, w: 12, h: 2}
+        {i: 'c', x: 0, y: 0, w: 12, h: 2},
+        {i: 'd', x: 8, y: 2, w: 4, h: 10},
       ];
 }
 
