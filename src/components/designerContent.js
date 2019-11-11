@@ -8,7 +8,7 @@ const DEFAULT_SPLIT_SIZES = [15, 85];
 class designerContent extends React.Component {
     
     // TODO: Listen to window resizing events also (not just split drag)
-    // call setState()
+    // call setState() so that the DesginerForm would rerender
     constructor(props) {
         super(props);
         this.state = {

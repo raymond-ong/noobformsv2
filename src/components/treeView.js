@@ -1,276 +1,151 @@
-import React, {Fragment, PureComponent} from 'react';
-import {includes} from 'lodash';
+import React from 'react';
+import PropTypes from 'prop-types';
+import ReactDOM from 'react-dom';
+import Tree, { TreeNode } from 'rc-tree';
+import 'rc-tree/assets/index.css';
+import './treeview.css';
+//import './basic.less';
 
-import {Treebeard} from 'react-treebeard';
-import decorators from 'react-treebeard/dist/components/Decorators/index';
-import {Div} from 'react-treebeard/dist/components/common';
-//import data from './data';
-//import styles from './styles';
-//import * as filters from './filter';
-import * as filters from '../helper/treefilter';
-import style from 'react-treebeard/dist/themes/default';
+const treeData = [
+  { key: '0-0', title: 'Plant', children:
+    [
+      { key: '0-0-0', title: 'Area1', children:
+        [
+          { key: '0-0-0-0', title: 'Apple' },
+        ],
+      },
+      { key: '0-0-1', title: 'Area2', children:
+          [
+            { key: '0-0-1-0', title: 'Banana',},
+            { key: '0-0-1-1', title: 'Carrot' },
+            { key: '0-0-1-2', title: 'Dolphin' },
+            { key: '0-0-1-3', title: 'Elephant' },
+            { key: '0-0-1-4', title: 'Father' },
+            { key: '0-0-1-5', title: 'Germany' },
+            { key: '0-0-1-6', title: 'Holland' },
+            { key: '0-0-1-7', title: 'India' },
+            { key: '0-0-1-8', title: 'Japan' },
+            { key: '0-0-1-9', title: 'Kristaps' },
+            { key: '0-0-1-10', title: 'Lion' },
+            { key: '0-0-1-11', title: 'Mexico' },
+            { key: '0-0-1-12', title: 'Nigeria' },
+            { key: '0-0-1-13', title: 'Carrot Apple' },
+            { key: '0-0-1-14', title: 'Strawberry Banana' },
+            { key: '0-0-1-15', title: 'Godfather' },
+            { key: '0-0-1-16', title: 'Indian Mango' },
+            { key: '0-0-1-17', title: 'Dandelion' },
+            { key: '0-0-1-18', title: 'Lionel' },
+            { key: '0-0-1-19', title: 'Millionaire' },
+            { key: '0-0-1-20', title: 'The quick brown fox jumps over the lazy dog' },
+            { key: '0-0-1-21', title: 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+            { key: '0-0-1-22', title: '床前明月光,疑是地上霜,举头望明月,低头思故乡' },
+          ],
+      },
+    ],
+  },
+];
 
-//import Header from './Header';
-//import NodeViewer from './NodeViewer';
+class DemoTree extends React.Component {
+  static propTypes = {
+    keys: PropTypes.array,
+  };
+  static defaultProps = {
+    keys: ['0-0-0-0'],
+  };
+  constructor(props) {
+    super(props);
+    const keys = props.keys;
+    this.state = {
+      defaultExpandedKeys: keys,
+      defaultSelectedKeys: keys,
+      defaultCheckedKeys: keys,
+    };
+  }
+  onExpand = (...args) => {
+    console.log('onExpand', ...args);
+  };
+  onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+    this.selKey = info.node.props.eventKey;
 
-
-const data = {
-    name: 'Plant',
-    id: 1,
-    toggled: true,
-    children: [
-        {
-            name: 'Area001',
-            children: [
-                { name: 'FIC_001_001' },
-                { name: 'FIC_001_002' },
-                { name: 'FIC_001_003' },
-                { name: 'FIC_001_004' },
-                { name: 'FIC_001_005' }
-            ]
-        },
-        {
-            name: 'Area002',
-            loading: true,
-            children: []
-        },
-        {
-            name: 'Area003',
-            children: [
-                {
-                    name: 'components',
-                    children: [
-                        { name: 'Apple' },
-                        { name: 'Banana' },
-                        { name: 'Carrot' },
-                        { name: 'Dolphin' },
-                        { name: 'Elephant' },
-                        { name: 'Flower' },
-                        { name: 'The quick brown fox jumps over the lazy dog' },
-                        { name: 'Abcdefghijklmnopqrstuvwxyz1234567890' },
-                    ]
-                },
-                { name: 'index.js' }
-            ]
-        },
-        {
-            name: 'Area004',
-            children: [
-                { name: 'Star Apple' },
-                { name: 'Strawberry Banana' },
-                { name: 'Apple Carrot' },
-                { name: 'Florida' },
-            ]
-        },
-        { name: 'Test Loop 1' },
-        { name: 'Test Loop 2' },
-        { name: 'Test Loop 3' },
-    ]
-};
-
-const styles = {
-    component: {
-        width: '100%',
-        display: 'inline-block',
-        verticalAlign: 'top',
-        padding: '5px',
-    },
-    searchBox: {
-        // padding: '20px 20px 0 20px',
-        border: '1px solid red',
-        display: 'flex'
-    },
-    viewer: {
-        base: {
-            fontSize: '12px',
-            whiteSpace: 'pre-wrap',
-            backgroundColor: '#282C34',
-            border: 'solid 1px black',
-            padding: '20px',
-            color: '#9DA5AB',
-            minHeight: '250px'
-        }
+    if (this.tree) {
+      console.log(
+        'Selected DOM node:',
+        selectedKeys.map(key => ReactDOM.findDOMNode(this.tree.domTreeNodes[key])),
+      );
     }
-};
+  };
+  onCheck = (checkedKeys, info) => {
+    console.log('onCheck', checkedKeys, info);
+  };
+  onEdit = () => {
+    setTimeout(() => {
+      console.log('current key: ', this.selKey);
+    }, 0);
+  };
+  onDel = (e) => {
+    if (!window.confirm('sure to delete?')) {
+      return;
+    }
+    e.stopPropagation();
+  };
+  setTreeRef = (tree) => {
+    this.tree = tree;
+  };
 
+  Icon = (props) => {
+      console.log('icon', props)
+      if (props.children.length === 0) {
+        return <i className='ui icon genderless'></i>
+      }
+      else {
+        return <i className='ui icon folder outline'></i>
+      }
+      
+  }
 
-// Example: Customising The Header Decorator To Include Icons
-const Header = ({onSelect, style, customStyles, node}) => {
-    const iconType = node.children ? 'folder' : 'file-text';
-    const iconClass = `ui icon ${iconType}`;
-    const iconStyle = {marginRight: '5px'};
+  // Sample filter...
+  // It only highlights the node, instead of hiding everything else.
+  // TODO: change this behaviour
+  Filterer = (node) => {
+      console.log('Filterer', node);
+      if (node.props.title === 'Apple') {
+          return true
+      }
+      return false;
+  }
+
+  render() {
+    const customLabel = (
+      <span className="cus-label">
+        <span>operations: </span>
+        <span style={{ color: 'blue' }} onClick={this.onEdit}>Edit</span>&nbsp;
+        <label onClick={(e) => e.stopPropagation()}>
+          <input type="checkbox" /> checked
+        </label>
+        &nbsp;
+        <span style={{ color: '#EB0000' }} onClick={this.onDel}>Delete</span>
+      </span>
+    );
 
     return (
-        <div style={style.base} onClick={onSelect}>
-            <Div style={node.selected ? {...style.title, ...customStyles.header.title} : style.title}>
-                <i className={iconClass} style={iconStyle}/>
-                {node.name}
-            </Div>
-        </div>
+    <Tree style={{overflow: "auto", height: "100%", width: "calc(100%)", padding: "0 0 20 0"}}
+        className="myCls"
+        showLine
+        selectable
+        checkable={false}
+        defaultExpandAll
+        onExpand={this.onExpand}
+        defaultSelectedKeys={this.state.defaultSelectedKeys}
+        defaultCheckedKeys={this.state.defaultCheckedKeys}
+        onSelect={this.onSelect}
+        onCheck={this.onCheck}
+        treeData={treeData}
+        icon={this.Icon}
+        filterTreeNode={this.Filterer}
+    />
     );
-};
-
-Header.defaultProps = {
-    customStyles: {}
-};
-
-
-class DemoTree extends PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {data};
-         this.onToggle = this.onToggle.bind(this);
-         this.onSelect = this.onSelect.bind(this);
-    }
-/*
-    onToggle(node, toggled) {
-        const {cursor, data} = this.state;
-
-        if (cursor) {
-            this.setState(() => ({cursor, active: false}));
-        }
-
-        node.active = true;
-        if (node.children) {
-            node.toggled = toggled;
-        }
-
-        this.setState(() => ({cursor: node, data: Object.assign({}, data)}));
-    }
-
-    onSelect(node) {
-        const {cursor, data} = this.state;
-
-        if (cursor) {
-            this.setState(() => ({cursor, active: false}));
-            if (!includes(cursor.children, node)) {
-                cursor.toggled = false;
-                cursor.selected = false;
-            }
-        }
-
-        node.selected = true;
-
-        this.setState(() => ({cursor: node, data: Object.assign({}, data)}));
-    }
-
-    onFilterMouseUp({target: {value}}) {
-        const filter = value.trim();
-        if (!filter) {
-            return this.setState(() => ({data}));
-        }
-        let filtered = filters.filterTree(data, filter);
-        filtered = filters.expandFilteredNodes(filtered, filter);
-        this.setState(() => ({data: filtered}));
-    }
-
-    render() {
-        const {data, cursor} = this.state;
-        return (
-            <Fragment>
-                <Div style={styles.searchBox}>
-                    <Div className="input-group">
-                        <span className="input-group-addon">
-                            <i className="fa fa-search"/>
-                        </span>
-                        <input
-                            className="form-control"
-                            onKeyUp={this.onFilterMouseUp.bind(this)}
-                            placeholder="Search the tree..."
-                            type="text"
-                        />
-                    </Div>
-                </Div>
-                <Div style={styles.component}>
-                    <Treebeard
-                        data={data}
-                        onToggle={this.onToggle}
-                        onSelect={this.onSelect}
-                        decorators={{...decorators, Header}}
-                        customStyles={{
-                            header: {
-                                title: {
-                                    color: 'red'
-                                }
-                            }
-                        }}
-                    />
-                </Div>
-            </Fragment>
-        );
-    }
-*/
-
-    onFilterMouseUp({target: {value}}) {
-        const filter = value.trim();
-        if (!filter) {
-            return this.setState(() => ({data}));
-        }
-        let filtered = filters.filterTree(data, filter);
-        filtered = filters.expandFilteredNodes(filtered, filter);
-        this.setState(() => ({data: filtered}));
-    }
-
-    onToggle(node, toggled) {
-        const {cursor, data} = this.state;
-
-        if (cursor) {
-            this.setState(() => ({cursor, active: false}));
-        }
-
-        node.active = true;
-        if (node.children) {
-            node.toggled = toggled;
-        }
-
-        this.setState(() => ({cursor: node, data: Object.assign({}, data)}));
-    }
-
-    onSelect(node) {
-        const {cursor, data} = this.state;
-
-        if (cursor) {
-            this.setState(() => ({cursor, active: false}));
-            if (!includes(cursor.children, node)) {
-                cursor.toggled = false;
-                cursor.selected = false;
-            }
-        }
-
-        node.selected = true;
-
-        //this.setState(() => ({cursor: node, data: Object.assign({}, data)}));
-    }    
-
-    render() {
-        const {data, cursor} = this.state;
-        console.log(decorators);
-        // style.tree.base.backgroundColor = 'inherit';
-        // style.tree.base.color = 'black';
-        // style.tree.base.fontFamily = 'inherit';
-        // style.tree.node.header.base.color = 'black';
-        // style.tree.node.loading.color = 'inherit';
-        // style.tree.node.activeLink.background = 'inherit';
-        
-        return (
-            <Fragment>
-                <div class="ui icon input small" style={{margin: "5px", width: "calc(100% - 10px)"}}>
-                    <input type="text" placeholder="Search tree..." onKeyUp={this.onFilterMouseUp.bind(this)}/>
-                    <i class="inverted circular search icon"></i>
-                </div>
-
-                <Div style={styles.component}>
-                    <Treebeard
-                        data={data}
-                        onToggle={this.onToggle}
-                        //onSelect={this.onSelect}
-                        decorators={{...decorators, Header}}
-                    />
-                </Div>
-
-            </Fragment>
-        );
-    }    
+  }
 }
 
 export default DemoTree;

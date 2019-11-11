@@ -65,7 +65,9 @@ class designerForm extends React.Component {
         return <Example/>
       }
       else if (i === 2) {
-        return <div style={{textAlign: "center", fontSize: "30px"}}>Overall Plant Performance</div>
+        return <div className="Aligner">
+            <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>
+        </div>
       }
 
       return null;
@@ -76,7 +78,7 @@ class designerForm extends React.Component {
     return _.map(this.state.layouts.lg, function(l, i) {
       return (
         <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px solid lightgray", borderRadius: "3px"}}>
-            <span className="text">{i} - {l.i}</span>
+            {/* <span className="text">{i} - {l.i}</span> */}
             <i className="editBtn icon cog large"/>
             {me.getRechartSample(i)}
         </div>

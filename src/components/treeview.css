@@ -1,0 +1,14 @@
+  /* Adjustments on rc-tree for misasligned selection highligt
+  Note: this only happens if semantic-ui.css is applied globally */
+  .rc-tree li .rc-tree-node-content-wrapper {
+    /* vertical-align: bottom !important; */
+    /* border: 1px solid cyan; */
+    line-height: 12px;
+}
+
+.rc-tree-title {
+  /* border: 1px solid green; */
+  /* vertical-align: top; */
+  /* border: 1px solid mediumslateblue; */
+  line-height: 12px;    
+}

@@ -37,7 +37,8 @@ export default class Example extends PureComponent {
   render() {
     return (
     <ResponsiveContainer  width="100%">
-      <PieChart>
+      <PieChart margin={{top: 25, right: 30, left: 20, bottom: 25}}
+          >
         <Pie
           data={data}
           labelLine={true}

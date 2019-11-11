@@ -79,7 +79,7 @@ import {
                 // height={300}
                 data={data}
                 margin={{
-                top: 5, right: 30, left: 20, bottom: 25,
+                top: 25, right: 30, left: 20, bottom: 25,
                 }}
             >
                 <CartesianGrid vertical={false}/>
