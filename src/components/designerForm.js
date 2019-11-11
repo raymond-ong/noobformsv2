@@ -5,6 +5,7 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 import "./designerForm.css";
 import BarChart from '../charts/barChart';
 import Example from '../charts/pieChart';
+import EditDialog from './editDialog';
 
 import {connect} from 'react-redux';
 
@@ -83,7 +84,8 @@ class designerForm extends React.Component {
       return (
         <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px solid lightgray", borderRadius: "3px"}}>
             {/* <span className="text">{i} - {l.i}</span> */}
-            <i className="hide-button editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>            
+            {/* <i className="editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>             */}
+            <EditDialog controlInfo={l}/>
             {me.getRechartSample(i)}
         </div>
       );

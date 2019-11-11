@@ -1,10 +1,11 @@
-import { CLICK_MENU, DRAG_TOOLITEM_START } from "../actions/index";
+import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE } from "../actions/index";
 
 const defaultState = {
     activeMenu: 'designer',
     tabIndex: 1,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
-    draggingToolItem: null
+    draggingToolItem: null,
+    toolPanelTreeSelected: null
 }
 
 const tabIndexMapping = {

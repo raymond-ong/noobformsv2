@@ -1,0 +1,15 @@
+.availableData {
+    cursor: pointer;
+}
+
+.dataContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    width: 100%;
+    grid-gap: 10px;
+    position: relative;
+    overflow: visible;
+    overflow-y: visible;
+    padding-top: 5px;
+}

@@ -3,24 +3,6 @@
     background-color: lime;
   }
 
-.editBtn {
-    display: inline-block;
-    margin: 0 auto;
-    color: gray;
-    border-radius: 10px;
-    position: absolute;
-    top: 3px;
-    right: 0px;
-    cursor: pointer;
-    /* workaround so that it would be on top of the control */
-    z-index: 10;
-}
-
-.editBtn:hover {
-    background-color: lightgray;
-    color: rgb(83, 128, 53);
-}
-
 .Aligner {
     display: flex;
     align-items: center;

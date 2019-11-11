@@ -2,6 +2,7 @@ import React from 'react';
 import Split from 'react-split';
 import Toolbox from './toolbox';
 import DemoTree from './treeView';
+import ToolAvailableData from './toolAvailableData';
 
 import '../styles/Accordion.css';
 import "../styles/Split.css";
@@ -168,7 +169,8 @@ class ToolPanel extends React.Component {
                 return <Toolbox/>;
             case 'toolHierarchy':
                 return <DemoTree/>
-                
+            case 'availableData':
+                return <ToolAvailableData/>
         }
 
         return null;

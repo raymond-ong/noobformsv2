@@ -1,5 +1,6 @@
 export const CLICK_MENU = "CLICK_MENU";
 export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
+export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
 
 export function menuClicked(menuName) { 
     return {
@@ -15,3 +16,9 @@ export function toolItemDragged(toolName) {
   };
 }
 
+export function selectToolPanelTree(hierarchyId) {
+  return {
+    type: SELECT_TOOLPANEL_TREE,
+    payload: hierarchyId
+  };
+}

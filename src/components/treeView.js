@@ -1,15 +1,18 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from "redux";
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Tree, { TreeNode } from 'rc-tree';
 import 'rc-tree/assets/index.css';
 import './treeview.css';
 //import './basic.less';
+import { selectToolPanelTree } from '../actions/index';
 
 const treeData = [
   { key: '0-0', title: 'Plant', children:
     [
-      { key: '0-0-0', title: 'Area1', children:
+      { key: '0-0-0', title: 'Area1', isCollapsed: true, children:
         [
           { key: '0-0-0-0', title: 'Apple' },
         ],
@@ -50,14 +53,15 @@ class DemoTree extends React.Component {
     keys: PropTypes.array,
   };
   static defaultProps = {
-    keys: ['0-0-0-0'],
+    keys: ['0-0', '0-0-1'],
   };
   constructor(props) {
     super(props);
     const keys = props.keys;
     this.state = {
       defaultExpandedKeys: keys,
-      defaultSelectedKeys: keys,
+      //defaultSelectedKeys: keys,
+      defaultSelectedKeys: [],
       defaultCheckedKeys: keys,
     };
   }
@@ -67,12 +71,20 @@ class DemoTree extends React.Component {
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
     this.selKey = info.node.props.eventKey;
+    // Fire an action to save the selected node to Redux
+    //this.props.selectToolPanelTree(this.selKey);
+    if (selectedKeys.length > 0) {
+        this.props.selectToolPanelTree(selectedKeys[0]);
+    }
+    else {
+        this.props.selectToolPanelTree(null);
+    }
 
     if (this.tree) {
       console.log(
         'Selected DOM node:',
         selectedKeys.map(key => ReactDOM.findDOMNode(this.tree.domTreeNodes[key])),
-      );
+      );      
     }
   };
   onCheck = (checkedKeys, info) => {
@@ -109,9 +121,9 @@ class DemoTree extends React.Component {
   // TODO: change this behaviour
   Filterer = (node) => {
       //console.log('Filterer', node);
-      if (node.props.title === 'Apple') {
-          return true
-      }
+    //   if (node.props.title === 'Apple') {
+    //       return true
+    //   }
       return false;
   }
 
@@ -129,23 +141,35 @@ class DemoTree extends React.Component {
     );
 
     return (
-    <Tree style={{overflow: "auto", height: "100%", width: "calc(100%)", padding: "0 0 20 0"}}
-        className="myCls"
-        showLine
-        selectable
-        checkable={false}
-        defaultExpandAll
-        onExpand={this.onExpand}
-        defaultSelectedKeys={this.state.defaultSelectedKeys}
-        defaultCheckedKeys={this.state.defaultCheckedKeys}
-        onSelect={this.onSelect}
-        onCheck={this.onCheck}
-        treeData={treeData}
-        icon={this.Icon}
-        filterTreeNode={this.Filterer}
-    />
+    <div>
+        <div className="ui icon input small" style={{margin: "5px", width: "calc(100% - 10px)"}}>
+            <input type="text" placeholder="Search tree..."/>
+            <i className="inverted circular filter icon"></i>
+        </div>
+        <Tree style={{overflow: "auto", height: "100%", width: "calc(100%)", padding: "0 0 20 0"}}
+            className="myCls"
+            showLine
+            selectable
+            checkable={false}
+            //defaultExpandAll
+            onExpand={this.onExpand}
+            defaultExpandedKeys={this.state.defaultExpandedKeys}
+            defaultSelectedKeys={this.state.defaultSelectedKeys}
+            defaultCheckedKeys={this.state.defaultCheckedKeys}
+            onSelect={this.onSelect}
+            onCheck={this.onCheck}
+            treeData={treeData}
+            icon={this.Icon}
+            filterTreeNode={this.Filterer}
+        />
+    </div>
     );
   }
 }
 
-export default DemoTree;
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ selectToolPanelTree }, dispatch);
+}
+
+//export default DemoTree;
+export default connect(null, mapDispatchToProps)(DemoTree)
