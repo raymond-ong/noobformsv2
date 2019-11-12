@@ -4,6 +4,7 @@ import "../styles/MainContent.css";
 import HomeContent from './homeContent';
 import DesignerContent from './designerContent';
 import SettingsContent from './settingsContent';
+import HierarchyDesigner from '../containers/hierarchyDesigner';
 import {connect} from 'react-redux';
 import {Tab} from 'semantic-ui-react';
 
@@ -24,6 +25,14 @@ const panes = [
           </Tab.Pane>
         ),
       },
+      {
+        menuItem: 'HierarchyDesigner',
+        pane: (
+          <Tab.Pane key='hierarchyDesigner' style={{height: '100%', padding: '0px'}}>
+            <HierarchyDesigner/>
+          </Tab.Pane>
+        ),
+      },      
       {
         menuItem: 'Settings',
         pane: (

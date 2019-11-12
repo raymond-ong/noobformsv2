@@ -57,7 +57,7 @@ class NavBarMobile extends Component {
                     onClick={this.handleSidebarHide}>
                     <div className="ui menu inverted fixed top">
                         <div className="header item">
-                            Noobforms v2.0
+                            My Dashboard
                         </div>
                         <a className="item right" onClick={this.handleSidebarToggle}>
                             <i className="icon sidebar"/>
@@ -75,7 +75,7 @@ const NavBarDesktop = (props) => {
     // Note: putting fixed makes the menu position to be absolute. therefore child elemnets need to adjust manually
     return <div className="ui menu inverted fixed top" style={{'backgroundImage': 'linear-gradient(#454545, black)'}}>
         <div className="header item">
-            Noobforms v2.0
+            My Dashboard
         </div>
         {getNavBarMenuItemElements(props.menuClickDispatcher, props.activeItem, true)}
     </div>;
@@ -113,7 +113,7 @@ const getNavbarChildren = (children) => {
 const navBarMenuItems = [
     { name: 'home',     title: 'Home',      icon: 'home',   alignment: '', },
     { name: 'designer', title: 'Page Designer',  icon: 'edit',   alignment: '' },
-    { name: 'hierDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
+    { name: 'hierarchyDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
     { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]
 

@@ -11,7 +11,8 @@ const defaultState = {
 const tabIndexMapping = {
   home: 0,
   designer: 1,
-  settings: 2
+  hierarchyDesigner: 2,
+  settings: 3
 }
 
 export default function(state = defaultState, action) {
