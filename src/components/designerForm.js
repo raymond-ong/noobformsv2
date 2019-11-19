@@ -173,7 +173,7 @@ class designerForm extends React.Component {
 
     console.log('render RGL');
     return (
-      <div style={{border: "1px dashed dimgray"}}>
+      <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px'}}>
         <ResponsiveReactGridLayout 
           //ref={r => this.ReactGridLayout = r}
           ref={this.ReactGridLayout}

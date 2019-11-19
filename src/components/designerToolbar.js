@@ -5,7 +5,7 @@ import {Popup} from 'semantic-ui-react';
 // Make this a functional component
 // Let the parent pass the props like title of form, and other info like timestamp of save and user who saved
 const DesignerToolbar = (props) => {
-    return <div className="designerToolbar">
+    return <div className="designerToolbar" style={{width: props.containerWidth}}>
         <div className="left">
             <div className="toolbarButton">
                 <i className="ui icon save outline"/>
@@ -30,7 +30,7 @@ const DesignerToolbar = (props) => {
             
         </div>
 
-        <div className="right"></div>
+        <div className="rightTb"></div>
         
     </div>
 }

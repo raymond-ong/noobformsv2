@@ -18,7 +18,7 @@ class formsDesignerContent extends DesignerContentbase {
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>
             <ToolPanel/>
             <div>
-                <DesignerToolbar/>
+                <DesignerToolbar containerWidth={this.state.rightPixels}/>
                 <DesignerForm containerWidth={this.state.rightPixels}/>
             </div>
         </NoobSplitter>
