@@ -46,6 +46,30 @@ export const toolBoxItems = [
          category: 'forms'
     },     
     {
+          name: 'status',
+          displayName: 'Status',
+          icon: 'circle outline',
+          category: 'forms'
+     },     
+     {
+          name: 'date',
+          displayName: 'User',
+          icon: 'calendar alternate outline',
+          category: 'forms'
+     },     
+     {
+          name: 'attachment',
+          displayName: 'Attachments',
+          icon: 'attach',
+          category: 'forms'
+     },     
+     {
+          name: 'history',
+          displayName: 'History',
+          icon: 'history',
+          category: 'forms'
+     },     
+     {
          // Should support expressions, like the Target Name, Vendor, Model etc.
        name: 'label',
        displayName: 'Label',

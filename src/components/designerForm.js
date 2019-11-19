@@ -7,6 +7,9 @@ import BarChart from '../charts/barChart';
 import Example from '../charts/pieChart';
 import EditDialog from './editDialog';
 
+// controls import
+import Section from '../controls/section';
+
 import {connect} from 'react-redux';
 
 
@@ -30,8 +33,7 @@ class designerForm extends React.Component {
         // e.g. if curr display is big, fix the layout for xs
     },
     cols: { lg: 12, md: 12, sm: 2, xs: 1, xxs: 1 },
-    //cols: { lg: 12, xs: 1},
-    initialLayout: generateLayout(),
+    //initialLayout: generateLayout(),
     compactType: 'vertical', // It's better to have a vertical compaction, because the drag behaviour is weird without it
     onDragStart: function(item) {
         //console.log('onDragStart', item);
@@ -78,6 +80,16 @@ class designerForm extends React.Component {
     console.log('onClickEditBtn', id);
   }
 
+  renderControl = (ctrlLayout) => {
+    if (!ctrlLayout) {
+      return null;
+    }
+    switch(ctrlLayout.type) {
+      case 'section':
+        return <Section {...ctrlLayout} />
+    }
+  }
+
   generateDOM() {
     var me = this;
     return _.map(this.state.layouts.lg, function(l, i) {
@@ -85,8 +97,9 @@ class designerForm extends React.Component {
         <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px solid lightgray", borderRadius: "3px"}}>
             {/* <span className="text">{i} - {l.i}</span> */}
             {/* <i className="editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>             */}
-            <EditDialog controlInfo={l}/>
-            {me.getRechartSample(i)}
+            {/* <EditDialog controlInfo={l}/> */}
+            {/* {me.getRechartSample(i)} */}
+            {me.renderControl(l)}
         </div>
       );
     });
@@ -120,6 +133,7 @@ class designerForm extends React.Component {
       this.props.onDragStop(item);
   }
   onNewLayout = () => {
+    debugger
     this.setState({
       layouts: { lg: generateLayout() }
     });
@@ -175,16 +189,13 @@ class designerForm extends React.Component {
     return (
       <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px'}}>
         <ResponsiveReactGridLayout 
-          //ref={r => this.ReactGridLayout = r}
           ref={this.ReactGridLayout}
           width={this.props.containerWidth}
           {...this.props}
           layouts={this.state.layouts}
           onBreakpointChange={this.onBreakpointChange}
           onLayoutChange={this.onLayoutChange}
-          //onDragStart={this.onDragStart}
-          //onDragStop={this.onDragStop}
-          //onDrag={this.onDrag}
+          initialLayout={this.props.initialLayout}
           onDrop={this.onDrop}
           // WidthProvider option
           measureBeforeMount={false}

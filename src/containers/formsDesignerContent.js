@@ -7,6 +7,40 @@ import DesignerToolbar from '../components/designerToolbar';
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
 
+const generateDefaultLayout = () => {
+    // [1] Section
+    return [
+    {i: 'section0', x: 0, y: 0, w: 12, h: 1, type: 'section', data: {
+        title: 'General Information'
+    }},
+
+    // [2] Description
+    {i: 'richText0', x: 0, y: 1, w: 6, h: 4},
+
+    // [3] Date
+    {i: 'date0', x: 6, y: 1, w: 3, h: 1},
+
+    // [4] Status
+    {i: 'status0', x: 6, y: 2, w: 3, h: 1},
+
+    // [5] Priority
+    {i: 'combo0', x: 6, y: 3, w: 3, h: 1},
+
+    // [6] User
+    {i: 'user0', x: 6, y: 4, w: 3, h: 1},
+
+    // [7] Attachments
+    {i: 'attach0', x: 9, y: 1, w: 3, h: 4},
+
+    // [B] Subsection
+    {i: 'section1', x: 0, y: 5, w: 12, h: 1},
+
+    // [1] History
+    {i: 'history0', x: 0, y: 6, w: 12, h: 4},
+
+    ];
+}
+
 class formsDesignerContent extends DesignerContentbase {
     constructor(props) {
         super(props);
@@ -19,7 +53,9 @@ class formsDesignerContent extends DesignerContentbase {
             <ToolPanel/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
-                <DesignerForm containerWidth={this.state.rightPixels}/>
+                <DesignerForm 
+                    containerWidth={this.state.rightPixels}
+                    initialLayout={generateDefaultLayout()}/>
             </div>
         </NoobSplitter>
     }

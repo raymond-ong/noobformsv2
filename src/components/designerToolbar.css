@@ -37,6 +37,7 @@
     margin-left: 2px;
     margin-right: 2px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .toolbarButton:hover {
