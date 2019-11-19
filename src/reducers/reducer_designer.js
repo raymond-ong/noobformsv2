@@ -1,7 +1,8 @@
-import { SELECT_TOOLPANEL_TREE } from "../actions/index";
+import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL } from "../actions/index";
 
 const defaultState = {
-    toolPanelTreeSelected: null
+    toolPanelTreeSelected: null,
+    selectedControlId: null
 }
 
 
@@ -12,6 +13,11 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         toolPanelTreeSelected: action.payload
+      };
+    case SELECT_CONTROL:
+      return {
+        ...state,
+        selectedControlId: action.payload
       };
   }
   return state;

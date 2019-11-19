@@ -2,10 +2,12 @@
 import React from "react";
 import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import { bindActionCreators } from "redux";
 import "./designerForm.css";
 import BarChart from '../charts/barChart';
 import Example from '../charts/pieChart';
 import EditDialog from './editDialog';
+import {selectedControl} from '../actions/index';
 
 // controls import
 import Section from '../controls/section';
@@ -84,9 +86,16 @@ class designerForm extends React.Component {
     if (!ctrlLayout) {
       return null;
     }
+
+    let bSelected = this.props.selectedControlId === ctrlLayout.i;
+    let commonProps = {
+      selected: bSelected,
+      controlSelected: this.onControlClicked
+    };
+
     switch(ctrlLayout.type) {
       case 'section':
-        return <Section {...ctrlLayout} />
+        return <Section {...ctrlLayout} {...commonProps}/>
     }
   }
 
@@ -138,6 +147,11 @@ class designerForm extends React.Component {
       layouts: { lg: generateLayout() }
     });
   };
+
+  onControlClicked = (control) => {
+    console.log('[designerForm] controlClicked fired by HOC', control);
+    this.props.selectedControl(control.i);
+  }
 
   onDrop = (elemParams, arg2) => {
     let internalLayout = null;
@@ -224,14 +238,17 @@ function generateLayout() {
       ];
 }
 
-/* TODO
+
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({ toolItemDragged }, dispatch);
-} */
+  return bindActionCreators({ selectedControl }, dispatch);
+}
 
 function mapStateToProps(state) {
-  return { draggingToolItem: state.mainApp.draggingToolItem };
+  return { 
+    draggingToolItem: state.mainApp.draggingToolItem,
+    selectedControlId: state.designer.selectedControlId
+  };
 }
 
 //export default designerForm;
-export default connect(mapStateToProps)(designerForm);
+export default connect(mapStateToProps, mapDispatchToProps)(designerForm);

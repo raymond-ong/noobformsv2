@@ -1,10 +1,16 @@
 import React from 'react';
 import './section.css';
+import noobControlHoc from '../hoc/noobControlsHoc';
 
 const Section = (props) => {
-    return <div className='section'>
+    let classNames = 'section';
+    if (props.selected === true) {
+        classNames += ' selected'
+    }
+
+    return <div className={classNames}>
         {props.data.title}
     </div>
 }
 
-export default Section;
+export default noobControlHoc(Section);

@@ -4,6 +4,7 @@ export const CLICK_MENU = "CLICK_MENU";
 export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
 export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
+export const SELECT_CONTROL = "SELECT_CONTROL"
 
 export function menuClicked(menuName) { 
     return {
@@ -37,16 +38,9 @@ export const fetchHierarchy = () => async dispatch => {
   });
 }
 
-
-/*
-export const fetchHierarchy = async () => { 
-  console.log('[action]fetchHierarchy');
-  //const response = await masterData.get('kpi')
-  console.log('[action]fetchHierarchy after await');
-
-  return{
-    type: FETCH_HIERARCHY,
-    payload: 'tttt'
-  };
+export const selectedControl = (controlId) => {
+  return {
+    type: SELECT_CONTROL,
+    payload: controlId
+  }
 }
-*/
