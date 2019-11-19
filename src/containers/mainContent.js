@@ -2,9 +2,10 @@ import React from 'react';
 import "../styles/App.css";
 import "../styles/MainContent.css";
 import HomeContent from './homeContent';
-import DesignerContent from './designerContent';
+import DesignerContent from './dashboardDesignerContent';
+import FormsDesignerContent from './formsDesignerContent';
 import SettingsContent from './settingsContent';
-import HierarchyDesigner from '../containers/hierarchyDesigner';
+import HierarchyDesigner from './hierarchyDesigner';
 import {connect} from 'react-redux';
 import {Tab} from 'semantic-ui-react';
 
@@ -18,9 +19,17 @@ const panes = [
         ),
     },
     {
-        menuItem: 'Designer',
+        menuItem: 'FormsDesigner',
         pane: (
-          <Tab.Pane key='designer' style={{height: '100%', padding: '0px'}}>
+          <Tab.Pane key='formsDesigner' style={{height: '100%', padding: '0px'}}>
+            <FormsDesignerContent/>
+          </Tab.Pane>
+        ),
+      },
+      {
+        menuItem: 'dashboardDesigner',
+        pane: (
+          <Tab.Pane key='dashboardDesigner' style={{height: '100%', padding: '0px'}}>
             <DesignerContent/>
           </Tab.Pane>
         ),
@@ -32,7 +41,7 @@ const panes = [
             <HierarchyDesigner/>
           </Tab.Pane>
         ),
-      },      
+      },          
       {
         menuItem: 'Settings',
         pane: (

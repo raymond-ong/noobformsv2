@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import Split from 'react-split';
 import "../styles/Split.css";
-import NoobSplitter from './noobSplitter';
-import VerticalList, {MODE_SMALL, MODE_NORMAL} from './verticalList';
+import NoobSplitter from '../components/noobSplitter';
+import VerticalList, {MODE_SMALL, MODE_NORMAL} from '../components/verticalList';
 
 
 const items = [

@@ -7,55 +7,101 @@ export const toolBoxItems = [
          name: 'section',
          displayName: 'Section',
          icon: 'wpforms',
+         category: 'common'
     },    
     {
-         name: 'barchart',
-         displayName: 'Bar Chart',
-         icon: 'chart bar',
-    },
+         name: 'textbox',
+         displayName: 'Textbox',
+         icon: 'text height',
+         category: 'forms'
+    },    
     {
-         name: 'pie',
-         displayName: 'Pie Chart',
-         icon: 'chart pie'
-    },
+         name: 'combo',
+         displayName: 'Combobox',
+         icon: 'caret square down outline',
+         category: 'forms'
+    },    
+    {
+         name: 'checkbox',
+         displayName: 'Checkbox',
+         icon: 'check square outline',
+         category: 'forms'
+    },                
+    {
+         name: 'richtext',
+         displayName: 'Rich Text',
+         icon: 'paint brush',
+         category: 'forms'
+    },                
+    {
+         name: 'numeric',
+         displayName: 'Number',
+         icon: 'sort numeric down',
+         category: 'forms'
+    },                
+    {
+         name: 'user',
+         displayName: 'User',
+         icon: 'user circle outline',
+         category: 'forms'
+    },     
     {
          // Should support expressions, like the Target Name, Vendor, Model etc.
        name: 'label',
        displayName: 'Label',
-       icon: 'info'
-     },
-     {
-          name: 'kpi',
-          displayName: 'KPI',
-          icon: 'check circle outline'
-     },   
-    {
-         name: 'line',
-         displayName: 'Line Chart',
-         icon: 'chart line'
-    },
-    {
-         name: 'table',
-         displayName: 'Table',
-         icon: 'table'
-    },
-    {
-         name: 'frame',
-         displayName: 'Frame',
-         icon: 'window maximize outline'
+       icon: 'info',
+       category: 'common'
     },
     {
           // Should provide a configurable URL
        name: 'image',
        displayName: 'Image',
-       icon: 'image outline'
-   },
+       icon: 'image outline',
+       category: 'common'
+    },
+    {
+         name: 'barchart',
+         displayName: 'Bar Chart',
+         icon: 'chart bar',
+         category: 'common'
+    },
+    {
+         name: 'pie',
+         displayName: 'Pie Chart',
+         icon: 'chart pie',
+         category: 'common'
+    },
+     {
+          name: 'kpi',
+          displayName: 'KPI',
+          icon: 'check circle outline',
+          category: 'common'
+     },   
+    {
+         name: 'line',
+         displayName: 'Line Chart',
+         icon: 'chart line',
+         category: 'common'
+    },
+    {
+         name: 'table',
+         displayName: 'Table',
+         icon: 'table',
+         category: 'common'
+    },
+    {
+         name: 'frame',
+         displayName: 'Frame',
+         icon: 'window maximize outline',
+         category: 'common'
+    },
    {
      // Should provide a configurable URL
      name: 'treemap',
      displayName: 'Tree Map',
-     icon: 'map pin'
-     },
+     icon: 'map pin',
+     category: 'common'
+   },
 ];
 
 const drawToolItems = () => {

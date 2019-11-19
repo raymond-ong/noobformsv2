@@ -112,7 +112,8 @@ const getNavbarChildren = (children) => {
 
 const navBarMenuItems = [
     { name: 'home',     title: 'Home',      icon: 'home',   alignment: '', },
-    { name: 'designer', title: 'Page Designer',  icon: 'edit',   alignment: '' },
+    { name: 'formsDesigner', title: 'Forms Designer',  icon: 'edit',   alignment: '' },
+    { name: 'dashboardDesigner', title: 'Dashboard Designer',  icon: 'chart area',   alignment: '' },    
     { name: 'hierarchyDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
     { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]

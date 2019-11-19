@@ -2,7 +2,7 @@ import React from 'react';
 
 // Project imports
 import Navbar from '../src/components/navbar';
-import MainContent from '../src/components/mainContent';
+import MainContent from './containers/mainContent';
 import "../src/styles/App.css";
 //import masterData from './api/masterData';
 import {fetchHierarchy} from './actions';
@@ -12,12 +12,11 @@ class App extends React.Component {
 
     componentDidMount() {
         console.log('[App][componentDidMount] fetch master data...');
-        this.props.fetchHierarchy();
-        // masterData.get('kpi').then(json => {
-        //     debugger
-        // });
+        // Fetch master data:
+        // Hierarchy, layouts, saved data
 
-        //debugger
+        this.props.fetchHierarchy();
+        
     }
 
     render() {

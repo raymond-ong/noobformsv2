@@ -117,8 +117,6 @@ class designerForm extends React.Component {
   }
 
   onDragStop = (item, item2) => {
-      //console.log('dragend1', item2);
-      //console.log('dragend2', item);
       this.props.onDragStop(item);
   }
   onNewLayout = () => {
