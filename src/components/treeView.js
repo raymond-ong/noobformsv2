@@ -9,7 +9,7 @@ import './treeview.css';
 //import './basic.less';
 import { selectToolPanelTree } from '../actions/index';
 
-const treeData = [
+const treeDataSample = [
   { key: '0-0', title: 'Plant', children:
     [
       { key: '0-0-0', title: 'Area1', isCollapsed: true, children:
@@ -53,7 +53,7 @@ class DemoTree extends React.Component {
     keys: PropTypes.array,
   };
   static defaultProps = {
-    keys: ['0-0', '0-0-1'],
+    keys: ['0-0', '0-0-1', '//Plant'],
   };
   constructor(props) {
     super(props);
@@ -107,11 +107,12 @@ class DemoTree extends React.Component {
 
   Icon = (props) => {
       //console.log('icon', props)
-      if (props.children.length === 0) {
-        return <i className='ui icon genderless'></i>
+      if (props.nodeType === 'Plant' || props.nodeType === 'Folder' || props.children.length > 0) {
+        return <i className='ui icon folder outline'></i>
       }
       else {
-        return <i className='ui icon folder outline'></i>
+        
+        return <i className='ui icon genderless'></i>
       }
       
   }
@@ -128,19 +129,13 @@ class DemoTree extends React.Component {
   }
 
   render() {
-    const customLabel = (
-      <span className="cus-label">
-        <span>operations: </span>
-        <span style={{ color: 'blue' }} onClick={this.onEdit}>Edit</span>&nbsp;
-        <label onClick={(e) => e.stopPropagation()}>
-          <input type="checkbox" /> checked
-        </label>
-        &nbsp;
-        <span style={{ color: '#EB0000' }} onClick={this.onDel}>Delete</span>
-      </span>
-    );
+    let treeDataArr = convertMasterDataToKeys(this.props.masterHierarchy);
+    if(!treeDataArr) {
+      return <div>Loading...</div>
+    }
 
-    return (
+    console.log(convertMasterDataToKeys(this.props.masterHierarchy));
+    return (    
     <div>
         <div className="ui icon input small" style={{margin: "5px", width: "calc(100% - 10px)"}}>
             <input type="text" placeholder="Search tree..."/>
@@ -158,7 +153,8 @@ class DemoTree extends React.Component {
             defaultCheckedKeys={this.state.defaultCheckedKeys}
             onSelect={this.onSelect}
             onCheck={this.onCheck}
-            treeData={treeData}
+            //treeData={treeData}
+            treeData={[treeDataArr]}
             icon={this.Icon}
             filterTreeNode={this.Filterer}
         />
@@ -167,9 +163,38 @@ class DemoTree extends React.Component {
   }
 }
 
+const convertMasterDataToKeys = (apiNode) => {
+  if (!apiNode) {
+    return null;
+  }
+
+  let childNodes = [];
+  let treeData = {
+    key: apiNode.fullPath,
+    title: apiNode.name,
+    nodeType: apiNode.nodeType
+  };
+
+  if (apiNode.children !== null) {
+    apiNode.children.forEach(node => {
+      childNodes.push(convertMasterDataToKeys(node));
+    })
+
+    treeData.children = childNodes;
+  }
+
+  return treeData;
+}
+
+function mapStateToProps(state) {
+  return {
+    masterHierarchy: state.mainApp.masterHierarchy
+  }
+}
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectToolPanelTree }, dispatch);
 }
 
 //export default DemoTree;
-export default connect(null, mapDispatchToProps)(DemoTree)
+export default connect(mapStateToProps, mapDispatchToProps)(DemoTree)

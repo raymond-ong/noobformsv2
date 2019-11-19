@@ -2,26 +2,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 // Redux imports
-import { createStore } from 'redux'
+import { createStore,applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-// Project imports
-import Navbar from '../src/components/navbar';
-import MainContent from '../src/components/mainContent';
-import "../src/styles/App.css";
+import thunk from 'redux-thunk';
+
 import reducers from "./reducers";
+import App from './App';
 
-const store = createStore(reducers);
+const store = createStore(reducers, applyMiddleware(thunk));
 
-const App = () => {
-    return (
-    <Provider store={store}>
-        <div id="app" style={{height: 'calc(100%)'}}>
-            <Navbar>        
-                <MainContent/>
-            </Navbar>
-        </div>
-    </Provider>
-    );
+const main = () => {
+    return (<Provider store={store}>
+            <App/>
+        </Provider>);
 }
 
-ReactDOM.render(App(), document.getElementById('root'))
+ReactDOM.render(main(), document.getElementById('root'))

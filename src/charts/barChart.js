@@ -90,7 +90,9 @@ import {
                 <Legend  wrapperStyle={{
                 paddingTop: "10px"
                 }}/>
-                <Bar dataKey="pv" fill="green" stackId="a"/>
+                <Bar dataKey="pv" fill="green" stackId="a" onClick={(args) => {
+                  console.log(args);}
+                  }/>
                 <Bar dataKey="uv" fill="gold" stackId="a"/>
             </BarChart>
         </ResponsiveContainer>
