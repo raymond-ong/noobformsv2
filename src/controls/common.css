@@ -1,0 +1,17 @@
+/* Outline is better than border as it is drawn outside the control */
+.selected {
+    outline: 2px dashed blue;
+}
+
+.label {
+    font-weight: 800;
+}
+
+.baseControl {
+    width: 100%
+}
+
+.wrapper {
+    width: 100%;
+    background-color: white;
+}

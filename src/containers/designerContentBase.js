@@ -19,6 +19,7 @@ class DesignerContentBase extends React.Component {
     }
 
     componentDidMount() {
+        console.log('[designerContentBase] componentDidMount');
         this.setState({
             rightPixels: this.defaultSizes[1] * window.innerWidth / 100.0,
             currRightPercent: this.defaultSizes[1]

@@ -126,6 +126,13 @@ export const toolBoxItems = [
      icon: 'map pin',
      category: 'common'
    },
+   {
+     // E.g. permits for a page
+     name: 'childtemplate',
+     displayName: 'Child Template',
+     icon: 'clone outline',
+     category: 'form'
+   },
 ];
 
 const drawToolItems = () => {

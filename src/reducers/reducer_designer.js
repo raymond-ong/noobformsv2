@@ -1,8 +1,9 @@
-import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL } from "../actions/index";
+import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL, UPDATE_DESIGNER_LAYOUT } from "../actions/index";
 
 const defaultState = {
     toolPanelTreeSelected: null,
-    selectedControlId: null
+    selectedControlId: null,
+    layout: [],
 }
 
 
@@ -19,6 +20,11 @@ export default function(state = defaultState, action) {
         ...state,
         selectedControlId: action.payload
       };
+    case UPDATE_DESIGNER_LAYOUT:
+        return {
+          ...state,
+          layout: action.payload
+        };
   }
   return state;
 }

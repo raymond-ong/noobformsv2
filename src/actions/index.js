@@ -5,6 +5,8 @@ export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
 export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
 export const SELECT_CONTROL = "SELECT_CONTROL"
+export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
+export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
 
 export function menuClicked(menuName) { 
     return {
@@ -42,5 +44,21 @@ export const selectedControl = (controlId) => {
   return {
     type: SELECT_CONTROL,
     payload: controlId
+  }
+}
+
+// For UI update only, not yet persisted to the storage
+export const updateLayout = (layout) => {
+  return {
+    type: UPDATE_DESIGNER_LAYOUT,
+    payload: layout
+  }
+}
+
+// Save the layout to persistent storage like database or web local storage
+export const saveLayout = (layout) => {
+  return {
+    type: SAVE_DESIGNER_LAYOUT,
+    payload: layout
   }
 }

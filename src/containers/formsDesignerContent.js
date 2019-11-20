@@ -11,11 +11,13 @@ const generateDefaultLayout = () => {
     // [1] Section
     return [
     {i: 'section0', x: 0, y: 0, w: 12, h: 1, type: 'section', data: {
-        title: 'General Information'
+        title: 'General Information',
+        //backgroundColor: 'lightsteelblue'
+        level: 1
     }},
 
     // [2] Description
-    {i: 'richText0', x: 0, y: 1, w: 6, h: 4},
+    {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext', data: {label: 'Description'}},
 
     // [3] Date
     {i: 'date0', x: 6, y: 1, w: 3, h: 1},
@@ -33,13 +35,34 @@ const generateDefaultLayout = () => {
     {i: 'attach0', x: 9, y: 1, w: 3, h: 4},
 
     // [B] Subsection
-    {i: 'section1', x: 0, y: 5, w: 12, h: 1},
+    {i: 'section1', x: 0, y: 5, w: 12, h: 1, type: 'section', data: {
+        title: 'Update History',
+        //backgroundColor: 'lightsteelblue'
+        level: 1
+    }},
 
     // [1] History
     {i: 'history0', x: 0, y: 6, w: 12, h: 4},
 
     ];
 }
+
+const panelItems = [
+    {
+        title: 'Toolbox',
+        id: 'toolbox',
+        isCollapsed: false,
+        size: 0,
+        helpText: 'Drag an item to the Designer Area'
+    },
+    {
+        title: 'Properties',
+        id: 'properties',
+        isCollapsed: false,
+        size: 0,
+        helpText: 'Please select an item from the Designer Area to view the properties'
+    },
+]
 
 class formsDesignerContent extends DesignerContentbase {
     constructor(props) {
@@ -50,7 +73,7 @@ class formsDesignerContent extends DesignerContentbase {
     render() {
         console.log('render designerContent');
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>
-            <ToolPanel/>
+            <ToolPanel panelItems={panelItems}/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
                 <DesignerForm 

@@ -11,6 +11,8 @@ import {selectedControl} from '../actions/index';
 
 // controls import
 import Section from '../controls/section';
+import RichText from '../controls/richtext';
+
 
 import {connect} from 'react-redux';
 
@@ -36,6 +38,7 @@ class designerForm extends React.Component {
     },
     cols: { lg: 12, md: 12, sm: 2, xs: 1, xxs: 1 },
     //initialLayout: generateLayout(),
+    initialLayout: [],
     compactType: 'vertical', // It's better to have a vertical compaction, because the drag behaviour is weird without it
     onDragStart: function(item) {
         //console.log('onDragStart', item);
@@ -55,6 +58,7 @@ class designerForm extends React.Component {
   };
 
   componentDidMount() {
+    // If this line of code was removed, it will become "choppy" while dragging elements
     this.setState({ mounted: true });
   }
 
@@ -87,7 +91,8 @@ class designerForm extends React.Component {
       return null;
     }
 
-    let bSelected = this.props.selectedControlId === ctrlLayout.i;
+    //let bSelected = this.props.selectedControlId === ctrlLayout.i;
+    let bSelected = false;
     let commonProps = {
       selected: bSelected,
       controlSelected: this.onControlClicked
@@ -96,11 +101,14 @@ class designerForm extends React.Component {
     switch(ctrlLayout.type) {
       case 'section':
         return <Section {...ctrlLayout} {...commonProps}/>
+      case 'richtext':
+          return <RichText {...ctrlLayout} {...commonProps}/>
     }
   }
 
   generateDOM() {
     var me = this;
+    console.log('[designerForm] generateDOM()...');
     return _.map(this.state.layouts.lg, function(l, i) {
       return (
         <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px solid lightgray", borderRadius: "3px"}}>
@@ -243,9 +251,15 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators({ selectedControl }, dispatch);
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return { 
     draggingToolItem: state.mainApp.draggingToolItem,
+    // Problem if you monitor this store variable:
+    // If user makes a selection, this entire grid and all its child items re-renders
+    // TODO: try this to potentially avoid rerender:
+    // - state design: controls dictionary <controlId, controlData>
+    // - control mapStateToProps: monitor control[id] only (get the id from ownProps)
+    // => Basically this will lead to a prop change, that's why whole component rerenders
     selectedControlId: state.designer.selectedControlId
   };
 }

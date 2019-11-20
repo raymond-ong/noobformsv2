@@ -15,11 +15,12 @@ class App extends React.Component {
         // Fetch master data:
         // Hierarchy, layouts, saved data
 
-        //this.props.fetchHierarchy();
+        this.props.fetchHierarchy();
         
     }
 
     render() {
+        console.log('[App] render()');
         return(<div id="app" style={{height: 'calc(100%)'}}>
             <Navbar>        
                 <MainContent/>

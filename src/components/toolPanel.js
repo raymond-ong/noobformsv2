@@ -8,6 +8,7 @@ import '../styles/Accordion.css';
 import "../styles/Split.css";
 
 import ScrollTracker from '../components/scrollTracker';
+import PropertiesPanel from '../containers/propertiesPanel';
 
 const DEFAULT_SIZES = [33.33,33.33,33.33];
 const CLASS_ACCORDION = "accordionPanel";
@@ -36,7 +37,7 @@ const AccordionPanel = ({title, onClickCollapseExpand, id, isCollapsed, panelCon
     </div>;
 }
 
-const defaultPanelData = [
+const defaultPanelItems = [
     {
         title: 'Toolbox',
         id: 'toolbox',
@@ -68,7 +69,8 @@ class ToolPanel extends React.Component {
 
     constructor(props) {
         super(props);
-        let initializedPanelData = this.recalculatePanelSizes(defaultPanelData);
+        let panelItems = props.panelItems ? props.panelItems : defaultPanelItems;
+        let initializedPanelData = this.recalculatePanelSizes(panelItems);
 
         this.state = {
             panelsData: initializedPanelData,
@@ -163,6 +165,8 @@ class ToolPanel extends React.Component {
         })
     }
 
+    // TODO: can dynamically create the react component given the class name?
+    // Where to find the 'import' of that react component?
     getPanelContent = (panelId) => {
         switch(panelId) {
             case 'toolbox':
@@ -171,6 +175,8 @@ class ToolPanel extends React.Component {
                 return <DemoTree/>
             case 'availableData':
                 return <ToolAvailableData/>
+            case 'properties':
+                return <PropertiesPanel/>
         }
 
         return null;

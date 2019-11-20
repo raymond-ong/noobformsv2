@@ -27,7 +27,7 @@
     font-size: 0.9rem;
     font-weight: 600;
     padding: 5px;
-    min-width: 80px;
+    white-space: nowrap;
 }
 
 /* .toolItemContainer {

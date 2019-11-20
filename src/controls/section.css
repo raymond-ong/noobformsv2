@@ -9,6 +9,7 @@
     align-items: center; /* align vertical */
 }
 
+/* Outline is better than border as it is drawn outside the control */
 .selected {
-    border: 1.5px dashed blue;
+    outline: 2px dashed blue;
 }
