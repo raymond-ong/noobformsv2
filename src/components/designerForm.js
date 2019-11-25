@@ -47,6 +47,9 @@ class designerForm extends React.Component {
         //console.log('onDragStop', item);
     },
 
+    // temporarily set layout to fixed, to avoid conflict while experimenting with rich text editor's cursor/focus
+    // isDraggable: false,
+    // isResizable: false,
   };
 
   state = {
