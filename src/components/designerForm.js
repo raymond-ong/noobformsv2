@@ -12,7 +12,7 @@ import {selectedControl} from '../actions/index';
 // controls import
 import Section from '../controls/section';
 import RichText from '../controls/richtext';
-
+import Combo from '../controls/combo';
 
 import {connect} from 'react-redux';
 
@@ -94,8 +94,7 @@ class designerForm extends React.Component {
       return null;
     }
 
-    //let bSelected = this.props.selectedControlId === ctrlLayout.i;
-    let bSelected = false;
+    let bSelected = this.props.selectedControlId === ctrlLayout.i;
     let commonProps = {
       selected: bSelected,
       controlSelected: this.onControlClicked
@@ -105,7 +104,9 @@ class designerForm extends React.Component {
       case 'section':
         return <Section {...ctrlLayout} {...commonProps}/>
       case 'richtext':
-          return <RichText {...ctrlLayout} {...commonProps}/>
+        return <RichText {...ctrlLayout} {...commonProps}/>
+      case 'combo':
+        return <Combo {...ctrlLayout} {...commonProps}/>
     }
   }
 
@@ -114,7 +115,7 @@ class designerForm extends React.Component {
     console.log('[designerForm] generateDOM()...');
     return _.map(this.state.layouts.lg, function(l, i) {
       return (
-        <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px solid lightgray", borderRadius: "3px"}}>
+        <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px dashed lightgray", borderRadius: "3px"}}>
             {/* <span className="text">{i} - {l.i}</span> */}
             {/* <i className="editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>             */}
             {/* <EditDialog controlInfo={l}/> */}
@@ -212,7 +213,7 @@ class designerForm extends React.Component {
 
     console.log('render RGL');
     return (
-      <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px'}}>
+      <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px', zIndex: '0'}}>
         <ResponsiveReactGridLayout 
           ref={this.ReactGridLayout}
           width={this.props.containerWidth}
@@ -226,7 +227,10 @@ class designerForm extends React.Component {
           measureBeforeMount={false}
           // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
           // and set `measureBeforeMount={true}`.
-          useCSSTransforms={this.state.mounted}
+          // Ray note: set this to false to avoid interfering with dropdown menu
+          // Actually, if not in design mode, this should be off
+          //useCSSTransforms={this.state.mounted}
+          useCSSTransforms={false}
         //   compactType={this.state.compactType}
         //   preventCollision={!this.state.compactType}
           isDroppable={true}

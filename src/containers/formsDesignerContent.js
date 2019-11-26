@@ -17,35 +17,64 @@ const generateDefaultLayout = () => {
     }},
 
     // [2] Description
-    {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext', data: {label: 'Description'}},
+    {i: 'richText0', x: 0, y: 1, w: 6, h: 8, type: 'richtext', 
+        data: {
+            label: 'Description',
+            placeholder: 'Enter Description...'
+        }},
 
     // [3] Date
-    {i: 'date0', x: 6, y: 1, w: 3, h: 1},
+    {i: 'date0', x: 6, y: 1, w: 3, h: 2},
 
     // [4] Status
-    {i: 'status0', x: 6, y: 2, w: 3, h: 1},
+    {i: 'status0', x: 6, y: 3, w: 3, h: 2},
 
     // [5] Priority
-    {i: 'combo0', x: 6, y: 3, w: 3, h: 1},
+    {i: 'combo0', x: 6, y: 5, w: 3, h: 2, type: 'combo', data: {
+        placeholder: 'Please Select...',
+        options: dropdownOptions,
+        label: 'Please select:'
+    }},
 
     // [6] User
-    {i: 'user0', x: 6, y: 4, w: 3, h: 1},
+    {i: 'user0', x: 6, y: 7, w: 3, h: 2},
 
     // [7] Attachments
     {i: 'attach0', x: 9, y: 1, w: 3, h: 4},
 
     // [B] Subsection
-    {i: 'section1', x: 0, y: 5, w: 12, h: 1, type: 'section', data: {
+    {i: 'section1', x: 0, y: 9, w: 12, h: 1, type: 'section', data: {
         title: 'Update History',
         //backgroundColor: 'lightsteelblue'
         level: 1
     }},
 
     // [1] History
-    {i: 'history0', x: 0, y: 6, w: 12, h: 4},
+    {i: 'history0', x: 0, y: 10, w: 12, h: 4},
 
     ];
 }
+
+const dropdownOptions = [
+    { key: 'angular', text: 'Angular', value: 'angular' },
+    { key: 'css', text: 'CSS', value: 'css' },
+    { key: 'design', text: 'Graphic Design', value: 'design' },
+    { key: 'ember', text: 'Ember', value: 'ember' },
+    { key: 'html', text: 'HTML', value: 'html' },
+    { key: 'ia', text: 'Information Architecture', value: 'ia' },
+    { key: 'javascript', text: 'Javascript', value: 'javascript' },
+    { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
+    { key: 'meteor', text: 'Meteor', value: 'meteor' },
+    { key: 'node', text: 'NodeJS', value: 'node' },
+    { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
+    { key: 'python', text: 'Python', value: 'python' },
+    { key: 'rails', text: 'Rails', value: 'rails' },
+    { key: 'react', text: 'React', value: 'react' },
+    { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
+    { key: 'ruby', text: 'Ruby', value: 'ruby' },
+    { key: 'ui', text: 'UI Design', value: 'ui' },
+    { key: 'ux', text: 'User Experience', value: 'ux' },
+];
 
 const panelItems = [
     {

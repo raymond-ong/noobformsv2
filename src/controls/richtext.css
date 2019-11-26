@@ -15,15 +15,15 @@
     border: 1px solid #ddd;
     font-size: 14px;
     padding: 5px;
-    height: 100%;
     display: flex;
     flex-flow: column;
+    height: 100%;
+    flex: 1;
   }
   
   .RichEditor-editor {
     border-top: 1px solid #ddd;
     cursor: text;
-    font-size: 16px;
     margin-top: 0px;
     flex: 1;
     overflow: auto;
@@ -80,6 +80,12 @@
   }
 
 
-  .toolBarStrip {
+  /* .toolBarStrip {
       display: inline-block
-  }
+  } */
+
+.mainContainer {
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}

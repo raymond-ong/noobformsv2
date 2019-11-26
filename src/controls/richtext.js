@@ -73,6 +73,10 @@ class RichText extends React.Component {
     //https://github.com/jpuri/react-draft-wysiwyg/issues/4
     //https://codepen.io/Kiwka/pen/YNYvyG
     render() {
+        let classNames = 'mainContainer ';
+        if (this.props.selected === true) {
+            classNames += ' ctrl-selected'
+        }
         const {editorState} = this.state;
 
         // If the user changes block type before entering any text, we can
@@ -86,34 +90,37 @@ class RichText extends React.Component {
         }
 
         return (
-          <div className="RichEditor-root">
-            <div className="toolBarStrip">
-                {/* Inline Controls: Bold, Italic etc */}
-                <InlineStyleControls
-                editorState={editorState}
-                onToggle={this.toggleInlineStyle}
-                />
-                {/* Block Controls: H1, H2, BlockQuote, Code etc */}
-                <BlockStyleControls
-                editorState={editorState}
-                onToggle={this.toggleBlockType}
-                />
+            <div className={classNames}>
+                <div className="label">{this.props.data.label}</div>
+                <div className="RichEditor-root">
+                    <div className="toolBarStrip">
+                        {/* Inline Controls: Bold, Italic etc */}
+                        <InlineStyleControls
+                        editorState={editorState}
+                        onToggle={this.toggleInlineStyle}
+                        />
+                        {/* Block Controls: H1, H2, BlockQuote, Code etc */}
+                        <BlockStyleControls
+                        editorState={editorState}
+                        onToggle={this.toggleBlockType}
+                        />
+                    </div>
+
+                    <div className={className} onClick={this.focus}>
+                        <Editor
+                        blockStyleFn={getBlockStyle}
+                        customStyleMap={styleMap}
+                        editorState={editorState}
+                        handleKeyCommand={this.handleKeyCommand}
+                        onChange={this.onChange}
+                        onTab={this.onTab}
+                        placeholder={this.props.data.placeholder}
+                        ref="editor"
+                        spellCheck={true}
+                        />
+                    </div>
+                </div>
             </div>
-            
-            <div className={className} onClick={this.focus}>
-              <Editor
-                blockStyleFn={getBlockStyle}
-                customStyleMap={styleMap}
-                editorState={editorState}
-                handleKeyCommand={this.handleKeyCommand}
-                onChange={this.onChange}
-                onTab={this.onTab}
-                placeholder="Description..."
-                ref="editor"
-                spellCheck={true}
-              />
-            </div>
-          </div>
         );
     }    
 }

@@ -7,9 +7,5 @@
     padding-left: 5px;
     display: flex;
     align-items: center; /* align vertical */
-}
-
-/* Outline is better than border as it is drawn outside the control */
-.selected {
-    outline: 2px dashed blue;
+    z-index: -2;
 }
