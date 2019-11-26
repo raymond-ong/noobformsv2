@@ -20,10 +20,13 @@ class DesignerContentBase extends React.Component {
 
     componentDidMount() {
         console.log('[designerContentBase] componentDidMount');
-        this.setState({
-            rightPixels: this.defaultSizes[1] * window.innerWidth / 100.0,
-            currRightPercent: this.defaultSizes[1]
-        });
+        // Note: this causes the designer to render twice! Not a good design!
+        // Maybe my own designer does not need this.
+        // Actually this is only needed with React-grid-layout because the width is a props
+        // this.setState({
+        //     rightPixels: this.defaultSizes[1] * window.innerWidth / 100.0,
+        //     currRightPercent: this.defaultSizes[1]
+        // });
     }
 
     onWindowResize = () => {        
@@ -36,7 +39,7 @@ class DesignerContentBase extends React.Component {
     onSplitDragEnd = (sizes) => {
         let rightPixels = sizes[1] / 100.0 * window.innerWidth;    
         console.log('onSplitDragEnd designerContent callback');   
-        // if there are differences, call setState. We minimize rerenders
+        //if there are differences, call setState. We minimize rerenders
         this.setState({
             rightPixels: rightPixels,
             currRightPercent: sizes[1]

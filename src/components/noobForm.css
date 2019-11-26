@@ -1,0 +1,17 @@
+.noobForm {
+    display: grid;
+    grid-gap: 5px;
+    padding: 10px;
+
+    border: 1px dashed dimgray;
+    position: relative;
+    top: 30px;
+}
+
+.noobControl {
+    border: 1px dotted gray;
+    /* needed to position the resizer */
+    position: relative;
+    overflow: visible;
+    /* background-color: lightyellow; */
+}

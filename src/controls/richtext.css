@@ -18,7 +18,9 @@
     display: flex;
     flex-flow: column;
     height: 100%;
+    width: 100%;
     flex: 1;
+
   }
   
   .RichEditor-editor {
@@ -86,6 +88,8 @@
 
 .mainContainer {
     height: 100%;
+    width: 100%;
     display: flex;
     flex-flow: column;
+    position: absolute; /* to take up 100% height and width*/
 }

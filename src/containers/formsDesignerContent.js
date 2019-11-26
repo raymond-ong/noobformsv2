@@ -4,6 +4,7 @@ import ToolPanel from '../components/toolPanel';
 import DesignerForm from '../components/designerForm';
 import DesignerContentbase from './designerContentBase';
 import DesignerToolbar from '../components/designerToolbar';
+import NoobForm from '../components/noobForm';
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
 
@@ -17,40 +18,45 @@ const generateDefaultLayout = () => {
     }},
 
     // [2] Description
-    {i: 'richText0', x: 0, y: 1, w: 6, h: 8, type: 'richtext', 
+    {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext', 
         data: {
             label: 'Description',
             placeholder: 'Enter Description...'
         }},
 
     // [3] Date
-    {i: 'date0', x: 6, y: 1, w: 3, h: 2},
+    {i: 'date0', x: 6, y: 1, w: 3, h: 1},
 
     // [4] Status
-    {i: 'status0', x: 6, y: 3, w: 3, h: 2},
+    {i: 'status0', x: 6, y: 2, w: 3, h: 1},
 
     // [5] Priority
-    {i: 'combo0', x: 6, y: 5, w: 3, h: 2, type: 'combo', data: {
+    {i: 'combo0', x: 6, y: 3, w: 3, h: 1, type: 'combo', data: {
         placeholder: 'Please Select...',
         options: dropdownOptions,
         label: 'Please select:'
     }},
 
     // [6] User
-    {i: 'user0', x: 6, y: 7, w: 3, h: 2},
+    //{i: 'user0', x: 6, y: 4, w: 3, h: 1},
+    {i: 'combo1', x: 6, y: 4, w: 3, h: 1, type: 'combo', data: {
+        placeholder: 'Please Select...',
+        options: dropdownOptions,
+        label: 'Please select:'
+    }},    
 
     // [7] Attachments
-    {i: 'attach0', x: 9, y: 1, w: 3, h: 4},
+    {i: 'attach0', x: 9, y: 1, w: 3, h: 2},
 
     // [B] Subsection
-    {i: 'section1', x: 0, y: 9, w: 12, h: 1, type: 'section', data: {
+    {i: 'section1', x: 0, y: 5, w: 12, h: 1, type: 'section', data: {
         title: 'Update History',
         //backgroundColor: 'lightsteelblue'
         level: 1
     }},
 
     // [1] History
-    {i: 'history0', x: 0, y: 10, w: 12, h: 4},
+    {i: 'history0', x: 0, y: 6, w: 12, h: 2},
 
     ];
 }
@@ -93,6 +99,11 @@ const panelItems = [
     },
 ]
 
+const defaultLayoutData = {
+    columns: 12,
+    rows: 12
+}
+
 class formsDesignerContent extends DesignerContentbase {
     constructor(props) {
         super(props);
@@ -105,9 +116,13 @@ class formsDesignerContent extends DesignerContentbase {
             <ToolPanel panelItems={panelItems}/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
-                <DesignerForm 
+                {/* <DesignerForm 
                     containerWidth={this.state.rightPixels}
-                    initialLayout={generateDefaultLayout()}/>
+                    initialLayout={generateDefaultLayout()}/> */}
+                <NoobForm 
+                    containerWidth={this.state.rightPixels}
+                    layoutData={defaultLayoutData}
+                    controls={generateDefaultLayout()}/>
             </div>
         </NoobSplitter>
     }

@@ -15,7 +15,7 @@ class App extends React.Component {
         // Fetch master data:
         // Hierarchy, layouts, saved data
 
-        this.props.fetchHierarchy();
+        //this.props.fetchHierarchy();
         
     }
 

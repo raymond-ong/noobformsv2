@@ -1,9 +1,10 @@
 .dropdownContainer {
-    z-index: -1;
+    z-index: 100;
 }
 
 .ui.dropdown .menu {
   }
 
 .dropdownWrapper {
+  z-index: 1000;
 }
