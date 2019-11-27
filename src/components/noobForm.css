@@ -14,4 +14,44 @@
     position: relative;
     overflow: visible;
     /* background-color: lightyellow; */
+    /* To prevent the user from highlighting text */
+    user-select: none;
+}
+
+.resizer {
+    position: absolute;
+    user-select: auto;
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 3px;
+    cursor: move;
+    width: 7px;
+    height: 7px;
+    /* border: 5px solid black; */
+    border-right: 2px solid rgba(0,0,0,0.4);
+    border-bottom: 2px solid rgba(0,0,0,0.4);
+    cursor: se-resize;
+    bottom: 0;
+    right: 0;
+}
+
+.contentWrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.resizingControl {
+    /* background-color: #ff7777; */
+    position: relative;    
+}
+
+.resizingContent {
+    /* background-color: #aa33cc; */
+    opacity: 0.5;
+    z-index: 20;
+    position: absolute !important; /* set important to override the relative position when not resizing */
+    left: 10;
+    right: 10;
+    top: 10;
+    bottom: 10;
 }

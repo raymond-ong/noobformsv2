@@ -13,22 +13,42 @@ const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
 const getContentDiv = (controlData) => {
+    // Wrap the contents so that when resizing or moving, they will be together
+    // Also this should be floated. We don't want to resize or move the parent
+    let content = null;
     switch(controlData.type) {
         case 'section':
-            return <Section {...controlData}></Section>
+            content = <Section {...controlData}></Section>
+            break;
         case 'richtext':
-            return <RichText {...controlData}></RichText>
+            content = <RichText {...controlData}></RichText>
+            break;
         case 'combo':
-            return <Combobox {...controlData}></Combobox>
+            content = <Combobox {...controlData}></Combobox>
+            break;
         default:
-            return <div>{controlData.i}</div>
+            //return <div>{controlData.i}</div>
+            content = <div ></div>
+            break;
     }
+
+return <div className="contentWrapper">{content}</div>
 }
 
 const canDropMe = (controlData) => {
     // console.log('canDropMe', controlData);
     // Note: this function will be called for each mouse movement, so make sure this is efficient
     return !controlData.type;
+}
+
+const renderResizer = (controlId, onResizerMouseDown) => {
+    return (<div 
+            className="resizer" 
+            id={"ctrlResizer" + controlId}
+            onMouseDown={(e) => {                
+                onResizerMouseDown(e, controlId);
+            }}></div>
+        );
 }
 
 const getBackColor = (isOver, canDrop) => {
@@ -45,7 +65,7 @@ const getBackColor = (isOver, canDrop) => {
     return backColor;
 }
 
-const NoobControl = ({controlData}) => {
+const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
 
     // [a] Hooks setup for drop
     const [{ isOver, canDrop }, drop] = useDrop({
@@ -70,16 +90,19 @@ const NoobControl = ({controlData}) => {
         'backgroundColor': getBackColor(isOver, canDrop)
     };
     let contentDiv = getContentDiv(controlData)
+    let domCtrlId = "ctrl"+controlData.i;
     
     // [c] Render:
     // [c.1] return the content first
-    // [c.2] followed by the landing pad
-    return <div 
+    // [c.2] followed by the small resizer
+    // [c.3] followed by the landing pad if the control is being resized
+    return <div id={domCtrlId}
             className={classNames} 
             style={ctrlStyle}
             ref={drop}
             >
         {contentDiv}
+        {renderResizer(controlData.i, resizerMouseDown)}
     </div>
 }
 

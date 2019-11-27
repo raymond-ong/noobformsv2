@@ -22,6 +22,79 @@ class NoobForm extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            resizingControlId: null
+        };
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onResizerMouseDown = this.onResizerMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+    }
+
+    onMouseMove(e) {
+        if (this.state.resizingControlId == null) {
+            return;
+        }
+
+        let domControl = this.findControlDomById(this.state.resizingControlId);
+        if (domControl === null) {
+            return;
+        }
+
+        if (!domControl.container.classList.contains('resizingControl')) {
+            domControl.container.classList.add('resizingControl');
+            domControl.content.classList.add('resizingContent');
+        }   
+
+        let rectContainer = domControl.container.getClientRects()[0];
+        debugger
+
+        let yDelta = e.clientY - rectContainer.bottom - 20;
+        let xDelta = e.clientX - rectContainer.right - 20;
+
+        domControl.content.style.width = `${rectContainer.width + xDelta}px`;
+        domControl.content.style.height = `${rectContainer.height + yDelta}px`;
+    }
+
+    onMouseLeave() {        
+        if (this.state.resizingControlId) {
+            console.log('onMouseLeave while resizing');
+            this.setState({
+                resizingControlId: null
+            });    
+        }
+    }
+
+    onResizerMouseDown(event, controlId) {
+        console.log('mouse down resizer...', controlId, event);
+        this.setState({
+            resizingControlId: controlId
+        });    
+    }
+
+    onMouseUp(event, controlId) {
+        if (this.state.resizingControlId) {
+            console.log('mouseup while resizing');
+            this.setState({
+                resizingControlId: null
+            });    
+        }
+    }
+
+    findControlDomById(controlId) {
+        let ret = {};
+        let keyQuery = `[id="ctrl${controlId}"]`;
+        let retEl = document.querySelectorAll(keyQuery);
+        if (retEl.length !== 1) {
+            return null;
+        }
+    
+        ret.container = retEl[0];
+        ret.content = ret.container.firstChild;
+        ret.resizer = ret.content.nextSibling;
+        ret.landingPad = ret.resizer.nextSibling;
+    
+        return ret;    
     }
 
     createEmptyControl(inX, inY, id) {
@@ -46,7 +119,11 @@ class NoobForm extends React.Component {
             'gridColumnEnd': 'span ' + control.w,
         };
         //return <div className="noobControl" style={ctrlStyle}>{control.i}</div>
-        return <NoobControl key={control.i} controlData={control}/>
+        return <NoobControl 
+                key={control.i} 
+                controlData={control}
+                resizerMouseDown={this.onResizerMouseDown}
+                resizingControlId={this.state.resizingControlId}/>
     }
 
     getFills(control, layoutWidth) {
@@ -63,6 +140,7 @@ class NoobForm extends React.Component {
         return retList;
     }
 
+
     renderControls(layoutData, controls) {
         // debugger
         let retList = [];
@@ -70,12 +148,10 @@ class NoobForm extends React.Component {
         for (var iRow = 0; iRow < layoutData.rows; iRow++) {
             for (var iCol = 0; iCol < layoutData.columns; iCol++) {            
                 let flatCoord = iRow * layoutData.columns + iCol;
+                // if coordinate already filled, skip
                 if (fillMap.find(n => n === flatCoord)) {
                     continue;
                 }
-
-                // if coordinate already filled, skip
-                debugger
 
                 // try to find if there is a control associated
                 // otherwise just render an empty control
@@ -103,8 +179,12 @@ class NoobForm extends React.Component {
         console.log('[DEBUG][NoobSection] Rendering...');
     
         return (
-        <div className="noobForm" style={divStyle}>
-            {controlComps}
+        <div className="noobForm" 
+            onMouseLeave={this.onMouseLeave}
+            onMouseUp={this.onMouseUp}
+            onMouseMove={this.onMouseMove}
+            style={divStyle}>
+            {controlComps}            
         </div>    
         );    
     }
