@@ -8,6 +8,11 @@ import "../src/styles/App.css";
 import {fetchHierarchy} from './actions';
 import {connect} from 'react-redux';
 
+import TouchBackend from 'react-dnd-touch-backend';
+import HTML5Backend from 'react-dnd-html5-backend';
+//import { DragDropContext } from 'react-dnd';
+import { DndProvider } from 'react-dnd'
+
 class App extends React.Component {
 
     componentDidMount() {
@@ -21,12 +26,15 @@ class App extends React.Component {
 
     render() {
         console.log('[App] render()');
-        return(<div id="app" style={{height: 'calc(100%)'}}>
+        return(<DndProvider backend={HTML5Backend}>
+        <div id="app" style={{height: 'calc(100%)'}}>
             <Navbar>        
                 <MainContent/>
             </Navbar>
-        </div>)
+        </div>
+        </DndProvider>)
     }
 }
 
+//dndBackend = DragDropContext(TouchBackend);
 export default connect(null, {fetchHierarchy})(App);

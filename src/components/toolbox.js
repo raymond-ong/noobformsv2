@@ -2,6 +2,8 @@ import React from 'react';
 import ToolItem from './toolItem';
 import "../styles/ToolBox.css";
 
+
+
 export const toolBoxItems = [
     {
          name: 'section',
@@ -134,6 +136,7 @@ export const toolBoxItems = [
      category: 'form'
    },
 ];
+
 
 const drawToolItems = () => {
     return toolBoxItems.map( (toolItem) => {

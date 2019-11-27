@@ -6,6 +6,16 @@ const ROW_HEIGHT = 50;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
+// CSS Grid based layout editor, instead of using react-grid-layout
+// problems with RGL:
+// [1] combobox multiselect: Griditem size does not expand based on the child content's size
+// [2] if {useCssTransform = true}, there will be overlap problems with the combobox dropdown.
+//     side effect of setting it to false is that drag and drop becomes unpredictable with Drag-from-outside
+// But of course, there are many good features in RGL that might be difficult to recreate:
+// [1] Animations, on-the fly preview
+//      - might not be feasible with CSS Grid/current design. Anyways, this is just cosmetic.
+// [2] Auto-arrange elements on DnD
+
 // use destructuring to capture all the properties passed from upper component
 //const NoobForm = ({containerWidth, controls, layoutProps, eventCallbacks}) => {
 class NoobForm extends React.Component {
@@ -15,10 +25,15 @@ class NoobForm extends React.Component {
     }
 
     createEmptyControl(inX, inY, id) {
-        let ctrlStyle = {
-            'minHeight': ROW_HEIGHT, 
+        let control = {
+            w: 1,
+            h: 1,
+            i: id,
+            x: inX,
+            y: inY
         }
-        return (<div style={ctrlStyle} className="noobControl">{id}</div>);
+
+        return this.renderControl(control);
     }
 
     renderControl(control) {
@@ -31,7 +46,7 @@ class NoobForm extends React.Component {
             'gridColumnEnd': 'span ' + control.w,
         };
         //return <div className="noobControl" style={ctrlStyle}>{control.i}</div>
-        return <NoobControl controlData={control}/>
+        return <NoobControl key={control.i} controlData={control}/>
     }
 
     getFills(control, layoutWidth) {
