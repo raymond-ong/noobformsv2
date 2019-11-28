@@ -1,39 +1,12 @@
 import React, { Component } from 'react';
 import NoobForm from './noobForm';
-import { DragItemTypes } from './toolItem';
+import { ToolItemDragTypes } from './toolItem';
 import { useDrop } from 'react-dnd';
-
-// controls
-import Section from '../controls/section';
-import RichText from '../controls/richtext';
-import Combobox from '../controls/combo';
+import NoobControlContent, {ControlDragTypes} from './noobControlContent';
 
 const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
-
-const getContentDiv = (controlData) => {
-    // Wrap the contents so that when resizing or moving, they will be together
-    // Also this should be floated. We don't want to resize or move the parent
-    let content = null;
-    switch(controlData.type) {
-        case 'section':
-            content = <Section {...controlData}></Section>
-            break;
-        case 'richtext':
-            content = <RichText {...controlData}></RichText>
-            break;
-        case 'combo':
-            content = <Combobox {...controlData}></Combobox>
-            break;
-        default:
-            //return <div>{controlData.i}</div>
-            content = <div ></div>
-            break;
-    }
-
-return <div className="contentWrapper">{content}</div>
-}
 
 const canDropMe = (controlData) => {
     // console.log('canDropMe', controlData);
@@ -45,8 +18,12 @@ const renderResizer = (controlId, onResizerMouseDown) => {
     return (<div 
             className="resizer" 
             id={"ctrlResizer" + controlId}
-            onMouseDown={(e) => {                
+            onMouseDown={(e) => {  
+                // This event is being called first before the Drag on the control starts
+                // Call preventDefault to disable moving of the control
+                // Resizing is given a higher priority since it covers a very small area
                 onResizerMouseDown(e, controlId);
+                e.preventDefault();
             }}></div>
         );
 }
@@ -69,7 +46,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
 
     // [a] Hooks setup for drop
     const [{ isOver, canDrop }, drop] = useDrop({
-        accept: DragItemTypes.TOOLITEM,
+        accept: [ToolItemDragTypes.TOOLITEM, ControlDragTypes.CONTROL],
         canDrop: () => canDropMe(controlData),
         drop: () => console.log('dropped me @', controlData),
         collect: monitor => ({
@@ -89,7 +66,6 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
         'gridColumnEnd': 'span ' + controlData.w,
         'backgroundColor': getBackColor(isOver, canDrop)
     };
-    let contentDiv = getContentDiv(controlData)
     let domCtrlId = "ctrl"+controlData.i;
     
     // [c] Render:
@@ -101,7 +77,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
             style={ctrlStyle}
             ref={drop}
             >
-        {contentDiv}
+        <NoobControlContent {...controlData}></NoobControlContent>
         {renderResizer(controlData.i, resizerMouseDown)}
     </div>
 }

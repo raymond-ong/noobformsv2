@@ -8,7 +8,7 @@ import {toolItemDragged} from '../actions/index';
 
 import { useDrag } from 'react-dnd'
 
-export const DragItemTypes = {
+export const ToolItemDragTypes = {
     TOOLITEM: 'toolItem'
 }
 
@@ -35,7 +35,7 @@ const toolItem = (props) => {
 const ToolItem = (props) => {
 
     const [{ isDragging }, drag] = useDrag({
-        item: { type: DragItemTypes.TOOLITEM },
+        item: { type: ToolItemDragTypes.TOOLITEM },
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),
         }),

@@ -49,8 +49,8 @@ class NoobForm extends React.Component {
         let rectContainer = domControl.container.getClientRects()[0];
         debugger
 
-        let yDelta = e.clientY - rectContainer.bottom - 20;
-        let xDelta = e.clientX - rectContainer.right - 20;
+        let yDelta = e.clientY - rectContainer.bottom;
+        let xDelta = e.clientX - rectContainer.right;
 
         domControl.content.style.width = `${rectContainer.width + xDelta}px`;
         domControl.content.style.height = `${rectContainer.height + yDelta}px`;
