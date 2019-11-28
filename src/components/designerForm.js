@@ -37,8 +37,8 @@ class designerForm extends React.Component {
         // e.g. if curr display is big, fix the layout for xs
     },
     cols: { lg: 12, md: 12, sm: 2, xs: 1, xxs: 1 },
-    //initialLayout: generateLayout(),
-    initialLayout: [],
+    initialLayout: generateLayout(),
+    //initialLayout: [],
     compactType: 'vertical', // It's better to have a vertical compaction, because the drag behaviour is weird without it
     onDragStart: function(item) {
         //console.log('onDragStart', item);
@@ -81,6 +81,30 @@ class designerForm extends React.Component {
             <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>
         </div>
       }
+      else if (i === 3) {
+        return <Combo data={{
+          label: 'Courses',
+          options: [
+          { key: 'angular', text: 'Angular', value: 'angular' },
+          { key: 'css', text: 'CSS', value: 'css' },
+          { key: 'design', text: 'Graphic Design', value: 'design' },
+          { key: 'ember', text: 'Ember', value: 'ember' },
+          { key: 'html', text: 'HTML', value: 'html' },
+          { key: 'ia', text: 'Information Architecture', value: 'ia' },
+          { key: 'javascript', text: 'Javascript', value: 'javascript' },
+          { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
+          { key: 'meteor', text: 'Meteor', value: 'meteor' },
+          { key: 'node', text: 'NodeJS', value: 'node' },
+          { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
+          { key: 'python', text: 'Python', value: 'python' },
+          { key: 'rails', text: 'Rails', value: 'rails' },
+          { key: 'react', text: 'React', value: 'react' },
+          { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
+          { key: 'ruby', text: 'Ruby', value: 'ruby' },
+          { key: 'ui', text: 'UI Design', value: 'ui' },
+          { key: 'ux', text: 'User Experience', value: 'ux' },
+        ]}}/>
+      }
 
       return null;
   }
@@ -118,9 +142,9 @@ class designerForm extends React.Component {
         <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px dashed lightgray", borderRadius: "3px"}}>
             {/* <span className="text">{i} - {l.i}</span> */}
             {/* <i className="editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>             */}
-            {/* <EditDialog controlInfo={l}/> */}
-            {/* {me.getRechartSample(i)} */}
-            {me.renderControl(l)}
+            <EditDialog controlInfo={l}/>
+            {me.getRechartSample(i)}
+            {/* {me.renderControl(l)} */}
         </div>
       );
     });
@@ -249,7 +273,10 @@ function generateLayout() {
         {i: 'a', x: 0, y: 2, w: 4, h: 10},
         {i: 'b', x: 4, y: 2, w: 4, h: 10},
         {i: 'c', x: 0, y: 0, w: 12, h: 2},
-        {i: 'd', x: 8, y: 2, w: 4, h: 10},
+        {i: 'd', x: 8, y: 2, w: 4, h: 2},
+        {i: 'e', x: 8, y: 4, w: 4, h: 2},
+        {i: 'f', x: 8, y: 6, w: 4, h: 2},
+        {i: 'g', x: 8, y: 8, w: 4, h: 2},
       ];
 }
 

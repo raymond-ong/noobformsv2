@@ -18,6 +18,14 @@
     user-select: none;
 }
 
+.contentWrapper {
+    /* width: 100%;
+    height: 100%; */
+    opacity: 0.5;
+}
+
+/* For the Resizer */
+
 .resizer {
     position: absolute;
     user-select: auto;
@@ -35,11 +43,6 @@
     right: 0;
 }
 
-.contentWrapper {
-    /* width: 100%;
-    height: 100%; */
-}
-
 .resizingControl {
     /* background-color: #ff7777; */
     position: relative;    
@@ -47,11 +50,48 @@
 
 .resizingContent {
     /* background-color: #aa33cc; */
-    opacity: 0.5;
+    /* Set the z-inde so that it will bo on top of other control elements it overlpas while resizing */
     z-index: 20;
-    position: absolute !important; /* set important to override the relative position when not resizing */
+    /* Set to important...maybe because this is a secondary class so we need to add important */
+    opacity: 0.8 !important;
+    /* set important to override the relative position when not resizing */
+    /* if it is relative position, dragging the content bigger will make the container bigger, instead of popping out of the container */
+    position: absolute !important; 
+
     left: 10;
     right: 10;
     top: 10;
     bottom: 10;
+}
+
+.potentialResizeDrop {
+    /* Add important...maybe because this is just secondary class */
+    background-color: lightgreen !important;
+}
+
+
+/* For the Landing Pad */
+.landingPadContainer {
+    display: grid;
+    /* background: #bbbb00; */
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 5px;
+    padding: 0px;
+}
+
+.landingPadCell {
+    /* border: 2px solid red; */
+    /* padding: 0px;     */
+    /* background: purple; */
+}
+
+.landingPadPotentialDrop {
+    background: lightgreen;
+    /* opacity: 0.5; */
+    /* z-index: 100; */
 }

@@ -13,7 +13,7 @@ const initialLayout = [
     {i: 'd', x: 8, y: 2, w: 4, h: 10},
 ];
 
-class dashboardDesignerContent extends DesignerContentbase {
+class DashboardDesignerContent extends DesignerContentbase {
     
     constructor(props) {
         super(props);
@@ -29,4 +29,4 @@ class dashboardDesignerContent extends DesignerContentbase {
     }
 }
 
-export default dashboardDesignerContent;
+export default DashboardDesignerContent;

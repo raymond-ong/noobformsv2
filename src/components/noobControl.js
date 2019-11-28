@@ -11,6 +11,9 @@ const GRID_GAP = 5;
 const canDropMe = (controlData) => {
     // console.log('canDropMe', controlData);
     // Note: this function will be called for each mouse movement, so make sure this is efficient
+    // A. If it's a tool item, just check whether it's empty or not
+    // B. [TODO] If it's a control, make sure their dimensions are the same
+
     return !controlData.type;
 }
 
@@ -32,7 +35,7 @@ const getBackColor = (isOver, canDrop) => {
     let backColor = 'white';
     if (isOver) {
         if (canDrop) {
-            backColor = 'lime'
+            backColor = 'lightgreen'
         }
         else {
             backColor = 'pink'
@@ -40,6 +43,41 @@ const getBackColor = (isOver, canDrop) => {
     }
 
     return backColor;
+}
+
+const renderLandingPads = (controlData, resizingControlId) => {
+    // if this control is not resizing, no need to render the landing pads
+    if (resizingControlId !== controlData.i) {
+        return null;
+    }
+
+    let landingPadStyle = {
+        gridTemplateColumns: `repeat(${controlData.w}, 1fr)`,
+        gridTemplateRows: `repeat(${controlData.h}, 1fr)`,
+    }
+
+    return (<div className="landingPadContainer" style={landingPadStyle}>
+        {createLandingPads(controlData.h, controlData.w, 'ctrl'+controlData.i, controlData.x, controlData.y)}
+    </div>)
+}
+
+// Create a landing pad to allow the user to reduce the size of the control
+function createLandingPads(rowSpan, colSpan, domParentCtrlId, parentX, parentY) {
+    let retList = [];
+    for (let i=0; i < rowSpan; i++) {
+        for (let j=0; j < colSpan; j++) {
+            let layoutPos = {
+                'data-layoutx': j + parentX,
+                'data-layouty': i + parentY,
+            }
+            retList.push(<div className="landingPadCell" 
+                            parentctrlid={domParentCtrlId} 
+                            key={"landingPad"+(i * colSpan + j)}
+                            {...layoutPos}></div>);
+        }
+    }
+
+    return retList;
 }
 
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
@@ -69,16 +107,18 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
     let domCtrlId = "ctrl"+controlData.i;
     
     // [c] Render:
-    // [c.1] return the content first
-    // [c.2] followed by the small resizer
-    // [c.3] followed by the landing pad if the control is being resized
+    // [c.1] return the landing pad first, which is only shown when the control is being resized
+    // [c.2] followed by the content
+    // [c.3] followed by the small resizer.
+    //       This order must be followed to avoid the need for z-index
     return <div id={domCtrlId}
             className={classNames} 
             style={ctrlStyle}
             ref={drop}
             >
+        {renderLandingPads(controlData, resizingControlId)}
         <NoobControlContent {...controlData}></NoobControlContent>
-        {renderResizer(controlData.i, resizerMouseDown)}
+        {renderResizer(controlData.i, resizerMouseDown)}        
     </div>
 }
 
