@@ -1,5 +1,6 @@
 import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL, UPDATE_DESIGNER_LAYOUT } from "../actions/index";
 
+// Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 const generateDefaultLayout = () => {
   // [1] Section
   return [

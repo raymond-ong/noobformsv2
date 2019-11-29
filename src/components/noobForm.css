@@ -44,8 +44,7 @@
 }
 
 .resizingControl {
-    /* background-color: #ff7777; */
-    position: relative;    
+    /* position: relative; */
 }
 
 .resizingContent {
@@ -62,6 +61,8 @@
     right: 10;
     top: 10;
     bottom: 10;
+    /* Add a border so that when empty controls are resized, there is a visual cue  */
+    outline: 1px dashed dimgray;
 }
 
 .potentialResizeDrop {

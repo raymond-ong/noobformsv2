@@ -33,11 +33,13 @@ class NoobForm extends React.Component {
         this.onMouseUp = this.onMouseUp.bind(this);
     }
 
+    // for handling resizing operations
     onMouseMove(e, controlIds) {
         if (this.state.resizingControlId == null) {
             return;
         }
 
+        // [1] Find the DOM Control via document query
         let domControl = this.findControlDomById(this.state.resizingControlId);
         if (domControl === null) {
             return;
@@ -53,15 +55,16 @@ class NoobForm extends React.Component {
         let yDelta = e.clientY - rectContainer.bottom;
         let xDelta = e.clientX - rectContainer.right;
 
+        // [2] Set the new width and height based on the mouse position
         domControl.content.style.width = `${rectContainer.width + xDelta}px`;
         domControl.content.style.height = `${rectContainer.height + yDelta}px`;
 
         let rectResizing = domControl.content.getClientRects()[0];
 
-        // Check overlaps with other controls
+        // [3] Check overlaps with other controls - highlight them
         this.checkOverlaps(this.state.resizingControlId, rectResizing, controlIds); // overlap with other controls
 
-        // Check overlaps with landing pad
+        // [4] Check overlaps with landing pad - highlight them
         this.checkLandingPadOverlap(this.state.resizingControlId, rectContainer, rectResizing);
 
     }
@@ -222,15 +225,13 @@ class NoobForm extends React.Component {
     }
 
     createEmptyControl(inX, inY, id) {
-        let control = {
+        return {
             w: 1,
             h: 1,
             i: id,
             x: inX,
             y: inY
-        }
-
-        return this.renderControl(control);
+        }        
     }
 
     renderControl(control) {
@@ -267,7 +268,9 @@ class NoobForm extends React.Component {
 
     renderControls(layoutData, controls) {
         // debugger
-        let retList = [];
+        // For retlist: we don't use object (KV pair) beacause we need to render them according to the order we pushed them to the list.
+        // Retrieving the keys or values via Object.keys()/Object.values() do not come in the order that they were set
+        let retList = [];  
         let fillMap = [];
         for (var iRow = 0; iRow < layoutData.rows; iRow++) {
             for (var iCol = 0; iCol < layoutData.columns; iCol++) {            
@@ -281,10 +284,20 @@ class NoobForm extends React.Component {
                 // otherwise just render an empty control
                 let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
                 if (!findControl) {
-                    retList.push(this.createEmptyControl(iCol, iRow, flatCoord));
+                    let emptyControlPojo = this.createEmptyControl(iCol, iRow, flatCoord); // plain old JS obj
+                    let emptyControlJsx = this.renderControl(emptyControlPojo);
+                    retList.push({
+                        id: emptyControlPojo.i,
+                        jsx: emptyControlJsx
+                    });                    
                 }
                 else {
-                    retList.push(this.renderControl(findControl));
+                    //retList.push(this.renderControl(findControl));
+                    let controlJsx = this.renderControl(findControl);
+                    retList.push({
+                        id: findControl.i,
+                        jsx: controlJsx
+                    });
                     let newFills = this.getFills(findControl, layoutData.columns)
                     fillMap = fillMap.concat(newFills);
                 }
@@ -297,8 +310,9 @@ class NoobForm extends React.Component {
     render() {
         console.log('render NoobForm...');
         let {controls, layoutData} = this.props;
-        let controlComps = this.renderControls(layoutData, controls);
-        let controlIds = controls.map(ctrl => ctrl.i);
+        let controlsList = this.renderControls(layoutData, controls);
+        let controlIds = controlsList.map(c => c.id);
+        let controlsJsx = controlsList.map(c => c.jsx);
     
         var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};
         console.log('[DEBUG][NoobSection] Rendering...');
@@ -309,7 +323,7 @@ class NoobForm extends React.Component {
             onMouseUp={this.onMouseUp}
             onMouseMove={(e) => {this.onMouseMove(e, controlIds)}}
             style={divStyle}>
-            {controlComps}            
+            {controlsJsx}            
         </div>    
         );    
     }

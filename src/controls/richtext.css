@@ -11,7 +11,8 @@
 */
 
 .RichEditor-root {
-    background: #fff;
+    /* We set the background color to semi-transparent to allow visual cues for drag operations */
+    background: rgba(255,255,255,0.5);
     border: 1px solid #ddd;
     font-size: 14px;
     padding: 5px;

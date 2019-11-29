@@ -117,6 +117,7 @@ class RichText extends React.Component {
                         placeholder={this.props.data.placeholder}
                         ref="editor"
                         spellCheck={true}
+                        backgroundColor={'red'}
                         />
                     </div>
                 </div>

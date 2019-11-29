@@ -3,8 +3,13 @@
 }
 
 .ui.dropdown .menu {
+  border: 1px solid red;
   }
 
 .dropdownWrapper {
   z-index: 1000;
+}
+
+.ui.selection.dropdown {
+  background: rgba(255,255,255,0.5);
 }
