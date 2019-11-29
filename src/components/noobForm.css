@@ -18,6 +18,14 @@
     user-select: none;
 }
 
+/* Show gray background to empty controls to make them easier to distinguish from actual controls */ 
+.emptyControl {
+    background: rgba(100,100,100,0.3);
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
 .contentWrapper {
     /* width: 100%;
     height: 100%; */
@@ -29,7 +37,7 @@
 .resizer {
     position: absolute;
     user-select: auto;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     padding: 0px;
     margin: 3px;
     cursor: move;

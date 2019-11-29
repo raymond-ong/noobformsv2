@@ -18,10 +18,10 @@ const generateDefaultLayout = () => {
       }},
 
   // [3] Date
-  {i: 'date0', x: 6, y: 1, w: 3, h: 1},
+  {i: 'date0', x: 6, y: 1, w: 3, h: 1, type: 'date'},
 
   // [4] Status
-  {i: 'status0', x: 6, y: 2, w: 3, h: 1},
+  {i: 'status0', x: 6, y: 2, w: 3, h: 1, type: 'status'},
 
   // [5] Priority
   {i: 'combo0', x: 6, y: 3, w: 3, h: 1, type: 'combo', data: {
@@ -39,7 +39,7 @@ const generateDefaultLayout = () => {
   }},    
 
   // [7] Attachments
-  {i: 'attach0', x: 9, y: 1, w: 3, h: 2},
+  {i: 'attach0', x: 9, y: 1, w: 3, h: 2,type: 'attachment'},
 
   // [B] Subsection
   {i: 'section1', x: 0, y: 5, w: 12, h: 1, type: 'section', data: {
@@ -49,7 +49,7 @@ const generateDefaultLayout = () => {
   }},
 
   // [1] History
-  {i: 'history0', x: 0, y: 6, w: 12, h: 2},
+  {i: 'history0', x: 0, y: 6, w: 12, h: 2, type: 'history'},
 
   ];
 }
@@ -88,6 +88,27 @@ const defaultState = {
     layoutData: defaultLayoutData
 }
 
+const updateLayout = (layout, updatedControls) => {
+  // updatedControls is an array of controls
+  // it may contain existing controls or "empty" controls that have been resized
+  if (!layout || !updatedControls) {
+    return layout;
+  }
+
+  updatedControls.forEach(control => {
+    let findIndex = layout.findIndex(layoutCtrl => layoutCtrl.i === control.i);
+    if (findIndex === -1) {
+      // means we need to create a new control
+      layout.push(control);
+    }
+    else {
+      layout[findIndex] = control;
+    }
+  })
+
+  // Sort the controls based on the "flat coordinates"
+}
+
 export default function(state = defaultState, action) {
   console.log('[DEBUG] reducer_designer', action, state);
   switch (action.type) {
@@ -102,10 +123,14 @@ export default function(state = defaultState, action) {
         selectedControlId: action.payload
       };
     case UPDATE_DESIGNER_LAYOUT:
-        return {
-          ...state,
-          layout: action.payload
+        let updatedControls = action.payload;
+        let newState = {
+          ...state,          
         };
+
+        updateLayout(newState.layout, updatedControls);
+
+        return newState;
   }
   return state;
 }

@@ -99,7 +99,9 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
     let ctrlStyle = {
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content
-        'minHeight': (ROW_HEIGHT * controlData.h) + (CONTROL_PADDING * (controlData.h - 1)) + (GRID_GAP * (controlData.h - 1)), 
+        //'minHeight': (ROW_HEIGHT * controlData.h) + (CONTROL_PADDING * (controlData.h - 1)) + (GRID_GAP * (controlData.h - 1)), 
+        // Maybe no need to include padding and grid gap
+        'minHeight': (ROW_HEIGHT * controlData.h), 
         'gridRowEnd': 'span ' + controlData.h,
         'gridColumnEnd': 'span ' + controlData.w,
         'backgroundColor': getBackColor(isOver, canDrop)

@@ -47,11 +47,12 @@ export const selectedControl = (controlId) => {
   }
 }
 
-// For UI update only, not yet persisted to the storage
-export const updateLayout = (layout) => {
+// For UI update only, not yet persisted to the storage like DB or browser storage
+// Assumption is that validations have been performed on the updated controls
+export const updateLayout = (updatedControls) => {
   return {
     type: UPDATE_DESIGNER_LAYOUT,
-    payload: layout
+    payload: updatedControls
   }
 }
 

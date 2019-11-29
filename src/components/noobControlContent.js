@@ -29,9 +29,12 @@ const getContentDiv = (controlData) => {
         case 'combo':
             content = <Combobox {...controlData}></Combobox>
             break;
+        case undefined:
+            content = <div className="emptyControl"></div>
+            break
         default:
             //return <div>{controlData.i}</div>
-            content = <div></div>
+            content = <div>{controlData.i}</div>
             break;
     }
 
@@ -41,6 +44,7 @@ const getContentDiv = (controlData) => {
 const NoobControlContent = (controlData) => {
     const [{ isDragging }, drag] = useDrag({
         item: { type: ControlDragTypes.CONTROL },
+        canDrag: !!controlData.type, // Do not allow empty controls to be dragged
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),
         }),

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './noobForm.css';
 import NoobControl from './noobControl';
+import {connect} from 'react-redux';
+import { bindActionCreators } from "redux";
+import { updateLayout } from '../actions/index';
 
 const ROW_HEIGHT = 50;
 const CONTROL_PADDING = 20;
@@ -29,7 +32,7 @@ class NoobForm extends React.Component {
             // Possible optimization: save all the DOM elements of the controls to the state
             // Because while resizing, there is a need to find all control Id's using DOM query
             // Maybe get a fresh copy of all DOM elements during mousedown of the resizer
-            resizingControlId: null
+            resizingControlId: null,        
         };
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
@@ -195,7 +198,6 @@ class NoobForm extends React.Component {
         // console.log("Overlaps found: ", overlapsFound.length);
         // If there is an invalid drop target, mark all potential drops as invalid
         if (foundInvalid) {
-            debugger
             overlapsFound.forEach(dom => {
                 dom.container.classList.add('potentialResizeDrop-invalid');
             })
@@ -277,6 +279,38 @@ class NoobForm extends React.Component {
         });
 
         // Fire an action to let the redux store know that a control has been resized
+        let resizedControlPojo = this.findControlPojo(this.state.resizingControlId);
+        if (resizedControlPojo) {
+            resizedControlPojo.w = newSize.w;
+            resizedControlPojo.h = newSize.h;   
+            this.props.updateLayout([resizedControlPojo]); 
+        }
+        else {
+            // it's an empty control...create and empty control with new dimension
+            let controlDom = document.getElementById('ctrl'+this.state.resizingControlId);
+            this.props.updateLayout([{
+                i: this.state.resizingControlId,
+                x: parseInt(controlDom.dataset.layoutx),
+                y: parseInt(controlDom.dataset.layouty),
+                w: newSize.w,
+                h: newSize.h
+            }]);
+        }
+        
+    }
+
+    findControlPojo(controlId) {
+        if (!this || !this.props || !this.props.controls) {            
+            console.log("findControlPojo: props is empty");
+            return null;
+        }
+
+        let findControl = this.props.controls.find(control => control.i === controlId);
+        if (!findControl) {
+            console.log("findControlPojo: did not find the control with ID", controlId); // just log it
+        }
+
+        return findControl;
     }
 
     findPotentialDrops() {
@@ -318,11 +352,10 @@ class NoobForm extends React.Component {
         };
     
         return {
-            // newCols: newX - resizedControlDom.container.dataset.layoutx - resizedControlDom.container.dataset.colspan + 1 + 1,
-            // newRows: newY - resizedControlDom.container.dataset.layouty - resizedControlDom.container.dataset.rowspan + 1 + 1,
             // no need to include rowspan...we will eventually disallow resizing into a "blank control"
-            newCols: maxX - resizedControlDom.container.dataset.layoutx + 1,
-            newRows: maxY - resizedControlDom.container.dataset.layouty + 1,
+            // if control is big, we will only use its 1x1 area
+            w: maxX - resizedControlDom.container.dataset.layoutx + 1,
+            h: maxY - resizedControlDom.container.dataset.layouty + 1,
         }
     
     }
@@ -455,4 +488,8 @@ class NoobForm extends React.Component {
     }
 }
 
-export default NoobForm;
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({ updateLayout }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(NoobForm);
