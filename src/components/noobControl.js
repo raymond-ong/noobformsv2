@@ -11,8 +11,15 @@ const GRID_GAP = 5;
 const canDropMe = (controlData) => {
     // console.log('canDropMe', controlData);
     // Note: this function will be called for each mouse movement, so make sure this is efficient
-    // A. If it's a tool item, just check whether it's empty or not
-    // B. [TODO] If it's a control, make sure their dimensions are the same
+    // A.    If it's a tool item, just check whether it's empty or not
+    // A.1   But if the default dimension of the tool is big and:
+    // A.1.1 If I am the hovered control, and the surrounding controls is not enough, return false
+    // A.1.2 If I am the hovered control's neighbour and I can be part of the drop target, return true
+
+    // Maybe issue a callback to the noobForm to check if I can be a dropTarget since it is the noobForm that knows about all controls.
+    // Based on experiment, there is not a lot of renders during drag unless there is a change in canDrop() value.
+
+    // B.  [TODO] If it's a control, make sure their dimensions are the same
 
     return !controlData.type;
 }
@@ -82,6 +89,7 @@ function createLandingPads(rowSpan, colSpan, domParentCtrlId, parentX, parentY) 
 
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
 
+    //console.log('render NoobControl', controlData.i);
     // [a] Hooks setup for drop
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: [ToolItemDragTypes.TOOLITEM, ControlDragTypes.CONTROL],
