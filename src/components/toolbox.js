@@ -55,7 +55,7 @@ export const toolBoxItems = [
      },     
      {
           name: 'date',
-          displayName: 'User',
+          displayName: 'Date',
           icon: 'calendar alternate outline',
           category: 'forms'
      },     

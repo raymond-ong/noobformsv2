@@ -104,6 +104,16 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
         'gridColumnEnd': 'span ' + controlData.w,
         'backgroundColor': getBackColor(isOver, canDrop)
     };
+
+    // access these in Javascript by x.dataset.layoutx (Note: lowercase)
+    // Purpose: convenience when processing resize operations
+    let layoutPos = {
+        'data-layoutx': controlData.x,
+        'data-layouty': controlData.y,
+        'data-layouth': controlData.h,
+        'data-layoutw': controlData.w,
+        'data-controlType': controlData.type,
+    }
     let domCtrlId = "ctrl"+controlData.i;
     
     // [c] Render:
@@ -115,6 +125,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
             className={classNames} 
             style={ctrlStyle}
             ref={drop}
+            {...layoutPos}
             >
         {renderLandingPads(controlData, resizingControlId)}
         <NoobControlContent {...controlData}></NoobControlContent>

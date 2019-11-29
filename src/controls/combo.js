@@ -5,6 +5,7 @@ import noobControlHoc from '../hoc/noobControlsHoc';
 import './combo.css';
 
 const noobCombo = (props) => {
+    console.log('render combo: ', props.data.label);
     let classNames = 'dropdownContainer ';
     if (props.selected === true) {
         classNames += ' ctrl-selected'

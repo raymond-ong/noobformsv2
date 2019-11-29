@@ -10,6 +10,7 @@
   z-index: 1000;
 }
 
+/* We override the background color to transparent  */
 .ui.selection.dropdown {
   background: rgba(255,255,255,0.5);
 }

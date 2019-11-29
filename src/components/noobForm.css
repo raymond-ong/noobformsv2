@@ -70,6 +70,10 @@
     background-color: lightgreen !important;
 }
 
+.potentialResizeDrop-invalid {
+    background-color: pink !important;
+}
+
 
 /* For the Landing Pad */
 .landingPadContainer {

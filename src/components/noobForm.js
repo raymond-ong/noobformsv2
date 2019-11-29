@@ -16,7 +16,8 @@ const GRID_GAP = 5;
 //      - might not be feasible with CSS Grid/current design. Anyways, this is just cosmetic.
 // [2] Auto-arrange elements on DnD
 // [3] Opaque Drag image. RGL's Drag image looks very nice because the Drag Image is 100% Opaque
-//     Native DnD from HTML5 looks weird as it is semi-transparent with some gradient
+//     In Chrome, Native DnD from HTML5 looks weird as it is semi-transparent with some gradient
+//     In Edge, the drag image also looks different.
 
 // use destructuring to capture all the properties passed from upper component
 //const NoobForm = ({containerWidth, controls, layoutProps, eventCallbacks}) => {
@@ -25,6 +26,9 @@ class NoobForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // Possible optimization: save all the DOM elements of the controls to the state
+            // Because while resizing, there is a need to find all control Id's using DOM query
+            // Maybe get a fresh copy of all DOM elements during mousedown of the resizer
             resizingControlId: null
         };
         this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -69,13 +73,15 @@ class NoobForm extends React.Component {
 
     }
 
+    // While resizing a big control (width/height > 1), its internal landing pads will be displayed as visual cue for the user.
+    // If the control is resized smaller during dragging, only the landing pads that are covered ny the mouse position will be highlighted
     checkLandingPadOverlap(resizingControlId, rectContainer, rectResizing) {
         // will only take effect if the resizing rect's height or width is smaller than the container
-        if (rectContainer.width <= rectResizing.width && 
-            rectContainer.height <= rectResizing.height) {
-                //this.removeAllLandingPadPotentialDrops();
-                //return;
-        }    
+        // if (rectContainer.width <= rectResizing.width && 
+        //     rectContainer.height <= rectResizing.height) {
+        //         this.removeAllLandingPadPotentialDrops();
+        //         return;
+        // }    
         
         let landingPadsDom = this.findLandingPadsByParentControl(resizingControlId);
         //console.log('[DEBUG] checkLandingPadOverlap...' + landingPadsDom.length);
@@ -92,7 +98,10 @@ class NoobForm extends React.Component {
         });
     }
 
+    // Maybe no need to call this.
+    // Since the landing pad elements are only rendered if there is a resizing element
     removeAllLandingPadPotentialDrops() {
+        // TODO: don't search the entire document. Supply the designer root element only
         let landingPadPotDrops = document.getElementsByClassName('landingPadPotentialDrop');
         if (landingPadPotDrops.length > 0) {
             // console.log('[DEBUG] removeAllLandingPadPotentialDrops' + landingPadPotDrops.length);
@@ -105,10 +114,20 @@ class NoobForm extends React.Component {
     }
 
     findLandingPadsByParentControl(controlId) {
+        // TODO: don't search the entire document. Supply the designer root element only
         let ret = {};
         let keyQuery = `[parentctrlid="ctrl${controlId}"]`;
         return document.querySelectorAll(keyQuery);
     }
+
+    // bFindall: true to find all; false to return just the first one
+    // findControlByClassName(rootElem, strClass) {
+    //     if (!rootElem || !strClass) {
+    //         return null;
+    //     }
+
+    //     return rootElem.getElementsByClassName(strClass);
+    // }
 
     // also works
     hasOverlapComplicated(rect1, rect2) {
@@ -139,23 +158,13 @@ class NoobForm extends React.Component {
         //console.log("   [hasOverlap] has overlap");
         return true;
     }
-/*
-    hasOverlapOrig(rect1, rect2) {
-        let buffer = 20;
-        //let horzCollision = (rect2.left >= rect1.left) && (rect2.left <= rect1.right);
-        let horzCollision = (rect2.left <= rect1.left && rect1.left <= rect2.right) || 
-                            (rect2.left <= rect1.right && rect1.right <= rect2.right);
-        // let vertCollision = (rect2.top >= rect1.top) && (rect2.top <= rect1.bottom);
-        let vertCollision = (rect2.top <= rect1.top && rect1.top <= rect2.bottom) || 
-                        (rect2.top <= rect1.bottom && rect1.bottom <= rect2.bottom);
-
-        console.log(`   [DEBUG] Horz: ${horzCollision}, Vert: ${vertCollision}, FINAL: ${horzCollision && vertCollision}`);
-        return horzCollision && vertCollision;
-    }
-*/
     
+    // While resizing the control, if it overlaps with other controls,
+    // those controls will be highlighted as potential landing spots.
     checkOverlaps(resizingControlId, rectResizing, controlIds) {
         //console.log(`[DEBUG][checkOverlaps][${resizingControlId}][L-R: ${rectResizing.left} - ${rectResizing.right}][T-B: ${rectResizing.top} - ${rectResizing.bottom}]`);
+        var foundInvalid = false;
+        var overlapsFound = [];
         controlIds.forEach((controlId) => {       
             if (resizingControlId === controlId) {
                 return; // continue
@@ -166,26 +175,42 @@ class NoobForm extends React.Component {
             }
     
             let rectContainer = domControl.container.getClientRects()[0];
-    
-            if (controlId === 5) {
-                //console.log(`[DEBUG][CTRL5][L-R: ${rectContainer.left} - ${rectContainer.right}][T-B: ${rectContainer.top} - ${rectContainer.bottom}]`);
-            }
             
             //console.log(`[DEBUG][${controlId}][L-R: ${rectContainer.left} - ${rectContainer.right}][T-B: ${rectContainer.top} - ${rectContainer.bottom}]`);
             let isOverlap = this.hasOverlap(rectResizing, rectContainer);
             if (isOverlap) {
                 domControl.container.classList.add('potentialResizeDrop');
+                overlapsFound.push(domControl);
+                // Check if it's an invalid overalp (non empty control)
+                if (!!domControl.container.dataset.controltype) {
+                    foundInvalid = true;
+                }
             }
-            else if (domControl.container.classList.contains('potentialResizeDrop')) {
-    
+            else if (domControl.container.classList.contains('potentialResizeDrop')) {    
                 domControl.container.classList.remove('potentialResizeDrop');
+                domControl.container.classList.remove('potentialResizeDrop-invalid');
             }                    
         } );
+
+        // console.log("Overlaps found: ", overlapsFound.length);
+        // If there is an invalid drop target, mark all potential drops as invalid
+        if (foundInvalid) {
+            debugger
+            overlapsFound.forEach(dom => {
+                dom.container.classList.add('potentialResizeDrop-invalid');
+            })
+        }
+        else {
+            overlapsFound.forEach(dom => {
+                dom.container.classList.remove('potentialResizeDrop-invalid');
+            })
+        }
     }
 
-    onMouseLeave() {        
+    onMouseLeave(event, controlIds) {
         if (this.state.resizingControlId) {
             console.log('onMouseLeave while resizing');
+            this.clearAllTemporaryClasses(controlIds);
             this.setState({
                 resizingControlId: null
             });    
@@ -194,19 +219,114 @@ class NoobForm extends React.Component {
 
     onResizerMouseDown(event, controlId) {
         console.log('mouse down resizer...', controlId, event);
+        // Note: setState will cause the entire form and all the controls to rerender
         this.setState({
             resizingControlId: controlId
         });    
     }
 
-    onMouseUp(event, controlId) {
-        if (this.state.resizingControlId) {
-            console.log('mouseup while resizing');
+    // Revert all class changes done during drag operation for resize
+    clearAllTemporaryClasses(controlIds) {
+        controlIds.forEach( currCtrlId => {
+            let domControl = this.findControlDomById(currCtrlId);
+            if (domControl === null) {
+                return;
+            }
+    
+            domControl.container.classList.remove('potentialResizeDrop');
+            domControl.container.classList.remove('potentialResizeDrop-invalid');
+    
+            if (currCtrlId === this.state.resizingControlId) {
+                domControl.container.classList.remove('resizingControl');
+                domControl.content.classList.remove('resizingContent');
+                domControl.content.style.height = domControl.container.style.height;
+                domControl.content.style.width = domControl.container.style.width;    
+            }
+        });
+    }
+
+    // For handling resize only
+    onMouseUp(event, controlIds) {
+        if (!this.state.resizingControlId) {
+            return;
+        }
+        console.log('mouseup while resizing');
+
+        // Calling setState will re-render all the controls
+        // But during re-render, if we manually added some classes to the DOM elements, they will still be there during rerender
+        // So we still to manually remove all the temprary class names we added during dragging
+        //this.removeAllLandingPadPotentialDrops();
+
+        // if there is an overlap with a nonempty control, do not allow it!
+        let formElem = document.getElementById("noobForm");
+        let hasInvalidOverlaps = formElem.getElementsByClassName('potentialResizeDrop-invalid').length > 0;
+        if (hasInvalidOverlaps) {
+            console.log('hasInvalidOverlaps...cancelling resize operation');
+            this.clearAllTemporaryClasses(controlIds);
             this.setState({
                 resizingControlId: null
-            });    
+            });
+            return;
         }
+
+        let newSize = this.calculateNewSize(this.state.resizingControlId);
+
+        this.clearAllTemporaryClasses(controlIds);
+        this.setState({
+            resizingControlId: null
+        });
+
+        // Fire an action to let the redux store know that a control has been resized
     }
+
+    findPotentialDrops() {
+        let retList = [];
+        retList.push(...document.getElementsByClassName("potentialResizeDrop"));
+        retList.push(...document.getElementsByClassName("landingPadPotentialDrop"));
+        return retList;
+    }
+
+    calculateNewSize(resizingControlId) {
+        // check how many of the controls have the 'potentialResizeDrop' class in their DOM
+        if (resizingControlId === null) {
+            return;
+        }
+        
+        console.log('[DEBUG][calculateNewSize]' + resizingControlId);
+    
+        let resizedControlDom = this.findControlDomById(resizingControlId);
+    
+        let domControls = this.findPotentialDrops();
+        if (!domControls || !resizedControlDom || domControls.length === 0) {
+            return null; // means control was not resized
+        }
+        
+        let maxX = 0;
+        let maxY = 0;
+            
+        // TODO: of syntax is not supported in Edge
+        for (let i = 0; i < domControls.length; i++) {
+            let currControl = domControls[i];
+            let currX = parseInt(currControl.dataset.layoutx);
+            let currY = parseInt(currControl.dataset.layouty);
+            if (currX && currX > maxX) {
+                maxX = currX;
+            }
+            if (currY && currY > maxY) {
+                maxY = currY;
+            }
+        };
+    
+        return {
+            // newCols: newX - resizedControlDom.container.dataset.layoutx - resizedControlDom.container.dataset.colspan + 1 + 1,
+            // newRows: newY - resizedControlDom.container.dataset.layouty - resizedControlDom.container.dataset.rowspan + 1 + 1,
+            // no need to include rowspan...we will eventually disallow resizing into a "blank control"
+            newCols: maxX - resizedControlDom.container.dataset.layoutx + 1,
+            newRows: maxY - resizedControlDom.container.dataset.layouty + 1,
+        }
+    
+    }
+    
 
     findControlDomById(controlId) {
         let ret = {};
@@ -225,6 +345,7 @@ class NoobForm extends React.Component {
     }
 
     createEmptyControl(inX, inY, id) {
+        // Return a 1x1 control
         return {
             w: 1,
             h: 1,
@@ -251,6 +372,10 @@ class NoobForm extends React.Component {
                 resizingControlId={this.state.resizingControlId}/>
     }
 
+    // Returns an array containing the flat coordinates of the specified control
+    // E.g. Control is x:0, y:0, w:3, h:2, layoutWidth:10
+    // return: [0,   1,  2,         --> first row
+    //          10, 11, 12]         --> second row
     getFills(control, layoutWidth) {
         let retList = [];
         for (var iRow = 0; iRow < control.h; iRow++) {
@@ -318,9 +443,10 @@ class NoobForm extends React.Component {
         console.log('[DEBUG][NoobSection] Rendering...');
     
         return (
-        <div className="noobForm" 
-            onMouseLeave={this.onMouseLeave}
-            onMouseUp={this.onMouseUp}
+        <div id="noobForm"
+            className="noobForm" 
+            onMouseLeave={(e) => {this.onMouseLeave(e, controlIds)}}
+            onMouseUp={(e) => {this.onMouseUp(e, controlIds)}}
             onMouseMove={(e) => {this.onMouseMove(e, controlIds)}}
             style={divStyle}>
             {controlsJsx}            

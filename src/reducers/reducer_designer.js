@@ -13,7 +13,7 @@ const generateDefaultLayout = () => {
   // [2] Description
   {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext', 
       data: {
-          label: 'Description',
+          label: 'Description:',
           placeholder: 'Enter Description...'
       }},
 
