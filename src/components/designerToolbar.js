@@ -36,7 +36,12 @@ const DesignerToolbar = (props) => {
             
         </div>
 
-        <div className="rightTb"></div>
+        <div className="rightTb">
+            <div className="toolbarButton toolbarButton-disabled">
+                <i className="ui icon eye"/>
+                Hold to Preview
+            </div>            
+        </div>
         
     </div>
 }

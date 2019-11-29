@@ -25,6 +25,8 @@
 .rightTb {
     flex: 1;
     justify-content: flex-end;
+    display: flex;
+    padding-right: 5px;
     /* border: 1px solid cyan; */
 }
 
@@ -40,8 +42,17 @@
     white-space: nowrap;
 }
 
+.toolbarButton-disabled{
+    cursor: default;
+    opacity: 0.5;
+}
+
 .toolbarButton:hover {
     background-color: lightblue;
+}
+
+.toolbarButton-disabled:hover {
+    background-color: lightgray;
 }
 
 .title {
