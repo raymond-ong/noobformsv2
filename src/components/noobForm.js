@@ -185,7 +185,9 @@ class NoobForm extends React.Component {
                 domControl.container.classList.add('potentialResizeDrop');
                 overlapsFound.push(domControl);
                 // Check if it's an invalid overalp (non empty control)
-                if (!!domControl.container.dataset.controltype) {
+                if (!!domControl.container.dataset.controltype || 
+                    parseInt(domControl.container.dataset.layoutw) > 1 ||
+                    parseInt(domControl.container.dataset.layouth) > 1) {
                     foundInvalid = true;
                 }
             }
@@ -352,8 +354,7 @@ class NoobForm extends React.Component {
         };
     
         return {
-            // no need to include rowspan...we will eventually disallow resizing into a "blank control"
-            // if control is big, we will only use its 1x1 area
+            // no need to include rowspan. There is a validation that we can only resize (even if it's blank) if control is 1x1
             w: maxX - resizedControlDom.container.dataset.layoutx + 1,
             h: maxY - resizedControlDom.container.dataset.layouty + 1,
         }
