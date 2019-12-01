@@ -8,9 +8,16 @@ const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
-const canDropMe = (controlData) => {
-    // console.log('canDropMe', controlData);
+const canDropMe = (controlData, draggedItem, monitor, parentCheckDroppable) => {
+    //console.log('canDropMe', controlData, draggedItem.type, draggedItem.minW, draggedItem.minH);
+    if (!monitor.isOver()) {
+        return false;
+    }
+    //console.log('canDropMe', controlData, draggedItem.type, monitor.isOver());
+    let canDrop = parentCheckDroppable(controlData, draggedItem);
+    return canDrop;
     // Note: this function will be called for each mouse movement, so make sure this is efficient
+    // But, unless there is a change in the value, there won't be a re-render.
     // A.    If it's a tool item, just check whether it's empty or not
     // A.1   But if the default dimension of the tool is big and:
     // A.1.1 If I am the hovered control, and the surrounding controls is not enough, return false
@@ -20,8 +27,9 @@ const canDropMe = (controlData) => {
     // Based on experiment, there is not a lot of renders during drag unless there is a change in canDrop() value.
 
     // B.  [TODO] If it's a control, make sure their dimensions are the same
+    
 
-    return !controlData.type;
+    //return !controlData.type;
 }
 
 const renderResizer = (controlId, onResizerMouseDown) => {
@@ -38,6 +46,8 @@ const renderResizer = (controlId, onResizerMouseDown) => {
         );
 }
 
+// Do not use style as backColor
+// Add remove classes instead, so that siblings that can become drop targets too can be easily styled
 const getBackColor = (isOver, canDrop) => {
     let backColor = 'white';
     if (isOver) {
@@ -87,23 +97,27 @@ function createLandingPads(rowSpan, colSpan, domParentCtrlId, parentX, parentY) 
     return retList;
 }
 
-const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
+const NoobControl = ({controlData, resizerMouseDown, resizingControlId, 
+                    parentCheckDroppable, parentCallbackOverChanged}) => {
 
     //console.log('render NoobControl', controlData.i);
     // [a] Hooks setup for drop
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: [ToolItemDragTypes.TOOLITEM, ControlDragTypes.CONTROL],
-        canDrop: () => canDropMe(controlData),
+        canDrop: (item, monitor) => canDropMe(controlData, item, monitor, parentCheckDroppable),
         drop: () => console.log('dropped me @', controlData),
         collect: monitor => ({
+            // these are the fields that will be added to the component's props
+            // downside is that it needs to execute the function
+            //isOver: parentCallbackOverChanged(monitor, controlData)
             isOver: !!monitor.isOver(),
-            canDrop: !!monitor.canDrop()
+            //canDrop: !!monitor.canDrop()
 		}),
       })
 
     // [b] Preparations
     let classNames = 'noobControl';
-
+    let noobControlDropInfo = {};
     let ctrlStyle = {
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content
@@ -115,14 +129,14 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId}) => {
         'backgroundColor': getBackColor(isOver, canDrop)
     };
 
-    // access these in Javascript by x.dataset.layoutx (Note: lowercase)
+    // access these in Javascript by x.dataset.layoutx (Note: all lowercase - javascript/html rule)
     // Purpose: convenience when processing resize operations
     let layoutPos = {
         'data-layoutx': controlData.x,
         'data-layouty': controlData.y,
         'data-layouth': controlData.h,
         'data-layoutw': controlData.w,
-        'data-controlType': controlData.type,
+        'data-controltype': controlData.type,
     }
     let domCtrlId = "ctrl"+controlData.i;
     

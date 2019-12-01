@@ -32,6 +32,10 @@
     opacity: 0.5;
 }
 
+.controlPotentialDrop {
+    background-color: lightgreen !important;
+}
+
 /* For the Resizer */
 
 .resizer {

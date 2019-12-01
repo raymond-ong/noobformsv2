@@ -9,7 +9,8 @@ export const toolBoxItems = [
          name: 'section',
          displayName: 'Section',
          icon: 'wpforms',
-         category: 'common'
+         category: 'common',
+         minW: 12, minH:1,
     },    
     {
          name: 'textbox',
@@ -21,7 +22,8 @@ export const toolBoxItems = [
          name: 'combo',
          displayName: 'Combobox',
          icon: 'caret square down outline',
-         category: 'forms'
+         category: 'forms',
+         minW: 3, minH:1,
     },    
     {
          name: 'checkbox',
@@ -33,7 +35,8 @@ export const toolBoxItems = [
          name: 'richtext',
          displayName: 'Rich Text',
          icon: 'paint brush',
-         category: 'forms'
+         category: 'forms',
+         minW: 3, minH:3,
     },                
     {
          name: 'numeric',

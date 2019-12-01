@@ -11,7 +11,7 @@ const generateDefaultLayout = () => {
   }},
 
   // [2] Description
-  {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext', 
+  {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext',       
       data: {
           label: 'Description:',
           placeholder: 'Enter Description...'
@@ -77,7 +77,7 @@ const dropdownOptions = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 12
+  rows: 40
 }
 
 const defaultState = {

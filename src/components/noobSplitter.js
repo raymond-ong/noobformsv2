@@ -175,13 +175,13 @@ class NoobSplitter extends Component {
             cursor="col-resize"
             gutter={this.createGutter}
             >
-            <div className="content-left content" style={{backgroundColor: '#ffeecc'}}>
+            <div className="content-left content" >
                 {/* <ToolPanel/> */}
                 {/* <ScrollTracker/> */}
                 {child1}
             </div>
 
-            <div className="content" style={{backgroundColor: '#f0f0f0', width: "100%", overflow: "auto"}}>
+            <div className="content" style={{width: "100%", overflow: "auto"}}>
                 {/* <DocumentSample/> */}
                 {child2}
             </div>

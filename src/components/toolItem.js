@@ -35,7 +35,11 @@ const toolItem = (props) => {
 const ToolItem = (props) => {
 
     const [{ isDragging }, drag] = useDrag({
-        item: { type: ToolItemDragTypes.TOOLITEM },
+        item: {
+            type: ToolItemDragTypes.TOOLITEM,
+            minW: props.controlType.minW,
+            minH: props.controlType.minH,
+        },
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),
         }),

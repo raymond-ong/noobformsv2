@@ -239,6 +239,7 @@ class NoobForm extends React.Component {
     
             domControl.container.classList.remove('potentialResizeDrop');
             domControl.container.classList.remove('potentialResizeDrop-invalid');
+            domControl.container.classList.remove('controlPotentialDrop');
     
             if (currCtrlId === this.state.resizingControlId) {
                 domControl.container.classList.remove('resizingControl');
@@ -389,6 +390,71 @@ class NoobForm extends React.Component {
         }        
     }
 
+    // Callback triggered by the control, to check if it's OK to drop
+    // Checks:
+    // - Enough free space is available, if the control is bigger than 1x1
+    // - Highlights the siblings that will be potential drop targets also
+    // Hope this function is not too slow, as this function can be called many times during duration of Drag
+    checkDroppable(controlData, draggedItem) {
+        if (!draggedItem.minH || !draggedItem.minW) {
+            console.log('checkDroppable: there is no minimum Dimension, so allow it');
+            return true;
+        }
+        
+        let retVal = !controlData.type;
+        let designerDom = document.getElementById('noobForm');
+        let potentialDropsPrevious = designerDom.getElementsByClassName('controlPotentialDrop');
+        let potentialDropsNow = []; // gather first and highlight only when all controls are found
+        console.log('checkDroppable', controlData, draggedItem);
+        // Check horizontal siblings
+        for (let x = draggedItem.minW - 1; x >= 0; x--) {
+            debugger
+            if (retVal === false) {
+                break;
+            }
+
+            for (let y = draggedItem.minH - 1; y >= 0; y--) {
+                // start with the rightmost; fail faster
+                let query = designerDom.querySelector(`div[data-layouty="${y + controlData.y}"][data-layoutx="${x + controlData.x}"]`);       
+                if (!query) {
+                    console.log('   -> Did not find it', controlData, draggedItem);        
+                    potentialDropsNow = []
+                    retVal = false;
+                    break;
+                }
+
+                //query.classList.add('controlPotentialDrop');
+                potentialDropsNow.push(query);
+            }
+        }
+
+        potentialDropsNow.forEach(dom => {dom.classList.add('controlPotentialDrop')})
+
+        // Remove those that are no longer valid
+        // Since this is not a JS Arr
+        for (var i = 0; i < potentialDropsPrevious.length; i++) {
+            var prev = potentialDropsPrevious[i];
+            if (potentialDropsNow.indexOf(prev) >= 0) {
+                continue;
+            }
+            prev.classList.remove('controlPotentialDrop');
+        }
+
+        return true;
+    }
+
+    checkIsOver(monitor, controlData) {
+        console.log('checkIsOver', controlData, monitor);
+        let ret = !!monitor.isOver();
+        // if (!monitor.isOver()) {
+        //     return ret;
+        // }
+
+        // Remove
+
+        return ret;
+    }
+
     renderControl(control) {
         let ctrlStyle = {
             // set the minHeight instead of height. Height will make the height fixed regardless of the content.
@@ -402,6 +468,8 @@ class NoobForm extends React.Component {
         return <NoobControl 
                 key={control.i} 
                 controlData={control}
+                parentCheckDroppable={this.checkDroppable}
+                parentCallbackOverChanged={this.checkIsOver}
                 resizerMouseDown={this.onResizerMouseDown}
                 resizingControlId={this.state.resizingControlId}/>
     }

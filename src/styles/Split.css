@@ -79,5 +79,6 @@
 }
 
 .content {
-    overflow: auto
+    overflow: auto;
+    background: rgba(220, 220, 220, 0.5);
 }
