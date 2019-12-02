@@ -3,7 +3,7 @@
     outline: 1px solid blue;
 }
 
-.label {
+.controlLabel {
     font-weight: 800;
     background: rgba(220, 220, 220, 0.5);
 }

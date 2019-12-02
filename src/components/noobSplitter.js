@@ -108,7 +108,7 @@ class NoobSplitter extends Component {
 
     addRemoveContentTransition(bAdd) {
         // Adds or Removes transition effects from the content classes
-        let contentElems = document.getElementsByClassName('content');
+        let contentElems = document.getElementsByClassName('splitContent');
         for (let i = 0; i < contentElems.length; i++) {
             let elem = contentElems[i];
             if (bAdd) {
@@ -175,13 +175,13 @@ class NoobSplitter extends Component {
             cursor="col-resize"
             gutter={this.createGutter}
             >
-            <div className="content-left content" >
+            <div className="content-left splitContent" >
                 {/* <ToolPanel/> */}
                 {/* <ScrollTracker/> */}
                 {child1}
             </div>
 
-            <div className="content" style={{width: "100%", overflow: "auto"}}>
+            <div className="splitContent" style={{width: "100%", overflow: "auto"}}>
                 {/* <DocumentSample/> */}
                 {child2}
             </div>

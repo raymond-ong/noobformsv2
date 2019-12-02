@@ -91,7 +91,7 @@ class RichText extends React.Component {
 
         return (
             <div className={classNames}>
-                <div className="label">{this.props.data.label}</div>
+                <div className="controlLabel">{this.props.data.label}</div>
                 <div className="RichEditor-root">
                     <div className="toolBarStrip">
                         {/* Inline Controls: Bold, Italic etc */}

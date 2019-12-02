@@ -11,7 +11,7 @@ const noobCombo = (props) => {
         classNames += ' ctrl-selected'
     }
     return <div className={classNames}>
-        <div className="label">{props.data.label}</div>
+        <div className="controlLabel">{props.data.label}</div>
         <div className="dropdownWrapper">
             <Dropdown placeholder={props.data.placeholder}
             fluid

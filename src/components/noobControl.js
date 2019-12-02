@@ -113,7 +113,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         'gridRowEnd': 'span ' + controlData.h,
         'gridColumnEnd': 'span ' + controlData.w,        
     };
-    // Highlighting to green is handled noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd
+    // Highlighting to green is handled noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd.
     if (isOver && !canDrop) {
         ctrlStyle.backgroundColor = 'pink';
     }

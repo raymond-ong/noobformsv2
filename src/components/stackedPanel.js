@@ -14,10 +14,10 @@ const stackedPanel = (props) => {
             gutterSize={8}
             cursor="col-resize"
             >
-            <div id="homeLeft" className="content" style={{backgroundColor: '#ffeecc'}}>
+            <div id="homeLeft" className="splitContent" style={{backgroundColor: '#ffeecc'}}>
             Hello
             </div>                
-            <div id="homeRight" className="content" style={{backgroundColor: '#D0D0D0'}}>
+            <div id="homeRight" className="splitContent" style={{backgroundColor: '#D0D0D0'}}>
                 {/* <DocumentSample/> */}
                 Hi
             </div>

@@ -24,7 +24,7 @@
     cursor: ew-resize;    
 }
 
-.content,
+.splitContent,
 .gutter.gutter-horizontal {
     height: 100%;
     float: left;
@@ -78,7 +78,7 @@
     visibility: visible;
 }
 
-.content {
+.splitContent {
     overflow: auto;
     background: rgba(220, 220, 220, 0.5);
 }
