@@ -4,6 +4,7 @@ import NoobControl from './noobControl';
 import {connect} from 'react-redux';
 import { bindActionCreators } from "redux";
 import { updateLayout } from '../actions/index';
+import { throwStatement } from '@babel/types';
 
 const ROW_HEIGHT = 50;
 const CONTROL_PADDING = 20;
@@ -252,7 +253,9 @@ class NoobForm extends React.Component {
 
     // For handling resize only
     onMouseUp(event, controlIds) {
+        debugger
         if (!this.state.resizingControlId) {
+            this.clearAllTemporaryClasses(controlIds);
             return;
         }
         console.log('mouseup while resizing');
@@ -403,13 +406,10 @@ class NoobForm extends React.Component {
     // - Highlights the siblings that will be potential drop targets also
     // Hope this function is not too slow, as this function can be called many times during duration of Drag
     // Return: true or false -- will affect the mouse cursor (handled by react dnd)
-    // Other functions: highlight cells red or green
+    // Other functions: highlight cells green if valid. If invalid, simply returns false.
     // Assumption controlData isOver() === true
-    // Design note: handle all the highlighting in this function to centralize the changes 
-    // (for 1x1 controls, it's also possible to handle highlighting in the render method of control by checking canDrop and isOver, 
-    // but purpose is to manage them all in 1 function)
-    // What this function does not do: If a cell was highlighted green or red and mouseUp was performed, the highlights are still there
-    // Handle mouseUp in other functions
+    // Design note: We cannot handle highlighting to red for invalids in this function because there is not way for us to 'erase' red highlights here.
+    // We don't need to 'erase' green highlights upon mouseUp because the reducer will be called to re-render the control.
     checkDroppable(controlData, draggedItem) {
         let retVal = !controlData.type;
         let minH = draggedItem.minH ? draggedItem.minH : 1;
@@ -418,7 +418,7 @@ class NoobForm extends React.Component {
         let designerDom = document.getElementById('noobForm');
         let potentialDropsPrevious = designerDom.getElementsByClassName('controlPotentialDrop');
         let potentialDropsNow = []; // gather first and highlight only when all controls are found
-        //console.log('checkDroppable', controlData, draggedItem);
+        console.log('checkDroppable', controlData.i);
         // [1] Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
         for (let x = minW - 1; x >= 0; x--) {
             if (retVal === false) {
@@ -450,21 +450,6 @@ class NoobForm extends React.Component {
                 continue;
             }
             prev.classList.remove('controlPotentialDrop');
-        }
-
-        // [4] Remove the previous red class        
-        let previousInvalidControls = designerDom.getElementsByClassName('potentialDrop-invalid');
-        for (var i = 0; i < previousInvalidControls.length; i++) {
-            let prev = previousInvalidControls[i];
-            prev.classList.remove('potentialDrop-invalid');
-        }
-
-        // [5] Set the background color to red if invalid, 
-        if (!retVal) {
-            let domControlData = document.getElementById('ctrl' + controlData.i);
-            if (!!domControlData) {
-                domControlData.classList.add('potentialDrop-invalid');
-            }
         }
 
         return retVal;

@@ -46,22 +46,6 @@ const renderResizer = (controlId, onResizerMouseDown) => {
         );
 }
 
-// Do not use style as backColor
-// Add remove classes instead, so that siblings that can become drop targets too can be easily styled
-const getBackColor = (isOver, canDrop) => {
-    let backColor = 'white';
-    if (isOver) {
-        if (canDrop) {
-            backColor = 'lightgreen'
-        }
-        else {
-            backColor = 'pink'
-        }
-    }
-
-    return backColor;
-}
-
 const renderLandingPads = (controlData, resizingControlId) => {
     // if this control is not resizing, no need to render the landing pads
     if (resizingControlId !== controlData.i) {
@@ -106,12 +90,14 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         accept: [ToolItemDragTypes.TOOLITEM, ControlDragTypes.CONTROL],
         canDrop: (item, monitor) => canDropMe(controlData, item, monitor, parentCheckDroppable),
         drop: () => console.log('dropped me @', controlData),
+        didDrop: () => console.log('didDrop'),
+        getDropResult: () => console.log('getDropResult'),
         collect: monitor => ({
             // these are the fields that will be added to the component's props
             // downside is that it needs to execute the function
             //isOver: parentCallbackOverChanged(monitor, controlData)
             isOver: !!monitor.isOver(),
-            //canDrop: !!monitor.canDrop()
+            canDrop: !!monitor.canDrop()
 		}),
       })
 
@@ -125,9 +111,12 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         // Maybe no need to include padding and grid gap
         'minHeight': (ROW_HEIGHT * controlData.h), 
         'gridRowEnd': 'span ' + controlData.h,
-        'gridColumnEnd': 'span ' + controlData.w,
-        // 'backgroundColor': getBackColor(isOver, canDrop)
+        'gridColumnEnd': 'span ' + controlData.w,        
     };
+    // Highlighting to green is handled noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd
+    if (isOver && !canDrop) {
+        ctrlStyle.backgroundColor = 'pink';
+    }
 
     // access these in Javascript by x.dataset.layoutx (Note: all lowercase - javascript/html rule)
     // Purpose: convenience when processing resize operations
@@ -149,6 +138,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             className={classNames} 
             style={ctrlStyle}
             ref={drop}
+            onMouseUp={() => {console.log('onMouseUp control level')}}
             {...layoutPos}
             >
         {renderLandingPads(controlData, resizingControlId)}
