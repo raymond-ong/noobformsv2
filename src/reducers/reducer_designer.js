@@ -77,7 +77,7 @@ const dropdownOptions = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 40
+  rows: 12
 }
 
 const defaultState = {
@@ -106,7 +106,7 @@ const updateLayout = (layout, updatedControls) => {
     }
   })
 
-  // Sort the controls based on the "flat coordinates"
+  // TODO Sort the controls based on the "flat coordinates"
 }
 
 export default function(state = defaultState, action) {

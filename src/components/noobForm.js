@@ -281,6 +281,11 @@ class NoobForm extends React.Component {
             resizingControlId: null
         });
 
+        // Do this check only after calling clearAllTemporaryClasses() because that is essential regardless if we resize or not
+        if (!newSize) {
+            return;
+        }
+
         // Fire an action to let the redux store know that a control has been resized
         let resizedControlPojo = this.findControlPojo(this.state.resizingControlId);
         if (resizedControlPojo) {
@@ -326,7 +331,7 @@ class NoobForm extends React.Component {
     calculateNewSize(resizingControlId) {
         // check how many of the controls have the 'potentialResizeDrop' class in their DOM
         if (resizingControlId === null) {
-            return;
+            return null;
         }
         
         console.log('[DEBUG][calculateNewSize]' + resizingControlId);
@@ -335,6 +340,7 @@ class NoobForm extends React.Component {
     
         let domControls = this.findPotentialDrops();
         if (!domControls || !resizedControlDom || domControls.length === 0) {
+            console.log('[DEBUG][calculateNewSize] Cannot find potential drops. Maybe the control was not resized');
             return null; // means control was not resized
         }
         
@@ -390,31 +396,37 @@ class NoobForm extends React.Component {
         }        
     }
 
-    // Callback triggered by the control, to check if it's OK to drop
+    // Callback triggered by the control, to check if it's OK to drop the draggedItem into the controlData
+    // Reason to handle highlighting @parent side: multiple cells can be hihglighted for bigger controls (minH or minW > 1)
     // Checks:
     // - Enough free space is available, if the control is bigger than 1x1
     // - Highlights the siblings that will be potential drop targets also
     // Hope this function is not too slow, as this function can be called many times during duration of Drag
+    // Return: true or false -- will affect the mouse cursor (handled by react dnd)
+    // Other functions: highlight cells red or green
+    // Assumption controlData isOver() === true
+    // Design note: handle all the highlighting in this function to centralize the changes 
+    // (for 1x1 controls, it's also possible to handle highlighting in the render method of control by checking canDrop and isOver, 
+    // but purpose is to manage them all in 1 function)
+    // What this function does not do: If a cell was highlighted green or red and mouseUp was performed, the highlights are still there
+    // Handle mouseUp in other functions
     checkDroppable(controlData, draggedItem) {
-        if (!draggedItem.minH || !draggedItem.minW) {
-            console.log('checkDroppable: there is no minimum Dimension, so allow it');
-            return true;
-        }
-        
         let retVal = !controlData.type;
+        let minH = draggedItem.minH ? draggedItem.minH : 1;
+        let minW = draggedItem.minW ? draggedItem.minW : 1;
+                
         let designerDom = document.getElementById('noobForm');
         let potentialDropsPrevious = designerDom.getElementsByClassName('controlPotentialDrop');
         let potentialDropsNow = []; // gather first and highlight only when all controls are found
-        console.log('checkDroppable', controlData, draggedItem);
-        // Check horizontal siblings
-        for (let x = draggedItem.minW - 1; x >= 0; x--) {
-            debugger
+        //console.log('checkDroppable', controlData, draggedItem);
+        // [1] Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
+        for (let x = minW - 1; x >= 0; x--) {
             if (retVal === false) {
                 break;
             }
 
-            for (let y = draggedItem.minH - 1; y >= 0; y--) {
-                // start with the rightmost; fail faster
+            for (let y = minH - 1; y >= 0; y--) {
+                // start with the rightmost and bottom-most; fail faster
                 let query = designerDom.querySelector(`div[data-layouty="${y + controlData.y}"][data-layoutx="${x + controlData.x}"]`);       
                 if (!query) {
                     console.log('   -> Did not find it', controlData, draggedItem);        
@@ -423,24 +435,39 @@ class NoobForm extends React.Component {
                     break;
                 }
 
-                //query.classList.add('controlPotentialDrop');
                 potentialDropsNow.push(query);
             }
         }
 
+        // [2] Highlight the neighbours green
         potentialDropsNow.forEach(dom => {dom.classList.add('controlPotentialDrop')})
 
-        // Remove those that are no longer valid
-        // Since this is not a JS Arr
+        // [3] Remove those that are no longer valid (highlighted green from previous call)
+        // Since this is not a JS Arr, use classic for-loop
         for (var i = 0; i < potentialDropsPrevious.length; i++) {
-            var prev = potentialDropsPrevious[i];
+            let prev = potentialDropsPrevious[i];
             if (potentialDropsNow.indexOf(prev) >= 0) {
                 continue;
             }
             prev.classList.remove('controlPotentialDrop');
         }
 
-        return true;
+        // [4] Remove the previous red class        
+        let previousInvalidControls = designerDom.getElementsByClassName('potentialDrop-invalid');
+        for (var i = 0; i < previousInvalidControls.length; i++) {
+            let prev = previousInvalidControls[i];
+            prev.classList.remove('potentialDrop-invalid');
+        }
+
+        // [5] Set the background color to red if invalid, 
+        if (!retVal) {
+            let domControlData = document.getElementById('ctrl' + controlData.i);
+            if (!!domControlData) {
+                domControlData.classList.add('potentialDrop-invalid');
+            }
+        }
+
+        return retVal;
     }
 
     checkIsOver(monitor, controlData) {

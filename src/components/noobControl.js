@@ -126,7 +126,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         'minHeight': (ROW_HEIGHT * controlData.h), 
         'gridRowEnd': 'span ' + controlData.h,
         'gridColumnEnd': 'span ' + controlData.w,
-        'backgroundColor': getBackColor(isOver, canDrop)
+        // 'backgroundColor': getBackColor(isOver, canDrop)
     };
 
     // access these in Javascript by x.dataset.layoutx (Note: all lowercase - javascript/html rule)

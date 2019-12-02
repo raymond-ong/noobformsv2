@@ -85,6 +85,9 @@
 .potentialResizeDrop-invalid {
     background-color: pink !important;
 }
+.potentialDrop-invalid {
+    background-color: pink !important;
+}
 
 
 /* For the Landing Pad */
@@ -109,6 +112,4 @@
 
 .landingPadPotentialDrop {
     background: lightgreen;
-    /* opacity: 0.5; */
-    /* z-index: 100; */
 }
