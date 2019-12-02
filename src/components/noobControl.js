@@ -82,16 +82,14 @@ function createLandingPads(rowSpan, colSpan, domParentCtrlId, parentX, parentY) 
 }
 
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId, 
-                    parentCheckDroppable, parentCallbackOverChanged}) => {
+                    parentCheckDroppable, parentDropCallback}) => {
 
     //console.log('render NoobControl', controlData.i);
     // [a] Hooks setup for drop
     const [{ isOver, canDrop }, drop] = useDrop({
         accept: [ToolItemDragTypes.TOOLITEM, ControlDragTypes.CONTROL],
         canDrop: (item, monitor) => canDropMe(controlData, item, monitor, parentCheckDroppable),
-        drop: () => console.log('dropped me @', controlData),
-        didDrop: () => console.log('didDrop'),
-        getDropResult: () => console.log('getDropResult'),
+        drop: (droppedItem) => parentDropCallback(controlData, droppedItem),
         collect: monitor => ({
             // these are the fields that will be added to the component's props
             // downside is that it needs to execute the function

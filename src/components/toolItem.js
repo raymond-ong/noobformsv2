@@ -39,6 +39,7 @@ const ToolItem = (props) => {
             type: ToolItemDragTypes.TOOLITEM,
             minW: props.controlType.minW,
             minH: props.controlType.minH,
+            toolItemTypeName: props.controlType.name
         },
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),

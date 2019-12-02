@@ -31,12 +31,12 @@ const generateDefaultLayout = () => {
   }},
 
   // [6] User
-  //{i: 'user0', x: 6, y: 4, w: 3, h: 1},
-  {i: 'combo1', x: 6, y: 4, w: 3, h: 1, type: 'combo', data: {
-      placeholder: 'Please Select...',
-      options: dropdownOptions,
-      label: 'Please select:'
-  }},    
+  {i: 'user0', x: 6, y: 4, w: 3, h: 1, type: 'user'},
+  // {i: 'combo1', x: 6, y: 4, w: 3, h: 1, type: 'combo', data: {
+  //     placeholder: 'Please Select...',
+  //     options: dropdownOptions,
+  //     label: 'Please select:'
+  // }},    
 
   // [7] Attachments
   {i: 'attach0', x: 9, y: 1, w: 3, h: 2,type: 'attachment'},
@@ -75,6 +75,12 @@ const dropdownOptions = [
   { key: 'ux', text: 'User Experience', value: 'ux' },
 ];
 
+const dropdownOptionsFew = [
+  { key: 'apple', text: 'Apple', value: 'apple' },
+  { key: 'banana', text: 'Banana', value: 'banana' },
+  { key: 'carrot', text: 'Carrot', value: 'carrot' },
+];
+
 const defaultLayoutData = {
   columns: 12,
   rows: 12
@@ -88,6 +94,22 @@ const defaultState = {
     layoutData: defaultLayoutData
 }
 
+const defaultControlData = {
+  'section': {
+    title: 'New Section',
+    level: 1
+  },
+  'richtext': {
+    label: 'Rich Text:',
+    placeholder: 'Enter Value...'
+  },
+  'combo': {
+    placeholder: 'Please Select...',
+    options: dropdownOptionsFew,
+    label: 'Combobox:'
+  }
+}
+
 const updateLayout = (layout, updatedControls) => {
   // updatedControls is an array of controls
   // it may contain existing controls or "empty" controls that have been resized
@@ -99,6 +121,7 @@ const updateLayout = (layout, updatedControls) => {
     let findIndex = layout.findIndex(layoutCtrl => layoutCtrl.i === control.i);
     if (findIndex === -1) {
       // means we need to create a new control
+      control.data = defaultControlData[control.type];
       layout.push(control);
     }
     else {
@@ -123,10 +146,13 @@ export default function(state = defaultState, action) {
         selectedControlId: action.payload
       };
     case UPDATE_DESIGNER_LAYOUT:
+        debugger
         let updatedControls = action.payload;
         let newState = {
           ...state,          
         };
+        // Need to re-initialize the layout array too, otherwise formDesignerContent won't re-render
+        newState.layout = [...state.layout];
 
         updateLayout(newState.layout, updatedControls);
 

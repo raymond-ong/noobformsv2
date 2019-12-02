@@ -39,6 +39,7 @@ class NoobForm extends React.Component {
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onResizerMouseDown = this.onResizerMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onDropControl = this.onDropControl.bind(this);
     }
 
     // for handling resizing operations
@@ -418,7 +419,7 @@ class NoobForm extends React.Component {
         let designerDom = document.getElementById('noobForm');
         let potentialDropsPrevious = designerDom.getElementsByClassName('controlPotentialDrop');
         let potentialDropsNow = []; // gather first and highlight only when all controls are found
-        console.log('checkDroppable', controlData.i);
+        //console.log('checkDroppable', controlData.i);
         // [1] Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
         for (let x = minW - 1; x >= 0; x--) {
             if (retVal === false) {
@@ -455,16 +456,32 @@ class NoobForm extends React.Component {
         return retVal;
     }
 
-    checkIsOver(monitor, controlData) {
-        console.log('checkIsOver', controlData, monitor);
-        let ret = !!monitor.isOver();
-        // if (!monitor.isOver()) {
-        //     return ret;
-        // }
+    onDropControl(ctrlDest, itemDropped) {
+        
+        if (itemDropped.type === 'toolItem') {
+            this.handleToolItemDrop(ctrlDest, itemDropped);
+        }
+        else {
 
-        // Remove
+        }
+        this.props.updateLayout([]); 
+    }
 
-        return ret;
+    handleToolItemDrop(ctrlDest, itemDropped) {
+        console.log('handleToolItemDrop', ctrlDest, itemDropped);
+        // Fire an action to let the redux store know that a control has been added
+        this.props.updateLayout([{
+            i: 'ctrl'+ctrlDest.i,  // TODO: Generate an ID in reducer
+            type: itemDropped.toolItemTypeName,
+            x: ctrlDest.x,
+            y: ctrlDest.y,
+            w: !!itemDropped.minW ? itemDropped.minW : 1,
+            h: !!itemDropped.minH ? itemDropped.minH : 1,
+        }]); 
+    }
+
+    handleControlMove() {
+
     }
 
     renderControl(control) {
@@ -481,7 +498,7 @@ class NoobForm extends React.Component {
                 key={control.i} 
                 controlData={control}
                 parentCheckDroppable={this.checkDroppable}
-                parentCallbackOverChanged={this.checkIsOver}
+                parentDropCallback={this.onDropControl}
                 resizerMouseDown={this.onResizerMouseDown}
                 resizingControlId={this.state.resizingControlId}/>
     }
