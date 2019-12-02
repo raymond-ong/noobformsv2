@@ -1,0 +1,11 @@
+.myToast {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: larger;
+}
+
+.myToast-info {
+    /* background: rgba(0,0,0,0.9); */
+    background-color: #61abf1;
+    color:white;
+    border-radius: 5px;
+}
