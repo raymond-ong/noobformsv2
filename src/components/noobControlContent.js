@@ -19,7 +19,7 @@ const getContentDiv = (controlData) => {
     // Wrap the contents so that when resizing or moving, they will be together
     // Also this should be floated. We don't want to resize or move the parent
     let content = null;
-    switch(controlData.type) {
+    switch(controlData.ctrlType) {
         case 'section':
             content = <Section {...controlData}></Section>
             break;
@@ -33,7 +33,6 @@ const getContentDiv = (controlData) => {
             content = <div className="emptyControl"></div>
             break
         default:
-            //return <div>{controlData.i}</div>
             content = <div>{controlData.i}</div>
             break;
     }
@@ -43,8 +42,17 @@ const getContentDiv = (controlData) => {
 
 const NoobControlContent = (controlData) => {
     const [{ isDragging }, drag] = useDrag({
-        item: { type: ControlDragTypes.CONTROL },
-        canDrag: !!controlData.type, // Do not allow empty controls to be dragged
+        item: { 
+            ...controlData,
+            type: ControlDragTypes.CONTROL,
+            
+            // x: controlData.x,
+            // y: controlData.y,
+            // w: controlData.w,
+            // h: controlData.h,
+            // i: controlData.i
+        },
+        canDrag: !!controlData.ctrlType, // Do not allow empty controls to be dragged
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),
         }),

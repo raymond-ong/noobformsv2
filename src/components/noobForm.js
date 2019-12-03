@@ -4,6 +4,7 @@ import NoobControl from './noobControl';
 import {connect} from 'react-redux';
 import { bindActionCreators } from "redux";
 import { updateLayout } from '../actions/index';
+import {ControlDragTypes} from './noobControlContent';
 
 const ROW_HEIGHT = 50;
 const CONTROL_PADDING = 20;
@@ -39,6 +40,7 @@ class NoobForm extends React.Component {
         this.onResizerMouseDown = this.onResizerMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onDropControl = this.onDropControl.bind(this);
+        this.checkDroppable = this.checkDroppable.bind(this);
     }
 
     // for handling resizing operations
@@ -349,7 +351,6 @@ class NoobForm extends React.Component {
         let maxX = 0;
         let maxY = 0;
             
-        // TODO: of syntax is not supported in Edge
         for (let i = 0; i < domControls.length; i++) {
             let currControl = domControls[i];
             let currX = parseInt(currControl.dataset.layoutx);
@@ -366,8 +367,7 @@ class NoobForm extends React.Component {
             // no need to include rowspan. There is a validation that we can only resize (even if it's blank) if control is 1x1
             w: maxX - resizedControlDom.container.dataset.layoutx + 1,
             h: maxY - resizedControlDom.container.dataset.layouty + 1,
-        }
-    
+        }    
     }
     
 
@@ -398,6 +398,39 @@ class NoobForm extends React.Component {
         }        
     }
 
+    checkDroppable(controlData, draggedItem) {
+        if (draggedItem.type == ControlDragTypes.CONTROL) {
+            return this.checkDroppableControl(controlData, draggedItem);
+        }
+
+        return this.checkDroppableToolItem(controlData, draggedItem) 
+    }
+
+    checkDroppableControl(controlData, draggedItem) {
+        let retVal = true;
+        // If dragged to a different control of different dimension, do not allow
+        if (draggedItem.i !== controlData.i && !!controlData.ctrlType &&
+            (draggedItem.w !== controlData.w || draggedItem.h !== controlData.h)) {
+            retVal = false; // We just want to proceed removing the previous potential drops
+            console.log('checkDroppableControl: false agad', controlData.i);
+        }        
+
+        // if dragged to an empty space, make sure there is enough space
+        let potentialDropsNow = retVal ? this.getPotentialDrops(controlData, draggedItem.w, draggedItem.h) : []; 
+        retVal = potentialDropsNow.length > 0;
+
+        // [2] Highlight the neighbours green
+        potentialDropsNow.forEach(dom => {dom.classList.add('controlPotentialDrop')})
+
+        // [3] Remove those that are no longer valid (highlighted green from previous call)
+        // Since this is not a JS Arr, use classic for-loop
+        let designerDom = document.getElementById('noobForm');
+        let potentialDropsPrevious = designerDom.getElementsByClassName('controlPotentialDrop');
+        this.removePreviousPotentialDrops(potentialDropsPrevious, potentialDropsNow);
+
+        return retVal;
+    }
+
     // Callback triggered by the control, to check if it's OK to drop the draggedItem into the controlData
     // Reason to handle highlighting @parent side: multiple cells can be hihglighted for bigger controls (minH or minW > 1)
     // Checks:
@@ -409,40 +442,57 @@ class NoobForm extends React.Component {
     // Assumption controlData isOver() === true
     // Design note: We cannot handle highlighting to red for invalids in this function because there is not way for us to 'erase' red highlights here.
     // We don't need to 'erase' green highlights upon mouseUp because the reducer will be called to re-render the control.
-    checkDroppable(controlData, draggedItem) {
-        let retVal = !controlData.type;
+    checkDroppableToolItem(controlData, draggedItem) {
+        let retVal = !controlData.ctrlType; // If false, we just want to remove the previous highlights
         let minH = draggedItem.minH ? draggedItem.minH : 1;
         let minW = draggedItem.minW ? draggedItem.minW : 1;
                 
+        // [1] Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
+        // gather first and highlight only when all controls are found
+        let potentialDropsNow = retVal ? this.getPotentialDrops(controlData, minW, minH) : []; 
+
+        // [2] Highlight the neighbours green
+        potentialDropsNow.forEach(dom => {dom.classList.add('controlPotentialDrop')})
+        retVal = potentialDropsNow.length > 0;
+
+        // [3] Remove those that are no longer valid (highlighted green from previous call)
+        // Since this is not a JS Arr, use classic for-loop
         let designerDom = document.getElementById('noobForm');
         let potentialDropsPrevious = designerDom.getElementsByClassName('controlPotentialDrop');
-        let potentialDropsNow = []; // gather first and highlight only when all controls are found
-        //console.log('checkDroppable', controlData.i);
-        // [1] Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
-        for (let x = minW - 1; x >= 0; x--) {
-            if (retVal === false) {
-                break;
-            }
+        this.removePreviousPotentialDrops(potentialDropsPrevious, potentialDropsNow);
 
-            for (let y = minH - 1; y >= 0; y--) {
+        return retVal;
+    }
+
+    // Common logic shared by toolitem and control drag
+    // highlights empty controls
+    getPotentialDrops(controlData, draggedItemW, draggedItemH) {
+        let designerDom = document.getElementById('noobForm');        
+        
+
+        // Check first if the controlData already has the exact dimension
+        if (controlData.w === draggedItemW && controlData.h === draggedItemH) {
+            return [document.getElementById('ctrl'+controlData.i)];
+        }
+
+        // Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
+        let potentialDropsNow = []; // gather first and highlight only when all controls are found
+        for (let x = draggedItemW - 1; x >= 0; x--) {
+            for (let y = draggedItemH - 1; y >= 0; y--) {
                 // start with the rightmost and bottom-most; fail faster
                 let query = designerDom.querySelector(`div[data-layouty="${y + controlData.y}"][data-layoutx="${x + controlData.x}"]`);       
                 if (!query) {
-                    console.log('   -> Did not find it', controlData, draggedItem);        
-                    potentialDropsNow = []
-                    retVal = false;
-                    break;
+                    return [];
                 }
 
                 potentialDropsNow.push(query);
             }
         }
+        //console.log('getPotentialDrops', controlData.i, potentialDropsNow);
+        return potentialDropsNow;
+    }
 
-        // [2] Highlight the neighbours green
-        potentialDropsNow.forEach(dom => {dom.classList.add('controlPotentialDrop')})
-
-        // [3] Remove those that are no longer valid (highlighted green from previous call)
-        // Since this is not a JS Arr, use classic for-loop
+    removePreviousPotentialDrops(potentialDropsPrevious, potentialDropsNow) {
         for (var i = 0; i < potentialDropsPrevious.length; i++) {
             let prev = potentialDropsPrevious[i];
             if (potentialDropsNow.indexOf(prev) >= 0) {
@@ -450,8 +500,6 @@ class NoobForm extends React.Component {
             }
             prev.classList.remove('controlPotentialDrop');
         }
-
-        return retVal;
     }
 
     onDropControl(ctrlDest, itemDropped) {
@@ -460,17 +508,19 @@ class NoobForm extends React.Component {
             this.handleToolItemDrop(ctrlDest, itemDropped);
         }
         else {
-
+            this.handleControlMove(ctrlDest, itemDropped);
         }
-        this.props.updateLayout([]); 
+
+        // Clear the temp classes of ctrlDest
+        this.clearAllTemporaryClasses([ctrlDest.i]);
     }
 
     handleToolItemDrop(ctrlDest, itemDropped) {
         console.log('handleToolItemDrop', ctrlDest, itemDropped);
         // Fire an action to let the redux store know that a control has been added
         this.props.updateLayout([{
-            i: 'ctrl'+ctrlDest.i,  // TODO: Generate an ID in reducer
-            type: itemDropped.toolItemTypeName,
+            i: ctrlDest.i,  // TODO: Generate an ID in reducer
+            ctrlType: itemDropped.toolItemTypeName,
             x: ctrlDest.x,
             y: ctrlDest.y,
             w: !!itemDropped.minW ? itemDropped.minW : 1,
@@ -478,8 +528,14 @@ class NoobForm extends React.Component {
         }]); 
     }
 
-    handleControlMove() {
-
+    handleControlMove(ctrlDest, itemDropped) {
+        console.log('handleControlDrop', ctrlDest, itemDropped);
+        // Fire an action to let the redux store know that a control has been added
+        this.props.updateLayout([{
+            ...itemDropped,
+            x: ctrlDest.x,
+            y: ctrlDest.y,
+        }]); 
     }
 
     renderControl(control) {
@@ -569,7 +625,6 @@ class NoobForm extends React.Component {
         let controlsJsx = controlsList.map(c => c.jsx);
     
         var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};
-        console.log('[DEBUG][NoobSection] Rendering...');
     
         return (
         <div id="noobForm"

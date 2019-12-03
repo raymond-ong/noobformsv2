@@ -9,6 +9,8 @@ const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
 const canDropMe = (controlData, draggedItem, monitor, parentCheckDroppable) => {
+    // Note: this function will be called for each mouse movement, so make sure this is efficient
+    // But, unless there is a change in the value, there won't be a re-render.
     //console.log('canDropMe', controlData, draggedItem.type, draggedItem.minW, draggedItem.minH);
     if (!monitor.isOver()) {
         return false;
@@ -16,20 +18,6 @@ const canDropMe = (controlData, draggedItem, monitor, parentCheckDroppable) => {
     //console.log('canDropMe', controlData, draggedItem.type, monitor.isOver());
     let canDrop = parentCheckDroppable(controlData, draggedItem);
     return canDrop;
-    // Note: this function will be called for each mouse movement, so make sure this is efficient
-    // But, unless there is a change in the value, there won't be a re-render.
-    // A.    If it's a tool item, just check whether it's empty or not
-    // A.1   But if the default dimension of the tool is big and:
-    // A.1.1 If I am the hovered control, and the surrounding controls is not enough, return false
-    // A.1.2 If I am the hovered control's neighbour and I can be part of the drop target, return true
-
-    // Maybe issue a callback to the noobForm to check if I can be a dropTarget since it is the noobForm that knows about all controls.
-    // Based on experiment, there is not a lot of renders during drag unless there is a change in canDrop() value.
-
-    // B.  [TODO] If it's a control, make sure their dimensions are the same
-    
-
-    //return !controlData.type;
 }
 
 const renderResizer = (controlId, onResizerMouseDown) => {
@@ -122,7 +110,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         'data-layouty': controlData.y,
         'data-layouth': controlData.h,
         'data-layoutw': controlData.w,
-        'data-controltype': controlData.type,
+        'data-controltype': controlData.CtrlType,
     }
     let domCtrlId = "ctrl"+controlData.i;
     

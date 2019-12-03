@@ -4,52 +4,52 @@ import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL, UPDATE_DESIGNER_LAYOUT } from ".
 const generateDefaultLayout = () => {
   // [1] Section
   return [
-  {i: 'section0', x: 0, y: 0, w: 12, h: 1, type: 'section', data: {
+  {i: 'section0', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'General Information',
       //backgroundColor: 'lightsteelblue'
       level: 1
   }},
 
   // [2] Description
-  {i: 'richText0', x: 0, y: 1, w: 6, h: 4, type: 'richtext',       
+  {i: 'richText0', x: 0, y: 1, w: 6, h: 4, ctrlType: 'richtext',       
       data: {
           label: 'Description:',
           placeholder: 'Enter Description...'
       }},
 
   // [3] Date
-  {i: 'date0', x: 6, y: 1, w: 3, h: 1, type: 'date'},
+  {i: 'date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
 
   // [4] Status
-  {i: 'status0', x: 6, y: 2, w: 3, h: 1, type: 'status'},
+  {i: 'status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
 
   // [5] Priority
-  {i: 'combo0', x: 6, y: 3, w: 3, h: 1, type: 'combo', data: {
+  {i: 'combo0', x: 6, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
       placeholder: 'Please Select...',
       options: dropdownOptions,
       label: 'Please select:'
   }},
 
   // [6] User
-  {i: 'user0', x: 6, y: 4, w: 3, h: 1, type: 'user'},
-  // {i: 'combo1', x: 6, y: 4, w: 3, h: 1, type: 'combo', data: {
+  {i: 'user0', x: 6, y: 4, w: 3, h: 1, ctrlType: 'user'},
+  // {i: 'combo1', x: 6, y: 4, w: 3, h: 1, ctrlType: 'combo', data: {
   //     placeholder: 'Please Select...',
   //     options: dropdownOptions,
   //     label: 'Please select:'
   // }},    
 
   // [7] Attachments
-  {i: 'attach0', x: 9, y: 1, w: 3, h: 2,type: 'attachment'},
+  {i: 'attach0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
 
   // [B] Subsection
-  {i: 'section1', x: 0, y: 5, w: 12, h: 1, type: 'section', data: {
+  {i: 'section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'Update History',
       //backgroundColor: 'lightsteelblue'
       level: 1
   }},
 
   // [1] History
-  {i: 'history0', x: 0, y: 6, w: 12, h: 2, type: 'history'},
+  {i: 'history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   ];
 }
@@ -121,11 +121,15 @@ const updateLayout = (layout, updatedControls) => {
     let findIndex = layout.findIndex(layoutCtrl => layoutCtrl.i === control.i);
     if (findIndex === -1) {
       // means we need to create a new control
-      control.data = defaultControlData[control.type];
+      control.data = defaultControlData[control.ctrlType];
       layout.push(control);
     }
     else {
-      layout[findIndex] = control;
+      // in case the data is null (because it's an empty control previously, just resized)
+      if (!control.data) {
+        control.data = defaultControlData[control.ctrlType];
+      }
+      layout[findIndex] = control;  
     }
   })
 
@@ -134,6 +138,7 @@ const updateLayout = (layout, updatedControls) => {
 
 export default function(state = defaultState, action) {
   console.log('[DEBUG] reducer_designer', action, state);
+  debugger
   switch (action.type) {
     case SELECT_TOOLPANEL_TREE:
       return {
@@ -154,6 +159,8 @@ export default function(state = defaultState, action) {
         newState.layout = [...state.layout];
 
         updateLayout(newState.layout, updatedControls);
+
+        
 
         return newState;
   }
