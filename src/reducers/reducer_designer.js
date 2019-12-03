@@ -146,7 +146,6 @@ export default function(state = defaultState, action) {
         selectedControlId: action.payload
       };
     case UPDATE_DESIGNER_LAYOUT:
-        debugger
         let updatedControls = action.payload;
         let newState = {
           ...state,          

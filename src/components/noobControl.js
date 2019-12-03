@@ -101,7 +101,6 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
 
     // [b] Preparations
     let classNames = 'noobControl';
-    let noobControlDropInfo = {};
     let ctrlStyle = {
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content

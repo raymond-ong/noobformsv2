@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd'
-import ShowToast from '../src/helper/notification';
+import ShowMessage from '../src/helper/notification';
 import ReactNotification from 'react-notifications-component'
 
 class App extends React.Component {
@@ -23,7 +23,7 @@ class App extends React.Component {
 
         //this.props.fetchHierarchy();
         //ConfigureToast();
-        ShowToast("Welcome!", "Start by dragging components from the toolbox to the Designer!");
+        //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
 
     render() {

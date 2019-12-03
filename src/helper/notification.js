@@ -3,42 +3,76 @@ import './notification.css'
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-const ShowInfo = (titleIn, messageIn) => {
+const DEFAULT_WIDTH = 350;
+const DEFAULT_DURATION = 2500;
+
+export const NotifType = {
+    default: 'default',
+    success: 'success',
+    danger: 'danger',
+    warning: 'warning',
+    info: 'info'
+}
+
+const NotifIcon = {
+    success: 'check circle',
+    danger: 'exclamation circle',
+    warning: 'exclamation triangle',
+    info: 'info circle'
+}
+
+const defaultProps = {
+    type: "default",
+    insert: "top",
+    container: "top-center",
+    animationIn: ["animated", "fadeIn"],
+    animationOut: ["animated", "zoomOut"],
+    width: DEFAULT_WIDTH,
+    dismiss: {
+      duration: DEFAULT_DURATION,
+      onScreen: true,
+      pauseOnHover: true,
+      showIcon: true    // X button to dismiss
+    }
+};
+
+export const ShowMessage = (titleIn, typeIn=NotifType.default, messageIn=' ') => {
+    if (!messageIn) {
+        messageIn = ' '
+    }
+
     store.addNotification({
+        ...defaultProps,
         title: titleIn,
         message: messageIn,
-        type: "default",
-        insert: "top",
-        container: "top-center",
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "zoomOut"],
-        dismiss: {
-          duration: 2500,
-          onScreen: true,
-          pauseOnHover: true
-        }
-      });
+        type: typeIn,        
+    });
 }
 
-export const ShowMessage = (titleIn, messageIn, typeIn="default") => {
-    store.addNotification({
-        title: titleIn,
-        message: messageIn,
-        type: typeIn,
-        insert: "top",
-        container: "top-center",
-        animationIn: ["animated", "fadeIn"],
-        animationOut: ["animated", "zoomOut"],
-        dismiss: {
-          duration: 2500,
-          onScreen: true,
-          pauseOnHover: true
-        }
-      });
-}
+// TODO: try to show icon
+const renderContentWithIcon = (type, iconClassName, message) => {
+    // return (
+    //     <div className={`notification-custom-${type}`}>
+    //         <div className="notification-custom-icon">
+    //             {/* <i className={`ui icon ${iconClassName}`}/> */}
+    //             <i className={`ui icon save`}/>
+    //         </div>
+    //         <div className="notification-custom-content">
+    //             <p className="notification-message">{message}</p>
+    //         </div>
+    //     </div>
+    // )
+    // return (
+    //     <div className={`notification-custom-success`}>
+    //         <div className="notification-custom-content">
+    //         <p className="notification-message">
+    //             HElllllllllllllllllllloooooooo            
+    //         </p>
+    //         </div>
+    //     </div>
+    // );
+    return (<div style={{border: '1px soild red'}}>Hello!</div>)
 
-const ShowError = (message) => {
-    //toast(message, {className: 'myToast'});
-}
+  }
 
-export default ShowInfo;
+export default ShowMessage;

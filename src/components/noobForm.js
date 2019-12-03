@@ -4,7 +4,6 @@ import NoobControl from './noobControl';
 import {connect} from 'react-redux';
 import { bindActionCreators } from "redux";
 import { updateLayout } from '../actions/index';
-import {ShowMessage} from '../helper/notification';
 
 const ROW_HEIGHT = 50;
 const CONTROL_PADDING = 20;
@@ -254,7 +253,6 @@ class NoobForm extends React.Component {
 
     // For handling resize only
     onMouseUp(event, controlIds) {
-        debugger
         if (!this.state.resizingControlId) {
             this.clearAllTemporaryClasses(controlIds);
             return;
@@ -478,8 +476,6 @@ class NoobForm extends React.Component {
             w: !!itemDropped.minW ? itemDropped.minW : 1,
             h: !!itemDropped.minH ? itemDropped.minH : 1,
         }]); 
-
-        ShowMessage('Added control!', `Control was added to (${ctrlDest.x}, ${ctrlDest.y})`, 'success');
     }
 
     handleControlMove() {

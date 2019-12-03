@@ -6,7 +6,8 @@ import 'react-grid-layout/css/styles.css';
 //import { bindActionCreators } from "redux";
 import {toolItemDragged} from '../actions/index';
 
-import { useDrag } from 'react-dnd'
+import { useDrag } from 'react-dnd';
+import ShowMessage, {NotifType} from '../helper/notification';
 
 export const ToolItemDragTypes = {
     TOOLITEM: 'toolItem'
@@ -30,7 +31,15 @@ const toolItem = (props) => {
 }
 */
 
+const handleEndDrag = (item, monitor) => {
+    if (monitor.didDrop()) {
+        return;
+    }
 
+    ShowMessage('Control was not added', 
+    NotifType.info, 
+    'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls')
+}
 
 const ToolItem = (props) => {
 
@@ -41,6 +50,7 @@ const ToolItem = (props) => {
             minH: props.controlType.minH,
             toolItemTypeName: props.controlType.name
         },
+        end: (item, monitor) => handleEndDrag(item, monitor),
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),
         }),
