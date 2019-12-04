@@ -72,7 +72,7 @@ const NoobControlContent = (controlData) => {
       });
 
     const styles = {
-        opacity: isDragging? 0 : 1,
+        opacity: isDragging? 0.5 : 1,
     };
     return <div className="contentWrapper" ref={drag} style={styles}>
         {getContentDiv(controlData)}

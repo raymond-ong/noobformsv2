@@ -343,6 +343,7 @@ class NoobForm extends React.Component {
         return findControl;
     }
 
+    // For resizing
     findPotentialDrops() {
         let retList = [];
         retList.push(...document.getElementsByClassName("potentialResizeDrop"));
@@ -550,7 +551,6 @@ class NoobForm extends React.Component {
                 }                                
 
                 let query = designerDom.querySelector(`div[data-layouty="${y + hoveredControlData.y}"][data-layoutx="${x + hoveredControlData.x}"]`);       
-                debugger
                 if (!query || !!query.dataset.controltype) {
                     return [];
                 }
@@ -609,7 +609,6 @@ class NoobForm extends React.Component {
         };
         updatedControls.push(itemDroppedNew);
 
-        debugger
         if (!ctrlDest.type) {
             let ctrlDestNew = {
                 ...ctrlDest,

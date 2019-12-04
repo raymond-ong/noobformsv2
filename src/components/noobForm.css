@@ -61,7 +61,8 @@
 
 .resizingContent {
     /* background-color: #aa33cc; */
-    /* Set the z-inde so that it will bo on top of other control elements it overlpas while resizing */
+    /* Set the z-index so that it will bo on top of other control elements it overlaps while resizing */
+    /* If we don't set it, it is only on top of the landing pads */
     z-index: 20;
     /* Set to important...maybe because this is a secondary class so we need to add important */
     opacity: 0.8 !important;
@@ -97,13 +98,28 @@
     bottom: 0;
     grid-template-rows: 1fr 1fr;
     grid-gap: 5px;
-    padding: 0px;
+    padding: 0px;    
+    /* z-index: 10;*/
+}
+
+/* By default, the landing pad is behind the content but in front of the noobControl container
+    Topmost         Content                    
+                    Landing Pad
+                    <Other containers>
+    Bottom          NoobControl
+
+   Without temporaily changing the z-index, not sure why isOver cannot be detected on the landing pad, but can be detected on the noobControl.
+   We add this class temporarily for now.
+*/
+.landingPadContainer-moving {
+    z-index: 10;
 }
 
 .landingPadCell {
     /* border: 2px solid red; */
     /* padding: 0px;     */
-    /* background: purple; */
+    /* background: rgb(200, 0, 0, 0.5); */
+    background: lightsalmon;
 }
 
 .landingPadPotentialDrop {
