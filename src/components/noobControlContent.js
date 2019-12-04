@@ -4,6 +4,8 @@ import './noobForm.css'
 import Section from '../controls/section';
 import RichText from '../controls/richtext';
 import Combobox from '../controls/combo';
+import ShowMessage, {NotifType} from '../helper/notification';
+
 
 import { useDrag } from 'react-dnd'
 
@@ -40,6 +42,16 @@ const getContentDiv = (controlData) => {
     return content;
 }
 
+const handleEndDrag = (item, monitor) => {
+    if (monitor.didDrop()) {
+        return;
+    }
+
+    ShowMessage('Control was not moved', 
+    NotifType.info, 
+    'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls')
+}
+
 const NoobControlContent = (controlData) => {
     const [{ isDragging }, drag] = useDrag({
         item: { 
@@ -53,6 +65,7 @@ const NoobControlContent = (controlData) => {
             // i: controlData.i
         },
         canDrag: !!controlData.ctrlType, // Do not allow empty controls to be dragged
+        end: (item, monitor) => handleEndDrag(item, monitor),
         collect: monitor => ({
           isDragging: !!monitor.isDragging(),
         }),

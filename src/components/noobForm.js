@@ -531,11 +531,24 @@ class NoobForm extends React.Component {
     handleControlMove(ctrlDest, itemDropped) {
         console.log('handleControlDrop', ctrlDest, itemDropped);
         // Fire an action to let the redux store know that a control has been added
-        this.props.updateLayout([{
+        let updatedControls = [];
+        let itemDroppedNew = {
             ...itemDropped,
             x: ctrlDest.x,
             y: ctrlDest.y,
-        }]); 
+        };
+        updatedControls.push(itemDroppedNew);
+
+        if (!ctrlDest.type) {
+            let ctrlDestNew = {
+                ...ctrlDest,
+                x: itemDropped.x,
+                y: itemDropped.y
+            }
+            updatedControls.push(ctrlDestNew);
+        }
+
+        this.props.updateLayout(updatedControls); 
     }
 
     renderControl(control) {
