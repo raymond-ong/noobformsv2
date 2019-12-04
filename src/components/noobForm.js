@@ -164,6 +164,24 @@ class NoobForm extends React.Component {
         //console.log("   [hasOverlap] has overlap");
         return true;
     }
+
+    // Edge overlap is not considered overlap
+    hasOverlapStrict(rect1, rect2) {
+        // if one rect is on the left side of the other rect
+        if (rect2.right <= rect1.left || rect2.left >= rect1.right) {
+            //console.log("   [hasOverlap] No horz overlap");
+            return false;
+        }
+
+        // if one rect is on top of the other
+        if (rect2.bottom <= rect1.top || rect2.top >= rect1.bottom) {
+            //console.log("   [hasOverlap] No vertical overlap");
+            return false;
+        }
+
+        //console.log("   [hasOverlap] has overlap");
+        return true;
+    }
     
     // While resizing the control, if it overlaps with other controls,
     // those controls will be highlighted as potential landing spots.
@@ -416,7 +434,7 @@ class NoobForm extends React.Component {
         }        
 
         // if dragged to an empty space, make sure there is enough space
-        let potentialDropsNow = retVal ? this.getPotentialDrops(controlData, draggedItem.w, draggedItem.h) : []; 
+        let potentialDropsNow = retVal ? this.getPotentialDropsForMoving(controlData, draggedItem) : []; 
         retVal = potentialDropsNow.length > 0;
 
         // [2] Highlight the neighbours green
@@ -449,7 +467,7 @@ class NoobForm extends React.Component {
                 
         // [1] Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
         // gather first and highlight only when all controls are found
-        let potentialDropsNow = retVal ? this.getPotentialDrops(controlData, minW, minH) : []; 
+        let potentialDropsNow = retVal ? this.getPotentialDropsForNewItem(controlData, minW, minH) : []; 
 
         // [2] Highlight the neighbours green
         potentialDropsNow.forEach(dom => {dom.classList.add('controlPotentialDrop')})
@@ -464,9 +482,8 @@ class NoobForm extends React.Component {
         return retVal;
     }
 
-    // Common logic shared by toolitem and control drag
-    // highlights empty controls
-    getPotentialDrops(controlData, draggedItemW, draggedItemH) {
+    // For new item, only allow dropping if ALL the cells are empty and unresized
+    getPotentialDropsForNewItem(controlData, draggedItemW, draggedItemH) {
         let designerDom = document.getElementById('noobForm');        
         
 
@@ -481,6 +498,58 @@ class NoobForm extends React.Component {
             for (let y = draggedItemH - 1; y >= 0; y--) {
                 // start with the rightmost and bottom-most; fail faster
                 let query = designerDom.querySelector(`div[data-layouty="${y + controlData.y}"][data-layoutx="${x + controlData.x}"]`);       
+                if (!query) {
+                    return [];
+                }
+
+                potentialDropsNow.push(query);
+            }
+        }
+        //console.log('getPotentialDrops', controlData.i, potentialDropsNow);
+        return potentialDropsNow;
+    }
+
+    // For moving control, it is OK to move the control that overlaps with draggedItem's current coordinates
+    getPotentialDropsForMoving(hoveredControlData, draggedItem) {
+        let designerDom = document.getElementById('noobForm');        
+        
+        // Check first if the controlData already has the exact dimension
+        if (hoveredControlData.w === draggedItem.w && hoveredControlData.h === draggedItem.h) {
+            return [document.getElementById('ctrl'+hoveredControlData.i)];
+        }
+
+        // Find the siblings that are covered by minW and minH. If cannot find, means inValid Drop
+        let rectDraggedItem = {
+            top: draggedItem.y, 
+            bottom: draggedItem.y + draggedItem.h, 
+            left: draggedItem.x, 
+            right: draggedItem.x + draggedItem.w
+        };
+
+        let potentialDropsNow = []; // gather first and highlight only when all controls are found
+        let foundOverlapWithDraggedItem = false;
+        for (let x = draggedItem.w - 1; x >= 0; x--) {
+            for (let y = draggedItem.h - 1; y >= 0; y--) {
+                // start with the rightmost and bottom-most; fail faster
+
+                // Check if this coordinate is covered by the draggedItem
+                let rectCurr = {
+                    top: hoveredControlData.y + y,
+                    bottom: hoveredControlData.y + y + 1,
+                    left: hoveredControlData.x + x,
+                    right: hoveredControlData.x + x + 1,
+                }
+                debugger
+                if (this.hasOverlapStrict(rectCurr, rectDraggedItem)) {
+                    if (!foundOverlapWithDraggedItem) {
+                        let overlappedDom = document.getElementById('ctrl'+draggedItem.i);
+                        potentialDropsNow.push(overlappedDom);
+                        foundOverlapWithDraggedItem = true;
+                    }
+                    continue;
+                }
+
+                let query = designerDom.querySelector(`div[data-layouty="${y + hoveredControlData.y}"][data-layoutx="${x + hoveredControlData.x}"]`);       
                 if (!query) {
                     return [];
                 }
@@ -539,6 +608,7 @@ class NoobForm extends React.Component {
         };
         updatedControls.push(itemDroppedNew);
 
+        debugger
         if (!ctrlDest.type) {
             let ctrlDestNew = {
                 ...ctrlDest,

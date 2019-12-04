@@ -138,7 +138,6 @@ const updateLayout = (layout, updatedControls) => {
 
 export default function(state = defaultState, action) {
   console.log('[DEBUG] reducer_designer', action, state);
-  debugger
   switch (action.type) {
     case SELECT_TOOLPANEL_TREE:
       return {
