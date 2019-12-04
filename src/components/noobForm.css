@@ -9,7 +9,7 @@
 }
 
 .noobControl {
-    border: 1px dotted gray;
+    border: 1px dashed gray;
     /* needed to position the resizer */
     position: relative;
     overflow: visible;
