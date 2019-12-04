@@ -539,7 +539,7 @@ class NoobForm extends React.Component {
                     left: hoveredControlData.x + x,
                     right: hoveredControlData.x + x + 1,
                 }
-                debugger
+
                 if (this.hasOverlapStrict(rectCurr, rectDraggedItem)) {
                     if (!foundOverlapWithDraggedItem) {
                         let overlappedDom = document.getElementById('ctrl'+draggedItem.i);
@@ -581,7 +581,7 @@ class NoobForm extends React.Component {
         }
 
         // Clear the temp classes of ctrlDest
-        this.clearAllTemporaryClasses([ctrlDest.i]);
+        this.clearAllTemporaryClasses([ctrlDest.i, itemDropped.i]);
     }
 
     handleToolItemDrop(ctrlDest, itemDropped) {
