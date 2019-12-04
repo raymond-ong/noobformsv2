@@ -19,6 +19,14 @@ For adding new controls via Drag and Drop from the toolbox, React-DnD is used.
 
 For moving of controls, currently React-DnD is used but
 
+## Reasons for creating this project
+* Practice React/HTML/Javascript
+* React-grid-layout is an awesome library. It is performant, has nice animations and many features.
+However, as of today (Nov 2019), if I'm not mistaken, there is no support for auto-sizing the grid cell when the content grows.
+For example, if the child content is a tagged combobox/multiselect combobox, as the user selects more items, there is no way for the cell to grow.
+It does not look nice to show a scrollbar for this kind of control.
+Also, I found some overlap issues when useCSSTransforms is set to true (e.g. dropdown of combobox shows up behind a sibling control).
+Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a new item from the toolbox.
 
 ## Roadmap
 
@@ -44,8 +52,8 @@ For moving of controls, currently React-DnD is used but
 - [ ] Scrollspy-like feature
 
 ## Todo Items
-[ ] Moving of controls - Reimplement
+- [ ] Moving of controls - Reimplement
 ...Current limitations:
         * If the control is big, the internal landing pads do not show up while dragging so there is no way for the user to move the control by 1 cell, for example.
         * The drag image in Chrome is translucent
-[ ] Make it touch compatible
+- [ ] Make it touch compatible
