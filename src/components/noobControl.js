@@ -110,7 +110,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         'data-layouty': controlData.y,
         'data-layouth': controlData.h,
         'data-layoutw': controlData.w,
-        'data-controltype': controlData.CtrlType,
+        'data-controltype': controlData.ctrlType,
     }
     let domCtrlId = "ctrl"+controlData.i;
     

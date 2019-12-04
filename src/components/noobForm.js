@@ -547,10 +547,11 @@ class NoobForm extends React.Component {
                         foundOverlapWithDraggedItem = true;
                     }
                     continue;
-                }
+                }                                
 
                 let query = designerDom.querySelector(`div[data-layouty="${y + hoveredControlData.y}"][data-layoutx="${x + hoveredControlData.x}"]`);       
-                if (!query) {
+                debugger
+                if (!query || !!query.dataset.controltype) {
                     return [];
                 }
 
