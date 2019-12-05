@@ -8,5 +8,6 @@
     padding-left: 5px;
     display: flex;
     align-items: center; /* align vertical */
-    position: absolute; /* to take up 100% height */
+    /* to take up 100% height */
+    position: absolute; 
 }

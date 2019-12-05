@@ -52,17 +52,13 @@ const handleEndDrag = (item, monitor) => {
     'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls')
 }
 
+
+// TODO: Need to inform upper level classes that this control is being moved, so that landing pads will only be rendered on the control being moved
 const NoobControlContent = (controlData) => {
     const [{ isDragging }, drag] = useDrag({
         item: { 
             ...controlData,
-            type: ControlDragTypes.CONTROL,
-            
-            // x: controlData.x,
-            // y: controlData.y,
-            // w: controlData.w,
-            // h: controlData.h,
-            // i: controlData.i
+            type: ControlDragTypes.CONTROL,            
         },
         canDrag: !!controlData.ctrlType, // Do not allow empty controls to be dragged
         end: (item, monitor) => handleEndDrag(item, monitor),
@@ -72,7 +68,7 @@ const NoobControlContent = (controlData) => {
       });
 
     const styles = {
-        opacity: isDragging? 0.5 : 1,
+        opacity: isDragging? 0 : 1,
     };
     return <div className="contentWrapper" ref={drag} style={styles}>
         {getContentDiv(controlData)}

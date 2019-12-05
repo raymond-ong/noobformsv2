@@ -417,15 +417,124 @@ class NoobForm extends React.Component {
         }        
     }
 
-    checkDroppable(controlData, draggedItem) {
+    checkDroppable(controlData, draggedItem, landingPadInfo) {
         if (draggedItem.type == ControlDragTypes.CONTROL) {
+            if (landingPadInfo) {
+                return this.checkDroppableControlLandingPad(controlData, draggedItem, landingPadInfo);    
+            }
             return this.checkDroppableControl(controlData, draggedItem);
         }
 
         return this.checkDroppableToolItem(controlData, draggedItem) 
     }
 
+    // This will highlight the following:
+    // * landing pads that are covered by the control being moved
+    // * neighbouring controls covered by the control being moved
+    // Return true or false, depending if there is sufficient space
+    checkDroppableControlLandingPad(droppedControl, draggedItem, landingPadInfo) {
+        // Actually draggedItem and droppedControl are just the same because landing pad is rendered
+        console.log('checkDroppableControlLandingPad', droppedControl, draggedItem, landingPadInfo);
+        let retVal = true;
+
+        // [a] For the landing pads, actually just straightup highlight all landing pads that with x>= landingPadInfo.x and same for y
+        let landingPadX = landingPadInfo.layoutPos["data-layoutx"]; // already adjusted to include control's x and y position
+        let landingPadY = landingPadInfo.layoutPos["data-layouty"];
+        debugger
+        let landingPadsAll = this.findLandingPadsByParentControl(droppedControl.i);
+        let landingPadsCovered = this.findCoveredLandingPads(landingPadsAll, landingPadX, landingPadY);
+
+        // [b] Find neighbouring empty controls to the right and bottom of the droppedControl
+
+
+        debugger
+        let controlsCovered = this.findCoveredControls(landingPadX, landingPadY, droppedControl);
+        if (controlsCovered.length === 0) {
+            // 
+            retVal = false;
+        }
+
+
+        // [c] Perform the highlights
+        landingPadsAll.forEach(landingPad => {
+            if (!retVal || landingPadsCovered.indexOf(landingPad) < 0) {
+                landingPad.classList.remove('landingPadPotentialDrop'); 
+            }
+            else {
+                landingPad.classList.add('landingPadPotentialDrop'); 
+            }
+        });
+
+        controlsCovered.forEach(control => {
+            control.classList.add('controlPotentialDrop'); 
+        });
+
+        // [d] Remove those that are no longer valid (highlighted green from previous call)
+        // Since this is not a JS Arr, use classic for-loop
+        let designerDom = document.getElementById('noobForm');
+        let potentialDropsAll = designerDom.getElementsByClassName('controlPotentialDrop');
+        this.removePreviousPotentialDrops(potentialDropsAll, controlsCovered);
+
+
+        return retVal;
+    }
+
+    // Neighbour controls that should be highligted while moving a control that overlaps with itself
+    findCoveredControls(landingPadX, landingPadY, controlData) {
+        let retList = [];
+        let deficitW = landingPadX - controlData.x;
+        let deficitH = landingPadY - controlData.y;
+        let designerDom = document.getElementById('noobForm');
+
+        debugger
+        // Find all controls to the right
+        for (let x=0; x < deficitW; x++) {
+            for (let y=0; y < controlData.h; y++) {
+                let query = designerDom.querySelector(`div[data-layouty="${y + landingPadY}"][data-layoutx="${x + controlData.w + controlData.x}"]`);
+                if (!query) {                    
+                    return [];
+                }
+                retList.push(query);
+            }
+        }
+
+        // Find all controls to the bottom
+        for (let y=0; y < deficitH; y++) {
+            for (let x=0; x < controlData.w; x++) {
+                let query = designerDom.querySelector(`div[data-layouty="${y + controlData.h + controlData.y}"][data-layoutx="${x + landingPadX}"]`);
+                if (!query) {
+                    return [];
+                }
+                retList.push(query);
+            }
+        }
+        return retList;
+    }
+
+    // Landing pads that should be highligted while moving a control that overlaps with itself
+    findCoveredLandingPads(landingPadsAll, x, y) {
+        let retList = [];
+        for (let i = 0; i < landingPadsAll.length; i++) {
+            let currLandingPadDom = landingPadsAll[i];
+            if (currLandingPadDom.dataset.layoutx >= x && currLandingPadDom.dataset.layouty >= y) {
+                retList.push(currLandingPadDom);
+            }
+        }
+
+        return retList;
+    }
+
     checkDroppableControl(controlData, draggedItem) {
+        // if dragged to itself, return false immediately.
+        // Do not allow dropping to same position. It's pointless and just a waste of processing.
+        if (controlData.i === draggedItem.i)  {
+            this.clearAllTemporaryClasses([controlData.i])
+            console.log('checkDroppableControl, dragged to itself...return false', controlData);
+            return false;
+        }
+
+        console.log('checkDroppableControl', controlData);
+
         let retVal = true;
         // If dragged to a different control of different dimension, do not allow
         if (draggedItem.i !== controlData.i && !!controlData.ctrlType &&

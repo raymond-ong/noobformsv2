@@ -13,7 +13,8 @@ const canDropMe = (controlData, draggedItem, monitor, parentCheckDroppable) => {
     // Note: this function will be called for each mouse movement, so make sure this is efficient
     // But, unless there is a change in the value, there won't be a re-render.
     //console.log('canDropMe', controlData, draggedItem.type, draggedItem.minW, draggedItem.minH);
-    if (!monitor.isOver()) {
+    if (!monitor.isOver({shallow: true})) {
+        console.log('canDropMe...not over...return false');
         return false;
     }
     //console.log('canDropMe', controlData, draggedItem.type, monitor.isOver());
@@ -35,64 +36,28 @@ const renderResizer = (controlId, onResizerMouseDown) => {
         );
 }
 
-/*
-const renderLandingPads = (controlData, resizingControlId, droppingItemType) => {
-    // if this control is not resizing, no need to render the landing pads
-    // if (resizingControlId !== controlData.i && droppingItemType !== ControlDragTypes.CONTROL) {
-    //     return null;
-    // }
-
-    console.log('renderLandingPads for ', controlData);
-
-    let landingPadStyle = {
-        gridTemplateColumns: `repeat(${controlData.w}, 1fr)`,
-        gridTemplateRows: `repeat(${controlData.h}, 1fr)`,
-    }
-
-    return (<div className="landingPadContainer" style={landingPadStyle}>
-        {createLandingPads(controlData.h, controlData.w, 'ctrl'+controlData.i, controlData.x, controlData.y)}
-    </div>)
-}
-
-// Create a landing pad to allow the user to reduce the size of the control
-function createLandingPads(rowSpan, colSpan, domParentCtrlId, parentX, parentY) {
-    let retList = [];
-    for (let i=0; i < rowSpan; i++) {
-        for (let j=0; j < colSpan; j++) {
-            let layoutPos = {
-                'data-layoutx': j + parentX,
-                'data-layouty': i + parentY,
-            }
-            retList.push(<div className="landingPadCell" 
-                            parentctrlid={domParentCtrlId} 
-                            key={"landingPad"+(i * colSpan + j)}
-                            {...layoutPos}></div>);
-        }
-    }
-
-    return retList;
-}
-*/
-
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId, 
                     parentCheckDroppable, parentDropCallback}) => {
     
     // [a] Hooks setup for drop
-    const [{ isOver, canDrop, droppingItemType }, drop] = useDrop({
+    const [{ isOverShallow, canDrop, droppingItemType, droppingItem }, drop] = useDrop({
         accept: [ToolItemDragTypes.TOOLITEM, ControlDragTypes.CONTROL],
         canDrop: (item, monitor) => canDropMe(controlData, item, monitor, parentCheckDroppable),
         drop: (droppedItem) => parentDropCallback(controlData, droppedItem),
         collect: monitor => ({
             // these are the fields that will be added to the component's props/state
             // downside is that it needs to execute the function
-            isOver: !!monitor.isOver(),
+            //isOver: !!monitor.isOver(),
+            isOverShallow: !!monitor.isOver({ shallow: true }),
             canDrop: !!monitor.canDrop(),
             // Add checking first. Without checking, once an item in toolbox starts dragging, all controls will rerender
-            droppingItemType: !!monitor.isOver() && !!monitor.canDrop() ? monitor.getItemType() : null
+            //droppingItemType: !!monitor.isOver() && !!monitor.canDrop() ? monitor.getItemType() : null
+            droppingItemType: !!monitor.isOver() ? monitor.getItemType() : null,
+            droppingItem: !!monitor.isOver() ? monitor.getItem() : null,
 		}),
       })
 
-    console.log('render NoobControl', controlData.i, isOver, canDrop, droppingItemType);
+    console.log('render NoobControl', controlData.i, isOverShallow, canDrop, droppingItemType);
 
     // [b] Preparations
     let classNames = 'noobControl';
@@ -106,7 +71,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         'gridColumnEnd': 'span ' + controlData.w,        
     };
     // Highlighting to green is handled in noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd.
-    if (isOver && !canDrop) {
+    if (isOverShallow && !canDrop) {
         ctrlStyle.backgroundColor = 'pink';
     }
 
@@ -138,6 +103,10 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             controlData={controlData}
             resizingControlId={resizingControlId}
             droppingItemType={droppingItemType}
+            droppingItem={droppingItem}
+            noobControlCanDropCallback={(draggedItem, landingPadInfo) => {
+                return parentCheckDroppable(controlData, draggedItem, landingPadInfo)
+            }}
         />
         <NoobControlContent {...controlData}></NoobControlContent>
         {renderResizer(controlData.i, resizerMouseDown)}        

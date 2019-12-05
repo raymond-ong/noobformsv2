@@ -1,0 +1,38 @@
+//https://codesandbox.io/s/vigorous-ellis-lqqw2
+// example.jsx
+// Update the contents
+// Sibling (content) blocks the landingPad if zIndex is not adjusted
+import React from "react";
+import Dustbin from "./Dustbin";
+import Box from "./Box";
+const Container = () => (
+  <div>
+    <div style={{ overflow: "hidden", clear: "both", margin: "-1rem" }}>
+      <Dustbin id="noobControl">
+          <Dustbin id="landingpad">
+          </Dustbin>
+          <div id="contentrapper">
+              <div
+                style={{
+                  backgroundColor: "rgba(176, 196, 222, 0.5)",
+                  height: "90%",
+                  width: "90%",
+                 position: 'absolute', 
+                  display: "flex",
+                  alignItems: "top",
+                  zIndex: '-1'
+                }}
+              >
+                Content
+              </div>
+            </div>
+          <Dustbin />
+      </Dustbin>
+    </div>
+
+    <div style={{ overflow: "hidden", clear: "both", marginTop: "1.5rem" }}>
+      <Box />
+    </div>
+  </div>
+);
+export default Container;

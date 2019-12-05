@@ -88,6 +88,17 @@
 }
 
 /* For the Landing Pad */
+/* About the zIndex: by default, the landing pad is behind the content but in front of the noobControl container
+    Topmost         Content (upper sibling)                    
+                    Landing Pad (bottom sibling) - position-absolute
+    Bottom          NoobControl (parent)
+
+   Without changing the z-index, isOver cannot be detected on the landing pad (child), but can be detected on the noobControl (parent)
+   - this is because of the Content element which is a sibling of the landing pad. The content is stacked higher than the landing pad
+   We add this class temporarily for now.
+   - it's OK to always put the z-index regardless if it's moving/resizing because it will only be rendered during moving/resizing
+*/
+
 .landingPadContainer {
     display: grid;
     /* background: #bbbb00; */
@@ -99,18 +110,9 @@
     grid-template-rows: 1fr 1fr;
     grid-gap: 5px;
     padding: 0px;    
-    /* z-index: 10;*/
+    z-index: 10;
 }
 
-/* By default, the landing pad is behind the content but in front of the noobControl container
-    Topmost         Content                    
-                    Landing Pad
-                    <Other containers>
-    Bottom          NoobControl
-
-   Without temporaily changing the z-index, not sure why isOver cannot be detected on the landing pad, but can be detected on the noobControl.
-   We add this class temporarily for now.
-*/
 .landingPadContainer-moving {
     z-index: 10;
 }
@@ -119,7 +121,7 @@
     /* border: 2px solid red; */
     /* padding: 0px;     */
     /* background: rgb(200, 0, 0, 0.5); */
-    background: lightsalmon;
+    background: lightgray;
 }
 
 .landingPadPotentialDrop {
