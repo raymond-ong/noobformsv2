@@ -4,34 +4,34 @@ import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL, UPDATE_DESIGNER_LAYOUT } from ".
 const generateDefaultLayout = () => {
   // [1] Section
   return [
-  {i: 'section0', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
+  {i: 'ctrl-section0', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'General Information',
       //backgroundColor: 'lightsteelblue'
       level: 1
   }},
 
   // [2] Description
-  {i: 'richText0', x: 0, y: 1, w: 6, h: 4, ctrlType: 'richtext',       
+  {i: 'ctrl-richText0', x: 0, y: 1, w: 6, h: 4, ctrlType: 'richtext',       
       data: {
           label: 'Description:',
           placeholder: 'Enter Description...'
       }},
 
   // [3] Date
-  {i: 'date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
+  {i: 'ctrl-date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
 
   // [4] Status
-  {i: 'status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
+  {i: 'ctrl-status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
 
   // [5] Priority
-  {i: 'combo0', x: 6, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
+  {i: 'ctrl-combo0', x: 6, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
       placeholder: 'Please select...',
       options: dropdownOptions,
       label: 'Courses:'
   }},
 
   // [6] User
-  {i: 'user0', x: 6, y: 4, w: 3, h: 1, ctrlType: 'user'},
+  {i: 'ctrl-user0', x: 6, y: 4, w: 3, h: 1, ctrlType: 'user'},
   // {i: 'combo1', x: 6, y: 4, w: 3, h: 1, ctrlType: 'combo', data: {
   //     placeholder: 'Please Select...',
   //     options: dropdownOptions,
@@ -39,17 +39,17 @@ const generateDefaultLayout = () => {
   // }},    
 
   // [7] Attachments
-  {i: 'attach0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
+  {i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
 
   // [B] Subsection
-  {i: 'section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
+  {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'Update History',
       //backgroundColor: 'lightsteelblue'
       level: 1
   }},
 
   // [1] History
-  {i: 'history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
+  {i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   ];
 }
@@ -83,7 +83,7 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 8
+  rows: 12
 }
 
 const defaultState = {
@@ -110,6 +110,27 @@ const defaultControlData = {
   }
 }
 
+const assignIdAndDefaultData = (control, layout) => {
+  if (!control.ctrlType) {
+    return;
+  }
+
+  if (!control.data) {
+    control.data = defaultControlData[control.ctrlType];
+  }
+  
+  // find a suitable default id
+  let i = 0;
+  while (true) {
+    let currId = 'ctrl-' + control.ctrlType + i++;
+    if (layout.find(ctrl => ctrl.i === currId)) {
+      continue;
+    }
+    control.i = currId;
+    break;
+  }
+}
+
 const updateLayout = (layout, updatedControls) => {
   // updatedControls is an array of controls
   // it may contain existing controls or "empty" controls that have been resized
@@ -121,13 +142,13 @@ const updateLayout = (layout, updatedControls) => {
     let findIndex = layout.findIndex(layoutCtrl => layoutCtrl.i === control.i);
     if (findIndex === -1) {
       // means we need to create a new control
-      control.data = defaultControlData[control.ctrlType];
+      assignIdAndDefaultData(control, layout);
       layout.push(control);
     }
     else {
       // in case the data is null (because it's an empty control previously, just resized)
       if (!control.data) {
-        control.data = defaultControlData[control.ctrlType];
+        assignIdAndDefaultData(control, layout);
       }
       layout[findIndex] = control;  
     }
@@ -136,8 +157,7 @@ const updateLayout = (layout, updatedControls) => {
   // TODO Sort the controls based on the "flat coordinates"
 }
 
-export default function(state = defaultState, action) {
-  console.log('[DEBUG] UPDATE_DESIGNER_LAYOUTX', action.payload, state.layout);
+export default function(state = defaultState, action) {  
   switch (action.type) {
     case SELECT_TOOLPANEL_TREE:
       return {
@@ -159,7 +179,6 @@ export default function(state = defaultState, action) {
 
         updateLayout(newState.layout, updatedControls);
         console.log('[DEBUG] UPDATE_DESIGNER_LAYOUTX', action.payload, state.layout, newState.layout);
-        
 
         return newState;
   }
