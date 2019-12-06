@@ -6,8 +6,9 @@ export default function noobControlHoc(WrappedComponent) {
 
         onClick = (evt) => {
             console.log("[noobControlHoc] onClick");
+            debugger
             // Let the parent know that i am clicked. It's up to the parent to dispatch an action
-            if (this.props.controlSelected) {
+            if (this.props.controlSelected) {                
                 this.props.controlSelected(this.props);
             }
         }

@@ -769,7 +769,8 @@ class NoobForm extends React.Component {
                 parentCheckDroppable={this.checkDroppable}
                 parentDropCallback={this.onDropControl}
                 resizerMouseDown={this.onResizerMouseDown}
-                resizingControlId={this.state.resizingControlId}/>
+                resizingControlId={this.state.resizingControlId}
+                isSelected={false}/>
     }
 
     // Returns an array containing the flat coordinates of the specified control

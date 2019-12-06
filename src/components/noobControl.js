@@ -5,9 +5,20 @@ import { useDrop } from 'react-dnd';
 import NoobControlContent, {ControlDragTypes} from './noobControlContent';
 import LandingPads from './noobControlLandingPad';
 
+import {connect} from 'react-redux';
+import { bindActionCreators } from "redux";
+
+import {selectedControl} from '../actions/index';
+
 const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
+
+
+const handleControlSelect = (controlData) => {
+    console.log('controlSelected, dispatch action...', this);
+    selectedControl(controlData.i);
+}
 
 const canDropMe = (controlData, draggedItem, monitor, parentCheckDroppable) => {
     // Note: this function will be called for each mouse movement, so make sure this is efficient
@@ -37,7 +48,8 @@ const renderResizer = (controlId, onResizerMouseDown) => {
 }
 
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId, 
-                    parentCheckDroppable, parentDropCallback}) => {
+                    parentCheckDroppable, parentDropCallback,
+                    selectedControl}) => {
     
     // [a] Hooks setup for drop
     const [{ isOverShallow, canDrop, droppingItemType, droppingItem }, drop] = useDrop({
@@ -48,14 +60,14 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             // these are the fields that will be added to the component's props/state
             // downside is that it needs to execute the function
             //isOver: !!monitor.isOver(),
-            isOverShallow: !!monitor.isOver({ shallow: true }),
+            isOverShallow: !!monitor.isOver({ shallow: true }), // shallow: true means it will give way to landing pads (children)
             canDrop: !!monitor.canDrop(),
             // Add checking first. Without checking, once an item in toolbox starts dragging, all controls will rerender
             //droppingItemType: !!monitor.isOver() && !!monitor.canDrop() ? monitor.getItemType() : null
             droppingItemType: !!monitor.isOver() ? monitor.getItemType() : null,
             droppingItem: !!monitor.isOver() ? monitor.getItem() : null,
 		}),
-      })
+      });
 
     console.log('render NoobControl', controlData.i, isOverShallow, canDrop, droppingItemType);
 
@@ -111,9 +123,30 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
                 parentDropCallback(controlData, droppedItem, landingPadPos)
             }}
         />
-        <NoobControlContent {...controlData}></NoobControlContent>
+        <NoobControlContent 
+            controlSelected={() => selectedControl(controlData.i)}
+            {...controlData} 
+        />
         {renderResizer(controlData.i, resizerMouseDown)}        
     </div>
 }
 
-export default NoobControl;
+const mapStateToProps = (state, ownProps) => {
+    debugger
+    let myId = ownProps.controlData.i;
+    let stateControlData = state.designer && state.designer.layout && state.designer.layout.find(control => control.i === myId);
+    if (stateControlData) {
+        return {
+            //isSelected: stateControlData.selected
+            controlData: stateControlData
+        };    
+    }
+
+    return {};
+}
+
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({ selectedControl }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(NoobControl);

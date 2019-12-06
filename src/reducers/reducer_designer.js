@@ -83,12 +83,13 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 12
+  rows: 8
 }
 
 const defaultState = {
     toolPanelTreeSelected: null,
-    selectedControlId: null, // Don't put here. Just put inside the controls data. This is to avoid rendering all controls.
+    //selectedControlId: null, // Don't put here. Just put inside the controls data. This is to avoid rendering all controls.
+    // It is OK to put the selectedControlId inside the reducer for showing the Control Props
     resizingControlId: null, // try to just use local state to keep track. The whole designer only needs to know after resizing.
     layout: generateDefaultLayout(),
     layoutData: defaultLayoutData
@@ -155,6 +156,42 @@ const updateLayout = (layout, updatedControls) => {
   })
 
   // TODO Sort the controls based on the "flat coordinates"
+  // Maybe no need...because when rendering, it is looping from topLeft to botoom right
+}
+
+// Does not cause a rerender. Do not update the property in place (mutate) -- create a new object
+const setControlSelectedOrig = (controlId, newLayout) => {
+  newLayout.forEach(control => {
+    if (control.i === controlId) {
+      control.selected = true;
+    }
+    else {
+      control.selected = false;
+    }
+  })
+}
+
+// This function will cause only the affected controls (1 or 2 controls) to rerender
+const setControlSelected = (controlId, newLayout) => {
+  // Create a new object for the affected controls, instead of updating them
+  let affectedControls = [];
+  newLayout.forEach(control => {
+    if (control.selected) {
+      if (control.i !== controlId) {
+        affectedControls.push({...control, selected: false});
+      }
+    }
+    else if (control.i === controlId) {
+      affectedControls.push({...control, selected: true});
+    }
+  });
+
+  // Remove the old control and push the new objects
+  affectedControls.forEach(ctrl => {
+    let index = newLayout.findIndex(x => x.i === ctrl.i);
+    newLayout.splice(index, 1);
+    newLayout.push(ctrl);
+  });  
 }
 
 export default function(state = defaultState, action) {  
@@ -165,20 +202,21 @@ export default function(state = defaultState, action) {
         toolPanelTreeSelected: action.payload
       };
     case SELECT_CONTROL:
-      return {
-        ...state,
-        selectedControlId: action.payload
-      };
+      debugger
+      let newStateSelectCtrl = {...state};
+      //newStateSelectCtrl.layout = [...state.layout]; // No need. If you do this, the entire designer will rerender, but only the empty controls will rerender
+      setControlSelected(action.payload, newStateSelectCtrl.layout);
+      return newStateSelectCtrl;
     case UPDATE_DESIGNER_LAYOUT:
         let updatedControls = action.payload;
         let newState = {
           ...state,          
         };
         // Need to re-initialize the layout array too, otherwise formDesignerContent won't re-render
+        // I think minimum we just need to create new objects for the affected controls. 
+        // ...But the empty controls won't rerender and there might be a need to rerender them. So just update the entire array
         newState.layout = [...state.layout];
-
-        updateLayout(newState.layout, updatedControls);
-        console.log('[DEBUG] UPDATE_DESIGNER_LAYOUTX', action.payload, state.layout, newState.layout);
+        updateLayout(newState.layout, updatedControls);        
 
         return newState;
   }
