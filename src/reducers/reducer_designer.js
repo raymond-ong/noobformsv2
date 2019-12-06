@@ -175,6 +175,7 @@ const setControlSelectedOrig = (controlId, newLayout) => {
 const setControlSelected = (controlId, newLayout) => {
   // Create a new object for the affected controls, instead of updating them
   let affectedControls = [];
+  debugger
   newLayout.forEach(control => {
     if (control.selected) {
       if (control.i !== controlId) {

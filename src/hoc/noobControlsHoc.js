@@ -16,7 +16,8 @@ export default function noobControlHoc(WrappedComponent) {
         componentDidMount() {
             let domNode = ReactDOM.findDOMNode(this);
             if (domNode) {
-                domNode.addEventListener('click', this.onClick);
+                // Changed to mousedown so that dragging the control will also select the control
+                domNode.addEventListener('mousedown', this.onClick);
             }            
         }
 

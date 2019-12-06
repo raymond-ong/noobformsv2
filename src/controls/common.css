@@ -1,6 +1,9 @@
 /* Outline is better than border as it is drawn outside the control */
 .ctrl-selected {
-    outline: 1px solid blue;
+    outline: 3px solid #8888FF;
+    /* outline: 3px solid #55AA55; */
+    /* outline: 3px solid #EE5555; */
+    transition: outline 0.2s;
 }
 
 .controlLabel {
