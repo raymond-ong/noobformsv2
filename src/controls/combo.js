@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Icon } from 'semantic-ui-react'
 import noobControlHoc from '../hoc/noobControlsHoc';
 
 import './combo.css';
@@ -12,13 +12,17 @@ const noobCombo = (props) => {
     }
     return <div className={classNames}>
         <div className="controlLabel">{props.data.label}</div>
-        <div className="dropdownWrapper">
-            <Dropdown placeholder={props.data.placeholder}
-            fluid
-            multiple
-            selection
-            options={props.data.options}/>
-        </div>
+        <Dropdown placeholder={props.data.placeholder}
+        fluid
+        multiple
+        selection
+        search
+        options={props.data.options}
+        button  // Add button and className so that we can control the size
+        className='icon small'
+        style={{fontWeight:'normal', color: 'gray', right: '0', left: 'auto'}} // Thi
+        //inline
+        />
     </div>
 }
 

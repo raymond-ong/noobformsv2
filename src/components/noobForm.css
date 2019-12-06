@@ -120,8 +120,7 @@
 .landingPadCell {
     /* border: 2px solid red; */
     /* padding: 0px;     */
-    /* background: rgb(200, 0, 0, 0.5); */
-    background: lightgray;
+    background: rgba(100,100,100,0.35);
 }
 
 .landingPadPotentialDrop {

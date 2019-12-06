@@ -38,7 +38,7 @@ const handleEndDrag = (item, monitor) => {
 
     ShowMessage('Control was not added', 
     NotifType.info, 
-    'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls')
+    'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls.')
 }
 
 const ToolItem = (props) => {

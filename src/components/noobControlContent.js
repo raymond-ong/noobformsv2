@@ -32,7 +32,7 @@ const getContentDiv = (controlData) => {
             content = <Combobox {...controlData}></Combobox>
             break;
         case undefined:
-            content = <div className="emptyControl"></div>
+            content = <div className="emptyControl">{controlData.i}</div>
             break
         default:
             content = <div>{controlData.i}</div>
@@ -49,7 +49,7 @@ const handleEndDrag = (item, monitor) => {
 
     ShowMessage('Control was not moved', 
     NotifType.info, 
-    'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls')
+    'Please drop the control into an empty cell, or make sure there is sufficient space for larger controls.')
 }
 
 

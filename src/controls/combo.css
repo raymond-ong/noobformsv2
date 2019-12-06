@@ -1,16 +1,21 @@
 .dropdownContainer {
-    z-index: 100;
+    /* z-index: 100; */
 }
 
 .ui.dropdown .menu {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   }
 
 .dropdownWrapper {
-  z-index: 1000;
+  /* z-index: 1000; */  
 }
 
 /* We override the background color to transparent  */
 .ui.selection.dropdown {
   background: rgba(255,255,255,0.5);
+}
+
+/* after adding button prop, the icon becomes misalign */
+.ui.selection.dropdown>.dropdown.icon {
+  padding-top: 0px;
 }

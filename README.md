@@ -41,7 +41,6 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 - [x] Drag from Toolbox
 - [x] Resize Controls
 - [ ] Move Controls
-...Partial implementation only (needs to reimplement)
 - [ ] Delete Controls
 - [ ] Change Properties
 - [ ] Save Layout
@@ -53,10 +52,7 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 - [ ] Scrollspy-like feature
 
 ## Todo Items
-- [ ] Moving of controls - Reimplement
-
-> Current limitations:
-> * If the control is big, the internal landing pads do not show up while dragging so there is no way for the user to move the control by 1 cell, for example.
-> * The drag image in Chrome is translucent
-
+- [x] Moving of controls - Add implementation to show internal landing pads
+- [ ] Responsive support (make it 1 column only, and remove empty cells if window is narrow)
 - [ ] Make it touch compatible
+- [ ] Landing pads: align height with external controls

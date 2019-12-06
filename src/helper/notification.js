@@ -3,7 +3,7 @@ import './notification.css'
 import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
-const DEFAULT_WIDTH = 350;
+const DEFAULT_WIDTH = 400;
 const DEFAULT_DURATION = 2500;
 
 export const NotifType = {

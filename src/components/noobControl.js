@@ -14,7 +14,7 @@ const canDropMe = (controlData, draggedItem, monitor, parentCheckDroppable) => {
     // But, unless there is a change in the value, there won't be a re-render.
     //console.log('canDropMe', controlData, draggedItem.type, draggedItem.minW, draggedItem.minH);
     if (!monitor.isOver({shallow: true})) {
-        console.log('canDropMe...not over...return false');
+        //console.log('canDropMe...not over...return false');
         return false;
     }
     //console.log('canDropMe', controlData, draggedItem.type, monitor.isOver());
@@ -106,6 +106,9 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             droppingItem={droppingItem}
             noobControlCanDropCallback={(draggedItem, landingPadInfo) => {
                 return parentCheckDroppable(controlData, draggedItem, landingPadInfo)
+            }}
+            noobControlDropCallback={(droppedItem, landingPadPos) => {
+                parentDropCallback(controlData, droppedItem, landingPadPos)
             }}
         />
         <NoobControlContent {...controlData}></NoobControlContent>

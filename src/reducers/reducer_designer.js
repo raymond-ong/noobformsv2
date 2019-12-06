@@ -25,9 +25,9 @@ const generateDefaultLayout = () => {
 
   // [5] Priority
   {i: 'combo0', x: 6, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
-      placeholder: 'Please Select...',
+      placeholder: 'Please select...',
       options: dropdownOptions,
-      label: 'Please select:'
+      label: 'Courses:'
   }},
 
   // [6] User
@@ -104,7 +104,7 @@ const defaultControlData = {
     placeholder: 'Enter Value...'
   },
   'combo': {
-    placeholder: 'Please Select...',
+    placeholder: 'Please select...',
     options: dropdownOptionsFew,
     label: 'Combobox:'
   }
@@ -137,7 +137,7 @@ const updateLayout = (layout, updatedControls) => {
 }
 
 export default function(state = defaultState, action) {
-  console.log('[DEBUG] reducer_designer', action, state);
+  console.log('[DEBUG] UPDATE_DESIGNER_LAYOUTX', action.payload, state.layout);
   switch (action.type) {
     case SELECT_TOOLPANEL_TREE:
       return {
@@ -158,7 +158,7 @@ export default function(state = defaultState, action) {
         newState.layout = [...state.layout];
 
         updateLayout(newState.layout, updatedControls);
-
+        console.log('[DEBUG] UPDATE_DESIGNER_LAYOUTX', action.payload, state.layout, newState.layout);
         
 
         return newState;

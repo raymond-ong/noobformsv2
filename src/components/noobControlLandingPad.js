@@ -3,7 +3,8 @@ import {ControlDragTypes} from './noobControlContent';
 import { useDrop } from 'react-dnd';
 import './noobForm.css';
 
-const LandingPads = ({controlData, resizingControlId, droppingItemType, droppingItem, noobControlCanDropCallback}) => {
+const LandingPads = ({controlData, resizingControlId, droppingItemType, droppingItem, 
+                    noobControlCanDropCallback, noobControlDropCallback}) => {
     // If this control is not resizing, no need to render the landing pads
     if (resizingControlId !== controlData.i && droppingItemType !== ControlDragTypes.CONTROL) {
         return null;
@@ -23,13 +24,13 @@ const LandingPads = ({controlData, resizingControlId, droppingItemType, dropping
     }
 
     return (<div className="landingPadContainer" style={landingPadStyle}>
-        {createLandingPads(controlData, noobControlCanDropCallback)}
+        {createLandingPads(controlData, noobControlCanDropCallback, noobControlDropCallback)}
     </div>)
 }
 
 // Create a landing pad to allow the user to reduce the size of the control
 //function createLandingPads(rowSpan, colSpan, domParentCtrlId, parentX, parentY) {
-function createLandingPads(controlData, noobControlCanDropCallback) {    
+function createLandingPads(controlData, noobControlCanDropCallback, noobControlDropCallback) {    
     let retList = [];
     for (let i=0; i < controlData.h; i++) {
         for (let j=0; j < controlData.w; j++) {
@@ -43,6 +44,7 @@ function createLandingPads(controlData, noobControlCanDropCallback) {
                 key={"landingpadcontainer"+(i * controlData.w + j)}
                 keyLandingPad={"landingpad"+(i * controlData.w + j)}
                 canDropParentCallback={noobControlCanDropCallback}
+                dropParentCallback={noobControlDropCallback}
             />);
         }
     }
@@ -83,13 +85,13 @@ const canDropCollectHandler = (monitor, keyLandingPad) => {
     return false;
 }
 
-const LandingPad = ({domParentCtrlId, layoutPos, keyLandingPad, canDropParentCallback}) => {
+const LandingPad = ({domParentCtrlId, layoutPos, keyLandingPad, canDropParentCallback, dropParentCallback}) => {
 
     //console.log('render LandingPad for ', keyLandingPad);
     const [{ isOver, canDrop}, drop] = useDrop({
         accept: [ControlDragTypes.CONTROL],
         canDrop: (item, monitor) => canDropInLandingPad(item, monitor, keyLandingPad, layoutPos, canDropParentCallback),
-        drop: (droppedItem) => {console.log('dropped at landing pad', keyLandingPad, droppedItem)},
+        drop: (droppedItem) => dropParentCallback(droppedItem, layoutPos),
         collect: monitor => ({
             // these are the fields that will be added to the component's props/state
             // downside is that it needs to execute the function
