@@ -178,7 +178,6 @@ class designerForm extends React.Component {
       this.props.onDragStop(item);
   }
   onNewLayout = () => {
-    debugger
     this.setState({
       layouts: { lg: generateLayout() }
     });

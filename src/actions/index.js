@@ -7,6 +7,7 @@ export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
+export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
 
 export function menuClicked(menuName) { 
     return {
@@ -61,5 +62,12 @@ export const saveLayout = (layout) => {
   return {
     type: SAVE_DESIGNER_LAYOUT,
     payload: layout
+  }
+}
+
+export const updateControlProps = (newControlData) => {
+  return {
+    type: UPDATE_CONTROL_PROPS,
+    payload: newControlData
   }
 }

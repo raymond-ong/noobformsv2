@@ -132,7 +132,6 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
 }
 
 const mapStateToProps = (state, ownProps) => {
-    debugger
     let myId = ownProps.controlData.i;
     let stateControlData = state.designer && state.designer.layout && state.designer.layout.find(control => control.i === myId);
     if (stateControlData) {

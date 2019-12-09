@@ -1,4 +1,7 @@
-import { SELECT_TOOLPANEL_TREE, SELECT_CONTROL, UPDATE_DESIGNER_LAYOUT } from "../actions/index";
+import { SELECT_TOOLPANEL_TREE, 
+          SELECT_CONTROL, 
+          UPDATE_DESIGNER_LAYOUT,
+          UPDATE_CONTROL_PROPS} from "../actions/index";
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 const generateDefaultLayout = () => {
@@ -45,7 +48,7 @@ const generateDefaultLayout = () => {
   {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'Update History',
       //backgroundColor: 'lightsteelblue'
-      level: 1
+      level: 2
   }},
 
   // [1] History
@@ -175,7 +178,6 @@ const setControlSelectedOrig = (controlId, newLayout) => {
 const setControlSelected = (controlId, newLayout) => {
   // Create a new object for the affected controls, instead of updating them
   let affectedControls = [];
-  debugger
   newLayout.forEach(control => {
     if (control.selected) {
       if (control.i !== controlId) {
@@ -195,6 +197,18 @@ const setControlSelected = (controlId, newLayout) => {
   });  
 }
 
+const updateControlProps = (updatedControl, newLayout) => {
+  let findControlIndex = newLayout.findIndex(ctrl => ctrl.i === updatedControl.i);
+  if (findControlIndex < 0) {
+    return;
+  }
+
+  let newControl = {...newLayout[findControlIndex], data: updatedControl.data};
+  // Remove the old control and push the new object
+  newLayout.splice(findControlIndex, 1);
+  newLayout.push(newControl);
+}
+
 export default function(state = defaultState, action) {  
   switch (action.type) {
     case SELECT_TOOLPANEL_TREE:
@@ -203,7 +217,6 @@ export default function(state = defaultState, action) {
         toolPanelTreeSelected: action.payload
       };
     case SELECT_CONTROL:
-      debugger
       let newStateSelectCtrl = {...state};
       //newStateSelectCtrl.layout = [...state.layout]; // No need. If you do this, the entire designer will rerender, but only the empty controls will rerender
       setControlSelected(action.payload, newStateSelectCtrl.layout);
@@ -220,6 +233,14 @@ export default function(state = defaultState, action) {
         updateLayout(newState.layout, updatedControls);        
 
         return newState;
+      case UPDATE_CONTROL_PROPS:
+          let newStateUpdProps = {
+            ...state,          
+          };
+
+          updateControlProps(action.payload, newStateUpdProps.layout); 
+
+          return newStateUpdProps;
   }
   return state;
 }

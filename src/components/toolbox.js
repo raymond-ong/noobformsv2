@@ -153,4 +153,8 @@ const toolBox = () => {
     </div>
 }
 
+export const getToolItemByName = (name) => toolBoxItems.find(tool => {
+     return tool.name === name
+});
+
 export default toolBox;

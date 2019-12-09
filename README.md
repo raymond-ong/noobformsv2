@@ -21,7 +21,7 @@ For moving of controls, currently React-DnD is used but.
 
 ## Reasons for creating this project
 * Practice React/HTML/Javascript and CSS Grid
-* React-grid-layout is an awesome awesome library. It is performant, has nice animations and many features.
+* React-grid-layout is an awesome awesome library. It is performant, has nice animations and many features.\
 However, as of today (Nov 2019), if I'm not mistaken, there is no support for auto-sizing the grid cell when the content grows.\
 For example, if the child content is a tagged combobox/multiselect combobox, as the user selects more items, there is no way for the cell to grow.\
 It does not look nice to show a scrollbar for this kind of control.\
