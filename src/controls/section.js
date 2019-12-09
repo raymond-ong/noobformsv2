@@ -135,7 +135,7 @@ export const RenderControlProps = (selectedControl) => {
             level: selectedControl.data.level
         })
         setControlValues(selectedControl, setValue);
-      }, []);
+      }, [selectedControl]);
 
     return <Form 
             onSubmit={handleSubmit(onSubmit)}
