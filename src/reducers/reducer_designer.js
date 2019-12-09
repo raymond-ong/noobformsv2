@@ -83,7 +83,7 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 8
+  rows: 12
 }
 
 const defaultState = {

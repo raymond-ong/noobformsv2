@@ -32,7 +32,7 @@ const getContentDiv = (controlData) => {
             content = <Combobox {...controlData}></Combobox>
             break;
         case undefined:
-            content = <div className="emptyControl">{controlData.i}</div>
+            content = <div className="emptyControl"></div>
             break
         default:
             content = <div>{controlData.i}</div>
