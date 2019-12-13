@@ -60,81 +60,81 @@ const levelOptions = [
 ];
 
 // For section only -- testing
-const PropertiesPanelTesting = ({selectedControl, updateControlProps}) => {
-    const { register, handleSubmit, setValue } = useForm();
-    const onSubmit = data => console.log(data);
-    const [values, setReactSelectValue] = useState(1);
+// const PropertiesPanelTesting = ({selectedControl, updateControlProps}) => {
+//     const { register, handleSubmit, setValue } = useForm();
+//     const onSubmit = data => console.log(data);
+//     const [values, setReactSelectValue] = useState(1);
 
-    const handleMultiChange = selectedOption => {
-        // debugger
-        setValue("level", 3);
-        setReactSelectValue(3);
-        //setReactSelectValue({selectedOption: 0});
-    }
+//     const handleMultiChange = selectedOption => {
+//         // debugger
+//         setValue("level", 3);
+//         setReactSelectValue(3);
+//         //setReactSelectValue({selectedOption: 0});
+//     }
 
-    React.useEffect(() => {
-        //debugger
-        register({ name: "level" }); // custom register semantic dropdown
+//     React.useEffect(() => {
+//         //debugger
+//         register({ name: "level" }); // custom register semantic dropdown
 
-        setValue("level", 4);
-        setReactSelectValue(4);
-        //setReactSelectValue({selectedOption: 0});
-    }, [register])
+//         setValue("level", 4);
+//         setReactSelectValue(4);
+//         //setReactSelectValue({selectedOption: 0});
+//     }, [register])
 
-    return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
-        <Dropdown
-            fluid
-            selection
-            button
-            className='icon small'
-            options={levelOptions}
-            value={values}
-            onChange={handleMultiChange}
-        />
-        <input type="submit" />
-    </Form>
-    );
-}
+//     return (
+//     <Form onSubmit={handleSubmit(onSubmit)}>
+//         <Dropdown
+//             fluid
+//             selection
+//             button
+//             className='icon small'
+//             options={levelOptions}
+//             value={values}
+//             onChange={handleMultiChange}
+//         />
+//         <input type="submit" />
+//     </Form>
+//     );
+// }
 
-const PropertiesPanelOrig = ({selectedControl, updateControlProps}) => {
-    const { register, handleSubmit, watch, errors, setValue } = useForm();
+// const PropertiesPanelOrig = ({selectedControl, updateControlProps}) => {
+//     const { register, handleSubmit, watch, errors, setValue } = useForm();
 
-    useEffect(() => {
-        // Update the document title using the browser API
-        console.log('useEffect start');
-        setValues(selectedControl, setValue);
-      });
+//     useEffect(() => {
+//         // Update the document title using the browser API
+//         console.log('useEffect start');
+//         setValues(selectedControl, setValue);
+//       });
 
-    if (!selectedControl) {
-        return <div className="ui message warning">No control selected in the Designer</div>
-    }
+//     if (!selectedControl) {
+//         return <div className="ui message warning">No control selected in the Designer</div>
+//     }
 
-    let toolItemType = getToolItemByName(selectedControl.ctrlType);
-    console.log('propsPanel', selectedControl);
+//     let toolItemType = getToolItemByName(selectedControl.ctrlType);
+//     console.log('propsPanel', selectedControl);
 
     
-    const onSubmitBound = onSubmit.bind(this, updateControlProps);
+//     const onSubmitBound = onSubmit.bind(this, updateControlProps);
 
-    return (<Form 
-        onSubmit={handleSubmit(onSubmitBound, updateControlProps)}
-        className="propsForm ui small form">    
+//     return (<Form 
+//         onSubmit={handleSubmit(onSubmitBound, updateControlProps)}
+//         className="propsForm ui small form">    
 
-        <Form.Field key={'field-'+toolItemType.displayName}>
-            <label>Control Type:</label>
-            <input className="ui small" value={toolItemType.displayName} readOnly/>
-        </Form.Field>
+//         <Form.Field key={'field-'+toolItemType.displayName}>
+//             <label>Control Type:</label>
+//             <input className="ui small" value={toolItemType.displayName} readOnly/>
+//         </Form.Field>
 
-        <Form.Field key={'field-controlId'}>
-            <label>Control Id:</label>
-            <input  value={selectedControl.i} ref={register} name="controlId" readOnly/>
-        </Form.Field>
+//         <Form.Field key={'field-controlId'}>
+//             <label>Control Id:</label>
+//             <input  value={selectedControl.i} ref={register} name="controlId" readOnly/>
+//         </Form.Field>
 
-        {renderDataProps(selectedControl, register, setValue)}
+//         {renderDataProps(selectedControl, register, setValue)}
 
-        <input type="submit" value="Apply" className="ui button secondary small"/>
-    </Form>);
-}
+//         <input type="submit" value="Apply" className="ui button secondary small"/>
+//     </Form>);
+// }
 
 const mapStateToProps = (state) => {
     return {

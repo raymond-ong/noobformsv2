@@ -21,7 +21,7 @@ class App extends React.Component {
         // Fetch master data:
         // Hierarchy, layouts, saved data
 
-        //this.props.fetchHierarchy();
+        this.props.fetchHierarchy();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }

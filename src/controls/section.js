@@ -2,13 +2,23 @@ import React, {useState, useEffect} from 'react';
 import './section.css';
 import './common.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
-import { Form } from 'semantic-ui-react';
+//import { Form } from 'semantic-ui-react';
 import splitWord from '../helper/wordSplitter';
-import { Dropdown, Icon } from 'semantic-ui-react';
+import { Dropdown, Icon, Button } from 'semantic-ui-react';
 import useForm from "react-hook-form";
 import { RHFInput } from 'react-hook-form-input'; // this is in beta-phase only now; not stable
 import { useDispatch } from 'react-redux'
 import {getToolItemByName} from '../components/toolbox';
+// import Form, {
+//     TextInput,
+//     // TextArea,
+//     // Select,
+//     // Checkbox,
+//     // Button,
+//     // FileInput
+//   } from "../form/Form";
+import Form, {Text as FormText} from '../form/Form';
+import FormDropDown from '../form/FormDropDown';
 
 
 const Section = (props) => {
@@ -46,7 +56,81 @@ const handleControlChange= (setValue, key, e, data) => {
 }
 
 const NAME_CONTROL_ID = 'controlId'
+const NAME_CONTROL_TYPE = 'controlType'
 
+const onSubmit = (data, e) => {
+    console.log('onSubmit', data, e);
+}
+
+
+
+export const RenderControlProps = (selectedControl) => {
+    if (!selectedControl) {
+        return;
+    }
+
+    // useEffect(() => {
+    //     // Set the initial values
+    //     // The controls' values are not really bound to any state or props so we have to update it here
+    //     console.log('useEffect start');
+    //     setControlValues(selectedControl, setValue);
+    //   }, [selectedControl]); // Means if selectedControl value does not change, don't run useEffect again.
+
+    return (<Form className="propsForm ui small form" key='form' onSubmit={onSubmit} inputObj={selectedControl}>
+        {renderCommonProps(selectedControl)}   
+        {renderDataProps(selectedControl)}   
+        <input key='submitBtn' type="submit" value="Apply" className="ui button secondary small"/> 
+    </Form>)
+}
+
+const renderCommonProps = (selectedControl) => {
+    let toolItemType = getToolItemByName(selectedControl.ctrlType);
+    let retList = [];
+    retList.push(<FormText key={NAME_CONTROL_TYPE}
+                            name={NAME_CONTROL_TYPE}
+                            label="Control Type:"
+                            readOnly                                                                             
+    />);
+
+    retList.push(<FormText key={NAME_CONTROL_ID}
+        name={NAME_CONTROL_ID}
+        label="Control Id:"
+        // Default value is useless, it will not update again when another control is selected
+        // defaultValue={selectedControl.i}
+    />);
+
+    return retList;
+}
+
+const renderDataProps = (selectedControl, register, stateValue) => {
+    if (!selectedControl) {
+        return;
+    }
+
+    let retList = [];
+
+    Object.keys(selectedControl.data).forEach((key, index) => {
+        switch(key) {
+            case 'level':
+                retList.push(<FormDropDown
+                    key={key}
+                    name={key}
+                    label={splitWord(key)+":"}
+                    options={levelOptions}
+                />);
+                break;
+            default:
+                retList.push(<FormText key={key}
+                    name={key}
+                    label={splitWord(key)+':'}                                                             
+                />);
+        }
+    });
+
+    return retList;
+}
+
+/*
 const renderCommonProps = (selectedControl, register) => {
     // Just render the control type and ID
     let toolItemType = getToolItemByName(selectedControl.ctrlType);
@@ -66,6 +150,7 @@ const renderCommonProps = (selectedControl, register) => {
 
     return retList;
 }
+
 
 //setValue is from react-hook-form
 const setControlValues = (selectedControl, setValueFunc) => {
@@ -135,7 +220,7 @@ export const RenderControlProps = (selectedControl) => {
             level: selectedControl.data.level
         })
         setControlValues(selectedControl, setValue);
-      }, [selectedControl]);
+      }, [selectedControl]); // Means if selectedControl value does not change, don't run useEffect again.
 
     return <Form 
             onSubmit={handleSubmit(onSubmit)}
@@ -145,6 +230,7 @@ export const RenderControlProps = (selectedControl) => {
             <input type="submit" value="Apply" className="ui button secondary small"/>
         </Form>
 }
+*/
 
 /*
 export const renderDataProps2 = (selectedControl, register, setValue) => {
