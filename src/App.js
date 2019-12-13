@@ -27,8 +27,9 @@ class App extends React.Component {
     }
 
     render() {
-        console.log('[App] render()');
-        return(<DndProvider backend={HTML5Backend}>
+        var isTouch = ('ontouchstart' in document.documentElement);
+        console.log('[App] render(), touch?', isTouch);
+        return(<DndProvider backend={isTouch? TouchBackend : HTML5Backend}>
         <div id="app" style={{height: 'calc(100%)'}}>
             <ReactNotification />
             <Navbar>        

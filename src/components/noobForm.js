@@ -62,8 +62,12 @@ class NoobForm extends React.Component {
 
         let rectContainer = domControl.container.getClientRects()[0];
 
-        let yDelta = e.clientY - rectContainer.bottom;
-        let xDelta = e.clientX - rectContainer.right;
+        let yDelta = !!e.touches ? e.touches[0].clientY - rectContainer.bottom: e.clientY - rectContainer.bottom;
+        let xDelta = !!e.touches ? e.touches[0].clientX - rectContainer.right : e.clientX - rectContainer.right;
+
+        //debugger
+
+        //console.log('MouseMove/TouchMove', yDelta, xDelta);
 
         // [2] Set the new width and height based on the mouse position
         domControl.content.style.width = `${rectContainer.width + xDelta}px`;
@@ -846,8 +850,12 @@ class NoobForm extends React.Component {
         <div id="noobForm"
             className="noobForm" 
             onMouseLeave={(e) => {this.onMouseLeave(e, controlIds)}}
+
             onMouseUp={(e) => {this.onMouseUp(e, controlIds)}}
+            onTouchEnd={(e) => {this.onMouseUp(e, controlIds)}}
+
             onMouseMove={(e) => {this.onMouseMove(e, controlIds)}}
+            onTouchMove={(e) => {this.onMouseMove(e, controlIds)}}
             style={divStyle}>
             {controlsJsx}            
         </div>    

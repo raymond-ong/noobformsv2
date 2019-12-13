@@ -43,7 +43,17 @@ const renderResizer = (controlId, onResizerMouseDown) => {
                 // Resizing is given a higher priority since it covers a very small area
                 onResizerMouseDown(e, controlId);
                 e.preventDefault();
-            }}></div>
+            }}
+            onTouchStart={
+                (e) => {  
+                    // This event is being called first before the Drag on the control starts
+                    // Call preventDefault to disable moving of the control
+                    // Resizing is given a higher priority since it covers a very small area
+                    onResizerMouseDown(e, controlId);
+                    e.preventDefault();
+                }
+            }
+            ></div>
         );
 }
 

@@ -139,6 +139,7 @@ class NoobSplitter extends Component {
 
         gutterElem.appendChild(gutterBtn);
         gutterBtn.addEventListener("click", this.handleSplitterBtnClick);
+        gutterBtn.addEventListener("touchend", this.handleSplitterBtnClick);
 
         return gutterElem;
     }
