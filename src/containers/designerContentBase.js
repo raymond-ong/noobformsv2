@@ -13,6 +13,7 @@ class DesignerContentBase extends React.Component {
         window.addEventListener('resize', this.onWindowResize);
         this.defaultSizes = DEFAULT_SPLIT_SIZES;
         this.state = {
+            leftPixels: DEFAULT_SPLIT_SIZES[0] * window.innerWidth / 100.0,
             rightPixels: DEFAULT_SPLIT_SIZES[1] * window.innerWidth / 100.0,
             currRightPercent: DEFAULT_SPLIT_SIZES[1]
         };
@@ -32,7 +33,8 @@ class DesignerContentBase extends React.Component {
     onWindowResize = () => {        
         let rightPixels = this.state.currRightPercent / 100.0 * window.innerWidth;    
         this.setState({
-            rightPixels: rightPixels
+            rightPixels: rightPixels,
+            leftPixels: window.innerWidth - rightPixels
         });
     }
 
@@ -42,7 +44,8 @@ class DesignerContentBase extends React.Component {
         //if there are differences, call setState. We minimize rerenders
         this.setState({
             rightPixels: rightPixels,
-            currRightPercent: sizes[1]
+            currRightPercent: sizes[1],
+            leftPixels: window.innerWidth - rightPixels
         });
     }
 }

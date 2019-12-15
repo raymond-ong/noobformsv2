@@ -21,7 +21,7 @@ class DashboardDesignerContent extends DesignerContentbase {
     }
 
     render() {
-        console.log('render designerContent');
+        console.log('render dashboard designerContent');
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>
             <ToolPanel/>
             <DesignerForm containerWidth={this.state.rightPixels}/>

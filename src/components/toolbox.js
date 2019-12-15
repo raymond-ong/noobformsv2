@@ -147,14 +147,22 @@ const drawToolItems = () => {
     })
 }
 
-const toolBox = () => {
-    return <div className="toolBox">
-        {drawToolItems()}
-    </div>
+const ToolBox = ({containerWidth}) => {
+     let classNames = 'toolBox';     
+     if (containerWidth < 200) {
+          classNames += ' toolBox-1row'
+     }
+     else {
+          classNames += ' toolBox-2rows'
+     }
+     console.log('toolBox containerWidth', containerWidth);
+     return <div className={classNames}>
+          {drawToolItems()}
+     </div>
 }
 
 export const getToolItemByName = (name) => toolBoxItems.find(tool => {
      return tool.name === name
 });
 
-export default toolBox;
+export default ToolBox;

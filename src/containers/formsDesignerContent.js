@@ -36,9 +36,9 @@ class formsDesignerContent extends DesignerContentbase {
     }
     
     render() {
-        console.log('render designerContent');
+        console.log('render designerContent', this.state.leftPixels);
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>
-            <ToolPanel panelItems={panelItems}/>
+            <ToolPanel panelItems={panelItems} containerWidth={this.state.leftPixels}/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
                 {/* <DesignerForm 

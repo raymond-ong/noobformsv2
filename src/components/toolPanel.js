@@ -72,13 +72,13 @@ class ToolPanel extends React.Component {
         let panelItems = props.panelItems ? props.panelItems : defaultPanelItems;
         let initializedPanelData = this.recalculatePanelSizes(panelItems);
 
+        this.onSplitDragEnd = this.onSplitDragEnd.bind(this);
+        this.onSplitDragStart = this.onSplitDragStart.bind(this);
+
         this.state = {
             panelsData: initializedPanelData,
             sizes: initializedPanelData.map(panel => panel.size)
         };
-
-        this.onSplitDragEnd = this.onSplitDragEnd.bind(this);
-        this.onSplitDragStart = this.onSplitDragStart.bind(this);
     }
 
     recalculatePanelSizes = (panelsData) => {
@@ -167,10 +167,10 @@ class ToolPanel extends React.Component {
 
     // TODO: can dynamically create the react component given the class name?
     // Where to find the 'import' of that react component?
-    getPanelContent = (panelId) => {
+    getPanelContent = (panelId, containerWidth) => {
         switch(panelId) {
             case 'toolbox':
-                return <Toolbox/>;
+                return <Toolbox containerWidth={containerWidth}/>;
             case 'toolHierarchy':
                 return <DemoTree/>
             case 'availableData':
@@ -182,9 +182,9 @@ class ToolPanel extends React.Component {
         return null;
     }
 
-    createPanels = () => {
+    createPanels = (containerWidth) => {
         return this.state.panelsData.map(panel => {
-            let panelContent = this.getPanelContent(panel.id);            
+            let panelContent = this.getPanelContent(panel.id, containerWidth);            
             return <AccordionPanel 
                         key={panel.id}
                         id={panel.id}
@@ -198,7 +198,7 @@ class ToolPanel extends React.Component {
     }
 
     render() {
-        console.log('[toolPanel] render');
+        console.log('[toolPanel] render', this.props.containerWidth);
         return <Split className="split"
         direction="vertical"
         sizes={this.state.sizes}
@@ -209,7 +209,7 @@ class ToolPanel extends React.Component {
         onDragStart={this.onSplitDragStart}
         cursor="row-resize"
         >
-            {this.createPanels()}            
+            {this.createPanels(this.props.containerWidth)}            
         </Split>
     }
 }
