@@ -5,7 +5,7 @@ import DesignerForm from '../components/designerForm';
 import DesignerContentbase from './designerContentBase';
 import DesignerToolbar from '../components/designerToolbar';
 
-const DEFAULT_SPLIT_SIZES = [25, 75];
+const DEFAULT_SPLIT_SIZES = [15, 85];
 
 
 class DashboardDesignerContent extends DesignerContentbase {
