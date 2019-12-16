@@ -4,6 +4,7 @@ import './noobForm.css'
 import Section from '../controls/section';
 import RichText from '../controls/richtext';
 import Combobox from '../controls/combo';
+import Textbox from '../controls/textbox';
 import ShowMessage, {NotifType} from '../helper/notification';
 
 
@@ -30,6 +31,9 @@ const getContentDiv = (controlData) => {
             break;
         case 'combo':
             content = <Combobox {...controlData}></Combobox>
+            break;
+        case 'textbox':
+            content = <Textbox {...controlData}/>
             break;
         case undefined:
             content = <div className="emptyControl"></div>

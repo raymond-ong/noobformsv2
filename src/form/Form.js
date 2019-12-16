@@ -13,7 +13,6 @@ const setControlValues = (selectedControl, setValueFunc) => {
         return;
     }
 
-    debugger
     // Common props
     let toolItemType = getToolItemByName(selectedControl.ctrlType);
 

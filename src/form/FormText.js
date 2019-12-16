@@ -6,7 +6,6 @@ import { Form as SemanticForm } from "semantic-ui-react";
 function FormText({ name, rules, label, ...rest }) {
   const { register, setValue } = useContext(FormContext);
 
-  debugger
   return (<SemanticForm.Field>
             <label key={'label-'+name}>{label}</label>
             <RHFInput

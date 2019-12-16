@@ -44,6 +44,12 @@ const generateDefaultLayout = () => {
   // [7] Attachments
   {i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
 
+  // [8] Remarks
+  {i: 'ctrl-textbox0', x: 9, y: 4, w: 3, h: 1,ctrlType: 'textbox', data: {
+    placeholder: 'Input Remarks...',
+    label: 'Remarks:'
+  }},
+
   // [B] Subsection
   {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'Update History',
@@ -86,7 +92,7 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 8
+  rows: 12
 }
 
 const defaultState = {
@@ -105,12 +111,16 @@ const defaultControlData = {
   },
   'richtext': {
     label: 'Rich Text:',
-    placeholder: 'Enter Value...'
+    placeholder: 'Enter value...'
   },
   'combo': {
     placeholder: 'Please select...',
     options: dropdownOptionsFew,
     label: 'Combobox:'
+  },
+  'textbox': {
+    placeholder: 'Enter value...',
+    label: 'Textbox:'
   }
 }
 

@@ -58,11 +58,7 @@ const handleControlChange= (setValue, key, e, data) => {
 const NAME_CONTROL_ID = 'controlId'
 const NAME_CONTROL_TYPE = 'controlType'
 
-const onSubmit = (data, e) => {
-    console.log('onSubmit', data, e);
-}
-
-export const RenderControlProps = (selectedControl) => {
+export const RenderControlProps = (selectedControl, onSubmit) => {
     if (!selectedControl) {
         return;
     }
@@ -78,7 +74,7 @@ const renderCommonProps = (selectedControl) => {
     let toolItemType = getToolItemByName(selectedControl.ctrlType);
     let retList = [];
     retList.push(<FormText key={NAME_CONTROL_TYPE}
-                            name={NAME_CONTROL_TYPE}
+                             name={NAME_CONTROL_TYPE}
                             label="Control Type:"
                             readOnly                                                                             
     />);
@@ -86,6 +82,7 @@ const renderCommonProps = (selectedControl) => {
     retList.push(<FormText key={NAME_CONTROL_ID}
         name={NAME_CONTROL_ID}
         label="Control Id:"
+        readOnly
         // Default value is useless, it will not update again when another control is selected
         // defaultValue={selectedControl.i}
     />);

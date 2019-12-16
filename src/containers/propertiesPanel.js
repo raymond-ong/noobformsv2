@@ -11,7 +11,9 @@ import splitWord from '../helper/wordSplitter';
 
 import {RenderControlProps as RenderSectionProps} from '../controls/section';
 
-const onSubmit = (dispatchFn, submittedData ) => {
+/*
+const onSubmit = (submittedData, evt ) => {
+    debugger
     console.log('submit', submittedData);
     let formattedData = {
         i: submittedData.controlId,
@@ -23,6 +25,7 @@ const onSubmit = (dispatchFn, submittedData ) => {
     // Fire redux action to update
     dispatchFn(formattedData);
 };
+*/
 
 const setValues = (selectedControl, setValueFunc) => {
     if (!selectedControl) {
@@ -34,22 +37,35 @@ const setValues = (selectedControl, setValueFunc) => {
     });
 }
 
-const renderDataProps = (selectedControl, register, setValue)  => {
+const renderDataProps = (selectedControl, onSubmit)  => {
     switch(selectedControl.ctrlType) {
         case 'section':
-            return RenderSectionProps(selectedControl, register, setValue);
+            return RenderSectionProps(selectedControl, onSubmit);
         default:
             return null;
     }
 }
 
-// updateControlProps: dispatches action to redux
 const PropertiesPanel = ({selectedControl, updateControlProps}) => {
     if (!selectedControl) {
         return <div className="ui message warning">No control selected in the Designer</div>
     }
 
-    return renderDataProps(selectedControl, updateControlProps);
+    let onSubmit = (submittedData, evt) => {
+        console.log('submit', submittedData);
+        let formattedData = {
+            i: submittedData.controlId,
+            data: submittedData
+        }
+    
+        delete formattedData.data.controlId;
+        delete formattedData.data.controlType;
+    
+        // Fire redux action to update store
+        updateControlProps(formattedData);
+    }
+
+    return renderDataProps(selectedControl, onSubmit);
 }
 
 const levelOptions = [
@@ -59,93 +75,16 @@ const levelOptions = [
     { key: 'level-4', text: '4', value: 4 },    
 ];
 
-// For section only -- testing
-// const PropertiesPanelTesting = ({selectedControl, updateControlProps}) => {
-//     const { register, handleSubmit, setValue } = useForm();
-//     const onSubmit = data => console.log(data);
-//     const [values, setReactSelectValue] = useState(1);
-
-//     const handleMultiChange = selectedOption => {
-//         // debugger
-//         setValue("level", 3);
-//         setReactSelectValue(3);
-//         //setReactSelectValue({selectedOption: 0});
-//     }
-
-//     React.useEffect(() => {
-//         //debugger
-//         register({ name: "level" }); // custom register semantic dropdown
-
-//         setValue("level", 4);
-//         setReactSelectValue(4);
-//         //setReactSelectValue({selectedOption: 0});
-//     }, [register])
-
-//     return (
-//     <Form onSubmit={handleSubmit(onSubmit)}>
-//         <Dropdown
-//             fluid
-//             selection
-//             button
-//             className='icon small'
-//             options={levelOptions}
-//             value={values}
-//             onChange={handleMultiChange}
-//         />
-//         <input type="submit" />
-//     </Form>
-//     );
-// }
-
-// const PropertiesPanelOrig = ({selectedControl, updateControlProps}) => {
-//     const { register, handleSubmit, watch, errors, setValue } = useForm();
-
-//     useEffect(() => {
-//         // Update the document title using the browser API
-//         console.log('useEffect start');
-//         setValues(selectedControl, setValue);
-//       });
-
-//     if (!selectedControl) {
-//         return <div className="ui message warning">No control selected in the Designer</div>
-//     }
-
-//     let toolItemType = getToolItemByName(selectedControl.ctrlType);
-//     console.log('propsPanel', selectedControl);
-
-    
-//     const onSubmitBound = onSubmit.bind(this, updateControlProps);
-
-//     return (<Form 
-//         onSubmit={handleSubmit(onSubmitBound, updateControlProps)}
-//         className="propsForm ui small form">    
-
-//         <Form.Field key={'field-'+toolItemType.displayName}>
-//             <label>Control Type:</label>
-//             <input className="ui small" value={toolItemType.displayName} readOnly/>
-//         </Form.Field>
-
-//         <Form.Field key={'field-controlId'}>
-//             <label>Control Id:</label>
-//             <input  value={selectedControl.i} ref={register} name="controlId" readOnly/>
-//         </Form.Field>
-
-//         {renderDataProps(selectedControl, register, setValue)}
-
-//         <input type="submit" value="Apply" className="ui button secondary small"/>
-//     </Form>);
-// }
-
 const mapStateToProps = (state) => {
     return {
         selectedControl: state.designer.layout.find(c => c.selected === true)
     }
   }
 
-/* We just let the individual controls take care of everything
+//We just let the individual controls take care of everything
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({ updateControlProps }, dispatch);
 }
-*/
 
-export default connect(mapStateToProps)(PropertiesPanel);
+
+export default connect(mapStateToProps, mapDispatchToProps)(PropertiesPanel);
