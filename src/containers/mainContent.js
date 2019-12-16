@@ -13,7 +13,7 @@ const panes = [
     {
         menuItem: 'Home',
         pane: (
-        <Tab.Pane key='home' style={{height: '100%', padding: '0px'}}>
+        <Tab.Pane key='home' style={{height: '100%', width: '100%', padding: '0px'}}>
             <HomeContent/>
         </Tab.Pane>
         ),
@@ -21,7 +21,7 @@ const panes = [
     {
         menuItem: 'FormsDesigner',
         pane: (
-          <Tab.Pane key='formsDesigner' style={{height: '100%', padding: '0px'}}>
+          <Tab.Pane key='formsDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
             <FormsDesignerContent/>
           </Tab.Pane>
         ),
@@ -29,7 +29,7 @@ const panes = [
       {
         menuItem: 'dashboardDesigner',
         pane: (
-          <Tab.Pane key='dashboardDesigner' style={{height: '100%', padding: '0px'}}>
+          <Tab.Pane key='dashboardDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
             <DesignerContent/>
           </Tab.Pane>
         ),
@@ -37,7 +37,7 @@ const panes = [
       {
         menuItem: 'HierarchyDesigner',
         pane: (
-          <Tab.Pane key='hierarchyDesigner' style={{height: '100%', padding: '0px'}}>
+          <Tab.Pane key='hierarchyDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
             <HierarchyDesigner/>
           </Tab.Pane>
         ),
@@ -45,7 +45,7 @@ const panes = [
       {
         menuItem: 'Settings',
         pane: (
-          <Tab.Pane key='settings' style={{height: '100%', padding: '0px'}}>
+          <Tab.Pane key='settings' style={{height: '100%', width: '100%', padding: '0px'}}>
             <SettingsContent/>
           </Tab.Pane>
         ),

@@ -11,22 +11,6 @@ import splitWord from '../helper/wordSplitter';
 
 import {RenderControlProps as RenderSectionProps} from '../controls/section';
 
-/*
-const onSubmit = (submittedData, evt ) => {
-    debugger
-    console.log('submit', submittedData);
-    let formattedData = {
-        i: submittedData.controlId,
-        data: submittedData
-    }
-
-    delete formattedData.data.controlId;
-
-    // Fire redux action to update
-    dispatchFn(formattedData);
-};
-*/
-
 const setValues = (selectedControl, setValueFunc) => {
     if (!selectedControl) {
         return;

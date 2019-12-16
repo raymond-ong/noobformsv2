@@ -74,7 +74,10 @@ class DemoTree extends React.Component {
     // Fire an action to save the selected node to Redux
     //this.props.selectToolPanelTree(this.selKey);
     if (selectedKeys.length > 0) {
-        this.props.selectToolPanelTree(selectedKeys[0]);
+        this.props.selectToolPanelTree({
+          fullPath: selectedKeys[0], 
+          ...info.selectedNodes[0].props
+        });
     }
     else {
         this.props.selectToolPanelTree(null);
@@ -128,6 +131,17 @@ class DemoTree extends React.Component {
       return false;
   }
 
+  getSwitcherIcon = (node) => {
+    if (node.isLeaf) {
+      return null;
+    }
+
+    if (node.expanded) {
+      return <i className="ui icon angle down"></i>  
+    }
+    return <i className="ui icon angle right"></i>
+  }
+
   render() {
     let treeDataArr = convertMasterDataToKeys(this.props.masterHierarchy);
     if(!treeDataArr) {
@@ -157,6 +171,7 @@ class DemoTree extends React.Component {
             treeData={[treeDataArr]}
             icon={this.Icon}
             filterTreeNode={this.Filterer}
+            switcherIcon={this.getSwitcherIcon}
         />
     </div>
     );
@@ -172,7 +187,8 @@ const convertMasterDataToKeys = (apiNode) => {
   let treeData = {
     key: apiNode.fullPath,
     title: apiNode.name,
-    nodeType: apiNode.nodeType
+    nodeType: apiNode.nodeType,
+    category: apiNode.category
   };
 
   if (apiNode.children !== null) {

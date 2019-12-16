@@ -4,6 +4,7 @@ export const CLICK_MENU = "CLICK_MENU";
 export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
 export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
+export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
@@ -23,20 +24,32 @@ export function toolItemDragged(toolName) {
   };
 }
 
-export function selectToolPanelTree(hierarchyId) {
+export function selectToolPanelTree(hierarchyNode) {
   return {
     type: SELECT_TOOLPANEL_TREE,
-    payload: hierarchyId
+    payload: {
+      ...hierarchyNode
+    }
   };
 }
 
 
 export const fetchHierarchy = () => async dispatch => { 
-  console.log('[action]fetchHierarchy');
+  console.log('[action] fetchHierarchy');
   const response = await masterData.get('hierarchy')
 
   dispatch({
     type: FETCH_HIERARCHY,
+    payload: response
+  });
+}
+
+export const fetchAvailableData = () => async dispatch => { 
+  console.log('[action] fetchAvailableData');
+  const response = await masterData.get('availabledata')
+
+  dispatch({
+    type: FETCH_AVAILABLEDATA,
     payload: response
   });
 }

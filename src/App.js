@@ -5,7 +5,7 @@ import Navbar from '../src/components/navbar';
 import MainContent from './containers/mainContent';
 import "../src/styles/App.css";
 //import masterData from './api/masterData';
-import {fetchHierarchy} from './actions';
+import {fetchHierarchy, fetchAvailableData} from './actions';
 import {connect} from 'react-redux';
 
 import TouchBackend from 'react-dnd-touch-backend';
@@ -22,6 +22,7 @@ class App extends React.Component {
         // Hierarchy, layouts, saved data
 
         this.props.fetchHierarchy();
+        this.props.fetchAvailableData();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
@@ -41,4 +42,4 @@ class App extends React.Component {
 }
 
 //dndBackend = DragDropContext(TouchBackend);
-export default connect(null, {fetchHierarchy})(App);
+export default connect(null, {fetchHierarchy, fetchAvailableData})(App);

@@ -1,12 +1,13 @@
-import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY } from "../actions/index";
+import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA } from "../actions/index";
 
 const defaultState = {
-    activeMenu: 'dashboardDesigner',
-    tabIndex: 2,
+    activeMenu: 'formsDesigner',
+    tabIndex: 1,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
-    masterHierarchy:null
+    masterHierarchy: null,
+    masterAvailableData: null
 }
 
 const tabIndexMapping = {
@@ -35,6 +36,11 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         masterHierarchy: action.payload.data
+      }
+    case FETCH_AVAILABLEDATA:
+      return {
+        ...state,
+        masterAvailableData: action.payload.data
       }
   }
   return state;

@@ -12,3 +12,9 @@
   /* border: 1px solid mediumslateblue; */
   line-height: 12px;    
 }
+
+
+/* Hide the windows-like plus/minus button */
+.rc-tree li span.rc-tree-switcher, .rc-tree li span.rc-tree-checkbox, .rc-tree li span.rc-tree-iconEle {
+  background: none;
+}

@@ -9,14 +9,6 @@ import useForm from "react-hook-form";
 import { RHFInput } from 'react-hook-form-input'; // this is in beta-phase only now; not stable
 import { useDispatch } from 'react-redux'
 import {getToolItemByName} from '../components/toolbox';
-// import Form, {
-//     TextInput,
-//     // TextArea,
-//     // Select,
-//     // Checkbox,
-//     // Button,
-//     // FileInput
-//   } from "../form/Form";
 import Form, {Text as FormText} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 
@@ -42,6 +34,13 @@ const levelOptions = [
     { key: 'level-3', text: '3', value: 3 },    
     { key: 'level-4', text: '4', value: 4 },    
 ];
+
+// TODO: Change design
+// Maybe instead of implementing the JSX here, just export a function
+// that will define all the properties.
+// How it will be rendered, will be implemented in the propetiesPanel.
+// This way, it's easer to define the control props every time there is a new control.
+
 
 // For controls that are not native / cannot be handled by react-hook-form
 // We manually manage the values:

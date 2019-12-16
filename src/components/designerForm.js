@@ -236,7 +236,7 @@ class designerForm extends React.Component {
 
     console.log('render RGL');
     return (
-      <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px', zIndex: '0'}}>
+      <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px'}}>
         <ResponsiveReactGridLayout 
           ref={this.ReactGridLayout}
           width={this.props.containerWidth}
@@ -252,8 +252,8 @@ class designerForm extends React.Component {
           // and set `measureBeforeMount={true}`.
           // Ray note: set this to false to avoid interfering with dropdown menu
           // Actually, if not in design mode, this should be off
-          //useCSSTransforms={this.state.mounted}
-          useCSSTransforms={false}
+          useCSSTransforms={this.state.mounted}
+          //useCSSTransforms={false}
         //   compactType={this.state.compactType}
         //   preventCollision={!this.state.compactType}
           isDroppable={true}

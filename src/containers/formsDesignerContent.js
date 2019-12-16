@@ -8,7 +8,7 @@ import NoobForm from '../components/noobForm';
 
 import {connect} from 'react-redux';
 
-const DEFAULT_SPLIT_SIZES = [15, 85];
+const DEFAULT_SPLIT_SIZES = [25, 75];
 
 const panelItems = [
     {

@@ -3,15 +3,10 @@ import NoobSplitter from '../components/noobSplitter';
 import ToolPanel from '../components/toolPanel';
 import DesignerForm from '../components/designerForm';
 import DesignerContentbase from './designerContentBase';
+import DesignerToolbar from '../components/designerToolbar';
 
-const DEFAULT_SPLIT_SIZES = [15, 85];
+const DEFAULT_SPLIT_SIZES = [25, 75];
 
-const initialLayout = [
-    {i: 'a', x: 0, y: 2, w: 4, h: 10},
-    {i: 'b', x: 4, y: 2, w: 4, h: 10},
-    {i: 'c', x: 0, y: 0, w: 12, h: 2},
-    {i: 'd', x: 8, y: 2, w: 4, h: 10},
-];
 
 class DashboardDesignerContent extends DesignerContentbase {
     
@@ -22,9 +17,12 @@ class DashboardDesignerContent extends DesignerContentbase {
 
     render() {
         console.log('render dashboard designerContent');
-        return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>
-            <ToolPanel/>
-            <DesignerForm containerWidth={this.state.rightPixels}/>
+        return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>            
+            <ToolPanel containerWidth={this.state.leftPixels}/>
+            <div>
+                <DesignerToolbar containerWidth={this.state.rightPixels}/>
+                <DesignerForm containerWidth={this.state.rightPixels}/>
+            </div>
         </NoobSplitter>
     }
 }

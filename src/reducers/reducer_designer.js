@@ -243,14 +243,14 @@ export default function(state = defaultState, action) {
         updateLayout(newState.layout, updatedControls);        
 
         return newState;
-      case UPDATE_CONTROL_PROPS:
-          let newStateUpdProps = {
-            ...state,          
-          };
+    case UPDATE_CONTROL_PROPS:
+        let newStateUpdProps = {
+          ...state,          
+        };
 
-          updateControlProps(action.payload, newStateUpdProps.layout); 
+        updateControlProps(action.payload, newStateUpdProps.layout); 
 
-          return newStateUpdProps;
+        return newStateUpdProps;
   }
   return state;
 }

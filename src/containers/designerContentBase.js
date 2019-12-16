@@ -5,7 +5,7 @@ import React from 'react';
 
 // TODO: vertical scrollbar width is not yet accounted for in the calculation of the width
 
-const DEFAULT_SPLIT_SIZES = [15, 85];
+const DEFAULT_SPLIT_SIZES = [25, 75];
 
 class DesignerContentBase extends React.Component {
     constructor(props) {

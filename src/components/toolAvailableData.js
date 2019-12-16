@@ -8,31 +8,47 @@ const renderAvailableData = (items) => {
     }
      
     return items.map( (item) => {
-        return <div className="ui grey horizontal label large availableData" draggable="true">{item.name}</div>
+        //debugger
+        return <div key={item.name} className="ui grey horizontal label large availableData" draggable="true">{item.name}</div>
     })
 }
 
-const GetAvailableItems = (key) => {
-    return [
-        {
-            name: "Plant Overall Score"
-        },
-        {
-            name: "Plant Overall Efficiency"
-        },
-        {
-            name: "Top 10 Worst Actors"
-        },
-        {
-            name: "Overall Score per Area"
-        },
-    ]
+const GetAvailableItems = (node, masterAvailableData) => {
+    let retList = [];
+    if (!masterAvailableData || !node) {
+        return retList;
+    }
+   
+    // [1] Check if there is any hierarchy that matches
+    let findMatchHierarchy = masterAvailableData.find(m => m.selectionType === 'HierarchyName' && m.hierarchy === node.fullPath);
+    if (!!findMatchHierarchy) {
+        retList = retList.concat(findMatchHierarchy.kpiNameList);    
+    }
+    
+
+    // [2] Check Categories that match
+    if (!!node.category) {
+        let findMatchCategory = masterAvailableData.find(m => m.selectionType === 'Category' && m.category === node.category);
+        if (!!findMatchCategory) {
+            retList = retList.concat(findMatchCategory.kpiNameList);    
+        }
+    }
+
+    // [3] Check Node Types that match
+    if (!!node.nodeType) {
+        let findMatchNodeType = masterAvailableData.find(m => m.selectionType === 'NodeType' && m.nodeType === node.nodeType);
+        if (!!findMatchNodeType) {
+            retList = retList.concat(findMatchNodeType.kpiNameList);  
+        }
+    }
+
+    console.log('GetAvailableItems', retList);
+    return retList.map(kpi => {return {name: kpi}});
 }
 
 const ToolAvailableData = (props) => {
 
     let {selectedNode} = props;
-    let availableItems = GetAvailableItems(selectedNode);
     if (!selectedNode) {
         return <div className="ui warning message">
             <i className="ui icon exclamation circle large"></i>
@@ -40,14 +56,18 @@ const ToolAvailableData = (props) => {
         </div>
     }
 
+    let availableItems = GetAvailableItems(selectedNode, props.masterAvailableData);
     return <div className="dataContainer">
-        Showing Available Data for key: {selectedNode}
+        Showing Available Data for key: {selectedNode.fullPath}
         {renderAvailableData(availableItems)}
     </div>
 }
 
 function mapStateToProps(state) {
-    return { selectedNode: state.designer.toolPanelTreeSelected };
+    return { 
+        selectedNode: state.designer.toolPanelTreeSelected ,
+        masterAvailableData: state.mainApp.masterAvailableData,
+    };
 }
 
 //export default ToolAvailableData;
