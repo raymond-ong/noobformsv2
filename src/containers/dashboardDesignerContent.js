@@ -4,6 +4,8 @@ import ToolPanel from '../components/toolPanel';
 import DesignerForm from '../components/designerForm';
 import DesignerContentbase from './designerContentBase';
 import DesignerToolbar from '../components/designerToolbar';
+import {connect} from 'react-redux';
+
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
 
@@ -21,10 +23,17 @@ class DashboardDesignerContent extends DesignerContentbase {
             <ToolPanel containerWidth={this.state.leftPixels}/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
-                <DesignerForm containerWidth={this.state.rightPixels}/>
+                <DesignerForm containerWidth={this.state.rightPixels} controls={this.props.layout}/>
             </div>
         </NoobSplitter>
     }
 }
 
-export default DashboardDesignerContent;
+const mapStateToProps = (state) => {
+    return {
+        layout: state.designer.dashLayout,
+        layoutData: state.designer.dashLayoutData,
+    };
+}
+
+export default connect(mapStateToProps)(DashboardDesignerContent);

@@ -41,9 +41,6 @@ class formsDesignerContent extends DesignerContentbase {
             <ToolPanel panelItems={panelItems} containerWidth={this.state.leftPixels}/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
-                {/* <DesignerForm 
-                    containerWidth={this.state.rightPixels}
-                    initialLayout={generateDefaultLayout()}/> */}
                 <NoobForm 
                     containerWidth={this.state.rightPixels}
                     layoutData={this.props.layoutData}

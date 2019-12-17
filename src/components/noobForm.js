@@ -22,6 +22,8 @@ const GRID_GAP = 5;
 // [3] Opaque Drag image. RGL's Drag image looks very nice because the Drag Image is 100% Opaque
 //     In Chrome, Native DnD from HTML5 looks weird as it is semi-transparent with some gradient
 //     In Edge, the drag image also looks different.
+//  => React DnD Supports "Custom Drag Layer"...TODO: Experiment on this. From the examples, this also works on touch backend.
+//  => This way, the drag previews will be consistent across all browsers.
 
 // use destructuring to capture all the properties passed from upper component
 //const NoobForm = ({containerWidth, controls, layoutProps, eventCallbacks}) => {

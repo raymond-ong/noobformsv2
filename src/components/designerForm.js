@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, {useEffect, useState} from "react";
 import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { bindActionCreators } from "redux";
@@ -8,6 +8,7 @@ import BarChart from '../charts/barChart';
 import Example from '../charts/pieChart';
 import EditDialog from './editDialog';
 import {selectedControl} from '../actions/index';
+import { useDrop } from 'react-dnd';
 
 // controls import
 import Section from '../controls/section';
@@ -20,249 +21,229 @@ import {connect} from 'react-redux';
 //const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const ResponsiveReactGridLayout = Responsive;
 
-// try playing around recharts
-class designerForm extends React.Component {
+const defaultProps = {
+  className: "layout",
+  rowHeight: 30,
+  onLayoutChange: function(layout, layouts) {
+      console.log('layout changed');
+      // TODO: handle the layout changes to the other breakpoints here
+      // e.g. if curr display is big, fix the layout for xs
+  },
+  cols: { lg: 12, md: 12, sm: 2, xs: 1, xxs: 1 },
+  //initialLayout: generateLayout(),
+  initialLayout: [],
+  compactType: 'vertical', // It's better to have a vertical compaction, because the drag behaviour is weird without it
 
-  constructor(props) {
-    super(props);
-    this.ReactGridLayout = React.createRef();
+  // temporarily set layout to fixed, to avoid conflict while experimenting with rich text editor's cursor/focus
+  // isDraggable: false,
+  // isResizable: false,
+};
+
+const getRechartSample = (i) => {
+  if (i === 1)
+  {
+    return <div style={{width: "100%", height: "100%"}}>
+        
+        <BarChart/>
+    </div>
+  }
+  else if (i === 2) {
+    return <Example/>
+  }
+  else if (i === 0) {
+    return <div className="Aligner">
+        <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>
+    </div>
+  }
+  else if (i === 3) {
+    return <Combo data={{
+      label: 'Courses',
+      options: [
+      { key: 'angular', text: 'Angular', value: 'angular' },
+      { key: 'css', text: 'CSS', value: 'css' },
+      { key: 'design', text: 'Graphic Design', value: 'design' },
+      { key: 'ember', text: 'Ember', value: 'ember' },
+      { key: 'html', text: 'HTML', value: 'html' },
+      { key: 'ia', text: 'Information Architecture', value: 'ia' },
+      { key: 'javascript', text: 'Javascript', value: 'javascript' },
+      { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
+      { key: 'meteor', text: 'Meteor', value: 'meteor' },
+      { key: 'node', text: 'NodeJS', value: 'node' },
+      { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
+      { key: 'python', text: 'Python', value: 'python' },
+      { key: 'rails', text: 'Rails', value: 'rails' },
+      { key: 'react', text: 'React', value: 'react' },
+      { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
+      { key: 'ruby', text: 'Ruby', value: 'ruby' },
+      { key: 'ui', text: 'UI Design', value: 'ui' },
+      { key: 'ux', text: 'User Experience', value: 'ux' },
+    ]}}/>
   }
 
-  static defaultProps = {
-    className: "layout",
-    rowHeight: 30,
-    onLayoutChange: function(layout, layouts) {
-        console.log('layout changed');
-        // TODO: handle the layout changes to the other breakpoints here
-        // e.g. if curr display is big, fix the layout for xs
-    },
-    cols: { lg: 12, md: 12, sm: 2, xs: 1, xxs: 1 },
-    initialLayout: generateLayout(),
-    //initialLayout: [],
-    compactType: 'vertical', // It's better to have a vertical compaction, because the drag behaviour is weird without it
-    onDragStart: function(item) {
-        //console.log('onDragStart', item);
-    },
-    onDragStop: function(item) {
-        //console.log('onDragStop', item);
-    },
+  return null;
+}
 
-    // temporarily set layout to fixed, to avoid conflict while experimenting with rich text editor's cursor/focus
-    // isDraggable: false,
-    // isResizable: false,
-  };
+const onClickEditBtn= (id) => {
+console.log('onClickEditBtn', id);
+}
 
-  state = {
-    currentBreakpoint: "lg",
-    compactType: "vertical",
-    mounted: false,
-    layouts: { lg: this.props.initialLayout },
-    potentialLayout: {}
-  };
+const renderContent = (control) => {
+  switch(control.ctrlType) {
+    case 'barchart':
+      return <BarChart/>
+    case 'pie':
+      return <Example/>
+    case 'section':
+      return <div className="Aligner">
+      <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>
+    </div>
 
-  componentDidMount() {
-    // If this line of code was removed, it will become "choppy" while dragging elements
-    this.setState({ mounted: true });
   }
+}
 
-  getRechartSample = (i) => {
-      if (i === 0)
-      {
-        return <div style={{width: "100%", height: "100%"}}>
-            
-            <BarChart/>
-        </div>
-      }
-      else if (i === 1) {
-        return <Example/>
-      }
-      else if (i === 2) {
-        return <div className="Aligner">
-            <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>
-        </div>
-      }
-      else if (i === 3) {
-        return <Combo data={{
-          label: 'Courses',
-          options: [
-          { key: 'angular', text: 'Angular', value: 'angular' },
-          { key: 'css', text: 'CSS', value: 'css' },
-          { key: 'design', text: 'Graphic Design', value: 'design' },
-          { key: 'ember', text: 'Ember', value: 'ember' },
-          { key: 'html', text: 'HTML', value: 'html' },
-          { key: 'ia', text: 'Information Architecture', value: 'ia' },
-          { key: 'javascript', text: 'Javascript', value: 'javascript' },
-          { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
-          { key: 'meteor', text: 'Meteor', value: 'meteor' },
-          { key: 'node', text: 'NodeJS', value: 'node' },
-          { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
-          { key: 'python', text: 'Python', value: 'python' },
-          { key: 'rails', text: 'Rails', value: 'rails' },
-          { key: 'react', text: 'React', value: 'react' },
-          { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
-          { key: 'ruby', text: 'Ruby', value: 'ruby' },
-          { key: 'ui', text: 'UI Design', value: 'ui' },
-          { key: 'ux', text: 'User Experience', value: 'ux' },
-        ]}}/>
-      }
-
-      return null;
-  }
-
-  onClickEditBtn(id) {
-    console.log('onClickEditBtn', id);
-  }
-
-  renderControl = (ctrlLayout) => {
-    if (!ctrlLayout) {
-      return null;
-    }
-
-    let bSelected = this.props.selectedControlId === ctrlLayout.i;
-    let commonProps = {
-      selected: bSelected,
-      controlSelected: this.onControlClicked
-    };
-
-    switch(ctrlLayout.type) {
-      case 'section':
-        return <Section {...ctrlLayout} {...commonProps}/>
-      case 'richtext':
-        return <RichText {...ctrlLayout} {...commonProps}/>
-      case 'combo':
-        return <Combo {...ctrlLayout} {...commonProps}/>
-    }
-  }
-
-  generateDOM() {
-    var me = this;
-    console.log('[designerForm] generateDOM()...');
-    return _.map(this.state.layouts.lg, function(l, i) {
-      return (
-        <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px dashed lightgray", borderRadius: "3px"}}>
-            {/* <span className="text">{i} - {l.i}</span> */}
-            {/* <i className="editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>             */}
-            <EditDialog controlInfo={l}/>
-            {me.getRechartSample(i)}
-            {/* {me.renderControl(l)} */}
-        </div>
-      );
-    });
-  }
-
-  onBreakpointChange = breakpoint => {
-    console.log('onBreakpointChange', breakpoint);
-        this.setState({
-            currentBreakpoint: breakpoint
-        });
-  };
-
-  onCompactTypeChange = () => {
-    const { compactType: oldCompactType } = this.state;
-    const compactType =
-      oldCompactType === "horizontal"
-        ? "vertical"
-        : oldCompactType === "vertical" ? null : "horizontal";
-    this.setState({ compactType });
-  };
-
-  onLayoutChange = (layout, layouts) => {
-    this.props.onLayoutChange(layout, layouts);
-  };
-
-  onDragStart = (item) => {
-    this.props.onDragStart(item);
-  }
-
-  onDragStop = (item, item2) => {
-      this.props.onDragStop(item);
-  }
-  onNewLayout = () => {
-    this.setState({
-      layouts: { lg: generateLayout() }
-    });
-  };
-
-  onControlClicked = (control) => {
-    console.log('[designerForm] controlClicked fired by HOC', control);
-    this.props.selectedControl(control.i);
-  }
-
-  onDrop = (elemParams, arg2) => {
-    let internalLayout = null;
-    if (!arg2) {
-        // I manually modified the params of OnDrop from the STRML library
-        // The second arg is the temp layout
-        console.log('[onDrop] arg2 is null. Please modify the STRML library to pass the layout as 2nd argument');
-        return;
-    }
-    internalLayout = arg2;
-
-    if (!this.props.draggingToolItem) {
-      console.log('[onDrop] Did not detect any dragging item from toolbox');
-      return;
-    }
-
-    if (this.ReactGridLayout) {
-      //internalLayout = this.ReactGridLayout.state.layout 
-    }
-
-    let newLayout = internalLayout.filter(x => x.i !== '__dropping-elem__').map(item => {
-        return {
-            x: item.x,
-            y: item.y,
-            w: item.w,
-            h: item.h,
-            i: item.i,
-            static: item.static
-        }
-    }) 
-
-    this.setState({
-        layouts: {
-          lg: [...newLayout, {
-              x: elemParams.x,
-              y: elemParams.y,
-              w: elemParams.w,
-              h: elemParams.h,
-              i: this.props.draggingToolItem.name + this.state.layouts.lg.length,
-              static: false
-          }, ]
-        }
-      });
-  };
-
-  render() {
-
-    console.log('render RGL');
+const generateDOM = (layouts) => {  
+  console.log('[designerForm] generateDOM()...', layouts);
+  return _.map(layouts.lg, function(l, i) {
     return (
-      <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px'}}>
-        <ResponsiveReactGridLayout 
-          ref={this.ReactGridLayout}
-          width={this.props.containerWidth}
-          {...this.props}
-          layouts={this.state.layouts}
-          onBreakpointChange={this.onBreakpointChange}
-          onLayoutChange={this.onLayoutChange}
-          initialLayout={this.props.initialLayout}
-          onDrop={this.onDrop}
-          // WidthProvider option
-          measureBeforeMount={false}
-          // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
-          // and set `measureBeforeMount={true}`.
-          // Ray note: set this to false to avoid interfering with dropdown menu
-          // Actually, if not in design mode, this should be off
-          useCSSTransforms={this.state.mounted}
-          //useCSSTransforms={false}
-        //   compactType={this.state.compactType}
-        //   preventCollision={!this.state.compactType}
-          isDroppable={true}
-        >
-          {this.generateDOM()}
-        </ResponsiveReactGridLayout>
+      <div key={l.i} className={l.static ? "static" : ""} style={{border: "1px dashed lightgray", borderRadius: "3px"}}>
+          {/* <span className="text">{i} - {l.i}</span> */}
+          {/* <i className="editBtn icon cog large" onClick={me.onClickEditBtn.bind(me, l)}/>             */}
+          <EditDialog controlInfo={l}/>
+          {/* {getRechartSample(i)} */}
+          {renderContent(l)}
+          {/* {me.renderControl(l)} */}
       </div>
     );
+  });
+}
+
+const onBreakpointChange = breakpoint => {
+  console.log('onBreakpointChange', breakpoint);
+  this.setState({
+      currentBreakpoint: breakpoint
+  });
+};
+
+const onCompactTypeChange = () => {
+  const { compactType: oldCompactType } = this.state;
+  const compactType =
+    oldCompactType === "horizontal"
+      ? "vertical"
+      : oldCompactType === "vertical" ? null : "horizontal";
+  this.setState({ compactType });
+};
+
+const onLayoutChange = (layout, layouts) => {
+  this.props.onLayoutChange(layout, layouts);
+};
+
+const onDragStart = (item) => {
+  this.props.onDragStart(item);
+}
+
+const onDragStop = (item, item2) => {
+  this.props.onDragStop(item);
+}
+
+const onNewLayout = () => {
+  this.setState({
+    layouts: { lg: generateLayout() }
+  });
+};
+
+const onControlClicked = (control) => {
+  console.log('[designerForm] controlClicked fired by HOC', control);
+  this.props.selectedControl(control.i);
+}
+
+const onDrop = (elemParams, arg2) => {
+  debugger
+  let internalLayout = null;
+  if (!arg2) {
+      // I manually modified the params of OnDrop from the STRML library
+      // The second arg is the temp layout
+      console.log('[onDrop] arg2 is null. Please modify the STRML library to pass the layout as 2nd argument');
+      return;
   }
+  internalLayout = arg2;
+
+  if (!this.props.draggingToolItem) {
+    console.log('[onDrop] Did not detect any dragging item from toolbox');
+    return;
+  }
+
+  let newLayout = internalLayout.filter(x => x.i !== '__dropping-elem__').map(item => {
+      return {
+          x: item.x,
+          y: item.y,
+          w: item.w,
+          h: item.h,
+          i: item.i,
+          static: item.static
+      }
+  }) 
+
+  this.setState({
+      layouts: {
+        lg: [...newLayout, {
+            x: elemParams.x,
+            y: elemParams.y,
+            w: elemParams.w,
+            h: elemParams.h,
+            i: this.props.draggingToolItem.name + this.state.layouts.lg.length,
+            static: false
+        }, ]
+      }
+    });
+};
+
+// try playing around recharts
+const DesignerForm = (props) => {
+
+  // Note: this will cause a rerender
+  useEffect(() => {
+    // Set the initial values
+    console.log('RGL useEffect start');
+    // If this line of code was removed, it will become "choppy" while dragging elements
+    setMyState({ ...myState, mounted: true });
+  }, [props.controls]); // Means if controls value does not change, don't run useEffect again.
+
+  const [myState, setMyState] = useState({
+    mounted: false,
+    layouts: {
+      lg: props.controls
+    }
+  });
+
+
+  console.log('render RGL');
+  return (
+    // <div>HelloWorld</div>
+    <div style={{border: "1px dashed dimgray", position: 'relative', top: '30px'}}>
+      <ResponsiveReactGridLayout 
+        width={props.containerWidth}
+        {...props}
+        initialLayout={props.controls}
+        layouts={myState.layouts}
+        // onBreakpointChange={this.onBreakpointChange}
+        // onLayoutChange={this.onLayoutChange}
+        // onDrop={this.onDrop}
+        // WidthProvider option
+        measureBeforeMount={false}
+        // I like to have it animate on mount. If you don't, delete `useCSSTransforms` (it's default `true`)
+        // and set `measureBeforeMount={true}`.
+        // Ray note: set this to false to avoid interfering with dropdown menu
+        // Actually, if not in design mode, this should be off
+        useCSSTransforms={myState.mounted}
+        //useCSSTransforms={false}
+      //   compactType={this.state.compactType}
+      //   preventCollision={!this.state.compactType}
+        isDroppable={true}
+      >
+        {generateDOM(myState.layouts)}
+      </ResponsiveReactGridLayout>
+    </div>
+  );
 }
 
 function generateLayout() {
@@ -286,16 +267,19 @@ const mapDispatchToProps = dispatch => {
 
 function mapStateToProps(state, ownProps) {
   return { 
-    draggingToolItem: state.mainApp.draggingToolItem,
+    //draggingToolItem: state.mainApp.draggingToolItem,
     // Problem if you monitor this store variable:
     // If user makes a selection, this entire grid and all its child items re-renders
     // TODO: try this to potentially avoid rerender:
     // - state design: controls dictionary <controlId, controlData>
     // - control mapStateToProps: monitor control[id] only (get the id from ownProps)
     // => Basically this will lead to a prop change, that's why whole component rerenders
-    selectedControlId: state.designer.selectedControlId
+    //selectedControlId: state.designer.selectedControlId
+    // layout: state.designer.dashLayout
   };
 }
 
+DesignerForm.defaultProps = defaultProps;
+
 //export default designerForm;
-export default connect(mapStateToProps, mapDispatchToProps)(designerForm);
+export default connect(mapStateToProps, mapDispatchToProps)(DesignerForm);

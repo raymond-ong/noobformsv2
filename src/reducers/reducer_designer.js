@@ -4,6 +4,7 @@ import { SELECT_TOOLPANEL_TREE,
           UPDATE_CONTROL_PROPS} from "../actions/index";
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
+// This is for the Forms layout
 const generateDefaultLayout = () => {
   // [1] Section
   return [
@@ -82,6 +83,9 @@ const dropdownOptions = [
   { key: 'ruby', text: 'Ruby', value: 'ruby' },
   { key: 'ui', text: 'UI Design', value: 'ui' },
   { key: 'ux', text: 'User Experience', value: 'ux' },
+  { key: 'test1', text: 'A quick brown fox jumps over the lazy dog', value: 'test1' },
+  { key: 'test2', text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+', value: 'test2' },
+  { key: 'test3', text: '春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。', value: 'test3' },
 ];
 
 const dropdownOptionsFew = [
@@ -95,13 +99,40 @@ const defaultLayoutData = {
   rows: 12
 }
 
+// This is the default layout for the Dashboard
+const generateDefaultDashboard = () => {
+  return [
+    // [1] Section Title
+    {i: 'ctrl-section0', x: 0, y: 0, w: 12, h: 2, ctrlType: 'section', data: {
+        title: 'Plant Overall Status',
+        level: 1
+    }},
+
+    // [2] Pie Chart
+    {i: 'ctrl-pie0', x: 0, y: 2, w: 4, h: 8, ctrlType: 'pie',       
+        data: {
+        }
+    },
+
+    // [3] Bar Chart
+    {i: 'ctrl-barchart0', x: 4, y: 2, w: 4, h: 8, ctrlType: 'barchart',       
+        data: {
+        }
+    },
+  ];
+}
+
 const defaultState = {
     toolPanelTreeSelected: null,
     //selectedControlId: null, // Don't put here. Just put inside the controls data. This is to avoid rendering all controls.
     // It is OK to put the selectedControlId inside the reducer for showing the Control Props
     resizingControlId: null, // try to just use local state to keep track. The whole designer only needs to know after resizing.
     layout: generateDefaultLayout(),
-    layoutData: defaultLayoutData
+    layoutData: defaultLayoutData,
+
+    // For the dashboard
+    dashLayout: generateDefaultDashboard(),
+    dashLayoutData: {}
 }
 
 const defaultControlData = {

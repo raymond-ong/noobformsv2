@@ -19,3 +19,7 @@
 .ui.selection.multiple.dropdown>.dropdown.icon {
   padding-top: 0px;
 }
+
+.ui.selection.multiple.dropdown > .ui.label {
+  word-break: break-word;
+}
