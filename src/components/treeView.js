@@ -159,6 +159,7 @@ class DemoTree extends React.Component {
             className="myCls"
             showLine
             selectable
+            draggable
             checkable={false}
             //defaultExpandAll
             onExpand={this.onExpand}
@@ -191,7 +192,7 @@ const convertMasterDataToKeys = (apiNode) => {
     category: apiNode.category
   };
 
-  if (apiNode.children !== null) {
+  if (apiNode.children) {
     apiNode.children.forEach(node => {
       childNodes.push(convertMasterDataToKeys(node));
     })

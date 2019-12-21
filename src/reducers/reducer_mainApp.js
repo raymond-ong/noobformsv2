@@ -1,8 +1,8 @@
 import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA } from "../actions/index";
 
 const defaultState = {
-    activeMenu: 'dashboardDesigner',
-    tabIndex: 2,
+    activeMenu: 'hierarchyDesigner',
+    tabIndex: 3,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,

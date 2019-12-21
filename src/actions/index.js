@@ -3,6 +3,7 @@ import masterData from '../api/masterData';
 export const CLICK_MENU = "CLICK_MENU";
 export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
 export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
+export const SELECT_HIER_DESIGNER_TREE = "SELECT_HIER_DESIGNER_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
 export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
 export const SELECT_CONTROL = "SELECT_CONTROL"
@@ -33,6 +34,14 @@ export function selectToolPanelTree(hierarchyNode) {
   };
 }
 
+export function selectHierDesignerTree(hierarchyNode) {
+  return {
+    type: SELECT_HIER_DESIGNER_TREE,
+    payload: {
+      ...hierarchyNode
+    }
+  };
+}
 
 export const fetchHierarchy = () => async dispatch => { 
   console.log('[action] fetchHierarchy');
