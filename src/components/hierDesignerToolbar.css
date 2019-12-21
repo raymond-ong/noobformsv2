@@ -1,12 +1,7 @@
 .hierDesignToolbar {
     display: grid;
     grid-template-columns: 1fr;
-    position: fixed;
     /* width: inherit; */
-    z-index: 999;
-    background-color: gray;
-    display: flex;
-    padding: 5px;
-    margin-bottom: 3px;
-    margin-top: 0px;
+    width: 100%;
+    margin-right: 7px;
 }

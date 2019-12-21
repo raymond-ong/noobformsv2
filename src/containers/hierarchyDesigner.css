@@ -1,0 +1,66 @@
+.toolbarPanelBody {
+    /* This works also, but difficult to maintain */
+    /* height: calc(100% - 15px - 10px - 5px - 1px); */
+    height: calc(100% - 80px);
+    /* height: 500px; */
+    overflow: auto;
+}
+
+.toolbarText {
+
+    /* avoid overflow, show ellipsis */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toolbarPanel {
+    background-color: lightgray;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    height: 100%;
+}
+
+.toolbarContainer {
+    background-color: rgb(169, 169, 169, 0.5);
+    border: 1px solid darkgrey;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 5px;
+
+    overflow: hidden;
+    white-space: nowrap;
+
+    display: flex;
+    width: 100%;
+}
+
+.toolBarBtnContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.toolbarButton {
+    background-color: lightgray;
+    border-radius: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+    margin-left: 2px;
+    margin-right: 2px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.toolbarButton-disabled{
+    cursor: default;
+    opacity: 0.5;
+}
+
+.toolbarButton:hover {
+    background-color: lightblue;
+}
+
+.toolbarButton-disabled:hover {
+    background-color: lightgray;
+}
