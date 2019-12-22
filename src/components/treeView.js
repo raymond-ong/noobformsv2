@@ -159,7 +159,6 @@ class DemoTree extends React.Component {
             className="myCls"
             showLine
             selectable
-            draggable
             checkable={false}
             //defaultExpandAll
             onExpand={this.onExpand}

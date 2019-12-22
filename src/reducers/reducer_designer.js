@@ -96,7 +96,7 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 12
+  rows: 8
 }
 
 // This is the default layout for the Dashboard

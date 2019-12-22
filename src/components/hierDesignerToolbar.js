@@ -16,12 +16,12 @@ const HierarchyToolbar = (props) => {
             Save
             </div>
             <div className="toolbarButton">
-            <i className="ui icon trash alternate"/>
-            Delete
-            </div>
-            <div className="toolbarButton">
             <i className="ui icon plus insert"/>
             Insert
+            </div>
+            <div className="toolbarButton">
+            <i className="ui icon trash alternate"/>
+            Delete
             </div>
         </div>
     </div>

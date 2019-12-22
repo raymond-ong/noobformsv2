@@ -4,7 +4,7 @@ import "../styles/Split.css";
 
 const ID_PREFIX_SPLITTER = "noobSplitter";
 const ID_PREFIX_GUTTER_AROW = "noobSplitterGutterArrow";
-const DEFAULT_SPLIT_SIZES = [15, 85];
+const DEFAULT_SPLIT_SIZES = [30, 70];
 
 // Small reusable class for creating a splitter with a gutter button
 // Currently, only limited to 2 items, and direction is only horizontal

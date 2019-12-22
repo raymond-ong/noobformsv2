@@ -19,7 +19,9 @@ const tabIndexMapping = {
 }
 
 export default function(state = defaultState, action) {
-  console.log('[DEBUG] reducer_mainApp', action, state);
+  if (action.type in [CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA]) {
+    console.log('[DEBUG] reducer_mainApp', action, state);
+  }
   switch (action.type) {
     case CLICK_MENU:
       return {
