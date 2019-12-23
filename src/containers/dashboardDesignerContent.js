@@ -19,7 +19,7 @@ class DashboardDesignerContent extends DesignerContentbase {
 
     render() {
         console.log('render dashboard designerContent');
-        return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd}>            
+        return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES}>
             <ToolPanel containerWidth={this.state.leftPixels}/>
             <div>
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>

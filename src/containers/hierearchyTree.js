@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from "redux";
 import Tree from 'rc-tree';
+import {findNodeByKey} from '../helper/treefilter';
+
 import 'rc-tree/assets/index.css';
 import './hierarchyTree.css';
-import { selectHierDesignerTree, updateHierDesignerTree } from '../actions/index';
 
 
 class HierarchyDesignerTree extends React.Component {
@@ -25,21 +24,7 @@ class HierarchyDesignerTree extends React.Component {
   onExpand = (...args) => {
     //console.log('onExpand', ...args);
   };
-  onSelect = (selectedKeys, info) => {
-    console.log('selected', selectedKeys, info);
-    this.selKey = info.node.props.eventKey;
-    // Fire an action to save the selected node to Redux
-    //this.props.selectToolPanelTree(this.selKey);
-    if (selectedKeys.length > 0) {
-        this.props.selectHierDesignerTree({
-          fullPath: selectedKeys[0], 
-          ...info.selectedNodes[0].props
-        });
-    }
-    else {
-        this.props.selectHierDesignerTree(null);
-    }
-  };
+
 
   Icon = (props) => {
       //console.log('icon', props)
@@ -66,7 +51,7 @@ class HierarchyDesignerTree extends React.Component {
 
   // No need to do anything for now
   onDragStart(info) {
-    console.log('[tree] onDragStart', info);
+    //console.log('[tree] onDragStart', info);
   }
 
   // No need to do anything for now
@@ -74,28 +59,7 @@ class HierarchyDesignerTree extends React.Component {
   // E.g. maybe the user wants to create 2 pages for a single device
   // But we still need to do some validation on max depth, otherwise testers will abuse.
   onDragEnter(info) {
-    console.log('[tree] onDragEnter', info);
-  }
-
-  // recursively finds the node
-  // Returns: the node and the containing array
-  findNodeByKey(data, key) {
-    for (let i = 0; i < data.length; i++) {
-      let item = data[i];
-      if (item.key === key) {        
-        return {
-          item,
-          index: i,
-          parentArr: data
-        };
-      }
-      if (item.children) {
-        let childFind = this.findNodeByKey(item.children, key);
-        if (childFind) {
-          return childFind;
-        }
-      }
-    }
+    //console.log('[tree] onDragEnter', info);
   }
 
   // nodePos sample: '0-0-0-0'
@@ -109,25 +73,6 @@ class HierarchyDesignerTree extends React.Component {
 
     return nodePos.substr(0, lastIndex);
   }
-
-  /*
-  // business logic
-  findNodeByPosStr(data, posStr) {
-    let toks = posStr.split('-');
-
-  }
-
-  swapArrayItems (arr, x,y) {
-    var b = arr[x];
-    arr[x] = arr[y];
-    arr[y] = b;
-    return arr;
-  }
-
-  moveArr (arr, from, to) {
-    arr.splice(to, 0, arr.splice(from, 1)[0]);
-  }
-  */
 
   // Need to rearrange the state
   // Some validations have already been performed prior to calling this function
@@ -147,11 +92,11 @@ class HierarchyDesignerTree extends React.Component {
     // [1] TODO Do some validation, e.g. depth
 
     // Make a copy of the state data
-    const data = [...this.props.masterHierarchy];
+    const data = [...this.props.treeData];
 
     // [2] Get the dragged node and dropped node
-    let dragObj = this.findNodeByKey(data, dragKey);
-    let dropObj = this.findNodeByKey(data, dropKey);
+    let dragObj = findNodeByKey(data, dragKey);
+    let dropObj = findNodeByKey(data, dropKey);
 
     // [3] Actual logic to modify the arrays
     // [A] If dropped to a gap
@@ -185,17 +130,17 @@ class HierarchyDesignerTree extends React.Component {
 
     // Fire redux action to set the new state
     if (bUpdated) {
-      this.props.updateHierDesignerTree(data);
+      this.props.onHierarchyChanged(data);
     }    
   }
 
   render() {
-    console.log('rendering tree', this.props.masterHierarchy);
-    if (!this.props.masterHierarchy) {
+    console.log('rendering tree', this.props.treeData);
+    if (!this.props.treeData) {
       return <div>Loading...</div>
     }
 
-    return (    
+    return (
       <Tree style={{overflow: "auto", height: "100%", width: "calc(100%)", padding: "0 0 20 0"}}
           className="hierarchyTree"
           showLine
@@ -210,27 +155,22 @@ class HierarchyDesignerTree extends React.Component {
           //defaultExpandedKeys={this.state.defaultExpandedKeys}
           //defaultSelectedKeys={this.state.defaultSelectedKeys}
           //defaultCheckedKeys={this.state.defaultCheckedKeys}
-          onSelect={this.onSelect}
+          onSelect={this.props.onSelectCb}
           onCheck={this.onCheck}
           //treeData={[treeDataObj]}
-          treeData={this.props.masterHierarchy}
+          treeData={this.props.treeData}
           icon={this.Icon}
           filterTreeNode={this.Filterer}
           switcherIcon={this.getSwitcherIcon}
+          
       />
     );
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    masterHierarchy: state.hierarchyDesigner.hierarchyTree
-  }
-}
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectHierDesignerTree, updateHierDesignerTree }, dispatch);
-}
 
-//export default DemoTree;
-export default connect(mapStateToProps, mapDispatchToProps)(HierarchyDesignerTree)
+export default HierarchyDesignerTree;
+// Remove dependency from redux so that this component may be reused.
+// By right, low level component must not be aware of redux anyways.
+// export default connect(mapStateToProps, mapDispatchToProps)(HierarchyDesignerTree)

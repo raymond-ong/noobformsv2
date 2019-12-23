@@ -1,7 +1,9 @@
-import { FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE } from "../actions/index";
+import { FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE } from "../actions/index";
+import {findNodeByKey} from '../helper/treefilter';
 
 const defaultState = {
-    hierarchyTree: null // 2nd copy of hierarchy data, so that if user cancels operation
+    hierarchyTree: null, // 2nd copy of hierarchy data, so that if user cancels operation
+    selectedNode: null,
 };
 
 const convertMasterDataToKeys = (apiNode) => {
@@ -28,8 +30,20 @@ const convertMasterDataToKeys = (apiNode) => {
     return treeData;
   }
 
+const handleInsert = (newState) => {
+  newState.hierarchyTree = [...newState.hierarchyTree];
+  if (!newState.selectedNode || !newState.selectedNode.fullPath) {
+    newState.hierarchyTree.push({
+      key: 'testing',
+      title: 'new node',
+      nodeType: 'new node',
+      category: null
+    });
+  }
+}
+
 export default function(state=defaultState, action) {
-    if ([FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE].includes(action.type)) {
+    if ([FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE].includes(action.type)) {
         console.log('[DEBUG] reducer_hierarchyDesigner', action, state);
     }
     switch (action.type) {
@@ -43,6 +57,16 @@ export default function(state=defaultState, action) {
           ...state,
           hierarchyTree: action.payload
         }
+      case SELECT_HIER_DESIGNER_TREE:
+        return {
+          ...state,
+          selectedNode: action.payload
+        }
+      case INSERT_HIER_DESIGNER_TREE:
+        let insertedState = {...state};
+        handleInsert(insertedState);
+
+        return insertedState;
     }
     return state;
   }

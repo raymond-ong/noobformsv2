@@ -5,6 +5,7 @@ export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
 export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
 export const SELECT_HIER_DESIGNER_TREE = "SELECT_HIER_DESIGNER_TREE"
 export const UPDATE_HIER_DESIGNER_TREE = "UPDATE_HIER_DESIGNER_TREE"
+export const INSERT_HIER_DESIGNER_TREE = "INSERT_HIER_DESIGNER_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
 export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
 export const SELECT_CONTROL = "SELECT_CONTROL"
@@ -48,6 +49,13 @@ export function updateHierDesignerTree(hierarchyArr) {
   return {
     type: UPDATE_HIER_DESIGNER_TREE,
     payload: hierarchyArr
+  }
+}
+
+export function insertNewNode() {
+  // No payload since the reducer knows who is the selected node
+  return {
+    type: INSERT_HIER_DESIGNER_TREE
   }
 }
 
