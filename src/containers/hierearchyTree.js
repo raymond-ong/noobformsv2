@@ -110,6 +110,7 @@ class HierarchyDesignerTree extends React.Component {
     return nodePos.substr(0, lastIndex);
   }
 
+  /*
   // business logic
   findNodeByPosStr(data, posStr) {
     let toks = posStr.split('-');
@@ -126,12 +127,14 @@ class HierarchyDesignerTree extends React.Component {
   moveArr (arr, from, to) {
     arr.splice(to, 0, arr.splice(from, 1)[0]);
   }
+  */
 
   // Need to rearrange the state
   // Some validations have already been performed prior to calling this function
   // e.g. Dropping parent to child
   onDrop = (info) => {
     console.log('[tree] onDrop', info);
+    let bUpdated = true;
     const dropKey = info.node.props.eventKey;
     const dragKey = info.dragNode.props.eventKey;
     const dragParentPos = this.getParentPosStr(info.dragNode.props.pos);
@@ -141,47 +144,49 @@ class HierarchyDesignerTree extends React.Component {
     const isBottomGap = dropPosition === 1;
     const dropParentPos = this.getParentPosStr(info.node.props.pos);
 
-    // [1] Do some validation, e.g. depth
+    // [1] TODO Do some validation, e.g. depth
 
     // Make a copy of the state data
     const data = [...this.props.masterHierarchy];
 
-    // [2] Get the dragged node
+    // [2] Get the dragged node and dropped node
     let dragObj = this.findNodeByKey(data, dragKey);
-    // [3] Get the dropped node
     let dropObj = this.findNodeByKey(data, dropKey);
 
-    // [A] If drag and drop position belongs to the same parent (just a reorder)
-    if (dragParentPos === dropParentPos && info.dropToGap === true) {
-      //let dropIndex = dropObj.index;
-      //if ()
-      //this.moveArr(dragObj.parentArr, dragObj.index, );
-      // Remove the object first      
+    // [3] Actual logic to modify the arrays
+    // [A] If dropped to a gap
+    if (info.dropToGap === true) {
+      // Note: This block can handle both [a] reorder in same folder [b] moving to a different folder
+      // Remove the object first
       dragObj.parentArr.splice(dragObj.index, 1);
-      // Find the new index of drop
-      let newDropIdx = dragObj.parentArr.findIndex((item) => item.key === dropKey);
+      // Find the new index @ dropped folder
+      let newDropIdx = dropObj.parentArr.findIndex((item) => item.key === dropKey);
       if (isBottomGap) {
         newDropIdx++;
       }
-      dragObj.parentArr.splice(newDropIdx, 0, dragObj.item);
+      dropObj.parentArr.splice(newDropIdx, 0, dragObj.item);
     }
-
-    // [B] Different parents; Drag to a gap
-
-
-    // [C] Different parents; Drag to a folder
-
-    // [D] Different parents; Drag to a leaf node
-
-    
-
-
-    if (!info.dropToGap) {
-      dropObj.children.push(dragObj);
+    // [B] Drop to a tree node (folder or target)
+    else {//(!info.dropToGap)
+      // [B1] If dropping to the same folder: do nothing
+      if (info.node.props.pos === dragParentPos) {
+        console.log('Dropped to the same folder: do nothing');
+        bUpdated = false;
+      }
+      // [B2] Dropping to a different folder/target
+      else {
+        // Remove the object first
+        dragObj.parentArr.splice(dragObj.index, 1);
+        // Add it to back of the folder or target
+        dropObj.item.children = dropObj.item.children || []; // create if necessary
+        dropObj.item.children.push(dragObj.item);
+      }    
     }
 
     // Fire redux action to set the new state
-    this.props.updateHierDesignerTree(data);
+    if (bUpdated) {
+      this.props.updateHierDesignerTree(data);
+    }    
   }
 
   render() {
