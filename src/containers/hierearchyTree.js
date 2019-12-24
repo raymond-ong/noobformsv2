@@ -167,6 +167,14 @@ class HierarchyDesignerTree extends React.Component {
     return false;
   }
 
+  getFirstLevelKeys() {
+    if (!this.props.treeData) {
+      return [];
+    }
+
+    return this.props.treeData.map(item => item.key);
+  }
+
   renderTreeNodes(listNodes) {
     let retList = [];
     if (!listNodes) {
@@ -204,9 +212,9 @@ class HierarchyDesignerTree extends React.Component {
           onDragEnter={this.onDragEnter}
           onDrop={this.onDrop}
           checkable={false}
-          defaultExpandAll // temp: expand everything by default; no need to config which keys to expand          
+          //defaultExpandAll // temp: expand everything by default; no need to config which keys to expand          
           onExpand={this.onExpand}
-          //defaultExpandedKeys={this.state.defaultExpandedKeys}
+          defaultExpandedKeys={this.getFirstLevelKeys()}
           //defaultSelectedKeys={this.state.defaultSelectedKeys}
           //defaultCheckedKeys={this.state.defaultCheckedKeys}
           onSelect={this.props.onSelectCb}
