@@ -77,6 +77,8 @@ class HierarchyDesignerTree extends React.Component {
   // Need to rearrange the state
   // Some validations have already been performed prior to calling this function
   // e.g. Dropping parent to child
+  // rc-tree limiation: onDrop does not fire if you drop into the bottom-most element, if the mouse position is outside the bounds of the tree's dom
+  // maybe we can draw an imaginary border while dragging
   onDrop = (info) => {
     console.log('[tree] onDrop', info);
     let bUpdated = true;
@@ -134,8 +136,16 @@ class HierarchyDesignerTree extends React.Component {
     }    
   }
 
+  Filterer = (node) => {
+    if (!this.props.searchText) {
+      return false;
+    }
+
+    return node.props.title.includes(this.props.searchText);
+  }
+
   render() {
-    console.log('rendering tree', this.props.treeData);
+    console.log('rendering tree', this.props.searchText);
     if (!this.props.treeData) {
       return <div>Loading...</div>
     }

@@ -1,3 +1,8 @@
 .hierarchyTree {    
     position: relative;
 }
+
+/* Visual marker for the user during drag and drop, as to where the drop zone is */
+.rc-tree-treenode-switcher-open {
+    background: rgba(220,220, 220);
+}

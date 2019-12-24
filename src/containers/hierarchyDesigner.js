@@ -35,6 +35,13 @@ const ToolbarPanel = ({panelContent, onDelete, onInsert, onSave, onSearchText, b
 // the state of the hierarchy tree, to handle deletion and insertion of new nodes
 class HierarchyDesigner extends DesignerContentbase { 
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            searchText: null
+        }
+    }
+
     // When a tree node is selected
     onSelect = (selectedKeys, info) => {
         console.log('selected', selectedKeys, info);
@@ -85,6 +92,9 @@ class HierarchyDesigner extends DesignerContentbase {
 
     onSearchText = (e) => {
         console.log('onSearchText', e.currentTarget.value);
+        this.setState({
+            searchText: e.currentTarget.value
+        });
     }
     
     render() {
@@ -99,7 +109,9 @@ class HierarchyDesigner extends DesignerContentbase {
                 panelContent={<HierarchyDesignerTree 
                                 onSelectCb={this.onSelect} 
                                 onHierarchyChanged={this.onHierarchyChanged}
-                                treeData={this.props.hierarchyTree}/>}
+                                treeData={this.props.hierarchyTree}
+                                searchText={this.state.searchText}
+                                />}
             />
             <div>Right</div>
         </NoobSplitter>
