@@ -43,7 +43,7 @@ class HierarchyDesigner extends DesignerContentbase {
         //this.props.selectToolPanelTree(this.selKey);
         if (selectedKeys.length > 0) {
             this.props.selectHierDesignerTree({
-              fullPath: selectedKeys[0], 
+              key: selectedKeys[0], 
               ...info.selectedNodes[0].props
             });
         }
@@ -62,7 +62,10 @@ class HierarchyDesigner extends DesignerContentbase {
 
     onInsert = () => {
         console.log('onInsert');
-        // Just implement the logic in the reducer
+        // popup a dialog to ask the user to specify the title?
+        // for now, just implement the edit page
+
+        // For the underlying structure: just implement the logic in the reducer
         this.props.insertNewNode();
     }
 
@@ -71,8 +74,7 @@ class HierarchyDesigner extends DesignerContentbase {
         // Actually the logic can also be implemented @reducer side. Anyways, we save one more redux action to create.
         let deletedNode = this.props.selectedNode;
         let data = [...this.props.hierarchyTree]; // make a new copy
-        debugger
-        let deletedNodeObj = findNodeByKey(data, deletedNode.fullPath);
+        let deletedNodeObj = findNodeByKey(data, deletedNode.key);
         if (!deletedNodeObj) {
             return; // sanity only
         }
@@ -93,7 +95,7 @@ class HierarchyDesigner extends DesignerContentbase {
                 onInsert={this.onInsert}
                 onSave={this.onSave}
                 onSearchText={this.onSearchText}
-                bEnableDelete={!!this.props.selectedNode && !!this.props.selectedNode.fullPath}
+                bEnableDelete={!!this.props.selectedNode && !!this.props.selectedNode.key}
                 panelContent={<HierarchyDesignerTree 
                                 onSelectCb={this.onSelect} 
                                 onHierarchyChanged={this.onHierarchyChanged}

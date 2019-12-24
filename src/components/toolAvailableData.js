@@ -20,7 +20,7 @@ const GetAvailableItems = (node, masterAvailableData) => {
     }
    
     // [1] Check if there is any hierarchy that matches
-    let findMatchHierarchy = masterAvailableData.find(m => m.selectionType === 'HierarchyName' && m.hierarchy === node.fullPath);
+    let findMatchHierarchy = masterAvailableData.find(m => m.selectionType === 'HierarchyName' && m.hierarchy === node.key);
     if (!!findMatchHierarchy) {
         retList = retList.concat(findMatchHierarchy.kpiNameList);    
     }
@@ -58,7 +58,7 @@ const ToolAvailableData = (props) => {
 
     let availableItems = GetAvailableItems(selectedNode, props.masterAvailableData);
     return <div className="dataContainer">
-        Showing Available Data for key: {selectedNode.fullPath}
+        Showing Available Data for key: {selectedNode.key}
         {renderAvailableData(availableItems)}
     </div>
 }

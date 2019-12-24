@@ -75,7 +75,7 @@ class DemoTree extends React.Component {
     //this.props.selectToolPanelTree(this.selKey);
     if (selectedKeys.length > 0) {
         this.props.selectToolPanelTree({
-          fullPath: selectedKeys[0], 
+          key: selectedKeys[0], 
           ...info.selectedNodes[0].props
         });
     }
@@ -148,7 +148,7 @@ class DemoTree extends React.Component {
       return <div>Loading...</div>
     }
 
-    console.log(convertMasterDataToKeys(this.props.masterHierarchy));
+    console.log('render demo tree...', this.props.masterHierarchy);
     return (    
     <div>
         <div className="ui icon input small" style={{margin: "5px", width: "calc(100% - 10px)"}}>

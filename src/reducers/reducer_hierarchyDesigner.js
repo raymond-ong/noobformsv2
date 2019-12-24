@@ -30,15 +30,33 @@ const convertMasterDataToKeys = (apiNode) => {
     return treeData;
   }
 
+//https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 const handleInsert = (newState) => {
   newState.hierarchyTree = [...newState.hierarchyTree];
-  if (!newState.selectedNode || !newState.selectedNode.fullPath) {
-    newState.hierarchyTree.push({
-      key: 'testing',
-      title: 'new node',
-      nodeType: 'new node',
-      category: null
-    });
+  let newNode = {
+    key: 'hier-'+uuidv4(),
+    title: 'new page',
+    nodeType: 'page',
+    category: null
+  };
+  if (!newState.selectedNode || !newState.selectedNode.key) {
+    newState.hierarchyTree.push(newNode);
+  }
+  else 
+  {
+    // Find the selected node
+    let selectedNodeObj = findNodeByKey(newState.hierarchyTree, newState.selectedNode.key);
+    if (!!selectedNodeObj) {
+      selectedNodeObj.item.children = selectedNodeObj.item.children || [];
+      selectedNodeObj.item.children.push(newNode)
+    }
   }
 }
 
