@@ -6,6 +6,7 @@ export const SELECT_TOOLPANEL_TREE = "SELECT_TOOLPANEL_TREE"
 export const SELECT_HIER_DESIGNER_TREE = "SELECT_HIER_DESIGNER_TREE"
 export const UPDATE_HIER_DESIGNER_TREE = "UPDATE_HIER_DESIGNER_TREE"
 export const INSERT_HIER_DESIGNER_TREE = "INSERT_HIER_DESIGNER_TREE"
+export const FILTER_HIER_DESIGNER_TREE = "FILTER_HIER_DESIGNER_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
 export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
 export const SELECT_CONTROL = "SELECT_CONTROL"
@@ -51,6 +52,14 @@ export function updateHierDesignerTree(hierarchyArr) {
     payload: hierarchyArr
   }
 }
+
+export function filterHierDesignerTree(filter) {
+  return {
+    type: FILTER_HIER_DESIGNER_TREE,
+    payload: filter
+  }
+}
+
 
 export function insertNewNode() {
   // No payload since the reducer knows who is the selected node

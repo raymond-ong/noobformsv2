@@ -1,5 +1,5 @@
 import React from 'react';
-import Tree from 'rc-tree';
+import Tree, {TreeNode} from 'rc-tree';
 import {findNodeByKey} from '../helper/treefilter';
 
 import 'rc-tree/assets/index.css';
@@ -136,12 +136,56 @@ class HierarchyDesignerTree extends React.Component {
     }    
   }
 
+  /*
   Filterer = (node) => {
     if (!this.props.searchText) {
       return false;
     }
 
     return node.props.title.includes(this.props.searchText);
+  }
+  */
+
+  satisfiesFilter(nodeItem) {
+    debugger
+    if (!this.props.searchText || nodeItem.title.includes(this.props.searchText)) {
+      return true;
+    }
+
+    // If it contains children, and one of the children satisfies
+    if (!nodeItem.children) {
+      return false
+    }
+
+    for (var i = 0; i < nodeItem.children.length; i++) {
+      var currChild = nodeItem.children[i];
+      if (this.satisfiesFilter(currChild)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  renderTreeNodes(listNodes) {
+    let retList = [];
+    if (!listNodes) {
+      return null;
+    }
+
+    // This function might be called very often, avoid anonymous functions
+    for (let i = 0; i < listNodes.length; i++) {
+      let currItem = listNodes[i];
+      if (!this.satisfiesFilter(currItem)) {
+        continue;
+      }
+      // retList.push(<TreeNode key={currItem.key} title={currItem.title} category={currItem.category} nodeType={currItem.nodeType}>
+      retList.push(<TreeNode {...currItem}>      
+                    {this.renderTreeNodes(currItem.children)}
+                  </TreeNode>);      
+    }
+
+    return retList
   }
 
   render() {
@@ -167,13 +211,14 @@ class HierarchyDesignerTree extends React.Component {
           //defaultCheckedKeys={this.state.defaultCheckedKeys}
           onSelect={this.props.onSelectCb}
           onCheck={this.onCheck}
+          // Manually render the tree nodes, so that we can customize the behaviour like hiding filtered out data
           //treeData={[treeDataObj]}
-          treeData={this.props.treeData}
+          //treeData={this.props.treeData}
           icon={this.Icon}
-          filterTreeNode={this.Filterer}
-          switcherIcon={this.getSwitcherIcon}
-          
-      />
+          //filterTreeNode={this.Filterer}
+          switcherIcon={this.getSwitcherIcon}>
+              {this.renderTreeNodes(this.props.treeData)}
+      </Tree>
     );
   }
 }

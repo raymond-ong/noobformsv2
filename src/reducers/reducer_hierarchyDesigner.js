@@ -1,5 +1,9 @@
-import { FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE } from "../actions/index";
-import {findNodeByKey} from '../helper/treefilter';
+import { FETCH_HIERARCHY, 
+  UPDATE_HIER_DESIGNER_TREE, 
+  SELECT_HIER_DESIGNER_TREE, 
+  INSERT_HIER_DESIGNER_TREE,
+  FILTER_HIER_DESIGNER_TREE } from "../actions/index";
+import {findNodeByKey, filterTreeEx} from '../helper/treefilter';
 
 const defaultState = {
     hierarchyTree: null, // 2nd copy of hierarchy data, so that if user cancels operation
@@ -22,10 +26,9 @@ const convertMasterDataToKeys = (apiNode) => {
     if (apiNode.children) {
       apiNode.children.forEach(node => {
         childNodes.push(convertMasterDataToKeys(node));
-      })
-  
-      treeData.children = childNodes;
+      })      
     }
+    treeData.children = childNodes;
   
     return treeData;
   }
@@ -44,7 +47,8 @@ const handleInsert = (newState) => {
     key: 'hier-'+uuidv4(),
     title: 'new page',
     nodeType: 'page',
-    category: null
+    category: null,
+    children: []
   };
   if (!newState.selectedNode || !newState.selectedNode.key) {
     newState.hierarchyTree.push(newNode);
@@ -60,8 +64,14 @@ const handleInsert = (newState) => {
   }
 }
 
+const handleFilter = (filter, newState) => {
+  let filteredData = filterTreeEx(newState.hierarchyTree, filter);
+  console.log('handleFilter', filter, filteredData);        
+  newState.hierarchyTree = [...filteredData];
+}
+
 export default function(state=defaultState, action) {
-    if ([FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE].includes(action.type)) {
+    if ([FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE, FILTER_HIER_DESIGNER_TREE].includes(action.type)) {
         console.log('[DEBUG] reducer_hierarchyDesigner', action, state);
     }
     switch (action.type) {
@@ -83,8 +93,12 @@ export default function(state=defaultState, action) {
       case INSERT_HIER_DESIGNER_TREE:
         let insertedState = {...state};
         handleInsert(insertedState);
-
         return insertedState;
+      case FILTER_HIER_DESIGNER_TREE:
+        let filterState = {...state};
+        let filter = action.payload;
+        handleFilter(filter, filterState);
+        return filterState;
     }
     return state;
   }

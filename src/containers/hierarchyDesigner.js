@@ -5,8 +5,8 @@ import NoobSplitter from '../components/noobSplitter';
 import DesignerContentbase from './designerContentBase';
 import HierarchyDesignerTree from './hierearchyTree';
 import HierarchyToolbar from '../components/hierDesignerToolbar';
-import { selectHierDesignerTree, updateHierDesignerTree, insertNewNode } from '../actions/index';
-import {findNodeByKey} from '../helper/treefilter';
+import { selectHierDesignerTree, updateHierDesignerTree, insertNewNode, filterHierDesignerTree } from '../actions/index';
+import {findNodeByKey, filterTree, filterTreeEx} from '../helper/treefilter';
 
 
 import './hierarchyTree.css'; //temp only
@@ -38,7 +38,8 @@ class HierarchyDesigner extends DesignerContentbase {
     constructor(props) {
         super(props);
         this.state = {
-            searchText: null
+            searchText: null,
+            treeData: null, // make a copy for filtering purposes
         }
     }
 
@@ -90,11 +91,11 @@ class HierarchyDesigner extends DesignerContentbase {
         this.props.updateHierDesignerTree(data);
     }
 
-    onSearchText = (e) => {
-        console.log('onSearchText', e.currentTarget.value);
+    onSearchText = (e) => {        
         this.setState({
             searchText: e.currentTarget.value
         });
+        // this.props.filterHierDesignerTree(e.currentTarget.value);        
     }
     
     render() {
@@ -127,7 +128,7 @@ function mapStateToProps(state) {
 }
   
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectHierDesignerTree, updateHierDesignerTree, insertNewNode }, dispatch);
+    return bindActionCreators({ selectHierDesignerTree, updateHierDesignerTree, insertNewNode, filterHierDesignerTree }, dispatch);
 }
   
 export default connect(mapStateToProps, mapDispatchToProps)(HierarchyDesigner);

@@ -3,6 +3,10 @@ export const defaultMatcher = (filterText, node) => {
     return node.name.toLowerCase().indexOf(filterText.toLowerCase()) !== -1;
 };
 
+export const titleMatcher = (filterText, node) => {
+    return node.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1;
+};
+
 // Returns true or false only
 export const nodeExists = (node, filter, matcher) => {
     return matcher(filter, node) || // i match
@@ -11,7 +15,14 @@ export const nodeExists = (node, filter, matcher) => {
             !!node.children.find(child => nodeExists(child, filter, matcher)));
 };
 
-export const filterTree = (node, filter, matcher = defaultMatcher) => {
+export const filterTreeEx = (nodes, filter, matcher = titleMatcher) => {
+    return nodes.reduce( (acc, curr) => {
+        return acc.concat(filterTree(curr, filter, matcher))
+    }, []);
+};
+
+
+export const filterTree = (node, filter, matcher = titleMatcher) => {
     // If im an exact match then all my children get to stay
     if (matcher(filter, node) || !node.children) {
         return node;
