@@ -1,0 +1,22 @@
+.noobTableContainer {
+    width: 100%;
+    height: 100%;
+}
+
+
+.noobTable {
+    width: 100%;    
+}
+
+.noobTable tr th {
+    border: 1px solid lightgray;
+    padding: 5px;
+    background-color: dimgray;
+    text-align: center;
+    color: white;
+}
+
+.noobTable tr td {
+    border: 1px solid gray;
+    padding: 5px;
+}
