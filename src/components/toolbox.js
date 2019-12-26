@@ -116,7 +116,8 @@ export const toolBoxItems = [
          name: 'table',
          displayName: 'Table',
          icon: 'table',
-         category: 'common'
+         category: 'common',
+         minW: 3, minH:3,
     },
     {
          name: 'frame',

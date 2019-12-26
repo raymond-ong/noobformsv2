@@ -64,6 +64,7 @@ const handleInsert = (newState) => {
   }
 }
 
+// Not used anymore...there is no way to bring back filtered out nodes
 const handleFilter = (filter, newState) => {
   let filteredData = filterTreeEx(newState.hierarchyTree, filter);
   console.log('handleFilter', filter, filteredData);        

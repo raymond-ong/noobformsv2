@@ -5,7 +5,9 @@ import Section from '../controls/section';
 import RichText from '../controls/richtext';
 import Combobox from '../controls/combo';
 import Textbox from '../controls/textbox';
+import Table from '../controls/table';
 import ShowMessage, {NotifType} from '../helper/notification';
+
 
 
 import { useDrag } from 'react-dnd'
@@ -34,6 +36,9 @@ const getContentDiv = (controlData) => {
             break;
         case 'textbox':
             content = <Textbox {...controlData}/>
+            break;
+        case 'table':
+            content = <Table {...controlData}/> 
             break;
         case undefined:
             content = <div className="emptyControl"></div>

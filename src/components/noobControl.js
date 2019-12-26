@@ -111,7 +111,8 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
     // [c] Render:
     // [c.1] return the landing pad first, which is only shown when the control is being resized
     // [c.2] followed by the content
-    // [c.3] followed by the small resizer.
+    // [c.3] followed by the placeholder which will only be visible during resizing. Purpose is maintain the original size of the container while resizing.
+    // [c.4] followed by the small resizer.
     //       This order must be followed to avoid the need for z-index
     return <div id={domCtrlId}
             className={classNames} 
@@ -137,7 +138,8 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             controlSelected={() => selectedControl(controlData.i)}
             {...controlData} 
         />
-        {renderResizer(controlData.i, resizerMouseDown)}        
+        <div className="resizePlaceholder"></div>      
+        {renderResizer(controlData.i, resizerMouseDown)}                  
     </div>
 }
 

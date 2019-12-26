@@ -45,11 +45,13 @@ const generateDefaultLayout = () => {
   // [7] Attachments
   {i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
 
+
   // [8] Remarks
   {i: 'ctrl-textbox0', x: 9, y: 4, w: 3, h: 1,ctrlType: 'textbox', data: {
     placeholder: 'Input Remarks...',
     label: 'Remarks:'
   }},
+
 
   // [B] Subsection
   {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
@@ -61,7 +63,14 @@ const generateDefaultLayout = () => {
   // [1] History
   {i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
+  // [2] Table
+  {i: 'ctrl-table0', x: 0, y: 8, w: 6, h: 2,ctrlType: 'table', data: {
+    label: 'Table:'
+  }},
+
   ];
+
+
 }
 
 const dropdownOptions = [
@@ -96,7 +105,7 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 8
+  rows: 10
 }
 
 // This is the default layout for the Dashboard
@@ -152,7 +161,10 @@ const defaultControlData = {
   'textbox': {
     placeholder: 'Enter value...',
     label: 'Textbox:'
-  }
+  },
+  'table': {
+    label: 'Table:'
+  }  
 }
 
 const assignIdAndDefaultData = (control, layout) => {

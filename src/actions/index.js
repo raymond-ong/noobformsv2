@@ -53,6 +53,7 @@ export function updateHierDesignerTree(hierarchyArr) {
   }
 }
 
+// Not used anymore
 export function filterHierDesignerTree(filter) {
   return {
     type: FILTER_HIER_DESIGNER_TREE,

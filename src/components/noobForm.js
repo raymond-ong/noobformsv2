@@ -57,17 +57,21 @@ class NoobForm extends React.Component {
             return;
         }
 
-        if (!domControl.container.classList.contains('resizingControl')) {
-            domControl.container.classList.add('resizingControl');
-            domControl.content.classList.add('resizingContent');
-        }   
 
         let rectContainer = domControl.container.getClientRects()[0];
 
         let yDelta = !!e.touches ? e.touches[0].clientY - rectContainer.bottom: e.clientY - rectContainer.bottom;
         let xDelta = !!e.touches ? e.touches[0].clientX - rectContainer.right : e.clientX - rectContainer.right;
 
+        if (!domControl.container.classList.contains('resizingControl')) {
+            domControl.container.classList.add('resizingControl');
+            domControl.content.classList.add('resizingContent');
+        }   
+
+        domControl.placeholder.style.height = `${this.state.origHeight - 2}px`;
+        domControl.placeholder.style.width = `${this.state.origWidth - 2}px`;
         //debugger
+        // console.log('onMouseMove....', this.state.origHeight);
 
         //console.log('MouseMove/TouchMove', yDelta, xDelta);
 
@@ -243,16 +247,22 @@ class NoobForm extends React.Component {
             console.log('onMouseLeave while resizing');
             this.clearAllTemporaryClasses(controlIds);
             this.setState({
-                resizingControlId: null
+                resizingControlId: null,
+                // Will be set to the original height of the container at the start of resize operation
+                origHeight: null,
+                origWidth: null
             });    
         }
     }
 
     onResizerMouseDown(event, controlId) {
         console.log('mouse down resizer...', controlId, event);
+        let domResizing = this.findControlDomById(controlId);
         // Note: setState will cause the entire form and all the controls to rerender
         this.setState({
-            resizingControlId: controlId
+            resizingControlId: controlId,
+            origHeight: domResizing.container.getClientRects()[0].height,
+            origWidth: domResizing.container.getClientRects()[0].width,
         });    
     }
 
@@ -274,6 +284,9 @@ class NoobForm extends React.Component {
                 domControl.content.style.height = domControl.container.style.height;
                 domControl.content.style.width = domControl.container.style.width;    
             }
+
+            domControl.placeholder.style.height = null;
+            domControl.placeholder.style.width = null;
         });
     }
 
@@ -407,7 +420,9 @@ class NoobForm extends React.Component {
         ret.container = retEl[0];
         ret.landingPad = ret.container.firstChild;
         ret.content = ret.landingPad.nextSibling;
-        ret.resizer = ret.content.nextSibling;
+        ret.placeholder = ret.content.nextSibling;
+        ret.resizer = ret.placeholder.nextSibling;
+        
             
         return ret;    
     }
