@@ -14,8 +14,8 @@ const getData = () => {
         retList.push({
             targetName: `FIC_${iArea}_${i}`, 
             fullPath: `//PLANT/AREA_${iArea}/FIC_${i}`, 
-            timeInControl: statuses[i % statuses.length], 
-            timeInAlarm: statuses[i % statuses.length], 
+            timeInControl: statuses[(i+1) % statuses.length], 
+            timeInAlarm: statuses[(i+2) % statuses.length], 
             timeMvOutOfLimits: statuses[i % statuses.length],
             subRows: undefined
         })
@@ -60,20 +60,62 @@ const columns = [
         columns: [{
             Header: 'Time in Control',
             accessor: 'timeInControl',
-            Footer: info => computeKpi('timeInControl', info)
+            Footer: info => computeKpi('timeInControl', info),
+            colType: 'kpi'
         },
         {
             Header: 'Time in Alarm',
             accessor: 'timeInAlarm',
-            Footer: info => computeKpi('timeInAlarm', info)
+            Footer: info => computeKpi('timeInAlarm', info),
+            colType: 'kpi'
         },
         {
             Header: 'Time MV Out of Limits',
             accessor: 'timeMvOutOfLimits',
-            Footer: info => computeKpi('timeMvOutOfLimits', info)
+            Footer: info => computeKpi('timeMvOutOfLimits', info),
+            colType: 'kpi'
         }]
     },
 ];
+
+
+const getAdditionalCellProps = (cell) => {
+    if (cell.column.colType !== 'kpi') {
+        return {};
+    }
+
+    if (cell.value === 'Bad') {
+        return {
+            style: {
+                backgroundColor: 'pink'
+            }
+        }    
+    }
+    else if (cell.value === 'Good') {
+        return {
+            style: {
+                backgroundColor: 'lime'
+            }
+        }    
+    }
+    else if (cell.value === 'Uncertain') {
+        return {
+            style: {
+                backgroundColor: 'lightgray'
+            }
+        }    
+    }
+    else if (cell.value === 'Fair') {
+        return {
+            style: {
+                backgroundColor: 'gold'
+            }
+        }    
+    }
+    else {
+        return {};
+    }
+}
 
 const Table = (props) => {
     let classNames = 'noobTableContainer ';
@@ -150,7 +192,7 @@ const Table = (props) => {
                 return (
                     <tr {...row.getRowProps()}>
                     {row.cells.map(cell => {
-                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        return <td {...cell.getCellProps(getAdditionalCellProps(cell))}>{cell.render('Cell')}</td>
                     })}
                     </tr>
                 )}
