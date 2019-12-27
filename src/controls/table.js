@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import './common.css';
 import './table.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
-import { useTable } from 'react-table';
+import { useTable, usePagination } from 'react-table';
 
 const statuses = ['Good', 'Bad', 'Fair', 'Uncertain']
 
 const getData = () => {
     let retList = [];
     let nData = 20;
-    for (let iArea = 0; iArea < 1; iArea++) {
-        for (let i = 0; i < 5; i++) {
+    for (let iArea = 0; iArea < 10; iArea++) {
+        for (let i = 0; i < nData; i++) {
         retList.push({
-            targetName: `FIC_${i}`, 
+            targetName: `FIC_${iArea}_${i}`, 
             fullPath: `//PLANT/AREA_${iArea}/FIC_${i}`, 
             timeInControl: statuses[i % statuses.length], 
             timeInAlarm: statuses[i % statuses.length], 
@@ -42,7 +42,7 @@ const columns = [
         Header: 'Target Info',
         Footer: 'Target Summary',    
         TestCustomProp: 'helllo',   
-        width: 200, 
+        width: 200, // does not show up in getFooterGroupProps()
         columns: [{
             Header: 'Name',
             accessor: 'targetName',
@@ -73,7 +73,7 @@ const columns = [
             Footer: info => computeKpi('timeMvOutOfLimits', info)
         }]
     },
-]
+];
 
 const Table = (props) => {
     let classNames = 'noobTableContainer ';
@@ -81,28 +81,54 @@ const Table = (props) => {
         classNames += ' ctrl-selected'
     }
 
+    const memoColumns = React.useMemo(() => columns, []);
+    const memoData = React.useMemo(() => getData(), []);
+
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         footerGroups,
-        rows,
+        //rows,
         prepareRow,
+        page,
+
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
+        nextPage,
+        previousPage,
+        setPageSize,
+        state: { pageIndex, pageSize },
       } = useTable({
-        columns: columns,
-        data: getData(),
-      });
+        columns: memoColumns,
+        data: memoData,
+        initialState: { pageIndex: 0 },        
+      }, 
+      usePagination
+      );
 
     // console.log('table render getTableProps', getTableProps());
     // console.log('table render data', inData);
     // console.log('table render columns', inCol);
     // console.log('table render rows', rows);
-    // debug
-    console.log('table render footerGroups all', footerGroups);
-    footerGroups.forEach(footerGroup => {
-        console.log('table render footerGroup props:', footerGroup.getFooterGroupProps());
-        footerGroup.headers.forEach(column => {
-            console.log('table render column props:', column.getFooterProps());
+    // Can access everything from footerGroups
+    //console.log('table render footerGroups all', footerGroups);
+    // Cannot access everything from footerGroup. It only includes key and colSpan
+    // footerGroups.forEach(footerGroup => {
+    //     console.log('table render footerGroup props:', footerGroup.getFooterGroupProps());
+    //     footerGroup.headers.forEach(column => {
+    //         console.log('table render column props:', column.getFooterProps());
+    //     });
+    // })
+    console.log('table render page', page);
+
+    headerGroups.forEach(headerGroup => {
+        console.log('table render headerGroup props:', headerGroup.getHeaderGroupProps());
+        headerGroup.headers.forEach(column => {
+            console.log('table render column props:', column.getHeaderProps());
         });
     })
 
@@ -118,7 +144,7 @@ const Table = (props) => {
             ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-            {rows.map(
+            {page.map(
                 (row, i) => {
                 prepareRow(row);
                 return (
@@ -143,6 +169,54 @@ const Table = (props) => {
                 ))}
             </tfoot>
         </table>
-    </div>
+        {/* for the paginator */}
+        <div className="pagination">
+            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            {'<<'}
+            </button>{' '}
+            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+            {'<'}
+            </button>{' '}
+            <button onClick={() => nextPage()} disabled={!canNextPage}>
+            {'>'}
+            </button>{' '}
+            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+            {'>>'}
+            </button>{' '}
+            <span>
+            Page{' '}
+            <strong>
+            {pageIndex + 1} of {pageOptions.length}
+            </strong>{' '}
+            </span>
+            <span>
+            &nbsp;
+            &nbsp;
+            Go to page:{' '}
+            &nbsp;
+            <input
+                type="number"
+                defaultValue={pageIndex + 1}
+                onChange={e => {
+                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                gotoPage(page)
+                }}
+                style={{ width: '100px' }}
+            />
+            </span>{' '}
+            <select
+            value={pageSize}
+            onChange={e => {
+                setPageSize(Number(e.target.value))
+            }}
+            >
+            {[10, 20, 30, 40, 50].map(pageSize => (
+                <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+                </option>
+            ))}
+            </select>
+        </div>
+        </div>
     }
 export default noobControlHoc(Table);

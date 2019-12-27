@@ -25,3 +25,16 @@
 .noobTable tfoot tr td {
     
 }
+
+.pagination {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.pagination button,
+.pagination input,
+.pagination select,
+.pagination span {
+    border-radius: 3px;
+    margin-right: 10px;
+}
