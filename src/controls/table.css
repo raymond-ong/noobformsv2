@@ -8,7 +8,8 @@
     width: 100%;    
 }
 
-.noobTable tr th {
+.noobTable tr th,
+.noobTable tfoot tr td {
     border: 1px solid lightgray;
     padding: 5px;
     background-color: dimgray;
@@ -19,4 +20,8 @@
 .noobTable tr td {
     border: 1px solid gray;
     padding: 5px;
+}
+
+.noobTable tfoot tr td {
+    
 }

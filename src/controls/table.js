@@ -26,12 +26,28 @@ const getData = () => {
     return retList;
 }
 
+const renderFooterTargetNames = (info)=> {
+    let total = info.rows.length;
+    return 'Footer Target Names: ' + total;
+}
+
+const computeKpi = (kpiName, info) => {
+    let totalTargets = info.data.length;
+    let good = info.data.filter(x => x[kpiName] === 'Good').length;
+    return `${good / totalTargets * 100.00}%`
+}
+
 const columns = [
     {
         Header: 'Target Info',
+        Footer: 'Target Summary',    
+        TestCustomProp: 'helllo',   
+        width: 200, 
         columns: [{
             Header: 'Name',
-            accessor: 'targetName'
+            accessor: 'targetName',
+            Footer: renderFooterTargetNames,
+            FooterColSpan: 2,
         }, 
         {
             Header: 'Full Path',
@@ -40,17 +56,21 @@ const columns = [
     },
     {
         Header: 'KPIs',
+        Footer: 'KPI Summary',
         columns: [{
             Header: 'Time in Control',
-            accessor: 'timeInControl'
+            accessor: 'timeInControl',
+            Footer: info => computeKpi('timeInControl', info)
         },
         {
             Header: 'Time in Alarm',
-            accessor: 'timeInAlarm'
+            accessor: 'timeInAlarm',
+            Footer: info => computeKpi('timeInAlarm', info)
         },
         {
             Header: 'Time MV Out of Limits',
-            accessor: 'timeMvOutOfLimits'
+            accessor: 'timeMvOutOfLimits',
+            Footer: info => computeKpi('timeMvOutOfLimits', info)
         }]
     },
 ]
@@ -65,6 +85,7 @@ const Table = (props) => {
         getTableProps,
         getTableBodyProps,
         headerGroups,
+        footerGroups,
         rows,
         prepareRow,
       } = useTable({
@@ -76,6 +97,14 @@ const Table = (props) => {
     // console.log('table render data', inData);
     // console.log('table render columns', inCol);
     // console.log('table render rows', rows);
+    // debug
+    console.log('table render footerGroups all', footerGroups);
+    footerGroups.forEach(footerGroup => {
+        console.log('table render footerGroup props:', footerGroup.getFooterGroupProps());
+        footerGroup.headers.forEach(column => {
+            console.log('table render column props:', column.getFooterProps());
+        });
+    })
 
     return <div className={classNames}>
         <table className="noobTable" {...getTableProps()}>
@@ -100,7 +129,19 @@ const Table = (props) => {
                     </tr>
                 )}
             )}
+            <tr>
+                <td colSpan="10000" style={{backgroundColor: 'lightblue'}}>Custom Content!</td>
+            </tr>
             </tbody>
+            <tfoot>
+                {footerGroups.map(group => (
+                <tr {...group.getFooterGroupProps()}>
+                    {group.headers.map(column => (
+                        <td {...column.getFooterProps()}>{column.render('Footer')}</td>                                        
+                    ))}
+                </tr>
+                ))}
+            </tfoot>
         </table>
     </div>
     }
