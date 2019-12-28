@@ -156,6 +156,10 @@ function DefaultColumnFilter({
           setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         }}
         placeholder={`Search ${count} records...`}
+        onClick = {(e) => {
+                e.stopPropagation();
+            }
+        }
       />
     )
   }
@@ -254,7 +258,9 @@ const Table = (props) => {
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}
+                    <th 
+                        {...column.getHeaderProps(column.getSortByToggleProps())}
+                    >{column.render('Header')}
                     {/* Add a sort direction indicator */}
                     <span>
                         {column.isSorted
