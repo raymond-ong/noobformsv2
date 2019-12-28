@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './common.css';
 import './table.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
-import { useTable, usePagination, useFilters } from 'react-table';
+import { useTable, usePagination, useFilters, useSortBy } from 'react-table';
 
 const statuses = ['Good', 'Bad', 'Fair', 'Uncertain']
 
@@ -221,6 +221,7 @@ const Table = (props) => {
         initialState: { pageIndex: 0 },        
       }, 
       useFilters,
+      useSortBy,
       usePagination,
       );
 
@@ -253,7 +254,15 @@ const Table = (props) => {
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>{column.render('Header')}
+                    {/* Add a sort direction indicator */}
+                    <span>
+                        {column.isSorted
+                        ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                        : ''}
+                    </span>
                     {/* Render the columns filter UI */}
                     <div>{column.canFilter ? column.render('Filter') : null}</div>
                     </th>
