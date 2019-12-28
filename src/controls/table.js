@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './common.css';
 import './table.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
-import { useTable, usePagination } from 'react-table';
+import { useTable, usePagination, useFilters } from 'react-table';
 
 const statuses = ['Good', 'Bad', 'Fair', 'Uncertain']
 
@@ -78,6 +78,27 @@ const columns = [
     },
 ];
 
+/*
+Initially, I wanted to have a dropdown outside the table, instead of putting the filters in each column
+const getHeaderNames = (cols) => {
+    var retList = [];
+    cols.forEach(col => {
+        if (!!col.accessor && !!col.Header) {
+            retList.push({
+                key: col.accessor,
+                value: col.Header
+            });
+        }
+
+        if (!!col.columns) {
+            retList = retList.concat(getHeaderNames(col.columns));
+        }        
+    });
+
+    return retList;
+}
+*/
+
 
 const getAdditionalCellProps = (cell) => {
     if (cell.column.colType !== 'kpi') {
@@ -117,6 +138,29 @@ const getAdditionalCellProps = (cell) => {
     }
 }
 
+const onFilterChange = (e, f) => {
+    //console.log('onFilterChange', e.currentTarget.value);
+
+}
+
+// Define a default UI for filtering
+function DefaultColumnFilter({
+    column: { filterValue, preFilteredRows, setFilter },
+  }) {
+    const count = preFilteredRows.length
+  
+    return (
+      <input
+        value={filterValue || ''}
+        onChange={e => {
+          setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+        }}
+        placeholder={`Search ${count} records...`}
+      />
+    )
+  }
+  
+
 const Table = (props) => {
     let classNames = 'noobTableContainer ';
     if (props.selected === true) {
@@ -125,6 +169,31 @@ const Table = (props) => {
 
     const memoColumns = React.useMemo(() => columns, []);
     const memoData = React.useMemo(() => getData(), []);
+    const filterTypes = React.useMemo(
+        () => ({
+          // Or, override the default text filter to use
+          // "startWith"
+          text: (rows, id, filterValue) => {
+            return rows.filter(row => {
+              const rowValue = row.values[id]
+              return rowValue !== undefined
+                ? String(rowValue)
+                    .toLowerCase()
+                    .startsWith(String(filterValue).toLowerCase())
+                : true
+            })
+          },
+        }),
+        []
+      );
+
+    const defaultColumn = React.useMemo(
+        () => ({
+          // Let's set up our default Filter UI
+          Filter: DefaultColumnFilter,
+        }),
+        []
+      )
 
     const {
         getTableProps,
@@ -147,9 +216,12 @@ const Table = (props) => {
       } = useTable({
         columns: memoColumns,
         data: memoData,
+        defaultColumn,
+        filterTypes,
         initialState: { pageIndex: 0 },        
       }, 
-      usePagination
+      useFilters,
+      usePagination,
       );
 
     // console.log('table render getTableProps', getTableProps());
@@ -165,7 +237,7 @@ const Table = (props) => {
     //         console.log('table render column props:', column.getFooterProps());
     //     });
     // })
-    console.log('table render page', page);
+    console.log('table render page');
 
     headerGroups.forEach(headerGroup => {
         console.log('table render headerGroup props:', headerGroup.getHeaderGroupProps());
@@ -175,12 +247,16 @@ const Table = (props) => {
     })
 
     return <div className={classNames}>
+        <div className="controlLabel">{props.data.label}</div>
         <table className="noobTable" {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    <th {...column.getHeaderProps()}>{column.render('Header')}
+                    {/* Render the columns filter UI */}
+                    <div>{column.canFilter ? column.render('Filter') : null}</div>
+                    </th>
                 ))}
                 </tr>
             ))}
@@ -211,7 +287,7 @@ const Table = (props) => {
                 ))}
             </tfoot>
         </table>
-        {/* for the paginator */}
+        {/* for the paginator...maybe separate into its own function */}
         <div className="pagination">
             <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
             {'<<'}

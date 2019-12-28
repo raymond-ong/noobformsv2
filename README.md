@@ -59,3 +59,6 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 - [ ] Responsive support (make it 1 column only, and remove empty cells if window is narrow)
 - [ ] Make it touch compatible
 - [ ] Landing pads: align height with external controls
+
+## Issues
+- [ ] Dropping controls into the grid gap causes issues
