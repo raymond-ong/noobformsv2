@@ -28,7 +28,7 @@ const getData = () => {
 
 const renderFooterTargetNames = (info)=> {
     let total = info.rows.length;
-    return 'Footer Target Names: ' + total;
+    return 'Footer Target Names: ' + total + ' Records';
 }
 
 const computeKpi = (kpiName, info) => {
@@ -147,7 +147,7 @@ const onFilterChange = (e, f) => {
 function DefaultColumnFilter({
     column: { filterValue, preFilteredRows, setFilter },
   }) {
-    const count = preFilteredRows.length
+    const count = preFilteredRows.length;
   
     return (
       <input
@@ -155,11 +155,12 @@ function DefaultColumnFilter({
         onChange={e => {
           setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         }}
-        placeholder={`Search ${count} records...`}
+        placeholder={`Filter...`}
         onClick = {(e) => {
                 e.stopPropagation();
             }
         }
+        style={{width: '100%'}}
       />
     )
   }
@@ -204,7 +205,7 @@ const Table = (props) => {
         getTableBodyProps,
         headerGroups,
         footerGroups,
-        //rows,
+        rows,
         prepareRow,
         page,
 
@@ -289,7 +290,7 @@ const Table = (props) => {
                 )}
             )}
             <tr>
-                <td colSpan="10000" style={{backgroundColor: 'lightblue'}}>Custom Content!</td>
+            <td colSpan="10000" style={{backgroundColor: 'lightblue'}}>Custom Content! Found {rows.length} records!</td>
             </tr>
             </tbody>
             <tfoot>

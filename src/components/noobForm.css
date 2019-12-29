@@ -3,9 +3,13 @@
     grid-gap: 5px;
     padding: 10px;
 
-    border: 1px dashed dimgray;
+    /* border: 1px dashed #696969; */
+    border: 1px dashed red;
     position: relative;
     top: 30px;
+
+    height: 100%;
+    width: 100%;
 }
 
 .noobControl {
@@ -27,8 +31,8 @@
 }
 
 .contentWrapper {
-    /* width: 100%;
-    height: 100%; */
+    width: 100%;
+    height: 100%;
     opacity: 0.5;
 }
 
