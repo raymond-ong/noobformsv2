@@ -60,5 +60,17 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 - [ ] Make it touch compatible
 - [ ] Landing pads: align height with external controls
 
+## Limitations
+### Edge Cases
+* Table (or any control that can have a huge width): if the space/span allocated by the user is too small,\
+  => E.g. table has 20 columns, but user only allocated 3 colspans in the designer form.
+  => Considered as user problem, but we handle gracefully as much as possible.
+  => Horizontal scrollbar will appear inside the control. 
+  => Overall, the aim is for the whole page to never show a horizontal scrollbar.
+  => This is because of the reporting / save as PDF requirement. We want to be able to print nicely for MAJORITY of control.
+  => If we allow scrollbar on the entire page because of 1 "misbehaving" control, it might affect printability of all controls.
+* Table: colspan set by the user (internally, trasnfored to column width %) will only take effect if there is ample space.
+  This is the default behaviour of HTML table
+
 ## Issues
 - [ ] Dropping controls into the grid gap causes issues

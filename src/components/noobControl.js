@@ -59,7 +59,7 @@ const renderResizer = (controlId, onResizerMouseDown) => {
 
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId, 
                     parentCheckDroppable, parentDropCallback,
-                    selectedControl, widthPerColumn}) => {
+                    selectedControl, containerWidth}) => {
     
     // [a] Hooks setup for drop
     const [{ isOverShallow, canDrop, droppingItemType, droppingItem }, drop] = useDrop({
@@ -79,10 +79,14 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
 		}),
       });
 
-    console.log('render NoobControl', controlData.i, isOverShallow, canDrop, droppingItemType);
+    //console.log('render NoobControl', controlData.i, isOverShallow, canDrop, droppingItemType);
+    
 
     // [b] Preparations
     let classNames = 'noobControl';
+    let usableWidth = containerWidth-20; // 20 for the noobform left and right padding of 10 each
+    let widthOfCtrl = usableWidth * controlData.w / 12.0 -5; // 12 is the number of columns; minus 5 for the grid gap
+    console.log('render NoobControl', widthOfCtrl);
     let ctrlStyle = {
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content
@@ -91,7 +95,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         'minHeight': (ROW_HEIGHT * controlData.h), 
         'gridRowEnd': 'span ' + controlData.h,
         'gridColumnEnd': 'span ' + controlData.w,   
-        'maxWidth': `${widthPerColumn * controlData.w}px`     
+        'maxWidth': `${widthOfCtrl}px`     
     };
     // Highlighting to green is handled in noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd.
     if (isOverShallow && !canDrop) {
