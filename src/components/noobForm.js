@@ -774,14 +774,14 @@ class NoobForm extends React.Component {
         this.props.updateLayout(updatedControls); 
     }
 
-    renderControl(control) {
+    renderControl(control, widthPerColumn) {
         let ctrlStyle = {
             // set the minHeight instead of height. Height will make the height fixed regardless of the content.
             // minHeight allows the parent container to grow depending on content
             // actually we have not accounted for the Grid Gap yet...In case all the controls
             'minHeight': (ROW_HEIGHT * control.h) + (CONTROL_PADDING * (control.h - 1)) + (GRID_GAP * (control.h - 1)), 
             'gridRowEnd': 'span ' + control.h,
-            'gridColumnEnd': 'span ' + control.w,
+            'gridColumnEnd': 'span ' + control.w,            
         };
         //return <div className="noobControl" style={ctrlStyle}>{control.i}</div>
         return <NoobControl 
@@ -791,7 +791,8 @@ class NoobForm extends React.Component {
                 parentDropCallback={this.onDropControl}
                 resizerMouseDown={this.onResizerMouseDown}
                 resizingControlId={this.state.resizingControlId}
-                isSelected={false}/>
+                isSelected={false}
+                widthPerColumn={widthPerColumn}/>
     }
 
     // Returns an array containing the flat coordinates of the specified control
@@ -813,7 +814,7 @@ class NoobForm extends React.Component {
     }
 
 
-    renderControls(layoutData, controls) {
+    renderControls(layoutData, controls, widthPerColumn) {
         // debugger
         // For retlist: we don't use object (KV pair) beacause we need to render them according to the order we pushed them to the list.
         // Retrieving the keys or values via Object.keys()/Object.values() do not come in the order that they were set
@@ -832,7 +833,7 @@ class NoobForm extends React.Component {
                 let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
                 if (!findControl) {
                     let emptyControlPojo = this.createEmptyControl(iCol, iRow, flatCoord); // plain old JS obj
-                    let emptyControlJsx = this.renderControl(emptyControlPojo);
+                    let emptyControlJsx = this.renderControl(emptyControlPojo, widthPerColumn);
                     retList.push({
                         id: emptyControlPojo.i,
                         jsx: emptyControlJsx
@@ -840,7 +841,7 @@ class NoobForm extends React.Component {
                 }
                 else {
                     //retList.push(this.renderControl(findControl));
-                    let controlJsx = this.renderControl(findControl);
+                    let controlJsx = this.renderControl(findControl, widthPerColumn);
                     retList.push({
                         id: findControl.i,
                         jsx: controlJsx
@@ -855,13 +856,14 @@ class NoobForm extends React.Component {
     }
 
     render() {
-        console.log('render NoobForm...');
+        console.log('render NoobForm...', this.props.containerWidth);
+        let widthPerColumn = (this.props.containerWidth - 20) / 12.0;
         let {controls, layoutData} = this.props;
-        let controlsList = this.renderControls(layoutData, controls);
+        let controlsList = this.renderControls(layoutData, controls, widthPerColumn);
         let controlIds = controlsList.map(c => c.id);
         let controlsJsx = controlsList.map(c => c.jsx);
     
-        var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};
+        var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};        
     
         return (
         <div id="noobForm"

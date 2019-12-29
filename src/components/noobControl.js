@@ -59,7 +59,7 @@ const renderResizer = (controlId, onResizerMouseDown) => {
 
 const NoobControl = ({controlData, resizerMouseDown, resizingControlId, 
                     parentCheckDroppable, parentDropCallback,
-                    selectedControl}) => {
+                    selectedControl, widthPerColumn}) => {
     
     // [a] Hooks setup for drop
     const [{ isOverShallow, canDrop, droppingItemType, droppingItem }, drop] = useDrop({
@@ -90,7 +90,8 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         // Maybe no need to include padding and grid gap
         'minHeight': (ROW_HEIGHT * controlData.h), 
         'gridRowEnd': 'span ' + controlData.h,
-        'gridColumnEnd': 'span ' + controlData.w,        
+        'gridColumnEnd': 'span ' + controlData.w,   
+        'maxWidth': `${widthPerColumn * controlData.w}px`     
     };
     // Highlighting to green is handled in noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd.
     if (isOverShallow && !canDrop) {
