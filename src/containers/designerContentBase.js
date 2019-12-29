@@ -6,6 +6,7 @@ import React from 'react';
 // TODO: vertical scrollbar width is not yet accounted for in the calculation of the width
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
+const GRID_GAP = 8;
 
 class DesignerContentBase extends React.Component {
     constructor(props) {
@@ -13,8 +14,8 @@ class DesignerContentBase extends React.Component {
         window.addEventListener('resize', this.onWindowResize);
         this.defaultSizes = DEFAULT_SPLIT_SIZES;
         this.state = {
-            leftPixels: DEFAULT_SPLIT_SIZES[0] * window.innerWidth / 100.0,
-            rightPixels: DEFAULT_SPLIT_SIZES[1] * window.innerWidth / 100.0,
+            leftPixels: DEFAULT_SPLIT_SIZES[0] * (window.innerWidth - GRID_GAP) / 100.0,
+            rightPixels: DEFAULT_SPLIT_SIZES[1] * (window.innerWidth - GRID_GAP) / 100.0,
             currRightPercent: DEFAULT_SPLIT_SIZES[1]
         };
     }
@@ -31,7 +32,7 @@ class DesignerContentBase extends React.Component {
     }
 
     onWindowResize = () => {        
-        let rightPixels = this.state.currRightPercent / 100.0 * window.innerWidth;    
+        let rightPixels = this.state.currRightPercent / 100.0 * (window.innerWidth - GRID_GAP);    
         this.setState({
             rightPixels: rightPixels,
             leftPixels: window.innerWidth - rightPixels
@@ -39,13 +40,13 @@ class DesignerContentBase extends React.Component {
     }
 
     onSplitDragEnd = (sizes) => {
-        let rightPixels = sizes[1] / 100.0 * window.innerWidth;    
+        let rightPixels = sizes[1] / 100.0 * (window.innerWidth - GRID_GAP);    
         console.log('onSplitDragEnd designerContent callback');   
         //if there are differences, call setState. We minimize rerenders
         this.setState({
             rightPixels: rightPixels,
             currRightPercent: sizes[1],
-            leftPixels: window.innerWidth - rightPixels
+            leftPixels: window.innerWidth - rightPixels - GRID_GAP
         });
     }
 }
