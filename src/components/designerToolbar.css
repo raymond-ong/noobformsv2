@@ -2,9 +2,7 @@
     padding: 3px;
     background-color: gray;
     display: flex;
-    margin-bottom: 3px;
-    position: fixed;
-    z-index: 999;
+    /* margin-bottom: 3px; */
 }
 
 .left {

@@ -5,6 +5,7 @@ import DesignerForm from '../components/designerForm';
 import DesignerContentbase from './designerContentBase';
 import DesignerToolbar from '../components/designerToolbar';
 import NoobForm from '../components/noobForm';
+import './designerCommon.css';
 
 import {connect} from 'react-redux';
 
@@ -39,12 +40,14 @@ class formsDesignerContent extends DesignerContentbase {
         console.log('render designerContent', this.state.leftPixels);
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES}>
             <ToolPanel panelItems={panelItems} containerWidth={this.state.leftPixels}/>
-            <div>
+            <div id="rightContainer" className="designerContainer">
                 <DesignerToolbar containerWidth={this.state.rightPixels}/>
-                <NoobForm 
-                    containerWidth={this.state.rightPixels}
-                    layoutData={this.props.layoutData}
-                    controls={this.props.layout}/>
+                <div className="layoutEditorContainer">
+                    <NoobForm 
+                        containerWidth={this.state.rightPixels}
+                        layoutData={this.props.layoutData}
+                        controls={this.props.layout}/>
+                </div>
             </div>
         </NoobSplitter>
     }

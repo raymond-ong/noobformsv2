@@ -7,7 +7,7 @@ import {Popup} from 'semantic-ui-react';
 
 // TODO: Make it responsive
 const DesignerToolbar = (props) => {
-    return <div className="designerToolbar" style={{width: props.containerWidth}}>
+    return <div className="designerToolbar">
         <div className="left">
             <div className="toolbarButton">
                 <i className="ui icon save"/>

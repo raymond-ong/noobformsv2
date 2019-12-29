@@ -14,7 +14,7 @@ import './hierarchyDesigner.css';
 
 const DEFAULT_SPLIT_SIZES = [25, 75];
 
-const ToolbarPanel = ({panelContent, onDelete, onInsert, onSave, onSearchText, bEnableDelete}) => {
+const ToolbarPanel = ({children, onDelete, onInsert, onSave, onSearchText, bEnableDelete}) => {
     //console.log('[render] AccordionPanel, id: ', id);
     return <div className="toolbarPanel">        
         <div className="toolbarContainer">
@@ -26,7 +26,7 @@ const ToolbarPanel = ({panelContent, onDelete, onInsert, onSave, onSearchText, b
                 bEnableDelete={bEnableDelete}/>
         </div>
         <div className="toolbarPanelBody">
-            {panelContent}
+            {children}
         </div>
     </div>;
 }
@@ -107,13 +107,14 @@ class HierarchyDesigner extends DesignerContentbase {
                 onSave={this.onSave}
                 onSearchText={this.onSearchText}
                 bEnableDelete={!!this.props.selectedNode && !!this.props.selectedNode.key}
-                panelContent={<HierarchyDesignerTree 
-                                onSelectCb={this.onSelect} 
-                                onHierarchyChanged={this.onHierarchyChanged}
-                                treeData={this.props.hierarchyTree}
-                                searchText={this.state.searchText}
-                                />}
-            />
+            >
+                <HierarchyDesignerTree 
+                    onSelectCb={this.onSelect} 
+                    onHierarchyChanged={this.onHierarchyChanged}
+                    treeData={this.props.hierarchyTree}
+                    searchText={this.state.searchText}
+                    />                
+            </ToolbarPanel>
             <div>Right</div>
         </NoobSplitter>
 

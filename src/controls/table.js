@@ -17,6 +17,16 @@ const getData = () => {
             timeInControl: statuses[(i+1) % statuses.length], 
             timeInAlarm: statuses[(i+2) % statuses.length], 
             timeMvOutOfLimits: statuses[i % statuses.length],
+            kpi1: statuses[i % statuses.length],
+            kpi2: statuses[i % statuses.length],
+            kpi3: statuses[i % statuses.length],
+            kpi4: statuses[i % statuses.length],
+            kpi5: statuses[i % statuses.length],
+            kpi6: statuses[i % statuses.length],
+            kpi7: statuses[i % statuses.length],
+            kpi8: statuses[i % statuses.length],
+            kpi9: statuses[i % statuses.length],
+            kpi10: statuses[i % statuses.length],
             subRows: undefined
         })
         }
@@ -42,6 +52,7 @@ const columns = [
         Header: 'Target Info',
         Footer: 'Target Summary',    
         TestCustomProp: 'helllo',   
+        // customColSpan: 4, // should be computed
         width: 200, // does not show up in getFooterGroupProps()
         columns: [{
             Header: 'Name',
@@ -51,7 +62,8 @@ const columns = [
         }, 
         {
             Header: 'Full Path',
-            accessor: 'fullPath'
+            accessor: 'fullPath',
+            customColSpan: 3,
         }]
     },
     {
@@ -74,31 +86,72 @@ const columns = [
             accessor: 'timeMvOutOfLimits',
             Footer: info => computeKpi('timeMvOutOfLimits', info),
             colType: 'kpi'
-        }]
+        },
+    
+        {
+            Header: 'KPI 1 - Dummy KPI with a very long name',
+            accessor: 'kpi1',
+            Footer: info => computeKpi('kpi1', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 2 - Dummy KPI with a very long name',
+            accessor: 'kpi2',
+            Footer: info => computeKpi('kpi2', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 3 - Dummy KPI with a very long name',
+            accessor: 'kpi3',
+            Footer: info => computeKpi('kpi3', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 4 - Dummy KPI with a very long name',
+            accessor: 'kpi4',
+            Footer: info => computeKpi('kpi4', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 5 - Dummy KPI with a very long name',
+            accessor: 'kpi5',
+            Footer: info => computeKpi('kpi5', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 6 - Dummy KPI with a very long name',
+            accessor: 'kpi6',
+            Footer: info => computeKpi('kpi6', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 7 - Dummy KPI with a very long name',
+            accessor: 'kpi7',
+            Footer: info => computeKpi('kpi7', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 8 - Dummy KPI with a very long name',
+            accessor: 'kpi8',
+            Footer: info => computeKpi('kpi8', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 9 - Dummy KPI with a very long name',
+            accessor: 'kpi9',
+            Footer: info => computeKpi('kpi9', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 10 - Dummy KPI with a very long name',
+            accessor: 'kpi10',
+            Footer: info => computeKpi('kpi10', info),
+            colType: 'kpi'
+        },
+
+        ]
     },
 ];
-
-/*
-Initially, I wanted to have a dropdown outside the table, instead of putting the filters in each column
-const getHeaderNames = (cols) => {
-    var retList = [];
-    cols.forEach(col => {
-        if (!!col.accessor && !!col.Header) {
-            retList.push({
-                key: col.accessor,
-                value: col.Header
-            });
-        }
-
-        if (!!col.columns) {
-            retList = retList.concat(getHeaderNames(col.columns));
-        }        
-    });
-
-    return retList;
-}
-*/
-
 
 const getAdditionalCellProps = (cell) => {
     if (cell.column.colType !== 'kpi') {
@@ -143,6 +196,48 @@ const onFilterChange = (e, f) => {
 
 }
 
+const getColHeaderByAccessor = (colArray, accessor) => {
+    if (!colArray) {
+        return null;
+    }
+
+    for (var i = 0; i < colArray.length; i++) {
+        let currCol = colArray[i];
+        if (currCol.accessor === accessor) {
+            return currCol;
+        }
+
+        return getColHeaderByAccessor(currCol.columns, accessor);
+    }
+
+    return null;
+}
+
+const getTotalNumColumns = (colArray) => {
+    let ret = 0;
+    if (!colArray) {
+        return 0;
+    }
+
+    ret = colArray.reduce( (acc, curr, index, origArr) => {
+        console.log('reduce', acc, curr.Header, index, origArr);
+        let ret = acc + getTotalNumColumns(curr.columns);
+
+        if (!curr.accessor) {
+            return ret;
+        }
+        if (!curr.customColSpan) {
+            return ret + 1;
+        }
+        else {
+            return ret + curr.customColSpan;
+        }
+    }, 0 )
+
+    console.log('reduce ret', ret);
+    return ret;
+}
+
 // Define a default UI for filtering
 function DefaultColumnFilter({
     column: { filterValue, preFilteredRows, setFilter },
@@ -171,6 +266,9 @@ const Table = (props) => {
     if (props.selected === true) {
         classNames += ' ctrl-selected'
     }
+
+    debugger
+    const totalCols = getTotalNumColumns(columns);
 
     const memoColumns = React.useMemo(() => columns, []);
     const memoData = React.useMemo(() => getData(), []);
@@ -258,9 +356,16 @@ const Table = (props) => {
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                    <th 
+                {headerGroup.headers.map(column => {
+                    let thisWidth = 100.0 / totalCols;// 17 = number of columns + extra columns from colspan
+                    if (column.customColSpan) {
+                        thisWidth = thisWidth * column.customColSpan
+                    }
+                    let custProp = {width: thisWidth + "%"};
+                    //let colHeader = getColHeaderByAccessor(columns, )
+                    return (<th 
                         {...column.getHeaderProps(column.getSortByToggleProps())}
+                        {...custProp}
                     >{column.render('Header')}
                     {/* Add a sort direction indicator */}
                     <span>
@@ -273,7 +378,10 @@ const Table = (props) => {
                     {/* Render the columns filter UI */}
                     <div>{column.canFilter ? column.render('Filter') : null}</div>
                     </th>
-                ))}
+                    )
+                    }
+                )                
+                }
                 </tr>
             ))}
             </thead>
@@ -284,7 +392,8 @@ const Table = (props) => {
                 return (
                     <tr {...row.getRowProps()}>
                     {row.cells.map(cell => {
-                        return <td {...cell.getCellProps(getAdditionalCellProps(cell))}>{cell.render('Cell')}</td>
+                        return <td {...cell.getCellProps(getAdditionalCellProps(cell))} 
+                        >{cell.render('Cell')}</td>
                     })}
                     </tr>
                 )}
@@ -304,53 +413,55 @@ const Table = (props) => {
             </tfoot>
         </table>
         {/* for the paginator...maybe separate into its own function */}
-        <div className="pagination">
-            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-            {'<<'}
-            </button>{' '}
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-            {'<'}
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-            {'>'}
-            </button>{' '}
-            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-            {'>>'}
-            </button>{' '}
-            <span>
-            Page{' '}
-            <strong>
-            {pageIndex + 1} of {pageOptions.length}
-            </strong>{' '}
-            </span>
-            <span>
-            &nbsp;
-            &nbsp;
-            Go to page:{' '}
-            &nbsp;
-            <input
-                type="number"
-                defaultValue={pageIndex + 1}
+        {pageCount > 0 && 
+            // false &&
+            <div className="pagination">
+                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                {'<<'}
+                </button>{' '}
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                {'<'}
+                </button>{' '}
+                <button onClick={() => nextPage()} disabled={!canNextPage}>
+                {'>'}
+                </button>{' '}
+                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                {'>>'}
+                </button>{' '}
+                <span>
+                Page{' '}
+                <strong>
+                {pageIndex + 1} of {pageOptions.length}
+                </strong>{' '}
+                </span>
+                <span>
+                &nbsp;
+                &nbsp;
+                Go to page:{' '}
+                &nbsp;
+                <input
+                    type="number"
+                    defaultValue={pageIndex + 1}
+                    onChange={e => {
+                    const page = e.target.value ? Number(e.target.value) - 1 : 0
+                    gotoPage(page)
+                    }}
+                    style={{ width: '100px' }}
+                />
+                </span>{' '}
+                <select
+                value={pageSize}
                 onChange={e => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0
-                gotoPage(page)
+                    setPageSize(Number(e.target.value))
                 }}
-                style={{ width: '100px' }}
-            />
-            </span>{' '}
-            <select
-            value={pageSize}
-            onChange={e => {
-                setPageSize(Number(e.target.value))
-            }}
-            >
-            {[10, 20, 30, 40, 50].map(pageSize => (
-                <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-                </option>
-            ))}
-            </select>
-        </div>
+                >
+                {[10, 20, 30, 40, 50].map(pageSize => (
+                    <option key={pageSize} value={pageSize}>
+                    Show {pageSize}
+                    </option>
+                ))}
+                </select>
+            </div>}
         </div>
     }
 export default noobControlHoc(Table);

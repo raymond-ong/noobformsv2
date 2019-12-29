@@ -147,7 +147,6 @@ class HierarchyDesignerTree extends React.Component {
   */
 
   satisfiesFilter(nodeItem) {
-    debugger
     if (!this.props.searchText || nodeItem.title.includes(this.props.searchText)) {
       return true;
     }
@@ -203,7 +202,7 @@ class HierarchyDesignerTree extends React.Component {
     }
 
     return (
-      <Tree style={{overflow: "auto", height: "100%", width: "calc(100%)", padding: "0 0 20 0"}}
+      <Tree style={{overflow: "auto", height: "100%", width: "100%", padding: "0 0 20 0"}}
           className="hierarchyTree"
           showLine
           selectable

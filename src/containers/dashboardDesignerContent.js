@@ -6,10 +6,9 @@ import DesignerContentbase from './designerContentBase';
 import DesignerToolbar from '../components/designerToolbar';
 import {connect} from 'react-redux';
 
-
 const DEFAULT_SPLIT_SIZES = [15, 85];
 
-
+// Uses RGL for the layouting
 class DashboardDesignerContent extends DesignerContentbase {
     
     constructor(props) {
@@ -22,7 +21,7 @@ class DashboardDesignerContent extends DesignerContentbase {
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES}>
             <ToolPanel containerWidth={this.state.leftPixels}/>
             <div>
-                <DesignerToolbar containerWidth={this.state.rightPixels}/>
+                <DesignerToolbar containerWidth={this.state.rightPixels}/>                    
                 <DesignerForm containerWidth={this.state.rightPixels} controls={this.props.layout}/>
             </div>
         </NoobSplitter>

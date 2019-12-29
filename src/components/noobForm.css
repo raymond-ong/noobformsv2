@@ -4,22 +4,36 @@
     padding: 10px;
 
     /* border: 1px dashed #696969; */
-    border: 1px dashed red;
+    border: 1px dashed magenta;
     position: relative;
-    top: 30px;
+    /* overflow: auto; */
+    /* width: max-content; */
+    /* width: fit-content(100%); */
+    /* width: 100%; */
+    /* width: auto; */
+    /* height: calc(100% - 25px); */
+    /* height: 100%; */
+    /* overflow: auto; */
+    /* top: 30px; */
 
-    height: 100%;
+    /* height: calc(100%-500);
     width: 100%;
+    overflow: auto; */
+    /* grid-template-rows: repeat(auto-fit, 50px) */
+    /* grid-template-rows: repeat(auto-fit, minmax(50px, 1fr)) */
 }
 
 .noobControl {
     border: 1px dashed gray;
     /* needed to position the resizer */
     position: relative;
-    overflow: visible;
+    /* overflow: visible; */
+    /* overflow-x: auto;
+    overflow-y: visible;     */
     /* background-color: lightyellow; */
     /* To prevent the user from highlighting text */
     user-select: none;
+    width: 100%;
 }
 
 /* Show gray background to empty controls to make them easier to distinguish from actual controls */ 
