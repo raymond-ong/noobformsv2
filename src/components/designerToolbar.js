@@ -1,26 +1,33 @@
 import React from 'react';
 import './designerToolbar.css';
-import {Popup} from 'semantic-ui-react';
+import {Popup, Dropdown, Menu} from 'semantic-ui-react';
 
-// Make this a functional component
-// Let the parent pass the props like title of form, and other info like timestamp of save and user who saved
+const menuItems = {
+    'left': [
+        {key:'designertb_save', icon: 'save', text: 'Save'},
+        {key:'designertb_saveas', icon: 'save outline', text: 'Save As...'},
+        {key:'designertb_open', icon: 'open folder outline', text: 'Open...'},
+    ],
+    'right': [
+        {key:'designertb_preview', icon: 'eye', text: 'Hold to Preview', disabled: true},
+    ]
+}
 
-// TODO: Make it responsive
-const DesignerToolbar = (props) => {
+const renderToolbarBtn = (item) => {
+    let clsName = "toolbarButton";
+    if (item.disabled) {
+        clsName += " toolbarButton-disabled"
+    }
+    return <div key={item.key} className={clsName}>
+        <i className={'ui icon ' + item.icon}/>
+        {item.text}
+    </div>
+}
+
+const renderFullMenu = () => {
     return <div className="designerToolbar">
         <div className="left">
-            <div className="toolbarButton">
-                <i className="ui icon save"/>
-                Save
-            </div>
-            <div className="toolbarButton">
-                <i className="ui icon save outline"/>
-                Save As...
-            </div>
-            <div className="toolbarButton">
-                <i className="ui icon open folder outline"/>
-                Open...
-            </div>
+            {menuItems.left.map(item => renderToolbarBtn(item))}
         </div>
 
         <div className="center">
@@ -37,13 +44,46 @@ const DesignerToolbar = (props) => {
         </div>
 
         <div className="rightTb">
-            <div className="toolbarButton toolbarButton-disabled">
-                <i className="ui icon eye"/>
-                Hold to Preview
-            </div>            
+            {menuItems.right.map(item => renderToolbarBtn(item))}
         </div>
         
     </div>
+}
+
+const renderCollapsedMenu = () => {
+    return <div className="designerToolbar">
+        <div className="desginerDropdown">
+            <i className="desginerDropbtn ui icon th"/>
+            <div className="desginerDropdown-content">
+                {menuItems.left.map(item => (<div key={item.key} className="desginerDropdown-item">
+                    <i className={'ui icon ' + item.icon}/>
+                    <a>{item.text}</a>
+                </div>))}
+            </div>
+        </div>
+        &nbsp;
+        &nbsp;
+        <div className="title">Untitled</div>
+        <Popup 
+            inverted
+            size='tiny' style={{opacity: '0.8'}} 
+            content='Form is not yet saved' 
+            trigger={<div className="infoContainer">
+                <i className="ui icon info circle"/>
+            </div>} 
+        />
+    </div>
+}
+
+
+// TODO: Make it responsive
+const DesignerToolbar = (props) => {
+    if (props.containerWidth > 500) {
+        return renderFullMenu();
+    }
+    else {
+        return renderCollapsedMenu();
+    }
 }
 
 export default DesignerToolbar;

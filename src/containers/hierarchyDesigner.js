@@ -31,6 +31,10 @@ const ToolbarPanel = ({children, onDelete, onInsert, onSave, onSearchText, bEnab
     </div>;
 }
 
+const HierarchyPropsPanel = () => {
+    return <div>Right hand panel</div>
+}
+
 // This will be the intelligent class that will hold
 // the state of the hierarchy tree, to handle deletion and insertion of new nodes
 class HierarchyDesigner extends DesignerContentbase { 
@@ -115,7 +119,7 @@ class HierarchyDesigner extends DesignerContentbase {
                     searchText={this.state.searchText}
                     />                
             </ToolbarPanel>
-            <div>Right</div>
+            {HierarchyPropsPanel()}
         </NoobSplitter>
 
     }
