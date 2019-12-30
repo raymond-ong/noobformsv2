@@ -81,6 +81,7 @@
     position: relative;
     display: inline-block;
     margin-left: 10px;
+    cursor: pointer;
   }
   
   .desginerDropdown-content {
@@ -96,12 +97,19 @@
     text-decoration: none;
   }
    
-  .desginerDropdown:hover .desginerDropdown-content {display: block;}
+  .desginerDropdown:hover .desginerDropdown-content {
+      display: block;
+    }
 
   .desginerDropdown-item {
       display: inline-block;
       padding: 5px;
       width: 100%;
+      cursor: pointer;
   }
 
-  .desginerDropdown-item:hover {background-color: #ddd;}
+  .desginerDropdown-item:hover {
+        background-color: dimgray;
+        color: white;
+
+    }
