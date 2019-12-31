@@ -10,7 +10,7 @@ const HierarchyToolbar = ({onDelete, onInsert, onSave, onSearchText, bEnableDele
         clsNamesDeleteBtn += ' toolbarButton-disabled';
     }
     return <div className="hierDesignToolbar">
-        <div className="ui icon input small" style={{margin: "5px", width: '100%'}}>
+        <div className="ui icon input small fluid" style={{margin: "5px", width: "100%"}}>
             <input type="text" placeholder="Search tree..." onChange={onSearchText}/>
             <i className="inverted circular filter icon"></i>
         </div>

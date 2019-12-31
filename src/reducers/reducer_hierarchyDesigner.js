@@ -42,6 +42,9 @@ const uuidv4 = () => {
 }
 
 const handleInsert = (newState) => {
+  if (!newState || !newState.hierarchyTree) {
+    return;
+  }
   newState.hierarchyTree = [...newState.hierarchyTree];
   let newNode = {
     key: 'hier-'+uuidv4(),

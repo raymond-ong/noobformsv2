@@ -104,7 +104,8 @@ class HierarchyDesigner extends DesignerContentbase {
     
     render() {
         console.log('render hierarchyDesigner', this.props.selectedNode);
-        return <NoobSplitter id="hierarchyDesigner" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES}>
+        // TODO: Put a minsize first. Should make the toolbar buttons responsive.
+        return <NoobSplitter id="hierarchyDesigner" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES} minSize={230}>
             <ToolbarPanel 
                 onDelete={this.onDelete}
                 onInsert={this.onInsert}

@@ -1,7 +1,8 @@
 .hierDesignToolbar {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: block;
+    /* grid-template-columns: 1fr; */
     /* width: inherit; */
     width: 100%;
-    margin-right: 7px;
+    padding-right: 7px;
+    overflow: hidden;
 }

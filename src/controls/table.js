@@ -266,8 +266,7 @@ const Table = (props) => {
     if (props.selected === true) {
         classNames += ' ctrl-selected'
     }
-
-    debugger
+    
     const totalCols = getTotalNumColumns(columns);
 
     const memoColumns = React.useMemo(() => columns, []);

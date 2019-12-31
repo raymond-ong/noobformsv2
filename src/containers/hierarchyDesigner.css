@@ -6,19 +6,20 @@
     overflow: auto;
 }
 
-.toolbarText {
-
-    /* avoid overflow, show ellipsis */
+/* avoid overflow, show ellipsis */
+/* .toolbarText {
+    
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
+} */
 
 .toolbarPanel {
     background-color: lightgray;
     border-top: 1px solid white;
     border-bottom: 1px solid white;
     height: 100%;
+    overflow: auto;
 }
 
 .toolbarContainer {
