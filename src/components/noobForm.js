@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import { bindActionCreators } from "redux";
 import { updateLayout } from '../actions/index';
 import {ControlDragTypes} from './noobControlContent';
+import { WIDTH_LARGE } from '../constants';
 
 const ROW_HEIGHT = 50;
 const CONTROL_PADDING = 20;
@@ -774,7 +775,7 @@ class NoobForm extends React.Component {
         this.props.updateLayout(updatedControls); 
     }
 
-    renderControl(control, containerWidth) {
+    renderControl(control, containerWidth, numCols) {
         return <NoobControl 
                 key={'ctrl'+control.i} 
                 controlData={control}
@@ -783,7 +784,8 @@ class NoobForm extends React.Component {
                 resizerMouseDown={this.onResizerMouseDown}
                 resizingControlId={this.state.resizingControlId}
                 isSelected={false}
-                containerWidth={containerWidth}/>
+                containerWidth={containerWidth}
+                numCols={numCols}/>
     }
 
     // Returns an array containing the flat coordinates of the specified control
@@ -821,7 +823,7 @@ class NoobForm extends React.Component {
                 let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
                 if (!findControl) {
                     let emptyControlPojo = this.createEmptyControl(iCol, iRow, flatCoord); // plain old JS obj
-                    let emptyControlJsx = this.renderControl(emptyControlPojo, containerWidth);
+                    let emptyControlJsx = this.renderControl(emptyControlPojo, containerWidth, layoutData.columns);
                     retList.push({
                         id: emptyControlPojo.i,
                         jsx: emptyControlJsx
@@ -829,7 +831,7 @@ class NoobForm extends React.Component {
                 }
                 else {
                     //retList.push(this.renderControl(findControl));
-                    let controlJsx = this.renderControl(findControl, containerWidth);
+                    let controlJsx = this.renderControl(findControl, containerWidth, layoutData.columns);
                     retList.push({
                         id: findControl.i,
                         jsx: controlJsx
@@ -857,7 +859,7 @@ class NoobForm extends React.Component {
                 }
                 else {
                     // pass in null as the containerWidth, to indicate that we don't want to display as grid
-                    let controlJsx = this.renderControl(findControl, null);
+                    let controlJsx = this.renderControl(findControl, containerWidth, 1);
                     retList.push({
                         id: findControl.i,
                         jsx: controlJsx
@@ -873,7 +875,7 @@ class NoobForm extends React.Component {
         // debugger
         // For retlist: we don't use object (KV pair) beacause we need to render them according to the order we pushed them to the list.
         // Retrieving the keys or values via Object.keys()/Object.values() do not come in the order that they were set
-        if (containerWidth > 600) {
+        if (containerWidth > WIDTH_LARGE) {
             return this.renderControlsWithLayout(layoutData, controls, containerWidth);
         }
         else {
@@ -888,7 +890,7 @@ class NoobForm extends React.Component {
         let controlIds = controlsList.map(c => c.id);
         let controlsJsx = controlsList.map(c => c.jsx);
     
-        var divStyle = this.props.containerWidth > 600 ?
+        var divStyle = this.props.containerWidth > WIDTH_LARGE ?
         {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`} : 
         {'gridTemplateColumns': '1fr'};
     

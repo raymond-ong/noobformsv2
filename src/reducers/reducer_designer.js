@@ -71,7 +71,7 @@ const generateDefaultLayout = () => {
   {i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   //[2] Table - 1
-  {i: 'ctrl-table0', x: 0, y: 8, w: 12, h: 2,ctrlType: 'table', data: {
+  {i: 'ctrl-table0', x: 0, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
     label: 'Table:'
   }},
 

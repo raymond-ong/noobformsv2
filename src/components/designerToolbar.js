@@ -1,6 +1,7 @@
 import React from 'react';
 import './designerToolbar.css';
 import {Popup, Dropdown, Menu} from 'semantic-ui-react';
+import {WIDTH_LARGE} from '../constants';
 
 const menuItems = {
     'left': [
@@ -78,7 +79,7 @@ const renderCollapsedMenu = () => {
 
 // TODO: Make it responsive
 const DesignerToolbar = (props) => {
-    if (props.containerWidth > 600) {
+    if (props.containerWidth > WIDTH_LARGE) {
         return renderFullMenu();
     }
     else {
