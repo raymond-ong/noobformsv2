@@ -78,7 +78,7 @@ const renderCollapsedMenu = () => {
 
 // TODO: Make it responsive
 const DesignerToolbar = (props) => {
-    if (props.containerWidth > 500) {
+    if (props.containerWidth > 600) {
         return renderFullMenu();
     }
     else {

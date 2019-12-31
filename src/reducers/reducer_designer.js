@@ -8,13 +8,20 @@ import { SELECT_TOOLPANEL_TREE,
 const generateDefaultLayout = () => {
   // [1] Section
   return [
+  // {i: 'ctrl-combo0', x: 0, y: 0, w: 3, h: 1, ctrlType: 'combo', data: {
+  //     placeholder: 'Please select...',
+  //     options: dropdownOptions,
+  //     label: 'Courses:'
+  // }},
+
+
   {i: 'ctrl-section0', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'General Information',
       //backgroundColor: 'lightsteelblue'
       level: 1
   }},
 
-  // [2] Description
+  //[2] Description
   {i: 'ctrl-richText0', x: 0, y: 1, w: 6, h: 4, ctrlType: 'richtext',       
       data: {
           label: 'Description:',
@@ -63,23 +70,23 @@ const generateDefaultLayout = () => {
   // [1] History
   {i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
-  // [2] Table - 1
-  // {i: 'ctrl-table0', x: 0, y: 8, w: 12, h: 2,ctrlType: 'table', data: {
-  //   label: 'Table:'
-  // }},
+  //[2] Table - 1
+  {i: 'ctrl-table0', x: 0, y: 8, w: 12, h: 2,ctrlType: 'table', data: {
+    label: 'Table:'
+  }},
 
-  // [2] Table - 2
-  // {i: 'ctrl-table1', x: 3, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
-  //   label: 'Table:'
-  // }},
-  // // [2] Table - 3
-  // {i: 'ctrl-table2', x: 6, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
-  //   label: 'Table:'
-  // }},
-  // // [2] Table - 4
-  // {i: 'ctrl-table3', x: 9, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
-  //   label: 'Table:'
-  // }},
+  //[2] Table - 2
+  {i: 'ctrl-table1', x: 3, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+    label: 'Table:'
+  }},
+  // [2] Table - 3
+  {i: 'ctrl-table2', x: 6, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+    label: 'Table:'
+  }},
+  // [2] Table - 4
+  {i: 'ctrl-table3', x: 9, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+    label: 'Table:'
+  }},
   ];
 }
 
@@ -115,7 +122,7 @@ const dropdownOptionsFew = [
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 10
+  rows: 12
 }
 
 // This is the default layout for the Dashboard

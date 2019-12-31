@@ -84,19 +84,24 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
 
     // [b] Preparations
     let classNames = 'noobControl';
-    let usableWidth = containerWidth-20; // 20 for the noobform left and right padding of 10 each
-    let widthOfCtrl = usableWidth * controlData.w / 12.0 -5; // 12 is the number of columns; minus 5 for the grid gap
-    console.log('render NoobControl', widthOfCtrl);
     let ctrlStyle = {
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content
         //'minHeight': (ROW_HEIGHT * controlData.h) + (CONTROL_PADDING * (controlData.h - 1)) + (GRID_GAP * (controlData.h - 1)), 
         // Maybe no need to include padding and grid gap
         'minHeight': (ROW_HEIGHT * controlData.h), 
-        'gridRowEnd': 'span ' + controlData.h,
-        'gridColumnEnd': 'span ' + controlData.w,   
-        'maxWidth': `${widthOfCtrl}px`     
-    };
+    }
+    // [b1] - Normal desktop size layout
+    if (!!containerWidth) {
+        let usableWidth = containerWidth-20; // 20 for the noobform left and right padding of 10 each
+        let widthOfCtrl = usableWidth * controlData.w / 12.0 -5; // 12 is the number of columns; minus 5 for the grid gap
+        ctrlStyle.gridRowEnd = 'span ' + controlData.h;
+        ctrlStyle.gridColumnEnd = 'span ' + controlData.w;
+        ctrlStyle.maxWidth = `${widthOfCtrl}px`; 
+    }
+    // [b2] - Show as single column if containerWidth is null (if container size is too small, null is passed)
+    // ...    We don't set the grid row/col end and maxWidth
+
     // Highlighting to green is handled in noobForm. Highlighting to pink is handled here because if !canDrop, the mouseUp event was prevented by React Dnd.
     if (isOverShallow && !canDrop) {
         ctrlStyle.backgroundColor = 'pink';

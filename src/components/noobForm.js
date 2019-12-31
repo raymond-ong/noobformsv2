@@ -775,15 +775,6 @@ class NoobForm extends React.Component {
     }
 
     renderControl(control, containerWidth) {
-        let ctrlStyle = {
-            // set the minHeight instead of height. Height will make the height fixed regardless of the content.
-            // minHeight allows the parent container to grow depending on content
-            // actually we have not accounted for the Grid Gap yet...In case all the controls
-            'minHeight': (ROW_HEIGHT * control.h) + (CONTROL_PADDING * (control.h - 1)) + (GRID_GAP * (control.h - 1)), 
-            'gridRowEnd': 'span ' + control.h,
-            'gridColumnEnd': 'span ' + control.w,            
-        };
-        //return <div className="noobControl" style={ctrlStyle}>{control.i}</div>
         return <NoobControl 
                 key={'ctrl'+control.i} 
                 controlData={control}
@@ -814,10 +805,7 @@ class NoobForm extends React.Component {
     }
 
 
-    renderControls(layoutData, controls, containerWidth) {
-        // debugger
-        // For retlist: we don't use object (KV pair) beacause we need to render them according to the order we pushed them to the list.
-        // Retrieving the keys or values via Object.keys()/Object.values() do not come in the order that they were set
+    renderControlsWithLayout(layoutData, controls, containerWidth) {
         let retList = [];  
         let fillMap = [];
         for (var iRow = 0; iRow < layoutData.rows; iRow++) {
@@ -855,6 +843,44 @@ class NoobForm extends React.Component {
         return retList;
     }
 
+    renderControlsAsSingleCol(layoutData, controls, containerWidth) {
+        let retList = [];
+        // We still need the for-loops so that the controls are sorted from top-left to bottom right
+        for (var iRow = 0; iRow < layoutData.rows; iRow++) {
+            for (var iCol = 0; iCol < layoutData.columns; iCol++) {            
+                let flatCoord = iRow * layoutData.columns + iCol;
+                // try to find if there is a control associated
+                // otherwise just render an empty control
+                let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
+                if (!findControl) {
+                    continue;
+                }
+                else {
+                    // pass in null as the containerWidth, to indicate that we don't want to display as grid
+                    let controlJsx = this.renderControl(findControl, null);
+                    retList.push({
+                        id: findControl.i,
+                        jsx: controlJsx
+                    });
+                }
+            }
+        }
+
+        return retList;
+    }
+
+    renderControls(layoutData, controls, containerWidth) {
+        // debugger
+        // For retlist: we don't use object (KV pair) beacause we need to render them according to the order we pushed them to the list.
+        // Retrieving the keys or values via Object.keys()/Object.values() do not come in the order that they were set
+        if (containerWidth > 600) {
+            return this.renderControlsWithLayout(layoutData, controls, containerWidth);
+        }
+        else {
+            return this.renderControlsAsSingleCol(layoutData, controls, containerWidth);
+        }
+    }
+
     render() {
         console.log('render NoobForm...', this.props.containerWidth);
         let {controls, layoutData} = this.props;
@@ -862,7 +888,9 @@ class NoobForm extends React.Component {
         let controlIds = controlsList.map(c => c.id);
         let controlsJsx = controlsList.map(c => c.jsx);
     
-        var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};        
+        var divStyle = this.props.containerWidth > 600 ?
+        {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`} : 
+        {'gridTemplateColumns': '1fr'};
     
         return (
         <div id="noobForm"

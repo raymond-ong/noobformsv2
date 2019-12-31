@@ -220,7 +220,7 @@ const getTotalNumColumns = (colArray) => {
     }
 
     ret = colArray.reduce( (acc, curr, index, origArr) => {
-        console.log('reduce', acc, curr.Header, index, origArr);
+        // console.log('reduce', acc, curr.Header, index, origArr);
         let ret = acc + getTotalNumColumns(curr.columns);
 
         if (!curr.accessor) {
@@ -234,7 +234,7 @@ const getTotalNumColumns = (colArray) => {
         }
     }, 0 )
 
-    console.log('reduce ret', ret);
+    //console.log('reduce ret', ret);
     return ret;
 }
 
@@ -344,9 +344,9 @@ const Table = (props) => {
     console.log('table render page');
 
     headerGroups.forEach(headerGroup => {
-        console.log('table render headerGroup props:', headerGroup.getHeaderGroupProps());
+        //console.log('table render headerGroup props:', headerGroup.getHeaderGroupProps());
         headerGroup.headers.forEach(column => {
-            console.log('table render column props:', column.getHeaderProps());
+            //console.log('table render column props:', column.getHeaderProps());
         });
     })
 
