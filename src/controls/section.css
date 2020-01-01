@@ -1,6 +1,6 @@
 .section {
     font-weight: bold;
-    font-size: 20px;
+    /* font-size: 20px; */
     /* Set opacity to 0.5 so that when resizing, the background color change can be seen */
     background: rgba(176, 196, 222, 0.7);
     height: 100%;

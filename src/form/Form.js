@@ -2,11 +2,9 @@ import React, { createContext, useEffect } from "react";
 import useForm from "react-hook-form";
 import { Form as SemanticForm } from "semantic-ui-react";
 import {getToolItemByName} from '../components/toolbox';
+import * as constants from '../constants';
 
 export const FormContext = createContext();
-
-const NAME_CONTROL_ID = 'controlId' // todo put this in common place
-const NAME_CONTROL_TYPE = 'controlType'
 
 const setControlValues = (selectedControl, setValueFunc) => {
     if (!selectedControl) {
@@ -16,8 +14,8 @@ const setControlValues = (selectedControl, setValueFunc) => {
     // Common props
     let toolItemType = getToolItemByName(selectedControl.ctrlType);
 
-    setValueFunc(NAME_CONTROL_ID, selectedControl.i);
-    setValueFunc(NAME_CONTROL_TYPE, toolItemType.displayName);
+    setValueFunc(constants.NAME_CONTROL_ID, selectedControl.i);
+    setValueFunc(constants.NAME_CONTROL_TYPE, toolItemType.displayName);
 
     Object.keys(selectedControl.data).forEach((key, index) => {
         setValueFunc(key, selectedControl.data[key]);

@@ -28,21 +28,27 @@ const generateDefaultLayout = () => {
           placeholder: 'Enter Description...'
       }},
 
-  // [3] Date
-  {i: 'ctrl-date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
+  // [3 new] Pie Chart
+  {i: 'ctrl-pie0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+      data: {
+          label: 'Pie:',
+      }},
 
-  // [4] Status
-  {i: 'ctrl-status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
+  // // [3] Date
+  // {i: 'ctrl-date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
+
+  // // [4] Status
+  // {i: 'ctrl-status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
 
   // [5] Priority
-  {i: 'ctrl-combo0', x: 6, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
+  {i: 'ctrl-combo0', x: 9, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
       placeholder: 'Please select...',
       options: dropdownOptions,
       label: 'Courses:'
   }},
 
   // [6] User
-  {i: 'ctrl-user0', x: 6, y: 4, w: 3, h: 1, ctrlType: 'user'},
+  // {i: 'ctrl-user0', x: 6, y: 4, w: 3, h: 1, ctrlType: 'user'},
   // {i: 'combo1', x: 6, y: 4, w: 3, h: 1, ctrlType: 'combo', data: {
   //     placeholder: 'Please Select...',
   //     options: dropdownOptions,
@@ -71,22 +77,22 @@ const generateDefaultLayout = () => {
   {i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   //[2] Table - 1
-  {i: 'ctrl-table0', x: 0, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+  {i: 'ctrl-table0', x: 0, y: 8, w: 12, h: 2,ctrlType: 'table', data: {
     label: 'Table:'
   }},
 
-  //[2] Table - 2
-  {i: 'ctrl-table1', x: 3, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
-    label: 'Table:'
-  }},
-  // [2] Table - 3
-  {i: 'ctrl-table2', x: 6, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
-    label: 'Table:'
-  }},
-  // [2] Table - 4
-  {i: 'ctrl-table3', x: 9, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
-    label: 'Table:'
-  }},
+  // //[2] Table - 2
+  // {i: 'ctrl-table1', x: 3, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+  //   label: 'Table:'
+  // }},
+  // // [2] Table - 3
+  // {i: 'ctrl-table2', x: 6, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+  //   label: 'Table:'
+  // }},
+  // // [2] Table - 4
+  // {i: 'ctrl-table3', x: 9, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
+  //   label: 'Table:'
+  // }},
   ];
 }
 

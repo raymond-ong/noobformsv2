@@ -11,6 +11,7 @@ import ShowMessage, {NotifType} from '../helper/notification';
 
 
 import { useDrag } from 'react-dnd'
+import PieChart from '../charts/pieChart';
 
 // Separate the content-part into a standalone component from the control wrapper
 // Reason: this will be the only part that will be resized or moved while dragging (moving or resizing)
@@ -40,6 +41,9 @@ const getContentDiv = (controlData) => {
         case 'table':
             content = <Table {...controlData}/> 
             break;
+        case 'pie':
+            content = <PieChart/>
+            break
         case undefined:
             content = <div className="emptyControl"></div>
             break
