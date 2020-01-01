@@ -13,6 +13,7 @@ export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
 export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
+export const DELETE_CONTROL = "DELETE_CONTROL";
 
 export function menuClicked(menuName) { 
     return {
@@ -117,5 +118,12 @@ export const updateControlProps = (newControlData) => {
   return {
     type: UPDATE_CONTROL_PROPS,
     payload: newControlData
+  }
+}
+
+export const deleteControl = (controlData) => {
+  return {
+    type: DELETE_CONTROL,
+    payload: controlData
   }
 }

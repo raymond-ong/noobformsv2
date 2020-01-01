@@ -14,12 +14,13 @@
 .footerToolbar {
     width: 100%;
     height: 40px;
-    padding: 0px 10px 5px 10px;
+    padding: 0px 10px 0px 10px;
     background: rgba(169, 169, 169, 0.5);
     display: inline-block;
 }
 
 div.footerToolbar .ui.button {
     margin-top: 5px;
+    margin-bottom: 5px;
     margin-right: 10px;
 }

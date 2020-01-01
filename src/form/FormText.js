@@ -4,7 +4,7 @@ import { RHFInput } from "react-hook-form-input";
 import { Form as SemanticForm } from "semantic-ui-react";
 
 function FormText({ name, rules, label, ...rest }) {
-  const { register, setValue } = useContext(FormContext);
+  const { register, setValue, unregister } = useContext(FormContext);
 
   return (<SemanticForm.Field>
             <label key={'label-'+name}>{label}</label>
@@ -15,9 +15,10 @@ function FormText({ name, rules, label, ...rest }) {
                             {...rest}></input>
                 }
 
-                defaultValue=""
+            defaultValue=""
             name={name}      
             register={register}
+            unregister={unregister}
             setValue={setValue}
             rules={rules}
             />

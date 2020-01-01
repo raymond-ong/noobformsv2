@@ -1,7 +1,9 @@
 import { SELECT_TOOLPANEL_TREE, 
           SELECT_CONTROL, 
           UPDATE_DESIGNER_LAYOUT,
-          UPDATE_CONTROL_PROPS} from "../actions/index";
+          UPDATE_CONTROL_PROPS,
+          DELETE_CONTROL,
+          deleteControl} from "../actions/index";
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 // This is for the Forms layout
@@ -285,6 +287,15 @@ const updateControlProps = (updatedControl, newLayout) => {
   newLayout.push(newControl);
 }
 
+const handleDeleteControl = (deletedControl, newLayout) => {
+  let findControlIndex = newLayout.findIndex(ctrl => ctrl.i === deletedControl.i);
+  if (findControlIndex < 0) {
+    return;
+  }
+
+  newLayout.splice(findControlIndex, 1);
+}
+
 export default function(state = defaultState, action) {  
   switch (action.type) {
     case SELECT_TOOLPANEL_TREE:
@@ -317,6 +328,14 @@ export default function(state = defaultState, action) {
         updateControlProps(action.payload, newStateUpdProps.layout); 
 
         return newStateUpdProps;
+    case DELETE_CONTROL:
+      let newStateDeleteControl = {
+        ...state,          
+      };
+      newStateDeleteControl.layout = [...state.layout];
+
+      handleDeleteControl(action.payload, newStateDeleteControl.layout);
+      return newStateDeleteControl;
   }
   return state;
 }

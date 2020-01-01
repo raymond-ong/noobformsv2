@@ -1,31 +1,19 @@
-import React, {useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
-import {updateControlProps} from '../actions';
+import {updateControlProps, deleteControl} from '../actions';
 
 import './propertiesPanel.css';
-// import useForm from "react-hook-form";
-// import { Button, Checkbox, Dropdown } from 'semantic-ui-react';
 import {getToolItemByName} from '../components/toolbox';
 import splitWord from '../helper/wordSplitter';
 
-import {RenderControlProps as RenderSectionProps} from '../controls/section';
 import {sectionProps} from '../controls/section';
 import * as constants from '../constants';
 import Form, {Text as FormText} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 
-// const setValues = (selectedControl, setValueFunc) => {
-//     if (!selectedControl) {
-//         return;
-//     }
-//     //setValueFunc('controlId', selectedControl.i);
-//     Object.keys(selectedControl.data).forEach((key, index) => {
-//         setValueFunc(key, selectedControl.data[key]);
-//     });
-// }
 
-const renderControlProps = (selectedControl, onSubmit)  => {
+const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
     let specialProps = [];
     switch(selectedControl.ctrlType) {
         case 'section':
@@ -41,7 +29,7 @@ const renderControlProps = (selectedControl, onSubmit)  => {
             {renderControlDataProps(specialProps, selectedControl)}
             </div>
             <div className="footerToolbar">
-                <button key='deleteBtn' className="ui negative button mini">Delete</button>
+                <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
                 <button key='submitBtn' type="submit" className="ui button secondary mini">Apply</button>
             </div>
         </Form>
@@ -78,7 +66,7 @@ const renderControlDataProps = (specialProps, selectedControl) => {
             switch(foundSpecialProp.propType) {
                 case 'combo':
                     retList.push(<FormDropDown
-                        key={key}
+                        key={selectedControl.i+'_'+key}
                         name={key}
                         label={splitWord(key)+":"}
                         options={foundSpecialProp.options}
@@ -89,32 +77,17 @@ const renderControlDataProps = (specialProps, selectedControl) => {
             }
         }
         else {
-            retList.push(<FormText key={key}
+            retList.push(<FormText key={selectedControl.i+'_'+key}
                 name={key}
                 label={splitWord(key)+':'}
             />);
         }
-        // switch(key) {
-        //     case 'level':
-        //         retList.push(<FormDropDown
-        //             key={key}
-        //             name={key}
-        //             label={splitWord(key)+":"}
-        //             options={levelOptions}
-        //         />);
-        //         break;
-        //     default:
-        //         retList.push(<FormText key={key}
-        //             name={key}
-        //             label={splitWord(key)+':'}                                                             
-        //         />);
-        // }
     });
 
     return retList;
 }
 
-const PropertiesPanel = ({selectedControl, updateControlProps}) => {
+const PropertiesPanel = ({selectedControl, updateControlProps, deleteControl}) => {
     if (!selectedControl) {
         return <div className="ui message warning">No control selected in the Designer</div>
     }
@@ -134,7 +107,12 @@ const PropertiesPanel = ({selectedControl, updateControlProps}) => {
         updateControlProps(formattedData);
     }
 
-    return renderControlProps(selectedControl, onSubmit);
+    let onDelete = () => {
+        console.log('dellllleeeetge');
+        deleteControl(selectedControl)
+    };
+
+    return renderControlProps(selectedControl, onSubmit, onDelete);
 }
 
 const mapStateToProps = (state) => {
@@ -145,7 +123,7 @@ const mapStateToProps = (state) => {
 
 //We just let the individual controls take care of everything
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ updateControlProps }, dispatch);
+    return bindActionCreators({ updateControlProps, deleteControl }, dispatch);
 }
 
 

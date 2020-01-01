@@ -25,17 +25,16 @@ const setControlValues = (selectedControl, setValueFunc) => {
 // Nicely designed wrapper class taken from
 // https://codesandbox.io/s/dazzling-napier-ne3e6
 function Form({ children, onSubmit, inputObj, ...rest }) {
-  const { register, setValue, handleSubmit } = useForm();
+  const { register, setValue, handleSubmit, unregister } = useForm();
 
     useEffect(() => {
         // Set the initial values
         // The controls' values are not really bound to any state or props so we have to update it here
-        console.log('Form useEffect start');
         setControlValues(inputObj, setValue);
     }, [inputObj]); // Means if inputObj value does not change, don't run useEffect again.
 
   return (
-    <FormContext.Provider value={{ register, setValue, handleSubmit }}>
+    <FormContext.Provider value={{ register, setValue, handleSubmit, unregister }}>
       <SemanticForm onSubmit={handleSubmit(onSubmit)} {...rest}>
         {children}
       </SemanticForm>

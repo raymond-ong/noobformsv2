@@ -5,7 +5,6 @@ import './editDialog.css';
 class EditDialog extends React.Component {
 
     render() {
-        console.log(this.props);
         let {controlInfo} = this.props;
         return (<Modal trigger={<i className="ui icon cog large editBtn"></i>}>
         <Modal.Header>Edit Control Dialog for {controlInfo.i}</Modal.Header>
