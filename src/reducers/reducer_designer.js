@@ -24,7 +24,7 @@ const generateDefaultLayout = () => {
   }},
 
   //[2] Description
-  {i: 'ctrl-richText0', x: 0, y: 1, w: 6, h: 4, ctrlType: 'richtext',       
+  {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
       data: {
           label: 'Description:',
           placeholder: 'Enter Description...'
@@ -36,7 +36,13 @@ const generateDefaultLayout = () => {
           label: 'Pie:',
       }},
 
-  // // [3] Date
+  // [4 new] Bar Chart
+  {i: 'ctrl-bar0', x: 3, y: 1, w: 3, h: 4, ctrlType: 'barchart',       
+      data: {
+          label: 'Bar:',
+      }},
+
+      // // [3] Date
   // {i: 'ctrl-date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
 
   // // [4] Status
@@ -126,6 +132,12 @@ const dropdownOptionsFew = [
   { key: 'apple', text: 'Apple', value: 'apple' },
   { key: 'banana', text: 'Banana', value: 'banana' },
   { key: 'carrot', text: 'Carrot', value: 'carrot' },
+  { key: 'dolphin', text: 'Dolphin', value: 'dolphin' },
+  { key: 'elephant', text: 'Elephant', value: 'elephant' },
+  { key: 'fish', text: 'Fish', value: 'fish' },
+  { key: 'grapefruit', text: 'Grapefruit', value: 'grapefruit' },
+  { key: 'hummingbird', text: 'Humming Bird', value: 'hummingbird' },
+  { key: 'iguana', text: 'Iguana', value: 'iguana' },
 ];
 
 const defaultLayoutData = {
@@ -189,7 +201,14 @@ const defaultControlData = {
   },
   'table': {
     label: 'Table:'
-  }  
+  },
+  'pie' : {
+    label: 'Pie:'
+  },
+  'bar' : {
+    label: 'Bar:'
+  }
+  
 }
 
 const assignIdAndDefaultData = (control, layout) => {

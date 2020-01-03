@@ -7,11 +7,12 @@ import Combobox from '../controls/combo';
 import Textbox from '../controls/textbox';
 import Table from '../controls/table';
 import ShowMessage, {NotifType} from '../helper/notification';
-
+import { Popup } from 'semantic-ui-react'
 
 
 import { useDrag } from 'react-dnd'
 import PieChart from '../charts/pieChart';
+import BarChart from '../charts/barChart';
 
 // Separate the content-part into a standalone component from the control wrapper
 // Reason: this will be the only part that will be resized or moved while dragging (moving or resizing)
@@ -42,11 +43,14 @@ const getContentDiv = (controlData) => {
             content = <Table {...controlData}/> 
             break;
         case 'pie':
-            content = <PieChart/>
-            break
+            content = <PieChart {...controlData}/>
+            break;
+        case 'barchart':
+            content = <BarChart {...controlData}/>
+            break;
         case undefined:
             content = <div className="emptyControl"></div>
-            break
+            break;
         default:
             content = <div>{controlData.i}</div>
             break;
@@ -83,8 +87,16 @@ const NoobControlContent = (controlData) => {
     const styles = {
         opacity: isDragging? 0 : 1,
     };
+    // return <Popup
+    //     trigger={<div className="contentWrapper" ref={drag} style={styles}>
+    //             {getContentDiv(controlData)}
+    //             </div>}
+    //     content='Hide the popup on any scroll event'
+    //     on='click'
+    //     hideOnScroll
+    // />
     return <div className="contentWrapper" ref={drag} style={styles}>
-        {getContentDiv(controlData)}
+        {getContentDiv(controlData)}  
     </div>        
 }
 

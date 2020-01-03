@@ -42,13 +42,23 @@ const defaultProps = {
 const getRechartSample = (i) => {
   if (i === 1)
   {
+    let barInfo = {i: 'ctrl-pie0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+      data: {
+          label: 'Pie:',
+      }
+    };           
+
     return <div style={{width: "100%", height: "100%"}}>
-        
-        <BarChart/>
+        <BarChart {...barInfo}/>
     </div>
   }
-  else if (i === 2) {
-    return <Example/>
+  else if (i === 2) {    
+    let ctrlInfo = {i: 'ctrl-pie0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+      data: {
+          label: 'Pie:',
+      }
+    };    
+    return <Example sample={1} {...ctrlInfo}/>
   }
   else if (i === 0) {
     return <div className="Aligner">
@@ -90,9 +100,20 @@ console.log('onClickEditBtn', id);
 const renderContent = (control) => {
   switch(control.ctrlType) {
     case 'barchart':
-      return <BarChart/>
+      let barInfo = {i: 'ctrl-bar0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'barchart',       
+        data: {
+            label: 'Bar:',
+        }
+      };           
+
+    return <BarChart {...barInfo}/>
     case 'pie':
-      return <Example/>
+      let ctrlInfo = {i: 'ctrl-pie0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+        data: {
+            label: 'Pie:',
+        }
+      };
+      return <Example {...ctrlInfo}/>
     case 'section':
       return <div className="Aligner">
       <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>

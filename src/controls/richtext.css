@@ -12,13 +12,14 @@
 
 .RichEditor-root {
     /* We set the background color to semi-transparent to allow visual cues for drag operations */
+    /* For the height, we subtract 30px to give way to the label? Basically avoid overlapping when user types a lot of things */
     background: rgba(255,255,255,0.5);
     border: 1px solid #ddd;
     font-size: 14px;
     padding: 5px;
     display: flex;
     flex-flow: column;
-    height: 100%;
+    height: calc(100% - 30px);
     width: 100%;
     flex: 1;
 

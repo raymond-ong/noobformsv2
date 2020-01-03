@@ -779,10 +779,10 @@ class NoobForm extends React.Component {
         return <NoobControl 
                 key={'ctrl'+control.i} 
                 controlData={control}
-                parentCheckDroppable={this.checkDroppable}
                 parentDropCallback={this.onDropControl}
                 resizerMouseDown={this.onResizerMouseDown}
                 resizingControlId={this.state.resizingControlId}
+                parentCheckDroppable={this.checkDroppable}
                 isSelected={false}
                 containerWidth={containerWidth}
                 numCols={numCols}/>
