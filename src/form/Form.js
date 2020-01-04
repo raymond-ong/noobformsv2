@@ -45,5 +45,7 @@ function Form({ children, onSubmit, inputObj, ...rest }) {
 export { default as Text } from "./FormText";
 export { default as FormCheckbox } from "./FormCheckbox";
 export { default as Dropdown } from "./FormDropDown";
+export { default as IconSelector } from "./IconSelector";
+export { default as ColorSelector } from "./ColorSelector";
 
 export default Form;

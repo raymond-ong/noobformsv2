@@ -9,6 +9,8 @@ import {connect} from 'react-redux';
 import { bindActionCreators } from "redux";
 
 import {selectedControl} from '../actions/index';
+import EditDialog from './editDialog';
+
 
 const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
@@ -126,6 +128,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
     // [c.2] followed by the content
     // [c.3] followed by the placeholder which will only be visible during resizing. Purpose is maintain the original size of the container while resizing.
     // [c.4] followed by the small resizer.
+    // [c.5] followed by the settings button
     //       This order must be followed to avoid the need for z-index
     return <div id={domCtrlId}
             className={classNames} 
@@ -152,7 +155,8 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             {...controlData} 
         />
         <div className="resizePlaceholder"></div>      
-        {renderResizer(controlData.i, resizerMouseDown)}                  
+        {renderResizer(controlData.i, resizerMouseDown)}  
+        {controlData.ctrlType && <EditDialog controlInfo={controlData}/>}                        
     </div>
 }
 

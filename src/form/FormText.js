@@ -1,18 +1,32 @@
 import React, { useContext } from "react";
 import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
-import { Form as SemanticForm } from "semantic-ui-react";
+import { Form as SemanticForm, Popup } from "semantic-ui-react";
 
-function FormText({ name, rules, label, ...rest }) {
+function FormText({ name, rules, label, numeric, units, ...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
 
   return (<SemanticForm.Field>
-            <label key={'label-'+name}>{label}</label>
+            <span>
+              <label key={'label-'+name}>{label}</label>
+              &nbsp;
+              {!!units && <Popup 
+                  inverted
+                  basic
+                  size='tiny' style={{opacity: '0.8'}} 
+                  content={`Units: ${units}`}
+                  trigger={<div style={{display: 'inline-block', color: 'gray'}}>
+                  <i className="ui icon info circle"/>
+                  </div>} />
+              }
+            </span>
             <RHFInput
-                as={<input  key={name} 
-                            // name={name}
-                            className="ui small" 
-                            {...rest}></input>
+                as={<input  
+                      key={name} 
+                      type={!!numeric ? 'number':'text'}
+                      className="ui small" 
+                      {...rest}>                        
+                      </input>
                 }
 
             defaultValue=""

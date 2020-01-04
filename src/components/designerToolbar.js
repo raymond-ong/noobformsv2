@@ -35,6 +35,7 @@ const renderFullMenu = () => {
             <div className="title">Untitled</div>
             <Popup 
                 inverted
+                basic
                 size='tiny' style={{opacity: '0.8'}} 
                 content='Form is not yet saved' 
                 trigger={<div className="infoContainer">

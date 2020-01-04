@@ -8,9 +8,11 @@ import {getToolItemByName} from '../components/toolbox';
 import splitWord from '../helper/wordSplitter';
 
 import {sectionProps} from '../controls/section';
+import {labelProps} from '../controls/label';
 import * as constants from '../constants';
-import Form, {Text as FormText} from '../form/Form';
+import Form, {Text as FormText, IconSelector, ColorSelector} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
+
 
 
 const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
@@ -19,6 +21,10 @@ const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
         case 'section':
             //return RenderSectionProps(selectedControl, onSubmit);
             specialProps = sectionProps;
+            break;
+        case 'label':
+            specialProps = labelProps;
+            break;
         default:
             break;
     }
@@ -70,6 +76,30 @@ const renderControlDataProps = (specialProps, selectedControl) => {
                         name={key}
                         label={splitWord(key)+":"}
                         options={foundSpecialProp.options}
+                    />);
+                    break;
+                case 'icon':
+                    retList.push(<IconSelector
+                        key={selectedControl.i+'_'+key}
+                        name={key}
+                        label={splitWord(key)+":"}
+                        intialicon={selectedControl.data.icon}
+                    />);
+                    break;
+                case 'color':
+                    retList.push(<ColorSelector
+                        key={selectedControl.i+'_'+key}
+                        name={key}
+                        label={splitWord(key)+":"}
+                        intialcolor={selectedControl.data[foundSpecialProp.name]}
+                    />);
+                    break;
+                case 'number':
+                    retList.push(<FormText key={selectedControl.i+'_'+key}
+                        numeric
+                        name={key}
+                        label={splitWord(key)+':'}
+                        units={foundSpecialProp.units}
                     />);
                     break;
                 default:

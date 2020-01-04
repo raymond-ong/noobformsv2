@@ -1,3 +1,8 @@
+/* override; to center the modal dialog; because there are other cnotrols that set the position to absolute (?) */
+.ui.modal.visible {
+    position: relative;
+}
+
 .editBtn {
     display: inline-block;
     margin: 0 auto;

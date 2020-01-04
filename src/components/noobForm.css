@@ -34,6 +34,7 @@
     /* To prevent the user from highlighting text */
     user-select: none;
     width: 100%;
+    display: flex;
 }
 
 /* Show gray background to empty controls to make them easier to distinguish from actual controls */ 
@@ -42,12 +43,17 @@
     height: 100%;
     width: 100%;
     position: absolute;
+    display: block;
 }
 
 .contentWrapper {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     opacity: 0.5;
+    /* try only, so that the contents will use 100% height */
+    /* position: absolute; */
+    /* display: flex; */
+    flex-direction: column;
 }
 
 .controlPotentialDrop {

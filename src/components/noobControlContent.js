@@ -6,6 +6,7 @@ import RichText from '../controls/richtext';
 import Combobox from '../controls/combo';
 import Textbox from '../controls/textbox';
 import Table from '../controls/table';
+import Label from '../controls/label';
 import ShowMessage, {NotifType} from '../helper/notification';
 import { Popup } from 'semantic-ui-react'
 
@@ -42,7 +43,10 @@ const getContentDiv = (controlData) => {
         case 'table':
             content = <Table {...controlData}/> 
             break;
-        case 'pie':
+        case 'label':
+            content = <Label {...controlData}/> 
+            break;
+            case 'pie':
             content = <PieChart {...controlData}/>
             break;
         case 'barchart':

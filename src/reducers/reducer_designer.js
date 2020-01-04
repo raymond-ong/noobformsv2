@@ -64,7 +64,15 @@ const generateDefaultLayout = () => {
   // }},    
 
   // [7] Attachments
-  {i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
+  //{i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
+  // [7 New] Label
+  {i: 'ctrl-label0', x: 9, y: 1, w: 3, h: 1,ctrlType: 'label', data: {
+    label: 'I am a label',
+    color: 'blue',
+    backgroundColor: 'khaki',
+    fontSize: '18',
+    icon: 'tag'
+  }},
 
 
   // [8] Remarks
