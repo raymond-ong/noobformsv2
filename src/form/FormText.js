@@ -7,8 +7,8 @@ function FormText({ name, rules, label, numeric, units, ...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
 
   return (<SemanticForm.Field>
-            <span>
-              <label key={'label-'+name}>{label}</label>
+            <label>
+              <span key={'label-'+name}>{label}</span>
               &nbsp;
               {!!units && <Popup 
                   inverted
@@ -19,7 +19,7 @@ function FormText({ name, rules, label, numeric, units, ...rest }) {
                   <i className="ui icon info circle"/>
                   </div>} />
               }
-            </span>
+            </label>
             <RHFInput
                 as={<input  
                       key={name} 
