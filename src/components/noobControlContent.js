@@ -14,6 +14,7 @@ import { Popup } from 'semantic-ui-react'
 import { useDrag } from 'react-dnd'
 import PieChart from '../charts/pieChart';
 import BarChart from '../charts/barChart';
+import Gauge from '../charts/gauge';
 
 // Separate the content-part into a standalone component from the control wrapper
 // Reason: this will be the only part that will be resized or moved while dragging (moving or resizing)
@@ -51,6 +52,9 @@ const getContentDiv = (controlData) => {
             break;
         case 'barchart':
             content = <BarChart {...controlData}/>
+            break;
+        case 'gauge':
+            content = <Gauge {...controlData}/>
             break;
         case undefined:
             content = <div className="emptyControl"></div>

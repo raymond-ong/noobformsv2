@@ -92,19 +92,22 @@ export const toolBoxItems = [
          name: 'barchart',
          displayName: 'Bar Chart',
          icon: 'chart bar',
-         category: 'common'
+         category: 'common',
+         minW: 3, minH:3,
     },
     {
          name: 'pie',
          displayName: 'Pie Chart',
          icon: 'chart pie',
-         category: 'common'
+         category: 'common',
+         minW: 3, minH:3,
     },
      {
-          name: 'kpi',
-          displayName: 'KPI',
+          name: 'gauge',
+          displayName: 'Gauge',
           icon: 'check circle outline',
-          category: 'common'
+          category: 'common',
+          minW: 2, minH:3,
      },   
     {
          name: 'line',

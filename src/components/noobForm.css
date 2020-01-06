@@ -3,8 +3,7 @@
     grid-gap: 5px;
     padding: 10px;
 
-    /* border: 1px dashed #696969; */
-    border: 1px dashed magenta;
+    border: 1px dashed #696969;    
     position: relative;
     /* overflow: auto; */
     /* width: max-content; */

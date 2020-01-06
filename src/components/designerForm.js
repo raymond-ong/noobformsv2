@@ -6,6 +6,7 @@ import { bindActionCreators } from "redux";
 import "./designerForm.css";
 import BarChart from '../charts/barChart';
 import Example from '../charts/pieChart';
+import Combobox from '../controls/combo';
 import EditDialog from './editDialog';
 import {selectedControl} from '../actions/index';
 import { useDrop } from 'react-dnd';
@@ -39,6 +40,7 @@ const defaultProps = {
   // isResizable: false,
 };
 
+/*
 const getRechartSample = (i) => {
   if (i === 1)
   {
@@ -92,6 +94,31 @@ const getRechartSample = (i) => {
 
   return null;
 }
+*/
+
+const dropdownOptions = [
+  { key: 'angular', text: 'Angular', value: 'angular' },
+  { key: 'css', text: 'CSS', value: 'css' },
+  { key: 'design', text: 'Graphic Design', value: 'design' },
+  { key: 'ember', text: 'Ember', value: 'ember' },
+  { key: 'html', text: 'HTML', value: 'html' },
+  { key: 'ia', text: 'Information Architecture', value: 'ia' },
+  { key: 'javascript', text: 'Javascript', value: 'javascript' },
+  { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
+  { key: 'meteor', text: 'Meteor', value: 'meteor' },
+  { key: 'node', text: 'NodeJS', value: 'node' },
+  { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
+  { key: 'python', text: 'Python', value: 'python' },
+  { key: 'rails', text: 'Rails', value: 'rails' },
+  { key: 'react', text: 'React', value: 'react' },
+  { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
+  { key: 'ruby', text: 'Ruby', value: 'ruby' },
+  { key: 'ui', text: 'UI Design', value: 'ui' },
+  { key: 'ux', text: 'User Experience', value: 'ux' },
+  { key: 'test1', text: 'A quick brown fox jumps over the lazy dog', value: 'test1' },
+  { key: 'test2', text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+', value: 'test2' },
+  { key: 'test3', text: '春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。', value: 'test3' },
+];
 
 const onClickEditBtn= (id) => {
 console.log('onClickEditBtn', id);
@@ -117,8 +144,17 @@ const renderContent = (control) => {
     case 'section':
       return <div className="Aligner">
       <div className="Aligner-item" style={{fontSize: "30px"}}>Plant Overall Status</div>
-    </div>
-
+      </div>
+    case 'combo':
+      let comboInfo = {
+        i: 'ctrl-pie0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'dummy',      
+        data: {
+          placeholder: 'Please select...',
+          options: dropdownOptions,
+          label: 'Combobox:'
+        }
+      };
+      return <Combobox {...comboInfo}></Combobox>
   }
 }
 

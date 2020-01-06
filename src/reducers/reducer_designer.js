@@ -24,10 +24,17 @@ const generateDefaultLayout = () => {
   }},
 
   //[2] Description
-  {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
+  // {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
+  //     data: {
+  //         label: 'Description:',
+  //         placeholder: 'Enter Description...'
+  //     }},
+
+  // [2 NEW] Gauge chart
+  {i: 'ctrl-gauge0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'gauge',       
       data: {
-          label: 'Description:',
-          placeholder: 'Enter Description...'
+          label: 'Gauge:',
+          percent: 0.955
       }},
 
   // [3 new] Pie Chart
@@ -84,16 +91,16 @@ const generateDefaultLayout = () => {
 
   // [B] Subsection
   {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
-      title: 'Update History',
+      title: 'Loop Summary',
       //backgroundColor: 'lightsteelblue'
       level: 2
   }},
 
   // [1] History
-  {i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
+  //{i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   //[2] Table - 1
-  {i: 'ctrl-table0', x: 0, y: 8, w: 12, h: 2,ctrlType: 'table', data: {
+  {i: 'ctrl-table0', x: 0, y:6, w: 12, h: 2,ctrlType: 'table', data: {
     label: 'Table:'
   }},
 
@@ -173,6 +180,17 @@ const generateDefaultDashboard = () => {
         data: {
         }
     },
+
+    // Sample combobox
+    {i: 'ctrl-combo0', x: 8, y: 2, w: 4, h: 2, ctrlType: 'combo',       
+        data: {
+        }
+    }, 
+    {i: 'ctrl-combo1', x: 8, y: 4, w: 4, h: 2, ctrlType: 'combo',       
+        data: {
+        }
+    }, 
+       
   ];
 }
 
@@ -213,8 +231,17 @@ const defaultControlData = {
   'pie' : {
     label: 'Pie:'
   },
-  'bar' : {
+  'barchart' : {
     label: 'Bar:'
+  },
+  'label': {
+    label: 'New Label',
+    icon: 'lightbulb',
+    backgroundColor: 'khaki'
+  },
+  'gauge': {
+    label: 'new Gauge:',
+    percent: 0.50
   }
   
 }
