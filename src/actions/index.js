@@ -14,6 +14,7 @@ export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
 export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
 export const DELETE_CONTROL = "DELETE_CONTROL";
+export const SAVE_HIER_DESIGN_NODE = "SAVE_HIER_DESIGN_NODE";
 
 export function menuClicked(menuName) { 
     return {
@@ -67,6 +68,13 @@ export function insertNewNode() {
   // No payload since the reducer knows who is the selected node
   return {
     type: INSERT_HIER_DESIGNER_TREE
+  }
+}
+
+export function saveNodeConfig(nodeInfo) {
+  return {
+    type: SAVE_HIER_DESIGN_NODE,
+    payload: nodeInfo
   }
 }
 

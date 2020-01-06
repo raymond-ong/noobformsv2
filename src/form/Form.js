@@ -6,25 +6,11 @@ import * as constants from '../constants';
 
 export const FormContext = createContext();
 
-const setControlValues = (selectedControl, setValueFunc) => {
-    if (!selectedControl) {
-        return;
-    }
 
-    // Common props
-    let toolItemType = getToolItemByName(selectedControl.ctrlType);
-
-    setValueFunc(constants.NAME_CONTROL_ID, selectedControl.i);
-    setValueFunc(constants.NAME_CONTROL_TYPE, toolItemType.displayName);
-
-    Object.keys(selectedControl.data).forEach((key, index) => {
-        setValueFunc(key, selectedControl.data[key]);
-    });
-}
 
 // Nicely designed wrapper class taken from
 // https://codesandbox.io/s/dazzling-napier-ne3e6
-function Form({ children, onSubmit, inputObj, ...rest }) {
+function Form({ children, onSubmit, inputObj, setControlValues, ...rest }) {
   const { register, setValue, handleSubmit, unregister } = useForm();
 
     useEffect(() => {

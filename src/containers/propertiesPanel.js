@@ -29,7 +29,7 @@ const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
             break;
     }
 
-    return <Form className="propsFormContainer ui small form" key='form' onSubmit={onSubmit} inputObj={selectedControl}>
+    return <Form className="propsFormContainer ui small form" key='form' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
             <div className="propsForm">
             {renderCommonProps(selectedControl)}
             {renderControlDataProps(specialProps, selectedControl)}
@@ -57,6 +57,24 @@ const renderCommonProps = selectedControl => {
     />);
 
     return retList;    
+}
+
+// This is the function that will be called when the form component mounts
+// Use this function to set the initial values
+const setControlValues = (selectedControl, setValueFunc) => {
+    if (!selectedControl) {
+        return;
+    }
+
+    // Common props
+    let toolItemType = getToolItemByName(selectedControl.ctrlType);
+
+    setValueFunc(constants.NAME_CONTROL_ID, selectedControl.i);
+    setValueFunc(constants.NAME_CONTROL_TYPE, toolItemType.displayName);
+
+    Object.keys(selectedControl.data).forEach((key, index) => {
+        setValueFunc(key, selectedControl.data[key]);
+    });
 }
 
 const renderControlDataProps = (specialProps, selectedControl) => {
@@ -138,7 +156,6 @@ const PropertiesPanel = ({selectedControl, updateControlProps, deleteControl}) =
     }
 
     let onDelete = () => {
-        console.log('dellllleeeetge');
         deleteControl(selectedControl)
     };
 

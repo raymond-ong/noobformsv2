@@ -5,6 +5,7 @@ import NoobSplitter from '../components/noobSplitter';
 import DesignerContentbase from './designerContentBase';
 import HierarchyDesignerTree from './hierearchyTree';
 import HierarchyToolbar from '../components/hierDesignerToolbar';
+import HierConfigPanel from './hierarchyConfigPanel';
 import { selectHierDesignerTree, updateHierDesignerTree, insertNewNode, filterHierDesignerTree } from '../actions/index';
 import {findNodeByKey, filterTree, filterTreeEx} from '../helper/treefilter';
 
@@ -31,8 +32,8 @@ const ToolbarPanel = ({children, onDelete, onInsert, onSave, onSearchText, bEnab
     </div>;
 }
 
-const HierarchyPropsPanel = () => {
-    return <div>Right hand panel</div>
+const HierarchyPropsPanel = (containerWidth) => {
+    return <HierConfigPanel containerWidth={containerWidth}/>
 }
 
 // This will be the intelligent class that will hold
@@ -44,6 +45,7 @@ class HierarchyDesigner extends DesignerContentbase {
         this.state = {
             searchText: null,
             treeData: null, // make a copy for filtering purposes
+            ...this.state
         }
     }
 
@@ -103,7 +105,7 @@ class HierarchyDesigner extends DesignerContentbase {
     }
     
     render() {
-        console.log('render hierarchyDesigner', this.props.selectedNode);
+        console.log('render hierarchyDesigner', this.state.rightPixels);
         // TODO: Put a minsize first. Should make the toolbar buttons responsive.
         return <NoobSplitter id="hierarchyDesigner" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES} minSize={230}>
             <ToolbarPanel 
@@ -111,7 +113,7 @@ class HierarchyDesigner extends DesignerContentbase {
                 onInsert={this.onInsert}
                 onSave={this.onSave}
                 onSearchText={this.onSearchText}
-                bEnableDelete={!!this.props.selectedNode && !!this.props.selectedNode.key}
+                bEnableDelete={!!this.props.selectedNode && !!this.props.selectedNode.key}                
             >
                 <HierarchyDesignerTree 
                     onSelectCb={this.onSelect} 
@@ -120,7 +122,7 @@ class HierarchyDesigner extends DesignerContentbase {
                     searchText={this.state.searchText}
                     />                
             </ToolbarPanel>
-            {HierarchyPropsPanel()}
+            {HierarchyPropsPanel(this.state.rightPixels)}
         </NoobSplitter>
 
     }

@@ -43,8 +43,8 @@ const PieChartSample = (props) => {
   return (
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
-      <ResponsiveContainer  width="90%" height="90%">
-        <PieChart margin={{top: 10, right: 30, left: 20, bottom: 10}}
+      <ResponsiveContainer  width="100%" height="100%">
+        <PieChart margin={{top: 20, right: 10, left: 10, bottom: 40}}
             >
           <Pie
             data={data}

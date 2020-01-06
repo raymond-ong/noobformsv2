@@ -28,28 +28,27 @@
     /* border: 1px solid cyan; */
 }
 
-.toolbarButton {
+.hierDesignerToolbarButton {
     background-color: lightgray;
-    border-radius: 3px;
     padding-left: 5px;
     padding-right: 5px;
     cursor: pointer;
     margin-left: 2px;
     margin-right: 2px;
     font-weight: 600;
-    white-space: nowrap;
+    white-space: nowrap;    
 }
 
-.toolbarButton-disabled{
+.hierDesignerToolbarButton-disabled{
     cursor: default;
     opacity: 0.5;
 }
 
-.toolbarButton:hover {
+.hierDesignerToolbarButton:hover {
     background-color: lightblue;
 }
 
-.toolbarButton-disabled:hover {
+.hierDesignerToolbarButton-disabled:hover {
     background-color: lightgray;
 }
 

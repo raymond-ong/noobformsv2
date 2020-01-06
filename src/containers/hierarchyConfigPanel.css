@@ -1,0 +1,33 @@
+.hierConfigPanelContainer {
+    width: 100%;
+    height: 100%;
+}
+
+.hierconfigPanelContent {
+    padding: 10px;
+}
+
+.formTable {
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+.formTable th,
+.formTable td {
+    padding: 10px;
+}
+
+.formTable th {
+    background-color: lightgray;
+}
+
+.formTable tr {
+    border-bottom: 1px solid gray;
+}
+
+.formTable input, 
+.formTable select {
+    border-radius: 3px;
+    padding: 5px;
+    width: 100%;
+}
