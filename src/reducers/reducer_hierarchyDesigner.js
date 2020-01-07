@@ -2,12 +2,23 @@ import { FETCH_HIERARCHY,
   UPDATE_HIER_DESIGNER_TREE, 
   SELECT_HIER_DESIGNER_TREE, 
   INSERT_HIER_DESIGNER_TREE,
-  FILTER_HIER_DESIGNER_TREE } from "../actions/index";
+  FILTER_HIER_DESIGNER_TREE,
+  SAVE_HIER_DESIGN_NODE } from "../actions/index";
 import {findNodeByKey, filterTreeEx} from '../helper/treefilter';
 
 const defaultState = {
     hierarchyTree: null, // 2nd copy of hierarchy data, so that if user cancels operation
     selectedNode: null,
+    userSettings: [], 
+    /*
+    {
+      key: '',
+      dispName: '',
+      inheritDefault: true/false // if true, pageAssoc should be null/ignored
+      pageAssoc: '', 
+      childPage: '',
+    }
+    */
 };
 
 const convertMasterDataToKeys = (apiNode) => {
@@ -65,6 +76,8 @@ const handleInsert = (newState) => {
       selectedNodeObj.item.children.push(newNode)
     }
   }
+
+  return newNode;
 }
 
 // Not used anymore...there is no way to bring back filtered out nodes
@@ -74,8 +87,17 @@ const handleFilter = (filter, newState) => {
   newState.hierarchyTree = [...filteredData];
 }
 
+const handleSaveHierDesignNode = (state, inputSetting) => {
+  state.userSettings = state.userSettings || [];
+  let userSettingsFind = state.userSettings.findIndex(x => x.key === inputSetting.key);
+  if (userSettingsFind >= 0) {
+    state.userSettings.splice(state.userSettings, 1);    
+  }
+  state.userSettings.push({...inputSetting});
+}
+
 export default function(state=defaultState, action) {
-    if ([FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE, FILTER_HIER_DESIGNER_TREE].includes(action.type)) {
+    if ([FETCH_HIERARCHY, UPDATE_HIER_DESIGNER_TREE, SELECT_HIER_DESIGNER_TREE, INSERT_HIER_DESIGNER_TREE, FILTER_HIER_DESIGNER_TREE, SAVE_HIER_DESIGN_NODE].includes(action.type)) {
         console.log('[DEBUG] reducer_hierarchyDesigner', action, state);
     }
     switch (action.type) {
@@ -96,13 +118,22 @@ export default function(state=defaultState, action) {
         }
       case INSERT_HIER_DESIGNER_TREE:
         let insertedState = {...state};
-        handleInsert(insertedState);
+        let newNode = handleInsert(insertedState);
+        insertedState.selectedNode = newNode;
         return insertedState;
       case FILTER_HIER_DESIGNER_TREE:
+        // Action Not used anymore...we don't manipulate the model anymore
+        // Just let the tree control filter out (do not show) nodes that do not satisfy the search string
         let filterState = {...state};
         let filter = action.payload;
         handleFilter(filter, filterState);
         return filterState;
+      case SAVE_HIER_DESIGN_NODE:
+        let saveNodeState = {...state};
+        saveNodeState.userSettings = [...state.userSettings];
+        handleSaveHierDesignNode(saveNodeState, action.payload)
+        
+        return saveNodeState;
     }
     return state;
   }

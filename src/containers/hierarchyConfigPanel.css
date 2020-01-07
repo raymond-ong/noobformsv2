@@ -31,3 +31,7 @@
     padding: 5px;
     width: 100%;
 }
+
+.formTable input[type="checkbox"] {
+    float: right;
+}

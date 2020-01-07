@@ -16,9 +16,8 @@ function FormDropDown({ name, label, ...rest }) {
         as={<SemanticForm.Dropdown 
             key={name}
             fluid 
+            search
             selection 
-            button  // Add button and className so that we can control the size
-            className='icon small'
             style={{fontWeight:'normal', color: 'black', right: '0', left: 'auto'}}
             {...rest} />}
         name={name}

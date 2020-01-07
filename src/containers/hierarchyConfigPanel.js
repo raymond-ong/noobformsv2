@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import {saveNodeConfig} from '../actions/index';
 import './hierarchyConfigPanel.css';
-import Form, {Text as FormText, IconSelector, ColorSelector} from '../form/Form';
+import Form, {Text as FormText, FormCheckbox} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 
 
@@ -20,7 +20,8 @@ const menuItems = {
     ],
 }
 
-const dummyPages = ['<None>',
+const dummyPages = ['None - Do not show',
+    'Default Page',
     'Plant Hierarchy Page',
     'Loops Summary Page',
     'Valves Summary Page',
@@ -32,64 +33,124 @@ const dummyPages = ['<None>',
     'Valve Details Page',
 ];
 
-const renderPageOptions = () => {
-    return <select>
-        {dummyPages.map((page) => <option key={'option_'+page} value={page}>{page}</option>)};
-    </select>
+const renderPageOptions = (name) => {
+    // return <select>
+    //     {dummyPages.map((page) => <option key={'option_'+page} value={page}>{page}</option>)};
+    // </select>
+    let options = dummyPages.map((page) => {return {key: `option_${page}`, text: page, value: page}});
+    return <FormDropDown
+        name={name}
+        label={null}
+        options={options}    
+        disabled={false}
+    />
 }
 
-const setControlValues = (selectedNode, setValueFunc) => {
-    if (!selectedNode) {
+const setControlValues = (setValueFunc, inputObj) => {
+    if (!inputObj || !inputObj.selectedNode) {
         return;
     }
 
-    setValueFunc('name', selectedNode.title);
+    setValueFunc('key', inputObj.selectedNode.key); // invisible field
+
+    let findUserSettings = null || inputObj.userSettings && inputObj.userSettings.find(x => x.key === inputObj.selectedNode.key);
+    if (!findUserSettings) {
+        setValueFunc('name', inputObj.selectedNode.title);
+    }
+    else {
+        setValueFunc('name', findUserSettings.dispName);
+    }
 }
 
-const onSubmit = (args) => {
-    console.log('hier config panel submit!', args);
+const onSubmit = (formArgs, action) => {
+    console.log('hier config panel submit!', formArgs, action);
+    action({
+        key: formArgs.key,
+        dispName: formArgs.name,
+        inheritDefault: formArgs.inherit,
+        pageAssoc: formArgs.pageAssoc,
+        childPage: formArgs.childDefaultPage
+    });
 }
 
-const renderHierPanelContent = (selectedNode) => {
+const findInheritedPage = (selectedNode) => {
+    console.log('findInheritedPage', selectedNode);
+}
+
+const renderHierPanelContent = (selectedNode, userSettings) => {
     console.log('renderHierPanelContent', selectedNode);
     if (!selectedNode || !selectedNode.key) {
         return <div className="ui message orange">No node is selected</div>
     }
 
     return <div className="hierconfigPanelContent">
-        <div className="ui message">Showing properties for: <b>{selectedNode.title}</b></div>        
-            <table className="formTable">
+        <div className="ui message">Showing properties for: <b>{selectedNode.key}</b></div>        
+        <table className="formTable">
             <tbody>
+                <tr style={{display: 'none'}}>
+                    <th>Key</th>
+                    <td>
+                        {/* <input defaultValue={selectedNode.title}></input> */}
+                        <FormText
+                            key={selectedNode.key+'_key'}
+                            name={'key'}
+                            label={null}
+                        />
+                    </td>
+                </tr>                
                 <tr>
                     <th>Display Name</th>
                     <td>
                         {/* <input defaultValue={selectedNode.title}></input> */}
                         <FormText
-                            key={selectedNode.key+'_key'}
+                            key={selectedNode.key+'_name'}
                             name={'name'}
                             label={null}
                         />
                     </td>
                 </tr>
                 <tr>
+                    <th>Inherit Default Page from Parent</th>
+                    <td>
+                        <FormCheckbox
+                            name='inherit'
+                        />
+                        <span>Inherited Page: </span>
+                        <span>{findInheritedPage(selectedNode)}</span>
+                    </td>
+                </tr>                
+                <tr>
                     <th>Page Associated</th>
                     <td>
-                        {renderPageOptions()}
+                        {renderPageOptions('pageAssoc')}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Children Default Page</th>
+                    <td>
+                        {renderPageOptions('childDefaultPage')}
                     </td>
                 </tr>
             </tbody>
-            </table>
+        </table>
+        <div className="ui message olive">TODO: Implement this panel as Tree List View to allow bulk edit</div>
     </div>
 }
 
-const HierConfigPanel = ({containerWidth, selectedNode}) => {
-    console.log('render HierConfigPanel', containerWidth);
-    return <Form className="hierConfigPanelContainer" key='form' onSubmit={onSubmit} inputObj={selectedNode} setControlValues={setControlValues}>        
+const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeConfig}) => {
+    console.log('render HierConfigPanel', saveNodeConfig);
+    return <Form 
+        className="hierConfigPanelContainer" 
+        key='form' 
+        onSubmit={(args) => onSubmit(args, saveNodeConfig)} 
+        inputObj={{selectedNode, userSettings}} 
+        //inputObj={selectedNode} 
+        setControlValues={setControlValues}>        
         <Toolbar 
             containerWidth={containerWidth}
             menuItems={menuItems}
         />
-        {renderHierPanelContent(selectedNode)}
+        {renderHierPanelContent(selectedNode, userSettings)}
         </Form>
 }
 
@@ -97,6 +158,7 @@ function mapStateToProps(state) {
     return {
         hierarchyTree: state.hierarchyDesigner.hierarchyTree,
         selectedNode: state.hierarchyDesigner.selectedNode,
+        userSettings: state.hierarchyDesigner.userSettings
     }
 }
   

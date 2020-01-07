@@ -71,3 +71,9 @@ export const findNodeByKey = (data, key) => {
         }
     }
 }
+
+export const findNodeByPos = (data, posArr, currLevel=0) => {
+    // if (posArr.length === currLevel) {
+    //     return data[posArr]
+    // }
+}

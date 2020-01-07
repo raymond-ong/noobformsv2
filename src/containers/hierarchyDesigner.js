@@ -119,7 +119,9 @@ class HierarchyDesigner extends DesignerContentbase {
                     onSelectCb={this.onSelect} 
                     onHierarchyChanged={this.onHierarchyChanged}
                     treeData={this.props.hierarchyTree}
+                    selectedNodeKey={this.props.selectedNode ? this.props.selectedNode.key : null}
                     searchText={this.state.searchText}
+                    userSettings={this.props.userSettings}
                     />                
             </ToolbarPanel>
             {HierarchyPropsPanel(this.state.rightPixels)}
@@ -129,9 +131,11 @@ class HierarchyDesigner extends DesignerContentbase {
 }
 
 function mapStateToProps(state) {
+    console.log('mapStateToProps hierarchyDesigner');
     return {
         hierarchyTree: state.hierarchyDesigner.hierarchyTree,
         selectedNode: state.hierarchyDesigner.selectedNode,
+        userSettings: state.hierarchyDesigner.userSettings,
     }
 }
   

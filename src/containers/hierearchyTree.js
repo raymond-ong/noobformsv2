@@ -18,11 +18,39 @@ class HierarchyDesignerTree extends React.Component {
       //defaultSelectedKeys: keys,
       defaultSelectedKeys: [],
       defaultCheckedKeys: keys,
-      treeData: null
+      treeData: null,
+      expandedKeys: []
     };
   }
-  onExpand = (...args) => {
+
+  componentDidUpdate = (prevProps) => {
+    console.log('tree componentDidUpdate');
+    if (!!this.props.selectedNodeKey && this.props.selectedNodeKey === prevProps.selectedNodeKey) {
+      return;
+    }
+
+    // Expand the parent of the (auto-selected) selectedNode if it is not yet expanded
+    // Purpose is to automatically expand the parent of the newly insert node.
+    // We don't need to recurse upward. 
+    // Just the parent node is enough because the parentNode's ancestors for sure is already expanded in order for the user to insert into the parent node
+    // Bug: parentArr is just the sibling array, not the parent array. This is not a fool-proof solution, but it will do for now, since we will
+    // change the implementation to use a tree list view
+    let nodeSelectedObj = findNodeByKey(this.props.treeData, this.props.selectedNodeKey);
+    if (!nodeSelectedObj) {
+      return;
+    }
+
+    let parentObj = nodeSelectedObj.parentArr[nodeSelectedObj.index];
+    if (!this.state.expandedKeys.includes(parentObj.key)) {
+      this.setState({expandedKeys: [...this.state.expandedKeys, parentObj.key]});
+    }
+  }
+
+  onExpand = (expandedKeys) => {
     //console.log('onExpand', ...args);
+    this.setState({
+      expandedKeys,
+    });
   };
 
 
@@ -187,16 +215,26 @@ class HierarchyDesignerTree extends React.Component {
         continue;
       }
       // retList.push(<TreeNode key={currItem.key} title={currItem.title} category={currItem.category} nodeType={currItem.nodeType}>
-      retList.push(<TreeNode {...currItem}>      
-                    {this.renderTreeNodes(currItem.children)}
-                  </TreeNode>);      
+      let findUserSettings = !!this.props.userSettings && this.props.userSettings.find(x => x.key === currItem.key);
+      if (findUserSettings) {
+        let tempSettings = {...currItem};
+        tempSettings.title = findUserSettings.dispName;
+        retList.push(<TreeNode {...tempSettings}>      
+          {this.renderTreeNodes(currItem.children)}
+        </TreeNode>);      
+      }
+      else {
+        retList.push(<TreeNode {...currItem}>      
+                      {this.renderTreeNodes(currItem.children)}
+                    </TreeNode>);      
+      }
     }
 
     return retList
   }
 
   render() {
-    console.log('rendering tree', this.props.searchText);
+    console.log('rendering tree', this.props.userSettings);
     if (!this.props.treeData) {
       return <div>Loading...</div>
     }
@@ -213,11 +251,14 @@ class HierarchyDesignerTree extends React.Component {
           checkable={false}
           //defaultExpandAll // temp: expand everything by default; no need to config which keys to expand          
           onExpand={this.onExpand}
-          defaultExpandedKeys={this.getFirstLevelKeys()}
+          expandedKeys={this.state.expandedKeys}
+          // defaultExpandedKeys={this.getFirstLevelKeys()}
+          selectedKeys={this.props.selectedNodeKey ? [this.props.selectedNodeKey]: []}
           //defaultSelectedKeys={this.state.defaultSelectedKeys}
           //defaultCheckedKeys={this.state.defaultCheckedKeys}
           onSelect={this.props.onSelectCb}
           onCheck={this.onCheck}
+        
           // Manually render the tree nodes, so that we can customize the behaviour like hiding filtered out data
           //treeData={[treeDataObj]}
           //treeData={this.props.treeData}

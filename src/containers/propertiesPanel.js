@@ -61,7 +61,7 @@ const renderCommonProps = selectedControl => {
 
 // This is the function that will be called when the form component mounts
 // Use this function to set the initial values
-const setControlValues = (selectedControl, setValueFunc) => {
+const setControlValues = (setValueFunc, selectedControl) => {
     if (!selectedControl) {
         return;
     }

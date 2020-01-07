@@ -16,7 +16,7 @@ function Form({ children, onSubmit, inputObj, setControlValues, ...rest }) {
     useEffect(() => {
         // Set the initial values
         // The controls' values are not really bound to any state or props so we have to update it here
-        setControlValues(inputObj, setValue);
+        setControlValues(setValue, inputObj);
     }, [inputObj]); // Means if inputObj value does not change, don't run useEffect again.
 
   return (
