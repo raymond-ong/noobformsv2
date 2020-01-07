@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Toolbar from '../components/toolbar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
@@ -33,7 +33,7 @@ const dummyPages = ['None - Do not show',
     'Valve Details Page',
 ];
 
-const renderPageOptions = (name) => {
+const renderPageOptions = (name, disabled=false) => {
     // return <select>
     //     {dummyPages.map((page) => <option key={'option_'+page} value={page}>{page}</option>)};
     // </select>
@@ -42,7 +42,7 @@ const renderPageOptions = (name) => {
         name={name}
         label={null}
         options={options}    
-        disabled={false}
+        disabled={disabled}
     />
 }
 
@@ -62,6 +62,12 @@ const setControlValues = (setValueFunc, inputObj) => {
     }
 }
 
+const watchCallback = ({inherit}) => {
+    console.log('watchCallback', inherit);
+
+    // if inherit, disable page associated
+}
+
 const onSubmit = (formArgs, action) => {
     console.log('hier config panel submit!', formArgs, action);
     action({
@@ -77,7 +83,7 @@ const findInheritedPage = (selectedNode) => {
     console.log('findInheritedPage', selectedNode);
 }
 
-const renderHierPanelContent = (selectedNode, userSettings) => {
+const renderHierPanelContent = (selectedNode, userSettings, myState) => {
     console.log('renderHierPanelContent', selectedNode);
     if (!selectedNode || !selectedNode.key) {
         return <div className="ui message orange">No node is selected</div>
@@ -122,7 +128,7 @@ const renderHierPanelContent = (selectedNode, userSettings) => {
                 <tr>
                     <th>Page Associated</th>
                     <td>
-                        {renderPageOptions('pageAssoc')}
+                        {renderPageOptions('pageAssoc', myState.inherit)}
                     </td>
                 </tr>
                 <tr>
@@ -139,18 +145,26 @@ const renderHierPanelContent = (selectedNode, userSettings) => {
 
 const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeConfig}) => {
     console.log('render HierConfigPanel', saveNodeConfig);
+
+    const [myState, setMyState] = useState({
+        inherit: false});
+
     return <Form 
         className="hierConfigPanelContainer" 
         key='form' 
         onSubmit={(args) => onSubmit(args, saveNodeConfig)} 
         inputObj={{selectedNode, userSettings}} 
         //inputObj={selectedNode} 
-        setControlValues={setControlValues}>        
+        setControlValues={setControlValues}
+        watchedField={'inherit'}
+        watchCallback={watchCallback}
+        setStateCb={setMyState}
+        >        
         <Toolbar 
             containerWidth={containerWidth}
             menuItems={menuItems}
         />
-        {renderHierPanelContent(selectedNode, userSettings)}
+        {renderHierPanelContent(selectedNode, userSettings, myState)}
         </Form>
 }
 

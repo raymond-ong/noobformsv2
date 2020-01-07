@@ -10,14 +10,18 @@ export const FormContext = createContext();
 
 // Nicely designed wrapper class taken from
 // https://codesandbox.io/s/dazzling-napier-ne3e6
-function Form({ children, onSubmit, inputObj, setControlValues, ...rest }) {
-  const { register, setValue, handleSubmit, unregister } = useForm();
+function Form({ children, onSubmit, inputObj, setControlValues, watchedField, setStateCb, ...rest }) {
+  const { register, setValue, handleSubmit, unregister, watch } = useForm();
+  const watchedValue = watch(watchedField); // no way for us to pass back the value conveniently, but the form will rerender anyways
+  console.log('Form rerenders', inputObj, watchedValue);  
 
     useEffect(() => {
+      console.log('Form useEffect', watchedValue);
         // Set the initial values
         // The controls' values are not really bound to any state or props so we have to update it here
         setControlValues(setValue, inputObj);
-    }, [inputObj]); // Means if inputObj value does not change, don't run useEffect again.
+        setStateCb({[watchedField]: watchedValue});
+    }, [...Object.values(inputObj), watchedValue]); // Means if inputObj value does not change, don't run useEffect again.
 
   return (
     <FormContext.Provider value={{ register, setValue, handleSubmit, unregister }}>
