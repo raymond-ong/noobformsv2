@@ -14,6 +14,9 @@ const onSave = () => {
 
 }
 
+const defaultInherit = true;
+const defaultPage = null;
+
 const menuItems = {
     'left': [
         {key:'designertb_save', icon: 'save', text: 'Save', type:'submit'},
@@ -56,16 +59,17 @@ const setControlValues = (setValueFunc, inputObj) => {
     let findUserSettings = null || inputObj.userSettings && inputObj.userSettings.find(x => x.key === inputObj.selectedNode.key);
     if (!findUserSettings) {
         setValueFunc('name', inputObj.selectedNode.title);
+        setValueFunc('inherit', defaultInherit);
+        setValueFunc('pageAssoc', defaultPage);
+        setValueFunc('childDefaultPage', defaultPage);
+
     }
     else {
         setValueFunc('name', findUserSettings.dispName);
+        setValueFunc('inherit', findUserSettings.inherit);
+        setValueFunc('pageAssoc', findUserSettings.pageAssoc);
+        setValueFunc('childDefaultPage', findUserSettings.childDefaultPage);
     }
-}
-
-const watchCallback = ({inherit}) => {
-    console.log('watchCallback', inherit);
-
-    // if inherit, disable page associated
 }
 
 const onSubmit = (formArgs, action) => {
@@ -73,9 +77,9 @@ const onSubmit = (formArgs, action) => {
     action({
         key: formArgs.key,
         dispName: formArgs.name,
-        inheritDefault: formArgs.inherit,
+        inherit: formArgs.inherit,
         pageAssoc: formArgs.pageAssoc,
-        childPage: formArgs.childDefaultPage
+        childDefaultPage: formArgs.childDefaultPage
     });
 }
 
@@ -121,8 +125,8 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
                         <FormCheckbox
                             name='inherit'
                         />
-                        <span>Inherited Page: </span>
-                        <span>{findInheritedPage(selectedNode)}</span>
+                        {myState.inherit && <span>Inherited Page: </span>}
+                        {myState.inherit && <span>{findInheritedPage(selectedNode)}</span>}
                     </td>
                 </tr>                
                 <tr>
@@ -143,11 +147,14 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
     </div>
 }
 
+// saveNodeConfig: redux action to save the node settings
+// selectedNode: from redux store
+// userSettings: from redux store
 const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeConfig}) => {
-    console.log('render HierConfigPanel', saveNodeConfig);
+    console.log('render HierConfigPanel', userSettings);
 
     const [myState, setMyState] = useState({
-        inherit: false});
+        inherit: defaultInherit});
 
     return <Form 
         className="hierConfigPanelContainer" 
@@ -157,7 +164,6 @@ const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeCo
         //inputObj={selectedNode} 
         setControlValues={setControlValues}
         watchedField={'inherit'}
-        watchCallback={watchCallback}
         setStateCb={setMyState}
         >        
         <Toolbar 

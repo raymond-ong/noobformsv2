@@ -14,7 +14,7 @@ const defaultState = {
     {
       key: '',
       dispName: '',
-      inheritDefault: true/false // if true, pageAssoc should be null/ignored
+      inherit: true/false // if true, pageAssoc should be null/ignored
       pageAssoc: '', 
       childPage: '',
     }
@@ -89,9 +89,9 @@ const handleFilter = (filter, newState) => {
 
 const handleSaveHierDesignNode = (state, inputSetting) => {
   state.userSettings = state.userSettings || [];
-  let userSettingsFind = state.userSettings.findIndex(x => x.key === inputSetting.key);
-  if (userSettingsFind >= 0) {
-    state.userSettings.splice(state.userSettings, 1);    
+  let userSettingsFindIdx = state.userSettings.findIndex(x => x.key === inputSetting.key);
+  if (userSettingsFindIdx >= 0) {
+    state.userSettings.splice(userSettingsFindIdx, 1);    
   }
   state.userSettings.push({...inputSetting});
 }

@@ -16,12 +16,21 @@ function Form({ children, onSubmit, inputObj, setControlValues, watchedField, se
   console.log('Form rerenders', inputObj, watchedValue);  
 
     useEffect(() => {
-      console.log('Form useEffect', watchedValue);
+      // Called when input object changes
+      console.log('Form useEffect1', watchedValue);
         // Set the initial values
         // The controls' values are not really bound to any state or props so we have to update it here
         setControlValues(setValue, inputObj);
+
+    }, [...Object.values(inputObj)])
+
+    useEffect(() => {
+      // Called only when watched value changes
+      console.log('Form useEffect2', watchedValue);
+      if (setStateCb) {
         setStateCb({[watchedField]: watchedValue});
-    }, [...Object.values(inputObj), watchedValue]); // Means if inputObj value does not change, don't run useEffect again.
+      }
+    }, [watchedValue]); // Means if inputObj value does not change, don't run useEffect again.
 
   return (
     <FormContext.Provider value={{ register, setValue, handleSubmit, unregister }}>
