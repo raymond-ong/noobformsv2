@@ -27,14 +27,15 @@ const menuItems = {
 const dummyPages = ['None - Do not show',
     'Default Page',
     'Plant Hierarchy Page',
+    'Area Summary Page',
+    'Target Default Page',
     'Loops Summary Page',
     'Valves Summary Page',
     'Rotating Equipment Summary Page',
-    'Area Summary Page',
     'Loop KPI Page',
-    'Loop Details Page',
+    'Loop Diagnostics Page',
     'Valve KPI Page',
-    'Valve Details Page',
+    'Valve Diagnostics Page',
 ];
 
 const renderPageOptions = (name, disabled=false) => {
@@ -72,6 +73,11 @@ const setControlValues = (setValueFunc, inputObj) => {
         setValueFunc('pageAssoc', findUserSettings.pageAssoc);
         setValueFunc('childDefaultPage', findUserSettings.childDefaultPage);
     }
+
+    if (!inputObj.selectedNode.parent) {
+        setValueFunc('inherit', false); // for first level children, always uncheck inherit
+    }
+
 }
 
 const onSubmit = (formArgs, action) => {
@@ -87,8 +93,24 @@ const onSubmit = (formArgs, action) => {
     ShowMessage('Properties Saved!', NotifType.success)
 }
 
-const findInheritedPage = (selectedNode) => {
+const findInheritedPage = (selectedNode, userSettings) => {
     console.log('findInheritedPage', selectedNode);
+    if (!selectedNode) {
+        return null;
+    }
+    debugger
+    let currNode = selectedNode;
+    while (currNode.parent) {
+        let findUserSetting = userSettings.find(s => s.key === currNode.parent.key);
+        if (!findUserSetting || !findUserSetting.childDefaultPage) {
+            currNode = currNode.parent;
+            continue;
+        }
+
+        return findUserSetting.childDefaultPage;
+    }
+
+    return 'Not set';
 }
 
 const renderHierPanelContent = (selectedNode, userSettings, myState) => {
@@ -96,6 +118,9 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
     if (!selectedNode || !selectedNode.key) {
         return <div className="ui message orange">No node is selected</div>
     }
+
+    const inheritedPageRowStyle = !selectedNode.parent ? {display: 'none'} : {};
+    const inheritedPageSpanStyle = !myState.inherit ? {display: 'none'} : {};
 
     return <div className="hierconfigPanelContent">
         <div className="ui message">Showing properties for: <b>{selectedNode.key}</b></div>        
@@ -123,14 +148,14 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
                         />
                     </td>
                 </tr>
-                <tr>
+                <tr style={inheritedPageRowStyle}>
                     <th>Inherit Default Page from Parent</th>
                     <td>
                         <FormCheckbox
                             name='inherit'
                         />
                         {myState.inherit && <span>Inherited Page: </span>}
-                        {myState.inherit && <span>{findInheritedPage(selectedNode)}</span>}
+                        {myState.inherit && <span>{findInheritedPage(selectedNode, userSettings)}</span>}
                     </td>
                 </tr>                
                 <tr>
@@ -147,7 +172,7 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
                 </tr>
             </tbody>
         </table>
-        <div className="ui message olive">TODO: Implement this panel as Tree List View to allow bulk edit</div>
+        {/* <div className="ui message olive">TODO: Implement this panel as Tree List View to allow bulk edit</div> */}
     </div>
 }
 

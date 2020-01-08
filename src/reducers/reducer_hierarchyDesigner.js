@@ -21,7 +21,7 @@ const defaultState = {
     */
 };
 
-const convertMasterDataToKeys = (apiNode) => {
+const convertMasterDataToKeys = (apiNode, index=0, stack=[], parent=null) => {
     if (!apiNode) {
       return null;
     }
@@ -31,18 +31,39 @@ const convertMasterDataToKeys = (apiNode) => {
       key: apiNode.fullPath,
       title: apiNode.name,
       nodeType: apiNode.nodeType,
-      category: apiNode.category
+      category: apiNode.category,
+      hierStack: [...stack, index], // stack of index positions...maybe not needed anymore, but implementation is OK
+      parent: parent
     };
   
     if (apiNode.children) {
-      apiNode.children.forEach(node => {
-        childNodes.push(convertMasterDataToKeys(node));
-      })      
+      for(let i = 0; i < apiNode.children.length; i++) {
+        let currNode = apiNode.children[i];
+        childNodes.push(convertMasterDataToKeys(currNode, i, treeData.hierStack, treeData));
+      }
+      // apiNode.children.forEach(node => {
+      //   childNodes.push(convertMasterDataToKeys(node));
+      // })      
     }
     treeData.children = childNodes;
   
     return treeData;
+}
+
+const reconstructHierarchyStack = (apiNodes, stack=[], parent=null) => {
+  if (!apiNodes) {
+    return null;
   }
+
+  for(let i = 0; i < apiNodes.length; i++) {
+    let apiNode = apiNodes[i];
+    apiNode.hierStack = [...stack, i];
+    apiNode.parent = parent;
+    reconstructHierarchyStack(apiNode.children, apiNode.hierStack, apiNode);
+  }
+
+  return apiNodes;
+}
 
 //https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
 const uuidv4 = () => {
@@ -65,6 +86,9 @@ const handleInsert = (newState) => {
     children: []
   };
   if (!newState.selectedNode || !newState.selectedNode.key) {
+    // Means no node is selected, so add it the first level
+    newNode.parent = null;
+    newNode.hierStack = [newState.hierarchyTree.length];
     newState.hierarchyTree.push(newNode);
   }
   else 
@@ -72,7 +96,16 @@ const handleInsert = (newState) => {
     // Find the selected node
     let selectedNodeObj = findNodeByKey(newState.hierarchyTree, newState.selectedNode.key);
     if (!!selectedNodeObj) {
-      selectedNodeObj.item.children = selectedNodeObj.item.children || [];
+      if (selectedNodeObj.item.children.length > 0) {
+        let lastIndex = selectedNodeObj.item.children.length;
+        newNode.hierStack = selectedNodeObj.item.children[0].hierStack;
+        newNode.hierStack[newNode.hierStack.length - 1] = lastIndex;        
+      }
+      else {
+        selectedNodeObj.item.children = [];
+        newNode.hierStack = [...selectedNodeObj.item.hierStack, 0];
+      }
+      newNode.parent = selectedNodeObj.item;
       selectedNodeObj.item.children.push(newNode)
     }
   }
@@ -107,9 +140,10 @@ export default function(state=defaultState, action) {
           hierarchyTree: [convertMasterDataToKeys(action.payload.data)]
         }
       case UPDATE_HIER_DESIGNER_TREE:
+        let reformatted = reconstructHierarchyStack(action.payload);
         return {
           ...state,
-          hierarchyTree: action.payload
+          hierarchyTree: reformatted
         }
       case SELECT_HIER_DESIGNER_TREE:
         return {
