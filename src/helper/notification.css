@@ -10,3 +10,8 @@
     border-radius: 5px;
 }
 
+/* Hide the annoying timer bar */
+.notification-item .timer {
+    visibility: hidden;
+    margin-top: 0px !important;
+}

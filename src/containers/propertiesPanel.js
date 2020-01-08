@@ -12,7 +12,7 @@ import {labelProps} from '../controls/label';
 import * as constants from '../constants';
 import Form, {Text as FormText, IconSelector, ColorSelector} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
-
+import ShowMessage, {NotifType} from '../helper/notification';
 
 
 const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
@@ -153,10 +153,12 @@ const PropertiesPanel = ({selectedControl, updateControlProps, deleteControl}) =
     
         // Fire redux action to update store
         updateControlProps(formattedData);
+        ShowMessage('Control Properties Applied!', NotifType.success, '');
     }
 
     let onDelete = () => {
         deleteControl(selectedControl)
+        ShowMessage('Control Deleted!', NotifType.success, '');
     };
 
     return renderControlProps(selectedControl, onSubmit, onDelete);

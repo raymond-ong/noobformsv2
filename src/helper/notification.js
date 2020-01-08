@@ -4,7 +4,7 @@ import 'react-notifications-component/dist/theme.css';
 import { store } from 'react-notifications-component';
 
 const DEFAULT_WIDTH = 400;
-const DEFAULT_DURATION = 2500;
+const DEFAULT_DURATION = 1200;
 
 export const NotifType = {
     default: 'default',
@@ -25,8 +25,8 @@ const defaultProps = {
     type: "default",
     insert: "top",
     container: "top-center",
-    animationIn: ["animated", "fadeIn"],
-    animationOut: ["animated", "zoomOut"],
+    animationIn: ["animated", "slideInDown"],
+    animationOut: ["animated", "slideOutUp"],
     width: DEFAULT_WIDTH,
     dismiss: {
       duration: DEFAULT_DURATION,

@@ -6,6 +6,7 @@ import {saveNodeConfig} from '../actions/index';
 import './hierarchyConfigPanel.css';
 import Form, {Text as FormText, FormCheckbox} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
+import ShowMessage, {NotifType} from '../helper/notification';
 
 
 // This is the  Right hand panel of the Hierarchy Designer, containing the toolbar and hierarchy page settings
@@ -49,6 +50,8 @@ const renderPageOptions = (name, disabled=false) => {
     />
 }
 
+// Called when component mounts
+// Purpose is to set the initial values
 const setControlValues = (setValueFunc, inputObj) => {
     if (!inputObj || !inputObj.selectedNode) {
         return;
@@ -62,7 +65,6 @@ const setControlValues = (setValueFunc, inputObj) => {
         setValueFunc('inherit', defaultInherit);
         setValueFunc('pageAssoc', defaultPage);
         setValueFunc('childDefaultPage', defaultPage);
-
     }
     else {
         setValueFunc('name', findUserSettings.dispName);
@@ -81,6 +83,8 @@ const onSubmit = (formArgs, action) => {
         pageAssoc: formArgs.pageAssoc,
         childDefaultPage: formArgs.childDefaultPage
     });
+
+    ShowMessage('Properties Saved!', NotifType.success)
 }
 
 const findInheritedPage = (selectedNode) => {
