@@ -142,6 +142,13 @@ export const toolBoxItems = [
      icon: 'clone outline',
      category: 'form'
    },
+   {
+     name: 'pagebreak',
+     displayName: 'Page Break',
+     icon: 'window minimize',
+     category: 'common',
+     minW: 12, minH:1,
+   },
 ];
 
 

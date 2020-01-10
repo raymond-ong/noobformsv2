@@ -320,7 +320,7 @@ const Table = (props) => {
         data: memoData,
         defaultColumn,
         filterTypes,
-        initialState: { pageIndex: 0 },        
+        initialState: { pageIndex: 0, pageSize: 10 },        
       }, 
       useFilters,
       useSortBy,
@@ -340,7 +340,7 @@ const Table = (props) => {
     //         console.log('table render column props:', column.getFooterProps());
     //     });
     // })
-    console.log('table render page');
+    // console.log('table render page');    
 
     headerGroups.forEach(headerGroup => {
         //console.log('table render headerGroup props:', headerGroup.getHeaderGroupProps());
@@ -398,7 +398,7 @@ const Table = (props) => {
                 )}
             )}
             <tr>
-            <td colSpan="10000" style={{backgroundColor: 'lightblue'}}>Custom Content! Found {rows.length} records!</td>
+            <td colSpan="20" style={{backgroundColor: 'lightblue'}}>Custom Content! Found {rows.length} records!</td>
             </tr>
             </tbody>
             <tfoot>
@@ -454,7 +454,7 @@ const Table = (props) => {
                     setPageSize(Number(e.target.value))
                 }}
                 >
-                {[10, 20, 30, 40, 50].map(pageSize => (
+                {[50, 10, 20, 30, 40].map(pageSize => (
                     <option key={pageSize} value={pageSize}>
                     Show {pageSize}
                     </option>

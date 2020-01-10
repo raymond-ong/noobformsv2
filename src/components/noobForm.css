@@ -33,6 +33,7 @@
     /* To prevent the user from highlighting text */
     user-select: none;
     width: 100%;
+    /* So that control will take up 100% height...required for label and section control */
     display: flex;
 }
 

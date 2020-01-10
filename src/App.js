@@ -13,6 +13,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd'
 import ShowMessage from '../src/helper/notification';
 import ReactNotification from 'react-notifications-component'
+import ReportApp from './ReportApp';
 
 class App extends React.Component {
 
@@ -30,14 +31,25 @@ class App extends React.Component {
     render() {
         var isTouch = ('ontouchstart' in document.documentElement);
         console.log('[App] render(), touch?', isTouch);
-        return(<DndProvider backend={isTouch? TouchBackend : HTML5Backend}>
-        <div id="app" style={{height: 'calc(100%)'}}>
-            <ReactNotification />
-            <Navbar>        
-                <MainContent/>
-            </Navbar>
-        </div>
-        </DndProvider>)
+        console.log('URL Params', document.URL);
+
+        if (document.URL.toLowerCase().endsWith('reporting')) {
+            return <DndProvider backend={HTML5Backend}>
+                <div id="reportApp">
+                <ReportApp/>
+                </div>
+            </DndProvider>
+        }
+        else {
+            return(<DndProvider backend={isTouch? TouchBackend : HTML5Backend}>
+                <div id="app" style={{height: 'calc(100%)'}}>
+                    <ReactNotification />
+                    <Navbar>        
+                        <MainContent/>
+                    </Navbar>
+                </div>
+                </DndProvider>)        
+        }
     }
 }
 

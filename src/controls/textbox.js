@@ -11,7 +11,7 @@ const Textbox = (props) => {
         classNames += ' ctrl-selected'
     }
 
-    return <div className={classNames}>
+    return <div className={classNames} style={{width: '100%'}}>
         <div className="controlLabel">{props.data.label}</div>
         <Input key={props.data.i} 
             size='small'

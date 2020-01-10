@@ -366,8 +366,11 @@ class NoobForm extends React.Component {
     // For resizing
     findPotentialDrops() {
         let retList = [];
-        retList.push(...document.getElementsByClassName("potentialResizeDrop"));
-        retList.push(...document.getElementsByClassName("landingPadPotentialDrop"));
+        // Edge does not support spread/rest operator on DOM list, so use Array.from
+        // retList.push(...document.getElementsByClassName("potentialResizeDrop"));
+        // retList.push(...document.getElementsByClassName("landingPadPotentialDrop"));
+        retList.push(...Array.from(document.getElementsByClassName("potentialResizeDrop")));
+        retList.push(...Array.from(document.getElementsByClassName("landingPadPotentialDrop")));
         return retList;
     }
 

@@ -16,7 +16,7 @@ const defaultState = {
       dispName: '',
       inherit: true/false // if true, pageAssoc should be null/ignored
       pageAssoc: '', 
-      childPage: '',
+      childDefaultPage: '',
     }
     */
 };

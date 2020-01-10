@@ -1,0 +1,10 @@
+.ReportApp {
+    /* height: 100%;
+    overflow: auto; */
+    /* margin: 50px; */
+}
+
+h1 {
+    page-break-before: always;
+    /* page-break-after: always; */
+}

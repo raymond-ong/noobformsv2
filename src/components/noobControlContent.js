@@ -6,6 +6,7 @@ import RichText from '../controls/richtext';
 import Combobox from '../controls/combo';
 import Textbox from '../controls/textbox';
 import Table from '../controls/table';
+import ReportTable from '../controls/reportTable';
 import Label from '../controls/label';
 import ShowMessage, {NotifType} from '../helper/notification';
 import { Popup } from 'semantic-ui-react'
@@ -24,7 +25,7 @@ export const ControlDragTypes = {
     CONTROL: 'Control'
 }
 
-const getContentDiv = (controlData) => {
+export const getContentDiv = (controlData) => {
     // Wrap the contents so that when resizing or moving, they will be together
     // Also this should be floated. We don't want to resize or move the parent
     let content = null;
@@ -42,7 +43,13 @@ const getContentDiv = (controlData) => {
             content = <Textbox {...controlData}/>
             break;
         case 'table':
-            content = <Table {...controlData}/> 
+            if (document.URL.toLowerCase().endsWith("reporting")) {
+                content = <ReportTable {...controlData}/> 
+            }
+            else {
+                content = <Table {...controlData}/> 
+            }
+            
             break;
         case 'label':
             content = <Label {...controlData}/> 
@@ -55,6 +62,10 @@ const getContentDiv = (controlData) => {
             break;
         case 'gauge':
             content = <Gauge {...controlData}/>
+            break;
+        case 'pagebreak':
+            // Should not come here!
+            // Parent form must insert page-break-before style into the next control instead
             break;
         case undefined:
             content = <div className="emptyControl"></div>

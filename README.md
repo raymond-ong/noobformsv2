@@ -40,9 +40,9 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 - [x] Toolbox
 - [x] Drag from Toolbox
 - [x] Resize Controls
-- [ ] Move Controls
-- [ ] Delete Controls
-- [ ] Change Properties
+- [x] Move Controls
+- [x] Delete Controls
+- [x] Change Properties (partial implementation)
 - [ ] Save Layout
 - [ ] Undo/Redo
 - [ ] Preview (Hide grid lines & empty controls)
@@ -56,8 +56,8 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 
 ## Todo Items
 - [x] Moving of controls - Add implementation to show internal landing pads
-- [ ] Responsive support (make it 1 column only, and remove empty cells if window is narrow)
-- [ ] Make it touch compatible
+- [x] Responsive support (make it 1 column only, and remove empty cells if window is narrow)
+- [x] Make it touch compatible
 - [ ] Landing pads: align height with external controls
 
 ## Limitations
@@ -74,3 +74,6 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 
 ## Issues
 - [ ] Dropping controls into the grid gap causes issues
+
+## Current bugs
+- [ ] If table only has few columns, collapsing the left pane causes the table to not stretch out and fill 100% width

@@ -1,6 +1,6 @@
 #root {
-    height: calc(100vh);
-    overflow-y: hidden;
+    /* height: calc(100vh);
+    overflow-y: hidden; */
 }
 
 #mainContent {
@@ -9,4 +9,13 @@
     /* height: calc(100vh - 3em); */
     height: calc(100vh);
     /* border: 1px solid red */
+}
+
+#app {
+    height: calc(100vh);
+    overflow-y: hidden;
+}
+
+#reportApp {
+
 }

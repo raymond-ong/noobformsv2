@@ -7,7 +7,7 @@ import noobControlHoc from '../hoc/noobControlsHoc';
 
 const Label = (props) => {
     console.log('textbox render', props.data.label);
-    let classNames = 'ctrlLabel';
+    let classNames = 'ctrlLabel ctrlLabel-report';
     if (props.selected === true) {
         classNames += ' ctrl-selected'
     }

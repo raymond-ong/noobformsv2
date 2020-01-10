@@ -1,5 +1,6 @@
 .dropdownContainer {
     /* z-index: 100; */
+    width: 100%;
 }
 
 .ui.dropdown .menu {

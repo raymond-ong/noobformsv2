@@ -100,7 +100,9 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
         let widthOfCtrl = usableWidth * controlData.w / 12.0 -5; // 12 is the number of columns; minus 5 for the grid gap
         ctrlStyle.gridRowEnd = 'span ' + controlData.h;
         ctrlStyle.gridColumnEnd = 'span ' + controlData.w;
-        ctrlStyle.maxWidth = `${widthOfCtrl}px`; 
+        if (!document.URL.toLowerCase().endsWith('reporting')) {
+            ctrlStyle.maxWidth = `${widthOfCtrl}px`; 
+        }
     }
     // [b2] - Show as single column if containerWidth is null (if container size is too small, null is passed)
     else {

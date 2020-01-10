@@ -12,7 +12,7 @@ const getFontSize = (level) => {
 }
 
 const Section = (props) => {
-    console.log('section render', props.data.title);
+    console.log('section render', props.style);
     let styles = {
         fontSize: getFontSize(props.data.level)
     };
@@ -21,7 +21,9 @@ const Section = (props) => {
         classNames += ' ctrl-selected'
     }
 
-    return <div className={classNames} style={styles}>
+    let combinedStyle = {...props.style, ...styles};
+
+    return <div className={classNames} style={combinedStyle}>
         {props.data.title}
     </div>
 }
