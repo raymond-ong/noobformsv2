@@ -8,7 +8,7 @@ const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
 
-const ReportControl = ({controlData, additionalStyle}) => {
+const ReportControl = ({controlData}) => {
     
     console.log('render ReportControl');
     
@@ -16,7 +16,6 @@ const ReportControl = ({controlData, additionalStyle}) => {
     // [b] Preparations
     let classNames = 'reportControl';
     let ctrlStyle = {
-        ...additionalStyle,
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content
         //'minHeight': (ROW_HEIGHT * controlData.h) + (CONTROL_PADDING * (controlData.h - 1)) + (GRID_GAP * (controlData.h - 1)), 

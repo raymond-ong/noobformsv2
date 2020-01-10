@@ -50,11 +50,11 @@ class ReportForm extends React.Component {
         }        
     }
 
-    renderControl(control, additionalStyle) {
+    renderControl(control) {
         return <ReportControl 
                 key={'ctrl'+control.i} 
                 controlData={control}
-                additionalStyle={additionalStyle}/>
+                />
     }
 
     // Returns an array containing the flat coordinates of the specified control
@@ -104,13 +104,11 @@ class ReportForm extends React.Component {
         let maxRow = this.findLastNonEmptyRow(controls, layoutData);
         let currGroup = []; // List of controls that will be put together in 1 CSS-Grid layout
         let bSetPagination = false; // Put a page-break-before in the next control to be rendered. 
-        let additionalStyle = {};
 
         for (var iRow = 0; iRow <= maxRow; iRow++) {
             let tableControls = []; // table controls to be rendered after we're done processing the entire row
             let normalControlProcessed = false; // whether a non-table control has been processed already in this row
             for (var iCol = 0; iCol < layoutData.columns; iCol++) {
-                additionalStyle = {};
                 let flatCoord = iRow * layoutData.columns + iCol;
                 // if coordinate already filled, skip (to avoid misaligning controls)
                 // If user configured the XYWH coords properly, should not come here
@@ -118,14 +116,14 @@ class ReportForm extends React.Component {
                     continue;
                 }
 
+                debugger
                 if (bSetPagination && iCol === 0) {
                     // todo: add page break to the next empty/nonempty control
                     // create a new group and push the previous group to retList
-                    if (retList.length > 0) {
-                        retList.push([...currGroup]);
+                    if (currGroup.length > 0) {
+                        retList.push(currGroup);
                     }
                     currGroup = [];
-                    additionalStyle = {pageBreakBefore: "always"}
                     bSetPagination = false;
                 }
 
@@ -134,7 +132,7 @@ class ReportForm extends React.Component {
                 let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
                 if (!findControl) {
                     let emptyControlPojo = this.createEmptyControl(iCol, iRow, flatCoord); // plain old JS obj
-                    let emptyControlJsx = this.renderControl(emptyControlPojo, additionalStyle);
+                    let emptyControlJsx = this.renderControl(emptyControlPojo);
                     currGroup.push({
                         id: emptyControlPojo.i,
                         jsx: emptyControlJsx
@@ -143,6 +141,9 @@ class ReportForm extends React.Component {
                 }
                 else if (findControl.ctrlType === 'pagebreak') {
                     bSetPagination = true; // to be processed in the next iteration
+                    // Fill up the fillmap so that empty controls won't be rendered here
+                    let newFills = this.getFills(findControl, layoutData.columns)
+                    fillMap = fillMap.concat(newFills);
                 }
                 else if (findControl.type === 'table') {
                     if (normalControlProcessed === true) {
@@ -151,7 +152,7 @@ class ReportForm extends React.Component {
                     }
                     else {                        
                         // finish up currGroup first
-                        if (retList.length > 0) {
+                        if (currGroup.length > 0) {
                             retList.push(currGroup);
                         }
                         currGroup = [];
@@ -180,7 +181,7 @@ class ReportForm extends React.Component {
             // Render the leftover tables
             tableControls.forEach(table => {
                 // finish up currGroup first
-                if (retList.length > 0) {
+                if (currGroup.length > 0) {
                     retList.push(currGroup);
                 }
                 currGroup = [];
@@ -202,9 +203,10 @@ class ReportForm extends React.Component {
     }
 
     renderGroups(groups, divStyle) {
-        return groups.map(groupControls => {
+        return groups.map((groupControls, index) => {
+            let formStyle = index > 0 ? {...divStyle, pageBreakBefore: "always"} : divStyle;
             return <div className="reportForm"
-                        style={divStyle}
+                        style={formStyle}
                     >{groupControls.map(control => {
                 return control.jsx
             })}</div>

@@ -83,7 +83,7 @@ const render1Section = (index) => {
 
 const bigLayout = () => {
     let retList = [];
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 5; i++) {
         retList = [...retList, ...render1Section(i)];
     }
 
