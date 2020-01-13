@@ -8,7 +8,7 @@ const statuses = ['Good', 'Bad', 'Fair', 'Uncertain']
 
 const getData = () => {
     let retList = [];
-    let nData = 20;
+    let nData = 10;
     for (let iArea = 0; iArea < 10; iArea++) {
         for (let i = 0; i < nData; i++) {
         retList.push({

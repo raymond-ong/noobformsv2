@@ -103,6 +103,7 @@ class ReportForm extends React.Component {
         let fillMap = []; // way for us to monitor which cells are already filled up
         let maxRow = this.findLastNonEmptyRow(controls, layoutData);
         let currGroup = []; // List of controls that will be put together in 1 CSS-Grid layout
+        let currGroupPagination = false;
         let bSetPagination = false; // Put a page-break-before in the next control to be rendered. 
 
         for (var iRow = 0; iRow <= maxRow; iRow++) {
@@ -116,15 +117,15 @@ class ReportForm extends React.Component {
                     continue;
                 }
 
-                debugger
-                if (bSetPagination && iCol === 0) {
+                if (bSetPagination && iCol === 0) { // iCol should be 0 if there is pagination because pagebreak control will take up whole width
                     // todo: add page break to the next empty/nonempty control
                     // create a new group and push the previous group to retList
                     if (currGroup.length > 0) {
-                        retList.push(currGroup);
+                        retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});                        
                     }
                     currGroup = [];
                     bSetPagination = false;
+                    currGroupPagination = true;
                 }
 
                 // try to find if there is a control associated
@@ -145,24 +146,39 @@ class ReportForm extends React.Component {
                     let newFills = this.getFills(findControl, layoutData.columns)
                     fillMap = fillMap.concat(newFills);
                 }
-                else if (findControl.type === 'table') {
+                else if (findControl.ctrlType === 'table') {                    
                     if (normalControlProcessed === true) {
                         // render it later
                         tableControls.push(findControl);
+                        debugger
+                        // Update the fill map so that empty controls will not take its place
+                        let newFills = this.getFills(findControl, layoutData.columns)
+                        fillMap = fillMap.concat(newFills);                        
                     }
                     else {                        
                         // finish up currGroup first
                         if (currGroup.length > 0) {
-                            retList.push(currGroup);
+                            retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
+                            currGroupPagination = false;
                         }
                         currGroup = [];
-                        // render it now...no need to fill up the fillmap so that the next control can take table's place and avoid a gap.
-                        // create 1 group for this table alone
+
+                        // Update the fill map first before rendering, because we will manipulate the width
+                        let newFills = this.getFills(findControl, layoutData.columns)
+                        fillMap = fillMap.concat(newFills);
+
+                        // render table now with full width...
+                        findControl.w = 12;
                         let controlJsx = this.renderControl(findControl);
-                        currGroup.push([{
-                            id: findControl.i,
-                            jsx: controlJsx
-                        }]);
+                        retList.push({groupType: 'table', pageBreak: currGroupPagination, 
+                            items:[{
+                                id: findControl.i,
+                                jsx: controlJsx
+                            }
+                        ]});   
+                        currGroupPagination = false;
+                        
+
                     }
                 }
 
@@ -182,20 +198,27 @@ class ReportForm extends React.Component {
             tableControls.forEach(table => {
                 // finish up currGroup first
                 if (currGroup.length > 0) {
-                    retList.push(currGroup);
+                    retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
                 }
+                currGroupPagination = false;
                 currGroup = [];
+
                 // render it now...no need to fill up the fillmap so that the next control can take table's place and avoid a gap.
                 // create 1 group for this table alone
-                let controlJsx = this.renderControl(table);
-                currGroup.push([{
+                table.w = 12;
+                let controlJsx = this.renderControl(table);                
+                retList.push({groupType: 'table', pageBreak: currGroupPagination, 
+                items:[{
                     id: table.i,
                     jsx: controlJsx
-                }]);
+                }
+            ]});   
             })
         } // End of Row for-loop
         
-        retList.push(currGroup);
+        if (currGroup.length > 0) {
+            retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
+        }
 
         debugger
 
@@ -203,11 +226,12 @@ class ReportForm extends React.Component {
     }
 
     renderGroups(groups, divStyle) {
-        return groups.map((groupControls, index) => {
-            let formStyle = index > 0 ? {...divStyle, pageBreakBefore: "always"} : divStyle;
+        return groups.map((group, index) => {
+            let formStyle = index > 0 && group.pageBreak ? {...divStyle, pageBreakBefore: "always"} : divStyle;
+            debugger
             return <div className="reportForm"
                         style={formStyle}
-                    >{groupControls.map(control => {
+                    >{group.items.map(control => {
                 return control.jsx
             })}</div>
         })

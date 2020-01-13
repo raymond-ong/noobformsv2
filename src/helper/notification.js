@@ -30,7 +30,7 @@ const defaultProps = {
     width: DEFAULT_WIDTH,
     dismiss: {
       duration: DEFAULT_DURATION,
-      onScreen: true,
+      onScreen: false,
       pauseOnHover: true,
       showIcon: true    // X button to dismiss
     }

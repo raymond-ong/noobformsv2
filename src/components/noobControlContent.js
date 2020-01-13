@@ -16,6 +16,8 @@ import { useDrag } from 'react-dnd'
 import PieChart from '../charts/pieChart';
 import BarChart from '../charts/barChart';
 import Gauge from '../charts/gauge';
+import GaugeChart from '../charts/gauge_rechart';
+import GaugeJs from '../charts/gaugejs_react';
 
 // Separate the content-part into a standalone component from the control wrapper
 // Reason: this will be the only part that will be resized or moved while dragging (moving or resizing)
@@ -61,7 +63,9 @@ export const getContentDiv = (controlData) => {
             content = <BarChart {...controlData}/>
             break;
         case 'gauge':
-            content = <Gauge {...controlData}/>
+            //content = <Gauge {...controlData}/>
+            //content = <GaugeChart/>
+            content=<GaugeJs {...controlData}/>
             break;
         case 'pagebreak':
             // Should not come here!
