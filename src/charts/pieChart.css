@@ -1,9 +1,5 @@
-.pieChartContainer {
-    height: 100%;
-    width: 100%;
-}
-
-/* To make the pie chart shrink / expand based on neighbour controls' sizes */
-.recharts-responsive-container {
-    position: absolute;
-}
+/* .recharts-responsive-container .recharts-wrapper {
+    border: 1px solid red !important;
+    width: 100% !important;
+    height: 100% !important;
+} */

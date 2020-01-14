@@ -36,6 +36,36 @@ const getData = () => {
     return retList;
 }
 
+const getDataFew = () => {
+    let retList = [];
+    let nData = 10;
+    for (let iArea = 0; iArea < 1; iArea++) {
+        for (let i = 0; i < nData; i++) {
+        retList.push({
+            targetName: `FIC_${iArea}_${i}`, 
+            fullPath: `//PLANT/AREA_${iArea}/FIC_${i}`, 
+            timeInControl: statuses[(i+1) % statuses.length], 
+            timeInAlarm: statuses[(i+2) % statuses.length], 
+            timeMvOutOfLimits: statuses[i % statuses.length],
+            kpi1: statuses[i % statuses.length],
+            kpi2: statuses[i % statuses.length],
+            kpi3: statuses[i % statuses.length],
+            kpi4: statuses[i % statuses.length],
+            kpi5: statuses[i % statuses.length],
+            kpi6: statuses[i % statuses.length],
+            kpi7: statuses[i % statuses.length],
+            kpi8: statuses[i % statuses.length],
+            kpi9: statuses[i % statuses.length],
+            kpi10: statuses[i % statuses.length],
+            subRows: undefined
+        })
+        }
+    }
+    
+
+    return retList;
+}
+
 const renderFooterTargetNames = (info)=> {
     let total = info.rows.length;
     return 'Footer Target Names: ' + total + ' Records';
@@ -92,60 +122,91 @@ const columns2Levels = [
             Footer: info => computeKpi('kpi1', info),
             colType: 'kpi'
         },
-        // {
-        //     Header: 'KPI 2 - Dummy KPI with a very long name',
-        //     accessor: 'kpi2',
-        //     Footer: info => computeKpi('kpi2', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 3 - Dummy KPI with a very long name',
-        //     accessor: 'kpi3',
-        //     Footer: info => computeKpi('kpi3', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 4 - Dummy KPI with a very long name',
-        //     accessor: 'kpi4',
-        //     Footer: info => computeKpi('kpi4', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 5 - Dummy KPI with a very long name',
-        //     accessor: 'kpi5',
-        //     Footer: info => computeKpi('kpi5', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 6 - Dummy KPI with a very long name',
-        //     accessor: 'kpi6',
-        //     Footer: info => computeKpi('kpi6', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 7 - Dummy KPI with a very long name',
-        //     accessor: 'kpi7',
-        //     Footer: info => computeKpi('kpi7', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 8 - Dummy KPI with a very long name',
-        //     accessor: 'kpi8',
-        //     Footer: info => computeKpi('kpi8', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 9 - Dummy KPI with a very long name',
-        //     accessor: 'kpi9',
-        //     Footer: info => computeKpi('kpi9', info),
-        //     colType: 'kpi'
-        // },
-        // {
-        //     Header: 'KPI 10 - Dummy KPI with a very long name',
-        //     accessor: 'kpi10',
-        //     Footer: info => computeKpi('kpi10', info),
-        //     colType: 'kpi'
-        // },
+        {
+            Header: 'KPI 2 - Dummy KPI with a very long name',
+            accessor: 'kpi2',
+            Footer: info => computeKpi('kpi2', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 3 - Dummy KPI with a very long name',
+            accessor: 'kpi3',
+            Footer: info => computeKpi('kpi3', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 4 - Dummy KPI with a very long name',
+            accessor: 'kpi4',
+            Footer: info => computeKpi('kpi4', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 5 - Dummy KPI with a very long name',
+            accessor: 'kpi5',
+            Footer: info => computeKpi('kpi5', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 6 - Dummy KPI with a very long name',
+            accessor: 'kpi6',
+            Footer: info => computeKpi('kpi6', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 7 - Dummy KPI with a very long name',
+            accessor: 'kpi7',
+            Footer: info => computeKpi('kpi7', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 8 - Dummy KPI with a very long name',
+            accessor: 'kpi8',
+            Footer: info => computeKpi('kpi8', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 9 - Dummy KPI with a very long name',
+            accessor: 'kpi9',
+            Footer: info => computeKpi('kpi9', info),
+            colType: 'kpi'
+        },
+        {
+            Header: 'KPI 10 - Dummy KPI with a very long name',
+            accessor: 'kpi10',
+            Footer: info => computeKpi('kpi10', info),
+            colType: 'kpi'
+        },
+
+        ]
+    },
+];
+
+const columns2LevelsFew = [
+    {
+        Header: 'Target Info',
+        Footer: 'Target Summary',    
+        TestCustomProp: 'helllo',   
+        columns: [{
+            Header: 'Name',
+            accessor: 'targetName',
+            Footer: renderFooterTargetNames,
+            FooterColSpan: 2,
+        }, 
+        {
+            Header: 'Full Path',
+            accessor: 'fullPath',
+            customColSpan: 3,
+        }]
+    },
+    {
+        Header: 'KPIs',
+        Footer: 'KPI Summary',
+        columns: [{
+            Header: 'Time in Control',
+            accessor: 'timeInControl',
+            Footer: info => computeKpi('timeInControl', info),
+            colType: 'kpi'
+        },
 
         ]
     },
@@ -273,10 +334,15 @@ const getTotalNumColumns = (colArray) => {
 const ReportTable = (props) => {
     let classNames = 'reportTableContainer';
    
-    const totalCols = getTotalNumColumns(columns2Levels);
+    let columnsToUse = props.data.smallData ? columns2LevelsFew : columns2Levels;
+    if (props.data.wideData) {
+        columnsToUse = columns2Levels;
+    }
+    let dataToUse = props.data.smallData ? getDataFew() : getData();
 
-    const memoColumns = React.useMemo(() => columns2Levels, []);
-    const memoData = React.useMemo(() => getData(), []);
+    const totalCols = getTotalNumColumns(columnsToUse);
+    const memoColumns = React.useMemo(() => columnsToUse, []);
+    const memoData = React.useMemo(() => dataToUse, []);        
 
     const {
         getTableProps,
@@ -291,13 +357,6 @@ const ReportTable = (props) => {
       );
 
     console.log('table render page', totalCols);    
-
-    // headerGroups.forEach(headerGroup => {
-    //     //console.log('table render headerGroup props:', headerGroup.getHeaderGroupProps());
-    //     headerGroup.headers.forEach(column => {
-    //         //console.log('table render column props:', column.getHeaderProps());
-    //     });
-    // })
 
     return <div className={classNames} style={props.style}>
         <div className="controlLabel">{props.data.label}</div>
@@ -314,7 +373,7 @@ const ReportTable = (props) => {
                     //let colHeader = getColHeaderByAccessor(columns, )
                     return (<th 
                         {...column.getHeaderProps()}
-                        // {...custProp}
+                        {...custProp}
                     >{column.render('Header')}
                     {/* Render the columns filter UI */}
                     <div>{column.canFilter ? column.render('Filter') : null}</div>

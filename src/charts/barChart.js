@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useRef, useEffect, useState } from 'react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
   } from 'recharts';
@@ -75,7 +75,63 @@ const renderQuarterTick = (tickProps) => {
   return null;
 };
 
-function noobBarChart(props) {
+export const BarChartForReport = (props) => {
+  const chartContainerEl = useRef();
+  const [myState, setMyState] = useState({
+    height: 0,
+    width: 0
+  });
+
+  useEffect(() => {
+    console.log('[DEBUG] useEffect bar', chartContainerEl);
+    if (!chartContainerEl || !chartContainerEl.current) {
+      return;
+    }
+    let rect = chartContainerEl.current.getClientRects()[0]
+    setMyState({
+      height: rect.height,
+      width: rect.width
+    })
+    
+  }, []);
+
+  return (
+    <div className="reChartContainer" ref={chartContainerEl}>
+      <div className="controlLabel">{props.data.label}</div>
+        {renderChartContents(true, myState.width, myState.height)}
+    </div>
+  );  
+}
+
+// Just specify null for width and height if the BarChart is going to be placed inside a ResponsiveContainer
+// Important to set isAnimationActive to false during printing
+const renderChartContents = (bAnimate, width, height) => {
+  return (
+    <BarChart
+              width={width}
+              height={height}
+              data={data}
+              margin={{
+              top: 20, right: 10, left: 5, bottom: 30,
+              }}
+          >
+      <CartesianGrid vertical={false}/>
+      <XAxis dataKey="date" tickFormatter={monthTickFormatter} />
+      <XAxis dataKey="date" axisLine={false} tickLine={false} interval={0} tick={renderQuarterTick} height={1} scale="band" xAxisId="quarter" />
+      <YAxis axisLine={false}/>
+      <Tooltip />
+      <Legend  wrapperStyle={{
+      paddingTop: "10px"
+      }}/>
+      <Bar dataKey="pv" fill="green" stackId="a" isAnimationActive={false} onClick={(args) => {
+        console.log(args);}
+        }/>
+      <Bar isAnimationActive={bAnimate} dataKey="uv" fill="gold" stackId="a"/>      
+    </BarChart>
+  )
+}
+
+function BarChartResponsive(props) {
   let classNames = 'reChartContainer';
   if (props.selected === true) {
       classNames += ' ctrl-selected'
@@ -84,31 +140,11 @@ function noobBarChart(props) {
   return (
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
-      <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-              // width={500}
-              // height={300}
-              data={data}
-              margin={{
-              top: 20, right: 10, left: 5, bottom: 20,
-              }}
-          >
-              <CartesianGrid vertical={false}/>
-              <XAxis dataKey="date" tickFormatter={monthTickFormatter} />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} interval={0} tick={renderQuarterTick} height={1} scale="band" xAxisId="quarter" />
-              <YAxis axisLine={false}/>
-              <Tooltip />
-              <Legend  wrapperStyle={{
-              paddingTop: "10px"
-              }}/>
-              <Bar dataKey="pv" fill="green" stackId="a" onClick={(args) => {
-                console.log(args);}
-                }/>
-              <Bar dataKey="uv" fill="gold" stackId="a"/>
-          </BarChart>
+      <ResponsiveContainer width={"100%"} height="100%">
+        {renderChartContents(true, null, null)}
       </ResponsiveContainer>
     </div>
   );
 }
 
-export default noobControlHoc(noobBarChart);
+export default noobControlHoc(BarChartResponsive);

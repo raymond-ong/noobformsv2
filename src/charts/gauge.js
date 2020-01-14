@@ -15,7 +15,7 @@ const Gauge = (props) => {
     // Bug: This chart does not respect the height; only the width
     return <div className={classNames}>
         <div className="controlLabel">{props.data.label}</div>
-        <ResponsiveContainer  width="100%" height="100%">
+        <ResponsiveContainer  width="100%" height="90%">
             <GaugeChart id={props.i}
             nrOfLevels={20} 
             percent={props.data.percent} 

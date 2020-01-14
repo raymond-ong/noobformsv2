@@ -8,13 +8,19 @@ const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
 
-const ReportControl = ({controlData}) => {
+const ReportControl = ({controlData, containerWidth, numCols}) => {
     
-    console.log('render ReportControl');
+    
     
 
     // [b] Preparations
     let classNames = 'reportControl';
+    let usableWidth = containerWidth; // 20 for the noobform left and right padding of 10 each
+    let widthOfCtrl = usableWidth * controlData.w / 12.0; // 12 is the number of columns; minus 5 for the grid gap
+    if (controlData.w < 12) {
+        widthOfCtrl -= 5;
+    }
+    
     let ctrlStyle = {
         // set the minHeight instead of height. Height will make the height fixed regardless of the content.
         // minHeight allows the parent container to grow depending on content
@@ -25,6 +31,9 @@ const ReportControl = ({controlData}) => {
     // [b1] - Normal desktop size layout
     ctrlStyle.gridRowEnd = 'span ' + controlData.h;
     ctrlStyle.gridColumnEnd = 'span ' + controlData.w;
+    ctrlStyle.maxWidth = `${widthOfCtrl}px`; 
+
+    console.log('render ReportControl', controlData.i, widthOfCtrl);
    
     // [c] Render:
     // [c.1] return the landing pad first, which is only shown when the control is being resized

@@ -7,3 +7,9 @@
 .recharts-responsive-container {
     position: absolute;
 }
+
+.recharts-legend-wrapper {
+    padding-top: 10px;
+    width: 100%;
+    left: 0px;
+}

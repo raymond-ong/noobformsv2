@@ -13,8 +13,8 @@ import { Popup } from 'semantic-ui-react'
 
 
 import { useDrag } from 'react-dnd'
-import PieChart from '../charts/pieChart';
-import BarChart from '../charts/barChart';
+import PieChart, {PieForReport} from '../charts/pieChart';
+import BarChart, {BarChartForReport} from '../charts/barChart';
 import Gauge from '../charts/gauge';
 import GaugeChart from '../charts/gauge_rechart';
 import GaugeJs from '../charts/gaugejs_react';
@@ -31,6 +31,7 @@ export const getContentDiv = (controlData) => {
     // Wrap the contents so that when resizing or moving, they will be together
     // Also this should be floated. We don't want to resize or move the parent
     let content = null;
+    let isReporting = document.URL.toLowerCase().endsWith("reporting");
     switch(controlData.ctrlType) {
         case 'section':
             content = <Section {...controlData}></Section>
@@ -45,7 +46,7 @@ export const getContentDiv = (controlData) => {
             content = <Textbox {...controlData}/>
             break;
         case 'table':
-            if (document.URL.toLowerCase().endsWith("reporting")) {
+            if (isReporting) {
                 content = <ReportTable {...controlData}/> 
             }
             else {
@@ -56,11 +57,21 @@ export const getContentDiv = (controlData) => {
         case 'label':
             content = <Label {...controlData}/> 
             break;
-            case 'pie':
-            content = <PieChart {...controlData}/>
+        case 'pie':
+            if (isReporting) {
+                content = <PieForReport {...controlData}/>
+            }
+            else {
+                content = <PieChart {...controlData}/>
+            }                
             break;
         case 'barchart':
-            content = <BarChart {...controlData}/>
+            if (isReporting) {
+                content = <BarChartForReport {...controlData}/>                
+            }
+            else {
+                content = <BarChart {...controlData}/>
+            }            
             break;
         case 'gauge':
             //content = <Gauge {...controlData}/>

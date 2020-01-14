@@ -1,8 +1,9 @@
-import React, { PureComponent, Component } from 'react';
+import React, { PureComponent, Component, useRef, useEffect, useState } from 'react';
 import {
   PieChart, Pie, Sector, Cell, ResponsiveContainer, Legend
 } from 'recharts';
 import '../controls/common.css';
+import './pieChart.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 
@@ -34,89 +35,151 @@ let renderLabel = function(entry) {
     return `${entry.name} - ${(entry.percent*100).toFixed(1)}%`;
 }
 
-const PieChartSample = (props) => {
-  console.log('render pie!', props);
+
+// The ResponsiveContainer from recharts is buggy during printing
+// We manually set the height and width of the container by querying the DOM
+export const PieForReport = (props) => {
+  const chartContainerEl = useRef();
+  const [myState, setMyState] = useState({
+    height: 0,
+    width: 0
+  });
+
+  useEffect(() => {
+    console.log('[DEBUG] useEffect pie', chartContainerEl);
+    if (!chartContainerEl || !chartContainerEl.current) {
+      return;
+    }
+    let rect = chartContainerEl.current.getClientRects()[0]
+    setMyState({
+      height: rect.height,
+      width: rect.width
+    })
+    
+  }, []);
+
+  return (
+    <div className="reChartContainer" ref={chartContainerEl}>
+      <div className="controlLabel">{props.data.label + ' width: ' + myState.width}</div>
+      <PieChart 
+          margin={{top: 20, right: 15, left: 15, bottom: 40}}
+          height={myState.height}
+          width={myState.width}
+      >
+        {renderPie()}
+        {renderLegend()}
+      </PieChart>
+    </div>
+  );  
+}
+
+// The ResponsiveContainer from recharts is OK when viewing from the web browser,
+// but buggy during PDF generation (e.g. not taking entire width and height of the container)
+const PieResponsive = (props) => {
   let classNames = 'reChartContainer';
   if (props.selected === true) {
       classNames += ' ctrl-selected'
   }
+  let width = props.containerWidth ? props.containerWidth : '100%'
   return (
-    <div className={classNames}>
+    <div id="pieContainer1" className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
       <ResponsiveContainer  width="100%" height="100%">
-        <PieChart margin={{top: 20, right: 10, left: 10, bottom: 40}}
-            >
-          <Pie
-            data={data}
-            labelLine={true}
-          //   label={renderCustomizedLabel}
-          label
-          //label={renderLabel}
-          //   outerRadius={100}
-            fill="#8884d8"
-            dataKey="value"
-            isAnimationActive={false}
-          >
-            {
-              data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-            }
-          </Pie>
-          <Legend verticalAlign="top" height={36}/>
+        <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+          {renderPie()}
+          {renderLegend()}
         </PieChart>
       </ResponsiveContainer>
     </div>
   );  
 }
 
-export default noobControlHoc(PieChartSample);
+// Common function
+// Renders Pie Chart and Legends
+const renderPie = () => {
+  return <Pie
+      data={data}
+      labelLine={true}
+      //label={renderCustomizedLabel}
+      label
+      //label={renderLabel}
+      //   outerRadius={100}
+      fill="#8884d8"
+      dataKey="value"
+      isAnimationActive={false}
+    >
+      {
+        data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+      }
+    </Pie>;    
+}
 
-// TODO: Try to remove the ResponsiveContainer
-// Just make it semi-static
-// Size will be fixed while there is no re-render
-// E.g. If neighbour controls cause resizing of row height(e.g. combo selections by user), this chart will remain same height
-// Only resize of this control will cause the width and height to be recomputed
+const renderLegend = () => {
+  return <Legend 
+    margin={{top: 10, right: 10, left: 10, bottom: 10}}
+    verticalAlign="bottom" height={36}/>
+}
 
-// Try also nivo, since it also has Reponsive Support. But it does not allow much svg customization.
 
-// class Example extends PureComponent {
-//   static jsfiddleUrl = 'https://jsfiddle.net/alidingling/c9pL8k61/';
+// const PieChartSample = (props) => {
+//   console.log('render pie!', props);
 
-//   render() {
-//     console.log('render pie', this.props);
-//     let classNames = 'pieChartContainer';
-//     if (this.props.selected === true) {
-//         classNames += ' ctrl-selected'
+//   const pieContainerEl = useRef();
+//   const [myState, setMyState] = useState({
+//     height: 0,
+//     width: 0
+//   });
+
+//   useEffect(() => {
+//     console.log('[DEBUG] useEffect pie', pieContainerEl);
+//     if (!pieContainerEl || !pieContainerEl.current) {
+//       return;
 //     }
-//     return (
-//       <div className={classNames}
-//       ref={(node) => { this.container = node; }}>
-//         <div className="controlLabel">{this.props.data.label}</div>
-//         <ResponsiveContainer  width="90%" height="90%">
-//           <PieChart 
-//             //width={200} height={200}
-//             margin={{top: 10, right: 20, left: 20, bottom: 10}}
-//               >
-//             <Pie
-//               data={data}
-//               labelLine={true}
-//             //   label={renderCustomizedLabel}
-//             label
-//             //label={renderLabel}
-//             //   outerRadius={100}
-//               fill="#8884d8"
-//               dataKey="value"
-//               isAnimationActive={false}
-//             >
-//               {
-//                 data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-//               }
-//             </Pie>
-//             <Legend verticalAlign="top" height={36}/>
-//           </PieChart>
-//         </ResponsiveContainer>
-//       </div>
-//     );
+//     let rect = pieContainerEl.current.getClientRects()[0]
+//     setMyState({
+//       height: rect.height,
+//       width: rect.width
+//     })
+    
+//   }, []);
+
+//   let classNames = 'reChartContainer';
+//   if (props.selected === true) {
+//       classNames += ' ctrl-selected'
 //   }
+//   let width = props.containerWidth ? props.containerWidth : '100%'
+//   return (
+//     <div id="pieContainer1" className={classNames} ref={pieContainerEl}>
+//       <div className="controlLabel">{props.data.label}</div>
+//       {/* <ResponsiveContainer  width={width} height="100%"> */}
+//         <PieChart 
+//           id="thePie" 
+//           margin={{top: 20, right: 10, left: 10, bottom: 40}}
+//           height={myState.height}
+//           width={myState.width}
+//         >
+//           <Pie
+//             data={data}
+//             labelLine={true}
+//           //   label={renderCustomizedLabel}
+//           label
+//           //label={renderLabel}
+//           //   outerRadius={100}
+//             fill="#8884d8"
+//             dataKey="value"
+//             isAnimationActive={false}
+//           >
+//             {
+//               data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+//             }
+//           </Pie>
+//           <Legend verticalAlign="top" height={36}/>
+//         </PieChart>
+//       {/* </ResponsiveContainer> */}
+//     </div>
+//   );  
 // }
+
+export default noobControlHoc(PieResponsive);
 
 // export default noobControlHoc(Example);

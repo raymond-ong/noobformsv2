@@ -1,9 +1,9 @@
 .reportTableContainer {
     width: 100%;
-    /* 
+    
     height: 100%;
-    border: 1px solid red;
-    overflow: auto; */
+    /* border: 1px solid red; */
+    overflow: auto;
 }
 
 
@@ -27,7 +27,7 @@
 .reportTable tr td {
     border: 1px solid gray;
     padding: 5px;
-    /* word-break: break-all; */
+    word-break: break-all;
 }
 
 .reportTable tfoot tr td {

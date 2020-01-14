@@ -50,10 +50,12 @@ class ReportForm extends React.Component {
         }        
     }
 
-    renderControl(control) {
+    renderControl(control, containerWidth, numCols) {
         return <ReportControl 
                 key={'ctrl'+control.i} 
                 controlData={control}
+                containerWidth={containerWidth}
+                numCols={numCols}
                 />
     }
 
@@ -86,11 +88,37 @@ class ReportForm extends React.Component {
         return 0; // means there is no control; form is empty
     }
 
+    // Returns true if the control is the only control in the rows where the control is placed
+    isControlSolo(control, layoutData) {
+        debugger
+        let findOverlap = layoutData.find(layoutCtrl => 
+            {
+                if (layoutCtrl.i === control.i) {
+                    return false;
+                }
+
+                // if one rect is on top of the other, there is no overlap
+                // if (rect2.bottom < rect1.top || rect2.top > rect1.bottom) {
+                if ((layoutCtrl.y + layoutCtrl.h - 1) < control.y || layoutCtrl.y > (control.y + control.h - 1)) {
+                    return false
+                }
+                
+                return true;
+            });
+        return !findOverlap;
+    }
+
     // Return: array of arrays(1 array = group of controls that will be put together in 1 CSS grid or independent layout)
     // For printing there are limitations with the PDF Renderer:
     // [a] tables cannot be inside CSS grid, otherwise there will be overlaps if more than 1 page.
     // [b] CSS grid does not support page break
     // For the limitations above, we set the following workarounds (basically rearrange/override the layout to make it printer friendly):
+    // [a1] If table is the "solo" control of row(s), insert a page break and create a new group just for the table
+    // [a2] If table is not "solo", means the user is expecting the table to be very small.
+    //      Table will be rendered as-is. Risk of overlap would be there, but it's user's fault.
+
+
+
     // [a1] while rendering row, if we find a table IN THE MIDDLE, skip rendering it first.
     //      after processing all rows, if there are "leftover" tables, create a new group just for each leftover table.
     // [a2] while rendering row, if we find tables FIRST, create a new group just for it already. 
@@ -98,7 +126,7 @@ class ReportForm extends React.Component {
     // [b] Put a CSS page break for the succeeding section. User is expected to put the page breaks in the layout manually in order to make sure pagination is handled properly while printing.
     //     If user puts 2 consecutive page breaks, will end up with 1 page break only.
     // Should also skip the blank rows at the end (like trim-end, but retain blank rows in between or at the beginning)
-    renderControls(layoutData, controls) {
+    renderControls(layoutData, controls, containerWidth) {
         let retList = [];  
         let fillMap = []; // way for us to monitor which cells are already filled up
         let maxRow = this.findLastNonEmptyRow(controls, layoutData);
@@ -108,7 +136,6 @@ class ReportForm extends React.Component {
 
         for (var iRow = 0; iRow <= maxRow; iRow++) {
             let tableControls = []; // table controls to be rendered after we're done processing the entire row
-            let normalControlProcessed = false; // whether a non-table control has been processed already in this row
             for (var iCol = 0; iCol < layoutData.columns; iCol++) {
                 let flatCoord = iRow * layoutData.columns + iCol;
                 // if coordinate already filled, skip (to avoid misaligning controls)
@@ -132,13 +159,13 @@ class ReportForm extends React.Component {
                 // otherwise just render an empty control
                 let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
                 if (!findControl) {
+                    debugger
                     let emptyControlPojo = this.createEmptyControl(iCol, iRow, flatCoord); // plain old JS obj
-                    let emptyControlJsx = this.renderControl(emptyControlPojo);
+                    let emptyControlJsx = this.renderControl(emptyControlPojo, containerWidth, layoutData.columns);
                     currGroup.push({
                         id: emptyControlPojo.i,
                         jsx: emptyControlJsx
                     });
-                    normalControlProcessed = true;
                 }
                 else if (findControl.ctrlType === 'pagebreak') {
                     bSetPagination = true; // to be processed in the next iteration
@@ -146,81 +173,49 @@ class ReportForm extends React.Component {
                     let newFills = this.getFills(findControl, layoutData.columns)
                     fillMap = fillMap.concat(newFills);
                 }
-                else if (findControl.ctrlType === 'table') {                    
-                    if (normalControlProcessed === true) {
-                        // render it later
-                        tableControls.push(findControl);
-                        debugger
-                        // Update the fill map so that empty controls will not take its place
-                        let newFills = this.getFills(findControl, layoutData.columns)
-                        fillMap = fillMap.concat(newFills);                        
-                    }
-                    else {                        
-                        // finish up currGroup first
-                        if (currGroup.length > 0) {
-                            retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
-                            currGroupPagination = false;
-                        }
-                        currGroup = [];
-
-                        // Update the fill map first before rendering, because we will manipulate the width
-                        let newFills = this.getFills(findControl, layoutData.columns)
-                        fillMap = fillMap.concat(newFills);
-
-                        // render table now with full width...
-                        findControl.w = 12;
-                        let controlJsx = this.renderControl(findControl);
-                        retList.push({groupType: 'table', pageBreak: currGroupPagination, 
-                            items:[{
-                                id: findControl.i,
-                                jsx: controlJsx
-                            }
-                        ]});   
+                else if (findControl.ctrlType === 'table' && this.isControlSolo(findControl, controls)) {
+                                
+                    // finish up currGroup first
+                    if (currGroup.length > 0) {
+                        retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
                         currGroupPagination = false;
-                        
-
                     }
+                    currGroup = [];
+
+
+                    // render table now with full width...
+                    findControl.w = 12;
+                    let controlJsx = this.renderControl(findControl,  containerWidth, layoutData.columns);
+                    retList.push({groupType: 'table', pageBreak: currGroupPagination, 
+                        items:[{
+                            id: findControl.i,
+                            jsx: controlJsx
+                        }
+                    ]});   
+                    currGroupPagination = false;                    
+
+                    // Update the fill map also
+                    let newFills = this.getFills(findControl, layoutData.columns)
+                    fillMap = fillMap.concat(newFills);
                 }
 
                 else {
-                    let controlJsx = this.renderControl(findControl);
+                    let controlJsx = this.renderControl(findControl, containerWidth, layoutData.columns);
                     currGroup.push({
                         id: findControl.i,
                         jsx: controlJsx
                     });
                     let newFills = this.getFills(findControl, layoutData.columns)
                     fillMap = fillMap.concat(newFills);
-                    normalControlProcessed = true;
                 }
             } // End of Column for-loop
-
-            // Render the leftover tables
-            tableControls.forEach(table => {
-                // finish up currGroup first
-                if (currGroup.length > 0) {
-                    retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
-                }
-                currGroupPagination = false;
-                currGroup = [];
-
-                // render it now...no need to fill up the fillmap so that the next control can take table's place and avoid a gap.
-                // create 1 group for this table alone
-                table.w = 12;
-                let controlJsx = this.renderControl(table);                
-                retList.push({groupType: 'table', pageBreak: currGroupPagination, 
-                items:[{
-                    id: table.i,
-                    jsx: controlJsx
-                }
-            ]});   
-            })
         } // End of Row for-loop
         
         if (currGroup.length > 0) {
             retList.push({groupType: 'section', pageBreak: currGroupPagination, items: currGroup});
         }
 
-        debugger
+        //debugger
 
         return retList;
     }
@@ -228,7 +223,6 @@ class ReportForm extends React.Component {
     renderGroups(groups, divStyle) {
         return groups.map((group, index) => {
             let formStyle = index > 0 && group.pageBreak ? {...divStyle, pageBreakBefore: "always"} : divStyle;
-            debugger
             return <div className="reportForm"
                         style={formStyle}
                     >{group.items.map(control => {
@@ -240,7 +234,7 @@ class ReportForm extends React.Component {
     render() {
         console.log('render ReportForm...');
         let {controls, layoutData} = this.props;
-        let groupsList = this.renderControls(layoutData, controls);
+        let groupsList = this.renderControls(layoutData, controls, window.innerWidth-50); // minus 50 for the left and right margin of PDF
         //let controlsJsx = controlsList.map(c => c.jsx);
     
         var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};
@@ -306,7 +300,8 @@ class ReportForm extends React.Component {
 
         // [C] this does not work if there is a table in layout...CSS Grid conflicts with pagination
         //     
-        <div className="reportFormsContainer">
+        <div className="reportFormsContainer" style={{maxWidth: `${window.innerWidth-50}px`}}>
+            {'[DEBUG] ContainerWidth: ' + window.innerWidth}
             {this.renderGroups(groupsList, divStyle)}            
         </div>    
         );    

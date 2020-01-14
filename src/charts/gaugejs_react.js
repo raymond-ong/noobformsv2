@@ -104,8 +104,12 @@ function Gauge(props) {
   return (
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
-      <canvas ref={canvas} {...passThroughProps} style={{width:"100%"}} className="canvas-preview" ></canvas>
-      <div ref={span} className="preview-textfield gauge-label"></div>
+      <div className="gauge-svgContainer">
+      <div className="gauge-svgContainer2">
+        <canvas ref={canvas} style={{width:"100%"}} className="canvas-preview" ></canvas>
+        <div ref={span} className="preview-textfield gauge-label"></div>
+      </div>      
+      </div>      
     </div>
   );
 }
@@ -135,6 +139,7 @@ Gauge.defaultProps = {
       {strokeStyle: "gold", min: 20, max: 80}, // Yellow
       {strokeStyle: "green", min: 80, max: 100}, // Green
     ],  
+    // These are the small labels around the gauge
     staticLabels: {
       font: "15px",  // Specifies font
       labels: [0, 20, 80, 100],  // Print labels at these values
