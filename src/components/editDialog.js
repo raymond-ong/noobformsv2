@@ -10,7 +10,10 @@ class EditDialog extends React.Component {
 
     render() {
         let {controlInfo} = this.props;
-        return (<Modal trigger={<i className="ui icon cog editBtn" style={modalStyle}></i>}>
+        return (<Modal 
+            closeIcon={true}
+            closeOnDimmerClick={true}
+            trigger={<i className="ui icon cog editBtn" style={modalStyle}></i>}>
             <Modal.Header>Edit Control Dialog for {controlInfo.i}</Modal.Header>
             <Modal.Content>
             <Modal.Description>

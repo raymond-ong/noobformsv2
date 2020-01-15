@@ -115,11 +115,37 @@ export const updateLayout = (updatedControls) => {
 }
 
 // Save the layout to persistent storage like database or web local storage
-export const saveLayout = (layout) => {
-  return {
-    type: SAVE_DESIGNER_LAYOUT,
-    payload: layout
-  }
+export const saveLayout = (layout, name) => async dispatch => { 
+  console.log('[action] fetchAvailableData');
+
+  const response = await masterData.post('layout', {
+    name,
+    layoutJson: JSON.stringify(layout)
+  });
+  // {
+  //   headers: { 'Access-Control-Allow-Origin': "*" },
+  //   proxy: {
+  //     host: '127.0.0.1',
+  //     port: 60000,
+  //   }
+  // });
+
+  dispatch({
+    type: FETCH_AVAILABLEDATA,
+    payload: {layout, name, response}
+  });
+  
+  // var xhttp = new XMLHttpRequest();
+  // xhttp.onreadystatechange = function() {
+  //   if (this.readyState == 4 && this.status == 200) {
+  //     document.getElementById("demo").innerHTML = this.responseText;
+  //   }
+  // };
+  // xhttp.open("POST", "http://localhost:60000/api/layout", true);
+  // xhttp.setRequestHeader("Content-type", "application/json");
+  // //xhttp.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:60000");
+  // xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
+  // xhttp.send('{"name": "Dummy layout!!!", "layoutJson": "Something"}');
 }
 
 export const updateControlProps = (newControlData) => {

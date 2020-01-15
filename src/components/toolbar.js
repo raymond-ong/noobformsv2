@@ -4,23 +4,28 @@ import {Popup, Dropdown, Menu} from 'semantic-ui-react';
 import {WIDTH_LARGE} from '../constants';
 
 // Generic toolbar Control that accepts the menu items and callbacks as props, e.g.
-// const menuItems = {
-//     'left': [
-//         {key:'designertb_save', icon: 'save', text: 'Save'},
-//         {key:'designertb_saveas', icon: 'save outline', text: 'Save As...'},
-//         {key:'designertb_open', icon: 'open folder outline', text: 'Open...'},
-//     ],
-//     'right': [
-//         {key:'designertb_preview', icon: 'eye', text: 'Hold to Preview', disabled: true},
-//     ]
-// }
+/*
+const menuItems = {
+    'left': [
+        {key:'designertb_save', icon: 'save', text: 'Save'},
+        {key:'designertb_saveas', icon: 'save outline', text: 'Save As...'},
+        {key:'designertb_open', icon: 'open folder outline', text: 'Open...'},
+    ],
+    'right': [
+        {key:'designertb_preview', icon: 'eye', text: 'Hold to Preview', disabled: true},
+    ]
+}
+*/
 
 const renderToolbarBtn = (item) => {
     let clsName = "toolbarButton";
     if (item.disabled) {
         clsName += " toolbarButton-disabled"
     }
-    return <button key={item.key} className={clsName} type='submit'>
+    let btnType = item.type || null; // e.g. submit button, so that no need to specify callback
+    let callback = item.callback || null;    
+
+    return <button key={item.key} className={clsName} type={btnType} onClick={callback}>
         <i className={'ui icon ' + item.icon}/>
         {item.text}
     </button>

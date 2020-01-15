@@ -522,7 +522,7 @@ const defaultReportLayout = [
     {i: 'ctrl-gauge0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'gauge',       
     data: {
         label: 'Gauge:',
-        percent: 0.955
+        percent: 95.5
     }},
 
     // [3 new] Pie Chart

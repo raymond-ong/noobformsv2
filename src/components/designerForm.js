@@ -214,7 +214,6 @@ const onControlClicked = (control) => {
 }
 
 const onDrop = (elemParams, arg2) => {
-  debugger
   let internalLayout = null;
   if (!arg2) {
       // I manually modified the params of OnDrop from the STRML library

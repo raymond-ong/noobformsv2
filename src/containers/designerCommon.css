@@ -11,3 +11,8 @@
     overflow: auto; 
     /* border: 10px solid green; */
 }
+
+/* Manually set the height...seems like a bug in the Semantic CSS */
+.saveAsModal {
+    height: 210px;
+}

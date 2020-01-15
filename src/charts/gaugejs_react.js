@@ -1,6 +1,7 @@
 import React, {useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import {Gauge as CanvasGauge, Donut, TextRenderer} from 'gaugeJS/dist/gauge.min';
+import noobControlHoc from '../hoc/noobControlsHoc';
 import './gauge.css';
 
 //https://github.com/keanemind/react-gaugejs/blob/master/Gauge.js
@@ -70,7 +71,7 @@ function Gauge(props) {
   }, [props.animationSpeed]);
 
   useEffect(() => {
-    gauge.current.set(props.value);
+    gauge.current.set(props.data.percent);
 
     // To allow decimal values on the label
     var textRenderer = new TextRenderer(span.current)
@@ -81,7 +82,7 @@ function Gauge(props) {
     };
     gauge.current.setTextField(textRenderer);
 
-  }, [props.value]);
+  }, [props.data.percent]);
 
   /* eslint-disable no-unused-vars */
   const {
@@ -101,6 +102,8 @@ function Gauge(props) {
       classNames += ' ctrl-selected'
   }
 
+  // TODO: Ruined the web resizing after fixing the report alignment/sizing
+  // Separate the function for web/reporting if necessary
   return (
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
@@ -163,4 +166,4 @@ Gauge.propTypes = {
   textChangeHandler: PropTypes.func.isRequired,
 };
 
-export default Gauge;
+export default noobControlHoc(Gauge);

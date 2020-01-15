@@ -1,3 +1,6 @@
+// TODO: Obsolete this class 
+// Replaced by Toolbar.js where the buttons are defined by calling class
+
 import React from 'react';
 import './designerToolbar.css';
 import {Popup, Dropdown, Menu} from 'semantic-ui-react';

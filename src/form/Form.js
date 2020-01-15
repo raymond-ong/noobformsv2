@@ -12,7 +12,8 @@ export const FormContext = createContext();
 // https://codesandbox.io/s/dazzling-napier-ne3e6
 function Form({ children, onSubmit, inputObj, setControlValues, watchedField, setStateCb, ...rest }) {
   const { register, setValue, handleSubmit, unregister, watch } = useForm();
-  const watchedValue = watch(watchedField); // no way for us to pass back the value conveniently, but the form will rerender anyways
+  const watchedValue = !!watchedField ? watch(watchedField) : null; // no way for us to pass back the value conveniently, but the form will rerender anyways
+  const inputObjVals = !! inputObj ? [...Object.values(inputObj)] : null
   console.log('Form rerenders', inputObj, watchedValue);  
 
     useEffect(() => {
@@ -20,9 +21,10 @@ function Form({ children, onSubmit, inputObj, setControlValues, watchedField, se
       console.log('Form useEffect1', watchedValue);
         // Set the initial values
         // The controls' values are not really bound to any state or props so we have to update it here
-        setControlValues(setValue, inputObj);
-
-    }, [...Object.values(inputObj)])
+        if (setControlValues) {
+          setControlValues(setValue, inputObj);
+        }        
+    }, inputObjVals)
 
     useEffect(() => {
       // Called only when watched value changes

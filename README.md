@@ -77,3 +77,5 @@ Setting useCSSTransforms to false leads to some buggy behaviour when Dragging a 
 
 ## Current bugs
 - [ ] If table only has few columns, collapsing the left pane causes the table to not stretch out and fill 100% width
+- [ ] The new gauge control does not handle resizing @web view, when splitter window is shrunk (overlap, horz alignment)
+- [ ] Pie chart overlaps when splitter window is shrunk

@@ -98,7 +98,6 @@ const findInheritedPage = (selectedNode, userSettings) => {
     if (!selectedNode) {
         return null;
     }
-    debugger
     let currNode = selectedNode;
     while (currNode.parent) {
         let findUserSetting = userSettings.find(s => s.key === currNode.parent.key);
