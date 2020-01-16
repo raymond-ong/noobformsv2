@@ -9,6 +9,7 @@ import Toolbar from '../components/toolbar';
 import NoobForm from '../components/noobForm';
 import './designerCommon.css';
 import {saveLayout} from '../actions';
+import ShowMessage, {NotifType} from '../helper/notification';
 
 import {connect} from 'react-redux';
 import SaveAsDialog from '../components/saveAs';
@@ -73,9 +74,16 @@ class formsDesignerContent extends DesignerContentbase {
         })        
     }
 
-    handleSave = (layoutName) => {
+    handleSave = async (layoutName) => {
         console.log('Save the layout...', layoutName);
-        this.props.saveLayout(this.props.layout, layoutName); // dispatch redux action
+        let result = await this.props.saveLayout(this.props.layout, layoutName); // dispatch redux action
+        debugger
+        if (result === true) {
+            ShowMessage("Layout Saved!");
+        }
+        else {
+            ShowMessage("Failed to Save Layout!", NotifType.danger, result.message);
+        }
         this.handleCloseSave();
     }
 

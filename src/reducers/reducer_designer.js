@@ -3,6 +3,7 @@ import { SELECT_TOOLPANEL_TREE,
           UPDATE_DESIGNER_LAYOUT,
           UPDATE_CONTROL_PROPS,
           DELETE_CONTROL,
+          SAVE_DESIGNER_LAYOUT,
           deleteControl} from "../actions/index";
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
@@ -390,6 +391,9 @@ export default function(state = defaultState, action) {
 
       handleDeleteControl(action.payload, newStateDeleteControl.layout);
       return newStateDeleteControl;
+    case SAVE_DESIGNER_LAYOUT:
+      // TODO: After a successful Save, server will return the object saved
+      // It's expected to be the same, but ideally we should replace local state's object with the one from the server
   }
   return state;
 }

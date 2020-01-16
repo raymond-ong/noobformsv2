@@ -5,13 +5,13 @@ import Navbar from '../src/components/navbar';
 import MainContent from './containers/mainContent';
 import "../src/styles/App.css";
 //import masterData from './api/masterData';
-import {fetchHierarchy, fetchAvailableData} from './actions';
+import {fetchHierarchy, fetchAvailableData, fetchSavedLayouts} from './actions';
 import {connect} from 'react-redux';
 
 import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd'
-import ShowMessage from '../src/helper/notification';
+import ShowMessage, {NotifType} from '../src/helper/notification';
 import ReactNotification from 'react-notifications-component'
 import ReportApp from './ReportApp';
 
@@ -22,8 +22,9 @@ class App extends React.Component {
         // Fetch master data:
         // Hierarchy, layouts, saved data
 
-        this.props.fetchHierarchy();
+        this.props.fetchHierarchy().catch( err => ShowMessage("Unable to fetch hierarchy", NotifType.danger, err.message));
         this.props.fetchAvailableData();
+        this.props.fetchSavedLayouts();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
@@ -54,4 +55,4 @@ class App extends React.Component {
 }
 
 //dndBackend = DragDropContext(TouchBackend);
-export default connect(null, {fetchHierarchy, fetchAvailableData})(App);
+export default connect(null, {fetchHierarchy, fetchAvailableData, fetchSavedLayouts})(App);

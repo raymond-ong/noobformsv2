@@ -77,3 +77,21 @@ export const findNodeByPos = (data, posArr, currLevel=0) => {
     //     return data[posArr]
     // }
 }
+
+
+// Remove the 'parent' object so that we can stringify the object
+export const sanitizeTreeData = (nodeList) => {
+    let retList = [];
+
+    //debugger
+    for (let i = 0; i < nodeList.length; i++) {
+        let currNode = nodeList[i];
+        let {parent, hierStack, ...cleanNode} = {...currNode};
+        if (cleanNode.children) {
+            cleanNode.children = sanitizeTreeData(cleanNode.children)
+        }
+        retList.push(cleanNode);
+    }
+
+    return retList;
+}

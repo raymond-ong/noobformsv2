@@ -1,13 +1,16 @@
-import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA } from "../actions/index";
+import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA, FETCH_SAVEDLAYOUTS } from "../actions/index";
 
+// Assumpation: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'formsDesigner',
-    tabIndex: 1,
+    activeMenu: 'hierarchyDesigner',
+    tabIndex: 3,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
     masterHierarchy: null,
-    masterAvailableData: null
+    masterAvailableData: null,
+    masterLayouts: null,
+    masterHierarchySettings: null, // All the hierarchy settings set by the user using the Hierarchy Designer
 }
 
 const tabIndexMapping = {
@@ -44,6 +47,11 @@ export default function(state = defaultState, action) {
         ...state,
         masterAvailableData: action.payload.data
       }
+    case FETCH_SAVEDLAYOUTS:
+      return {
+        ...state,
+        masterLayouts: action.payload.data
+      }      
   }
   return state;
 }

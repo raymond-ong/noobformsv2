@@ -16,14 +16,16 @@ const onSave = () => {
 }
 
 const defaultInherit = true;
+const defaultDisplay = true;
 const defaultPage = null;
 
 const menuItems = {
     'left': [
-        {key:'designertb_save', icon: 'save', text: 'Save', type:'submit'},
+        {key:'designertb_save', icon: 'check', text: 'Apply', type:'submit'},
     ],
 }
 
+/*
 const dummyPages = ['None - Do not show',
     'Default Page',
     'Plant Hierarchy Page',
@@ -37,12 +39,13 @@ const dummyPages = ['None - Do not show',
     'Valve KPI Page',
     'Valve Diagnostics Page',
 ];
+*/
 
-const renderPageOptions = (name, disabled=false) => {
+const renderPageOptions = (name, savedLayouts, disabled=false) => {
     // return <select>
     //     {dummyPages.map((page) => <option key={'option_'+page} value={page}>{page}</option>)};
     // </select>
-    let options = dummyPages.map((page) => {return {key: `option_${page}`, text: page, value: page}});
+    let options = savedLayouts.map((layout) => {return {key: `option_${layout.name}`, text: layout.name, value: layout.name}});
     return <FormDropDown
         name={name}
         label={null}
@@ -66,12 +69,16 @@ const setControlValues = (setValueFunc, inputObj) => {
         setValueFunc('inherit', defaultInherit);
         setValueFunc('pageAssoc', defaultPage);
         setValueFunc('childDefaultPage', defaultPage);
+        setValueFunc('displayWeb', defaultDisplay);
+        setValueFunc('displayReport', defaultDisplay);
     }
     else {
         setValueFunc('name', findUserSettings.dispName);
         setValueFunc('inherit', findUserSettings.inherit);
         setValueFunc('pageAssoc', findUserSettings.pageAssoc);
         setValueFunc('childDefaultPage', findUserSettings.childDefaultPage);
+        setValueFunc('displayWeb', findUserSettings.displayWeb);
+        setValueFunc('displayReport', findUserSettings.displayReport);
     }
 
     if (!inputObj.selectedNode.parent) {
@@ -87,10 +94,12 @@ const onSubmit = (formArgs, action) => {
         dispName: formArgs.name,
         inherit: formArgs.inherit,
         pageAssoc: formArgs.pageAssoc,
-        childDefaultPage: formArgs.childDefaultPage
+        childDefaultPage: formArgs.childDefaultPage,
+        displayWeb: formArgs.displayWeb,
+        displayReport: formArgs.displayReport,
     });
 
-    ShowMessage('Properties Saved!', NotifType.success)
+    ShowMessage('Properties Applied!', NotifType.success, 'Please click Save to persist the settings to database')
 }
 
 const findInheritedPage = (selectedNode, userSettings) => {
@@ -112,7 +121,7 @@ const findInheritedPage = (selectedNode, userSettings) => {
     return 'Not set';
 }
 
-const renderHierPanelContent = (selectedNode, userSettings, myState) => {
+const renderHierPanelContent = (selectedNode, userSettings, myState, savedLayouts) => {
     console.log('renderHierPanelContent', selectedNode);
     if (!selectedNode || !selectedNode.key) {
         return <div className="ui message orange">No node is selected</div>
@@ -160,15 +169,31 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
                 <tr>
                     <th>Page Associated</th>
                     <td>
-                        {renderPageOptions('pageAssoc', myState.inherit)}
+                        {renderPageOptions('pageAssoc', savedLayouts, myState.inherit)}
                     </td>
                 </tr>
                 <tr>
                     <th>Children Default Page</th>
                     <td>
-                        {renderPageOptions('childDefaultPage')}
+                        {renderPageOptions('childDefaultPage', savedLayouts)}
                     </td>
                 </tr>
+                <tr>
+                    <th>Display in Web Browser</th>
+                    <td>
+                        <FormCheckbox
+                            name='displayWeb'
+                        />
+                    </td>
+                </tr>                    
+                <tr>
+                    <th>Display in PDF Report</th>
+                    <td>
+                        <FormCheckbox
+                            name='displayReport'
+                        />
+                    </td>
+                </tr>                    
             </tbody>
         </table>
         {/* <div className="ui message olive">TODO: Implement this panel as Tree List View to allow bulk edit</div> */}
@@ -178,7 +203,7 @@ const renderHierPanelContent = (selectedNode, userSettings, myState) => {
 // saveNodeConfig: redux action to save the node settings
 // selectedNode: from redux store
 // userSettings: from redux store
-const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeConfig}) => {
+const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeConfig, savedLayouts}) => {
     console.log('render HierConfigPanel', userSettings);
 
     const [myState, setMyState] = useState({
@@ -198,7 +223,7 @@ const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeCo
             containerWidth={containerWidth}
             menuItems={menuItems}
         />
-        {renderHierPanelContent(selectedNode, userSettings, myState)}
+        {renderHierPanelContent(selectedNode, userSettings, myState, savedLayouts)}
         </Form>
 }
 
@@ -206,7 +231,8 @@ function mapStateToProps(state) {
     return {
         hierarchyTree: state.hierarchyDesigner.hierarchyTree,
         selectedNode: state.hierarchyDesigner.selectedNode,
-        userSettings: state.hierarchyDesigner.userSettings
+        userSettings: state.hierarchyDesigner.userSettings,
+        savedLayouts: state.mainApp.masterLayouts
     }
 }
   

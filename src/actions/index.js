@@ -1,4 +1,6 @@
 import masterData from '../api/masterData';
+import _ from 'lodash';
+import {sanitizeTreeData} from '../helper/treefilter';
 
 export const CLICK_MENU = "CLICK_MENU";
 export const DRAG_TOOLITEM_START = "DRAG_TOOLITEM_START";
@@ -9,12 +11,15 @@ export const INSERT_HIER_DESIGNER_TREE = "INSERT_HIER_DESIGNER_TREE"
 export const FILTER_HIER_DESIGNER_TREE = "FILTER_HIER_DESIGNER_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
 export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
+export const FETCH_SAVEDLAYOUTS = "FETCH_SAVEDLAYOUTS"
+export const FETCH_HIERARCHYVIEWS = "FETCH_HIERARCHYVIEWS"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
 export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
 export const DELETE_CONTROL = "DELETE_CONTROL";
 export const SAVE_HIER_DESIGN_NODE = "SAVE_HIER_DESIGN_NODE";
+export const SAVE_HIERARCHYVIEW = "SAVE_HIERARCHYVIEW";
 
 export function menuClicked(menuName) { 
     return {
@@ -71,6 +76,8 @@ export function insertNewNode() {
   }
 }
 
+// Actually, this is just "Apply" to local state
+// This does not persist to the database yet
 export function saveNodeConfig(nodeInfo) {
   return {
     type: SAVE_HIER_DESIGN_NODE,
@@ -80,12 +87,14 @@ export function saveNodeConfig(nodeInfo) {
 
 export const fetchHierarchy = () => async dispatch => { 
   console.log('[action] fetchHierarchy');
-  const response = await masterData.get('hierarchy')
+  let response = await masterData.get('hierarchy');
 
   dispatch({
     type: FETCH_HIERARCHY,
     payload: response
   });
+
+  return true;
 }
 
 export const fetchAvailableData = () => async dispatch => { 
@@ -94,6 +103,26 @@ export const fetchAvailableData = () => async dispatch => {
 
   dispatch({
     type: FETCH_AVAILABLEDATA,
+    payload: response
+  });
+}
+
+export const fetchSavedLayouts = () => async dispatch => { 
+  console.log('[action] fetchSavedLayouts');
+  const response = await masterData.get('layout')
+
+  dispatch({
+    type: FETCH_SAVEDLAYOUTS,
+    payload: response
+  });
+}
+
+export const fetchHierarchyViews = () => async dispatch => { 
+  console.log('[action] fetchHierarchyViews');
+  const response = await masterData.get('hierarchyviews')
+
+  dispatch({
+    type: FETCH_HIERARCHYVIEWS,
     payload: response
   });
 }
@@ -115,37 +144,52 @@ export const updateLayout = (updatedControls) => {
 }
 
 // Save the layout to persistent storage like database or web local storage
+// TODO: Warn user, or inform user about replacing file, if that name already exists
 export const saveLayout = (layout, name) => async dispatch => { 
   console.log('[action] fetchAvailableData');
 
-  const response = await masterData.post('layout', {
-    name,
-    layoutJson: JSON.stringify(layout)
-  });
-  // {
-  //   headers: { 'Access-Control-Allow-Origin': "*" },
-  //   proxy: {
-  //     host: '127.0.0.1',
-  //     port: 60000,
-  //   }
-  // });
+  let response = null;
+  try {
+    response = await masterData.post('layout', {
+      name,
+      layoutJson: JSON.stringify(layout)
+    });  
+  }
+  catch(err) {
+    return err;
+  }
 
   dispatch({
-    type: FETCH_AVAILABLEDATA,
+    type: SAVE_DESIGNER_LAYOUT,
     payload: {layout, name, response}
   });
-  
-  // var xhttp = new XMLHttpRequest();
-  // xhttp.onreadystatechange = function() {
-  //   if (this.readyState == 4 && this.status == 200) {
-  //     document.getElementById("demo").innerHTML = this.responseText;
-  //   }
-  // };
-  // xhttp.open("POST", "http://localhost:60000/api/layout", true);
-  // xhttp.setRequestHeader("Content-type", "application/json");
-  // //xhttp.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:60000");
-  // xhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
-  // xhttp.send('{"name": "Dummy layout!!!", "layoutJson": "Something"}');
+
+  return true;
+}
+
+// Save the layout to persistent storage like database or web local storage
+// TODO: Warn user, or inform user about replacing file, if that name already exists
+export const saveHierarchyView = (hierarchyData, userSettings) => async dispatch => { 
+  console.log('[action] fetchAvailableData');
+
+  let response = null;  
+  let formattedHierarchyData = sanitizeTreeData(hierarchyData);
+  try {
+    response = await masterData.post('hierarchyviews', {
+      hierarchyJson: JSON.stringify(formattedHierarchyData),
+      nodeSettingsJson: JSON.stringify(userSettings),
+    });  
+  }
+  catch(err) {
+    return err;
+  }
+
+  dispatch({
+    type: SAVE_HIERARCHYVIEW,
+    payload: {hierarchyData, userSettings}
+  });
+
+  return true;
 }
 
 export const updateControlProps = (newControlData) => {

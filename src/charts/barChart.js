@@ -10,40 +10,40 @@ import noobControlHoc from '../hoc/noobControlsHoc';
 
 const data = [
   {
-    date: '2000-01', uv: 4000, pv: 2400, amt: 2400,
+    date: '2000-01', "Time in Preferred Mode": 4000, "Time in Control": 2400, "Time MV out of Limits": 2400,
   },
   {
-    date: '2000-02', uv: 3000, pv: 1398, amt: 2210,
+    date: '2000-02', "Time in Preferred Mode": 3000, "Time in Control": 1398, "Time MV out of Limits": 2210,
   },
   {
-    date: '2000-03', uv: 2000, pv: 9800, amt: 2290,
+    date: '2000-03', "Time in Preferred Mode": 2000, "Time in Control": 9800, "Time MV out of Limits": 2290,
   },
   {
-    date: '2000-04', uv: 2780, pv: 3908, amt: 2000,
+    date: '2000-04', "Time in Preferred Mode": 2780, "Time in Control": 3908, "Time MV out of Limits": 2000,
   },
   {
-    date: '2000-05', uv: 1890, pv: 4800, amt: 2181,
+    date: '2000-05', "Time in Preferred Mode": 1890, "Time in Control": 4800, "Time MV out of Limits": 2181,
   },
   {
-    date: '2000-06', uv: 2390, pv: 3800, amt: 2500,
+    date: '2000-06', "Time in Preferred Mode": 2390, "Time in Control": 3800, "Time MV out of Limits": 2500,
   },
   {
-    date: '2000-07', uv: 3490, pv: 4300, amt: 2100,
+    date: '2000-07', "Time in Preferred Mode": 3490, "Time in Control": 4300, "Time MV out of Limits": 2100,
   },
   {
-    date: '2000-08', uv: 4000, pv: 2400, amt: 2400,
+    date: '2000-08', "Time in Preferred Mode": 4000, "Time in Control": 2400, "Time MV out of Limits": 2400,
   },
   {
-    date: '2000-09', uv: 3000, pv: 1398, amt: 2210,
+    date: '2000-09', "Time in Preferred Mode": 3000, "Time in Control": 1398, "Time MV out of Limits": 2210,
   },
   {
-    date: '2000-10', uv: 2000, pv: 9800, amt: 2290,
+    date: '2000-10', "Time in Preferred Mode": 2000, "Time in Control": 9800, "Time MV out of Limits": 2290,
   },
   {
-    date: '2000-11', uv: 2780, pv: 3908, amt: 2000,
+    date: '2000-11', "Time in Preferred Mode": 2780, "Time in Control": 3908, "Time MV out of Limits": 2000,
   },
   {
-    date: '2000-12', uv: 1890, pv: 4800, amt: 2181,
+    date: '2000-12', "Time in Preferred Mode": 1890, "Time in Control": 4800, "Time MV out of Limits": 2181,
   },
 ];
 
@@ -123,10 +123,11 @@ const renderChartContents = (bAnimate, width, height) => {
       <Legend  wrapperStyle={{
       paddingTop: "10px"
       }}/>
-      <Bar dataKey="pv" fill="green" stackId="a" isAnimationActive={false} onClick={(args) => {
+      <Bar dataKey="Time in Control" fill="green" stackId="a" isAnimationActive={false} onClick={(args) => {
         console.log(args);}
         }/>
-      <Bar isAnimationActive={bAnimate} dataKey="uv" fill="gold" stackId="a"/>      
+      <Bar isAnimationActive={bAnimate} dataKey="Time in Preferred Mode" fill="gold" stackId="a"/>      
+      <Bar isAnimationActive={bAnimate} dataKey="Time MV out of Limits" fill="gray" stackId="a"/>      
     </BarChart>
   )
 }

@@ -6,12 +6,18 @@ import DesignerContentbase from './designerContentBase';
 import HierarchyDesignerTree from './hierearchyTree';
 import HierarchyToolbar from '../components/hierDesignerToolbar';
 import HierConfigPanel from './hierarchyConfigPanel';
-import { selectHierDesignerTree, updateHierDesignerTree, insertNewNode, filterHierDesignerTree } from '../actions/index';
+import { selectHierDesignerTree, 
+        updateHierDesignerTree, 
+        insertNewNode, 
+        filterHierDesignerTree,
+        fetchHierarchyViews,
+        saveHierarchyView } from '../actions/index';
 import {findNodeByKey, filterTree, filterTreeEx} from '../helper/treefilter';
 
 
 import './hierarchyTree.css'; //temp only
 import './hierarchyDesigner.css';
+import ShowMessage, { NotifType } from '../helper/notification';
 
 const DEFAULT_SPLIT_SIZES = [25, 75];
 
@@ -70,8 +76,15 @@ class HierarchyDesigner extends DesignerContentbase {
         this.props.updateHierDesignerTree(data);
     }
 
-    onSave = () => {
+    onSave = async () => {
         console.log('onSave');
+        let result = await this.props.saveHierarchyView(this.props.hierarchyTree, this.props.userSettings)
+        if (result === true) {
+            ShowMessage("Saved Hierarchy View!");
+        }
+        else {
+            ShowMessage("Failed to Save Hierarchy View!", NotifType.danger, result.message);
+        }
     }
 
     onInsert = () => {
@@ -131,16 +144,20 @@ class HierarchyDesigner extends DesignerContentbase {
 }
 
 function mapStateToProps(state) {
-    console.log('mapStateToProps hierarchyDesigner');
     return {
         hierarchyTree: state.hierarchyDesigner.hierarchyTree,
         selectedNode: state.hierarchyDesigner.selectedNode,
-        userSettings: state.hierarchyDesigner.userSettings,
+        userSettings: state.hierarchyDesigner.userSettings,        
     }
 }
   
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectHierDesignerTree, updateHierDesignerTree, insertNewNode, filterHierDesignerTree }, dispatch);
+    return bindActionCreators({ selectHierDesignerTree, 
+                                updateHierDesignerTree, 
+                                insertNewNode, 
+                                filterHierDesignerTree,
+                                fetchHierarchyViews,
+                                saveHierarchyView }, dispatch);
 }
   
 export default connect(mapStateToProps, mapDispatchToProps)(HierarchyDesigner);
