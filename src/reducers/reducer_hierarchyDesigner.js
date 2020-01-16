@@ -3,11 +3,13 @@ import { FETCH_HIERARCHY,
   SELECT_HIER_DESIGNER_TREE, 
   INSERT_HIER_DESIGNER_TREE,
   FILTER_HIER_DESIGNER_TREE,
-  SAVE_HIER_DESIGN_NODE } from "../actions/index";
+  SAVE_HIER_DESIGN_NODE,
+  FETCH_HIERARCHYVIEWS } from "../actions/index";
 import {findNodeByKey, filterTreeEx} from '../helper/treefilter';
 
 const defaultState = {
-    hierarchyTree: null, // 2nd copy of hierarchy data, so that if user cancels operation
+    hierarchyMaster: null, // Just a backup copy of the hierarchy master data, in case the user haven't saved anything yet.
+    hierarchyTree: null,   // This is the tree that the designer will be working on
     selectedNode: null,
     userSettings: [], 
     /*
@@ -137,7 +139,8 @@ export default function(state=defaultState, action) {
       case FETCH_HIERARCHY:
         return {
           ...state,
-          hierarchyTree: [convertMasterDataToKeys(action.payload.data)]
+          hierarchyMaster: action.payload.data
+          //hierarchyTree: [convertMasterDataToKeys(action.payload.data)]
         }
       case UPDATE_HIER_DESIGNER_TREE:
         let reformatted = reconstructHierarchyStack(action.payload);
@@ -166,8 +169,18 @@ export default function(state=defaultState, action) {
         let saveNodeState = {...state};
         saveNodeState.userSettings = [...state.userSettings];
         handleSaveHierDesignNode(saveNodeState, action.payload)
-        
         return saveNodeState;
+      case FETCH_HIERARCHYVIEWS:
+        let fetchedViewState = {...state};           
+        if ((!action.payload.data || action.payload.data.length === 0) && !!fetchedViewState.hierarchyMaster) {
+          fetchedViewState.hierarchyTree = [convertMasterDataToKeys(fetchedViewState.hierarchyMaster)];
+        }
+        else {
+          // Assume [0], for the default
+          fetchedViewState.hierarchyTree = JSON.parse(action.payload.data[0].hierarchyJson);
+          fetchedViewState.userSettings = JSON.parse(action.payload.data[0].nodeSettingsJson);  
+        }
+        return fetchedViewState;
     }
     return state;
   }

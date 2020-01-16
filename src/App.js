@@ -5,7 +5,7 @@ import Navbar from '../src/components/navbar';
 import MainContent from './containers/mainContent';
 import "../src/styles/App.css";
 //import masterData from './api/masterData';
-import {fetchHierarchy, fetchAvailableData, fetchSavedLayouts} from './actions';
+import {fetchHierarchy, fetchAvailableData, fetchSavedLayouts, fetchHierarchyViews} from './actions';
 import {connect} from 'react-redux';
 
 import TouchBackend from 'react-dnd-touch-backend';
@@ -25,6 +25,7 @@ class App extends React.Component {
         this.props.fetchHierarchy().catch( err => ShowMessage("Unable to fetch hierarchy", NotifType.danger, err.message));
         this.props.fetchAvailableData();
         this.props.fetchSavedLayouts();
+        this.props.fetchHierarchyViews();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
@@ -55,4 +56,4 @@ class App extends React.Component {
 }
 
 //dndBackend = DragDropContext(TouchBackend);
-export default connect(null, {fetchHierarchy, fetchAvailableData, fetchSavedLayouts})(App);
+export default connect(null, {fetchHierarchy, fetchAvailableData, fetchSavedLayouts, fetchHierarchyViews})(App);

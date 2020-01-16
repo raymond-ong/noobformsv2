@@ -56,7 +56,7 @@ class HierarchyDesignerTree extends React.Component {
 
   Icon = (props) => {
       //console.log('icon', props)
-      if (props.nodeType === 'Plant' || props.nodeType === 'Folder' || props.children.length > 0) {
+      if (props.nodeType === 'Plant' || props.nodeType === 'Folder' || (props.children && props.children.length > 0) ) {
         return <i className='ui icon folder outline'></i>
       }
       else {
