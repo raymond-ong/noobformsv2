@@ -63,6 +63,20 @@ class DashboardContent extends DesignerContentbase {
             }
         }
     }
+
+    renderForm = (layoutName, layoutObj) => {
+        if (!this.props.selectedNode || !this.props.selectedNode.key) {
+            return <div className="ui message orange">Please select a node from the treeview on the left!</div>
+        }
+        return <div>
+            {"[DEBUG] Layout Name: " + layoutName}
+            <ReportForm
+                containerWidth={this.state.rightPixels}
+                layoutData={layoutObj.layoutData}
+                controls={layoutObj.controls}
+            />
+        </div>
+    }
     
     // TODO: We need a toolbar to let the user specify the analysis date, and other functions like save to PDF
     render() {
@@ -83,14 +97,8 @@ class DashboardContent extends DesignerContentbase {
                     controlledExpansion
             />
             }
-            <div>
-            {"[DEBUG] Layout Name: " + layoutName}
-            <ReportForm
-                containerWidth={this.state.rightPixels}
-                layoutData={layoutObj.layoutData}
-                controls={layoutObj.controls}
-            />
-            </div>
+            {this.renderForm(layoutName, layoutObj)}
+            
         </NoobSplitter>
     }
 }
