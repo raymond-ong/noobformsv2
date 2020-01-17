@@ -128,14 +128,16 @@ class HierarchyDesigner extends DesignerContentbase {
                 onSearchText={this.onSearchText}
                 bEnableDelete={!!this.props.selectedNode && !!this.props.selectedNode.key}                
             >
-                <HierarchyDesignerTree 
+                {this.props.hierarchyTree && <HierarchyDesignerTree 
                     onSelectCb={this.onSelect} 
                     onHierarchyChanged={this.onHierarchyChanged}
                     treeData={this.props.hierarchyTree}
                     selectedNodeKey={this.props.selectedNode ? this.props.selectedNode.key : null}
                     searchText={this.state.searchText}
                     userSettings={this.props.userSettings}
-                    />                
+                    draggable
+                    />
+                }
             </ToolbarPanel>
             {HierarchyPropsPanel(this.state.rightPixels)}
         </NoobSplitter>

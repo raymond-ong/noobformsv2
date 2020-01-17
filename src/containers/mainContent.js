@@ -1,7 +1,8 @@
 import React from 'react';
 import "../styles/App.css";
 import "../styles/MainContent.css";
-import HomeContent from './homeContent';
+//import HomeContent from './homeContent';
+import DashboardContent from './dashboardContent';
 import DesignerContent from './dashboardDesignerContent';
 import FormsDesignerContent from './formsDesignerContent';
 import SettingsContent from './settingsContent';
@@ -14,7 +15,8 @@ const panes = [
         menuItem: 'Home',
         pane: (
         <Tab.Pane key='home' style={{height: '100%', width: '100%', padding: '0px'}}>
-            <HomeContent/>
+            {/* <HomeContent/> */}
+            <DashboardContent/>
         </Tab.Pane>
         ),
     },

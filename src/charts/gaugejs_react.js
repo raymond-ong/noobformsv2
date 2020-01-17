@@ -104,6 +104,8 @@ function Gauge(props) {
 
   // TODO: Ruined the web resizing after fixing the report alignment/sizing
   // Separate the function for web/reporting if necessary
+  // Another issue: the gauge canvas does not appear if the gauge is not visible during the time it was rendered (e.g. default tab is not forms designer)
+  // Might not need to fix since there won't be any gauge in the default layout
   return (
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>

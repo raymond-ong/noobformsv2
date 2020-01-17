@@ -1,4 +1,5 @@
-// Helper functions for filtering
+// Helper functions for tree
+// TODO: Rename this file to TreeHelper instead
 export const defaultMatcher = (filterText, node) => {
     return node.name.toLowerCase().indexOf(filterText.toLowerCase()) !== -1;
 };
@@ -95,3 +96,18 @@ export const sanitizeTreeData = (nodeList) => {
 
     return retList;
 }
+
+export const reconstructHierarchyStack = (apiNodes, stack=[], parent=null) => {
+    if (!apiNodes) {
+      return null;
+    }
+  
+    for(let i = 0; i < apiNodes.length; i++) {
+      let apiNode = apiNodes[i];
+      apiNode.hierStack = [...stack, i];
+      apiNode.parent = parent;
+      reconstructHierarchyStack(apiNode.children, apiNode.hierStack, apiNode);
+    }
+  
+    return apiNodes;
+  }

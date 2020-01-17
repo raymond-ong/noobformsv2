@@ -19,6 +19,8 @@ const defaultState = {
       inherit: true/false // if true, pageAssoc should be null/ignored
       pageAssoc: '', 
       childDefaultPage: '',
+      displayWeb: bool
+      displayReport: bool
     }
     */
 };
@@ -52,6 +54,7 @@ const convertMasterDataToKeys = (apiNode, index=0, stack=[], parent=null) => {
     return treeData;
 }
 
+// TODO: Move this function to treehelper
 const reconstructHierarchyStack = (apiNodes, stack=[], parent=null) => {
   if (!apiNodes) {
     return null;
@@ -177,7 +180,7 @@ export default function(state=defaultState, action) {
         }
         else {
           // Assume [0], for the default
-          fetchedViewState.hierarchyTree = JSON.parse(action.payload.data[0].hierarchyJson);
+          fetchedViewState.hierarchyTree = reconstructHierarchyStack(JSON.parse(action.payload.data[0].hierarchyJson));
           fetchedViewState.userSettings = JSON.parse(action.payload.data[0].nodeSettingsJson);  
         }
         return fetchedViewState;

@@ -90,7 +90,6 @@ class ReportForm extends React.Component {
 
     // Returns true if the control is the only control in the rows where the control is placed
     isControlSolo(control, layoutData) {
-        debugger
         let findOverlap = layoutData.find(layoutCtrl => 
             {
                 if (layoutCtrl.i === control.i) {
@@ -128,6 +127,9 @@ class ReportForm extends React.Component {
     // Should also skip the blank rows at the end (like trim-end, but retain blank rows in between or at the beginning)
     renderControls(layoutData, controls, containerWidth) {
         let retList = [];  
+        if (!layoutData || !layoutData) {
+            return retList;            
+        }        
         let fillMap = []; // way for us to monitor which cells are already filled up
         let maxRow = this.findLastNonEmptyRow(controls, layoutData);
         let currGroup = []; // List of controls that will be put together in 1 CSS-Grid layout
@@ -159,7 +161,6 @@ class ReportForm extends React.Component {
                 // otherwise just render an empty control
                 let findControl = controls.find(ctrl => ctrl.x == iCol && ctrl.y == iRow );
                 if (!findControl) {
-                    debugger
                     let emptyControlPojo = this.createEmptyControl(iCol, iRow, flatCoord); // plain old JS obj
                     let emptyControlJsx = this.renderControl(emptyControlPojo, containerWidth, layoutData.columns);
                     currGroup.push({
@@ -234,6 +235,10 @@ class ReportForm extends React.Component {
     render() {
         console.log('render ReportForm...');
         let {controls, layoutData} = this.props;
+        if (!layoutData || !controls) {
+            return null;
+        }
+
         let groupsList = this.renderControls(layoutData, controls, window.innerWidth-50); // minus 50 for the left and right margin of PDF
         //let controlsJsx = controlsList.map(c => c.jsx);
     

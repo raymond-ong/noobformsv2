@@ -23,6 +23,15 @@ class HierarchyDesignerTree extends React.Component {
     };
   }
 
+  componentDidMount = () => {
+    // Auto expand the first level nodes
+    let firstLevelKeys = this.getFirstLevelKeys();
+    console.log('[DEBUG][Tree] componentDidMount...', firstLevelKeys);
+    if (firstLevelKeys && firstLevelKeys.length) {
+      this.setState({expandedKeys: [...this.state.expandedKeys, ...firstLevelKeys]});
+    }
+  }
+
   componentDidUpdate = (prevProps) => {
     console.log('tree componentDidUpdate');
     if (!!this.props.selectedNodeKey && this.props.selectedNodeKey === prevProps.selectedNodeKey) {
@@ -244,7 +253,7 @@ class HierarchyDesignerTree extends React.Component {
           className="hierarchyTree"
           showLine
           selectable
-          draggable
+          draggable={this.props.draggable}
           onDragStart={this.onDragStart}
           onDragEnter={this.onDragEnter}
           onDrop={this.onDrop}

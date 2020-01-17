@@ -1,15 +1,23 @@
-import { CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA, FETCH_SAVEDLAYOUTS } from "../actions/index";
+import { CLICK_MENU, 
+  DRAG_TOOLITEM_START, 
+  SELECT_TOOLPANEL_TREE, 
+  FETCH_HIERARCHY, 
+  FETCH_HIERARCHYVIEWS,
+  FETCH_AVAILABLEDATA, 
+  FETCH_SAVEDLAYOUTS,
+  SAVE_DESIGNER_LAYOUT } from "../actions/index";
 
 // Assumpation: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'hierarchyDesigner',
-    tabIndex: 3,
+    activeMenu: 'home',
+    tabIndex: 0,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
     masterHierarchy: null,
     masterAvailableData: null,
     masterLayouts: null,
+    masterHierarchyViews: null,
     masterHierarchySettings: null, // All the hierarchy settings set by the user using the Hierarchy Designer
 }
 
@@ -22,7 +30,7 @@ const tabIndexMapping = {
 }
 
 export default function(state = defaultState, action) {
-  if (action.type in [CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA]) {
+  if ([CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA, SAVE_DESIGNER_LAYOUT, FETCH_HIERARCHYVIEWS].includes(action.type)) {
     console.log('[DEBUG] reducer_mainApp', action, state);
   }
   switch (action.type) {
@@ -51,7 +59,19 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         masterLayouts: action.payload.data
-      }      
+      }
+    case SAVE_DESIGNER_LAYOUT:
+      let newLayout = action.payload.response.data;
+      return {
+        ...state,
+        masterLayouts: [...state.masterLayouts, newLayout]
+      }
+    case FETCH_HIERARCHYVIEWS:
+      return {
+        ...state,
+        masterHierarchyViews: action.payload.data
+      }
+
   }
   return state;
 }

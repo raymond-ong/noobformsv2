@@ -102,7 +102,8 @@ const onSubmit = (formArgs, action) => {
     ShowMessage('Properties Applied!', NotifType.success, 'Please click Save to persist the settings to database')
 }
 
-const findInheritedPage = (selectedNode, userSettings) => {
+// TODO: export this to a common module
+export const findInheritedPage = (selectedNode, userSettings) => {
     console.log('findInheritedPage', selectedNode);
     if (!selectedNode) {
         return null;

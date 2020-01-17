@@ -20,6 +20,7 @@ export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
 export const DELETE_CONTROL = "DELETE_CONTROL";
 export const SAVE_HIER_DESIGN_NODE = "SAVE_HIER_DESIGN_NODE";
 export const SAVE_HIERARCHYVIEW = "SAVE_HIERARCHYVIEW";
+export const SELECT_DASHBOARD_TREE = "SELECT_DASHBOARD_TREE"
 
 export function menuClicked(menuName) { 
     return {
@@ -145,14 +146,16 @@ export const updateLayout = (updatedControls) => {
 
 // Save the layout to persistent storage like database or web local storage
 // TODO: Warn user, or inform user about replacing file, if that name already exists
-export const saveLayout = (layout, name) => async dispatch => { 
+export const saveLayout = (layout, name, layoutData) => async dispatch => { 
   console.log('[action] fetchAvailableData');
 
   let response = null;
   try {
     response = await masterData.post('layout', {
       name,
-      layoutJson: JSON.stringify(layout)
+      layoutJson: JSON.stringify(layout),
+      numRows: layoutData.rows,
+      numCols: layoutData.columns
     });  
   }
   catch(err) {
@@ -204,4 +207,13 @@ export const deleteControl = (controlData) => {
     type: DELETE_CONTROL,
     payload: controlData
   }
+}
+
+export function selectDashboardTree(hierarchyNode) {
+  return {
+    type: SELECT_DASHBOARD_TREE,
+    payload: {
+      ...hierarchyNode
+    }
+  };
 }

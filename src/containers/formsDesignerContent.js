@@ -76,8 +76,7 @@ class formsDesignerContent extends DesignerContentbase {
 
     handleSave = async (layoutName) => {
         console.log('Save the layout...', layoutName);
-        let result = await this.props.saveLayout(this.props.layout, layoutName); // dispatch redux action
-        debugger
+        let result = await this.props.saveLayout(this.props.layout, layoutName, this.props.layoutData); // dispatch redux action
         if (result === true) {
             ShowMessage("Layout Saved!");
         }
@@ -92,7 +91,7 @@ class formsDesignerContent extends DesignerContentbase {
         if (this.state.showSaveForm) {
             this.setState({
                 showSaveForm: false
-            })            
+            })
         }
     }
     
