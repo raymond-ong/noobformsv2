@@ -8,7 +8,7 @@ import '../controls/common.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 
-const data = [
+export const data = [
   {
     date: '2000-01', "Time in Preferred Mode": 4000, "Time in Control": 2400, "Time MV out of Limits": 2400,
   },

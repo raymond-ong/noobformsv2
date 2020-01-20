@@ -130,7 +130,7 @@ Gauge.defaultProps = {
     pointer: {
       length: 0.5,
       strokeWidth: 0.05,
-      color: 'gray',
+      color: 'black',
     },
     limitMax: false,
     limitMin: false,
