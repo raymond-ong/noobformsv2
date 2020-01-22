@@ -32,14 +32,14 @@ const generateDefaultLayout = () => {
   //     }},
 
   // [2 NEW] Gauge chart
-  {i: 'ctrl-gauge0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'gauge',       
-      data: {
-          label: 'Gauge:',
-          percent: 95.5
-      }},
+  // {i: 'ctrl-gauge0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'gauge',       
+  //     data: {
+  //         label: 'Gauge:',
+  //         percent: 95.5
+  //     }},
 
   // [3 new] Pie Chart
-  {i: 'ctrl-pie0', x: 6, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+  {i: 'ctrl-pie0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'pie',       
       data: {
           label: 'Pie:',
       }},
@@ -117,6 +117,12 @@ const generateDefaultLayout = () => {
   // {i: 'ctrl-table3', x: 9, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
   //   label: 'Table:'
   // }},
+
+  // dc bar chart
+  {i: 'ctrl-dcbar0', x: 6, y:1, w: 3, h: 4,ctrlType: 'dcbar', data: {
+    label: 'DC Chart:'
+  }},
+
   ];
 }
 
@@ -242,7 +248,9 @@ const defaultControlData = {
   },
   'gauge': {
     label: 'new Gauge:',
-    percent: 0.50
+    percent: 65
+  },
+  'pagebreak': {
   }
   
 }

@@ -108,7 +108,7 @@ const render1Section_1 = (index, start) => {
     
     
     // [2 NEW] Gauge chart
-    {i: `ctrl-gauge${index}`, x: 0, y: offset + 1, w: 3, h: 4, ctrlType: 'gauge',       
+    {i: `ctrl-gauge${index}`, x: 0, y: offset + 1, w: 3, h: 4, ctrlType: 'dcbar',       
     data: {
         label: 'Gauge:',
         percent: index/100.00

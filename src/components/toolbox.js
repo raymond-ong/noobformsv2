@@ -149,6 +149,13 @@ export const toolBoxItems = [
      category: 'common',
      minW: 12, minH:1,
    },
+   {
+     name: 'dcbar',
+     displayName: 'DC JS Bar',
+     icon: 'bar',
+     category: 'common',
+     minW: 3, minH:3,
+   },   
 ];
 
 

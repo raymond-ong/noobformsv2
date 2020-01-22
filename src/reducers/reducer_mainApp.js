@@ -9,8 +9,8 @@ import { CLICK_MENU,
 
 // Assumpation: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'home',
-    tabIndex: 0,
+    activeMenu: 'formsDesigner',
+    tabIndex: 1,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,

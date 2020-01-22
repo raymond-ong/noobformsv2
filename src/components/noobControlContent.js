@@ -10,6 +10,7 @@ import ReportTable from '../controls/reportTable';
 import Label from '../controls/label';
 import ShowMessage, {NotifType} from '../helper/notification';
 import { Popup } from 'semantic-ui-react'
+import DcBar from '../charts/dcjsBarChart';
 
 
 import { useDrag } from 'react-dnd'
@@ -18,6 +19,7 @@ import BarChart, {BarChartForReport} from '../charts/barChart';
 import Gauge from '../charts/gauge';
 import GaugeChart from '../charts/gauge_rechart';
 import GaugeJs from '../charts/gaugejs_react';
+import PageBreak from '../controls/pagebreak';
 
 // Separate the content-part into a standalone component from the control wrapper
 // Reason: this will be the only part that will be resized or moved while dragging (moving or resizing)
@@ -79,11 +81,15 @@ export const getContentDiv = (controlData) => {
             content=<GaugeJs {...controlData}/>
             break;
         case 'pagebreak':
-            // Should not come here!
+            // Should not come here if Reporting mode!
             // Parent form must insert page-break-before style into the next control instead
+            content = <PageBreak {...controlData}/>
             break;
         case undefined:
             content = <div className="emptyControl"></div>
+            break;
+        case 'dcbar':
+            content = <DcBar {...controlData}/>
             break;
         default:
             content = <div>{controlData.i}</div>
