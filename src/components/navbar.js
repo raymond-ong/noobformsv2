@@ -115,6 +115,7 @@ const navBarMenuItems = [
     { name: 'formsDesigner', title: 'Forms Designer',  icon: 'edit',   alignment: '' },
     { name: 'dashboardDesigner', title: 'Dashboard Designer',  icon: 'chart area',   alignment: '' },    
     { name: 'hierarchyDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
+    { name: 'dataDesigner', title: 'Data Source Designer',  icon: 'cube',   alignment: '' },
     { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]
 

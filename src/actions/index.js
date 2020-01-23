@@ -10,9 +10,11 @@ export const UPDATE_HIER_DESIGNER_TREE = "UPDATE_HIER_DESIGNER_TREE"
 export const INSERT_HIER_DESIGNER_TREE = "INSERT_HIER_DESIGNER_TREE"
 export const FILTER_HIER_DESIGNER_TREE = "FILTER_HIER_DESIGNER_TREE"
 export const FETCH_HIERARCHY = "FETCH_HIERARCHY"
+export const FETCH_HIERARCHYCONSO = "FETCH_HIERARCHYCONSO"
 export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
 export const FETCH_SAVEDLAYOUTS = "FETCH_SAVEDLAYOUTS"
 export const FETCH_HIERARCHYVIEWS = "FETCH_HIERARCHYVIEWS"
+export const FETCH_HIERARCHYKPI = "FETCH_HIERARCHYKPI"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
@@ -98,6 +100,19 @@ export const fetchHierarchy = () => async dispatch => {
   return true;
 }
 
+// Get the consolidated hierarchy from various collection dates
+export const fetchHierarchyConso = () => async dispatch => { 
+  console.log('[action] fetchHierarchyConso');
+  let response = await masterData.get('hierarchy/conso');
+
+  dispatch({
+    type: FETCH_HIERARCHYCONSO,
+    payload: response
+  });
+
+  return true;
+}
+
 export const fetchAvailableData = () => async dispatch => { 
   console.log('[action] fetchAvailableData');
   const response = await masterData.get('availabledata')
@@ -124,6 +139,16 @@ export const fetchHierarchyViews = () => async dispatch => {
 
   dispatch({
     type: FETCH_HIERARCHYVIEWS,
+    payload: response
+  });
+}
+
+export const fetchHierarchyKpi = () => async dispatch => { 
+  console.log('[action] fetchHierarchyKpi');
+  const response = await masterData.get('HierarchyKpi')
+
+  dispatch({
+    type: FETCH_HIERARCHYKPI,
     payload: response
   });
 }

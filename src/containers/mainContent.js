@@ -9,6 +9,7 @@ import SettingsContent from './settingsContent';
 import HierarchyDesigner from './hierarchyDesigner';
 import {connect} from 'react-redux';
 import {Tab} from 'semantic-ui-react';
+import DataDesignerContent from './dataDesignerContent';
 
 const panes = [
     {
@@ -41,6 +42,14 @@ const panes = [
         pane: (
           <Tab.Pane key='hierarchyDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
             <HierarchyDesigner/>
+          </Tab.Pane>
+        ),
+      },          
+      {
+        menuItem: 'dataDesigner',
+        pane: (
+          <Tab.Pane key='dataDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
+            <DataDesignerContent/>
           </Tab.Pane>
         ),
       },          

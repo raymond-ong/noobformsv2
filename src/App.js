@@ -5,7 +5,12 @@ import Navbar from '../src/components/navbar';
 import MainContent from './containers/mainContent';
 import "../src/styles/App.css";
 //import masterData from './api/masterData';
-import {fetchHierarchy, fetchAvailableData, fetchSavedLayouts, fetchHierarchyViews} from './actions';
+import {fetchHierarchy, 
+    fetchAvailableData, 
+    fetchSavedLayouts, 
+    fetchHierarchyViews, 
+    fetchHierarchyKpi,
+    fetchHierarchyConso} from './actions';
 import {connect} from 'react-redux';
 
 import TouchBackend from 'react-dnd-touch-backend';
@@ -22,10 +27,17 @@ class App extends React.Component {
         // Fetch master data:
         // Hierarchy, layouts, saved data
 
-        this.props.fetchHierarchy().catch( err => ShowMessage("Unable to fetch hierarchy", NotifType.danger, err.message));
+        this.props.fetchHierarchyConso();
+        this.props.fetchHierarchy()
+            // Fetch the view after fetching the real hierarchy. Because the user may not necessarily have saved
+            // a user hierarchy. In that case, we show the real hierarchy.
+            // Is there a guarantee that when the Reducer starts processing the hierarchy view, the hierarchy was already finished?
+            // Note: we are using redux thunk...Will the then() function be executed after network fetch or after reducer is done?
+            .then(() => this.props.fetchHierarchyViews())
+            .catch( err => ShowMessage("Unable to fetch hierarchy", NotifType.danger, err.message));
         this.props.fetchAvailableData();
         this.props.fetchSavedLayouts();
-        this.props.fetchHierarchyViews();
+        this.props.fetchHierarchyKpi();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
@@ -56,4 +68,9 @@ class App extends React.Component {
 }
 
 //dndBackend = DragDropContext(TouchBackend);
-export default connect(null, {fetchHierarchy, fetchAvailableData, fetchSavedLayouts, fetchHierarchyViews})(App);
+export default connect(null, {fetchHierarchy, 
+    fetchAvailableData, 
+    fetchSavedLayouts, 
+    fetchHierarchyViews, 
+    fetchHierarchyKpi, 
+    fetchHierarchyConso})(App);

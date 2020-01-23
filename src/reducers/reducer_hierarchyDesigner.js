@@ -175,6 +175,7 @@ export default function(state=defaultState, action) {
         return saveNodeState;
       case FETCH_HIERARCHYVIEWS:
         let fetchedViewState = {...state};           
+        // If the user haven't saved the hierarchy view yet (e.g. first time user), we show the master hierarchy instead
         if ((!action.payload.data || action.payload.data.length === 0) && !!fetchedViewState.hierarchyMaster) {
           fetchedViewState.hierarchyTree = [convertMasterDataToKeys(fetchedViewState.hierarchyMaster)];
         }

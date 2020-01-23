@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import {saveNodeConfig} from '../actions/index';
 import './hierarchyConfigPanel.css';
-import Form, {Text as FormText, FormCheckbox} from '../form/Form';
-import FormDropDown from '../form/FormDropDown';
+import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown} from '../form/Form';
 import ShowMessage, {NotifType} from '../helper/notification';
 
 

@@ -4,6 +4,7 @@ import DesignerReducer from "./reducer_designer";
 import HierarchyDesignerReducer from "./reducer_hierarchyDesigner";
 import ReportAppReducer from "./reducer_reportApp";
 import DashboardReducer from "./reducer_dashboard";
+import DataDesignerReducer from './reducer_datadesigner';
 
 
 const rootReducer = combineReducers({
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
   designer: DesignerReducer,
   hierarchyDesigner: HierarchyDesignerReducer,
   reportApp: ReportAppReducer,
-  dashboard: DashboardReducer
+  dashboard: DashboardReducer,
+  dataDesigner: DataDesignerReducer
 });
 
 export default rootReducer;
