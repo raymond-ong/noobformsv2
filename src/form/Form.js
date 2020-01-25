@@ -48,5 +48,6 @@ export { default as FormCheckbox } from "./FormCheckbox";
 export { default as Dropdown } from "./FormDropDown";
 export { default as IconSelector } from "./IconSelector";
 export { default as ColorSelector } from "./ColorSelector";
+export { default as FormTreeDropDown } from "./FormTreeDropDown";
 
 export default Form;

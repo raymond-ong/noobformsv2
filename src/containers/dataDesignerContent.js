@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import NoobSplitter from '../components/noobSplitter';
 import DesignerContentbase from './designerContentBase';
-import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown} from '../form/Form';
+import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTreeDropDown} from '../form/Form';
 import ShowMessage, { NotifType } from '../helper/notification';
 import Toolbar from '../components/toolbar';
 import 'rc-tree-select/assets/index.css';
@@ -26,35 +26,84 @@ const menuItems = {
     ],
 };
 
+// Mode 1: Flat data "simple mode"
 const simpleTreeData = [
-    { key: 1, pId: 0, label: 'a', value: 'a' },
-    { key: 11, pId: 1, label: 'a12', value: 'a12', disabled: true },
-    { key: 111, pId: 11, label: 'a00', value: 'a00', selectable: false },
-    { key: 2, pId: 0, label: 'b', value: 'b' },
-    { key: 20, pId: 2, label: 'b10', value: 'b10' },
-    { key: 21, pId: 2, label: 'b1', value: 'b1' },
-    { key: 22, pId: 2, label: 'b12', value: 'b12' },
+    { key: 1, pId: 0, label: 'test1', value: 'test1' },
+    { key: 121, pId: 0, label: 'test2', value: 'test2' },
+    { key: 11, pId: 1, label: 'test11', value: 'test11' },
+    { key: 12, pId: 1, label: 'test12', value: 'test12' },
+    { key: 111, pId: 11, label: 'test111', value: 'test111' },
   ];
 
+const treeDataSimpleMode = {
+    id: 'key',
+    rootPId: 0,
+  };
+
+// Mode 2: traditional data
+const treeDataSample = [
+    { key: '0-0', title: 'Plant', children:
+      [
+        { key: '0-0-0', title: 'Area1', isCollapsed: true, children:
+          [
+            { key: '0-0-0-0', title: 'Apple' },
+          ],
+        },
+        { key: '0-0-1', title: 'Area2', children:
+            [
+              { key: '0-0-1-0', title: 'Banana',},
+              { key: '0-0-1-1', title: 'Carrot' },
+              { key: '0-0-1-2', title: 'Dolphin' },
+              { key: '0-0-1-3', title: 'Elephant' },
+              { key: '0-0-1-4', title: 'Father' },
+              { key: '0-0-1-5', title: 'Germany' },
+              { key: '0-0-1-6', title: 'Holland' },
+              { key: '0-0-1-7', title: 'India' },
+              { key: '0-0-1-8', title: 'Japan' },
+              { key: '0-0-1-9', title: 'Kristaps' },
+              { key: '0-0-1-10', title: 'Lion' },
+              { key: '0-0-1-11', title: 'Mexico' },
+              { key: '0-0-1-12', title: 'Nigeria' },
+              { key: '0-0-1-13', title: 'Carrot Apple' },
+              { key: '0-0-1-14', title: 'Strawberry Banana' },
+              { key: '0-0-1-15', title: 'Godfather' },
+              { key: '0-0-1-16', title: 'Indian Mango' },
+              { key: '0-0-1-17', title: 'Dandelion' },
+              { key: '0-0-1-18', title: 'Lionel' },
+              { key: '0-0-1-19', title: 'Millionaire' },
+              { key: '0-0-1-20', title: 'The quick brown fox jumps over the lazy dog' },
+              { key: '0-0-1-21', title: 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ' },
+              { key: '0-0-1-22', title: '床前明月光,疑是地上霜,举头望明月,低头思故乡' },
+            ],
+        },
+      ],
+    },
+  ];
+  
 const renderDataDesignerPanelContent = () => {
     return <div className="dataDesignerPanelContainer">
-        <TreeSelect
+        {/* <TreeSelect
             style={{ width: 300 }}
             transitionName="rc-tree-select-dropdown-slide-up"
             choiceTransitionName="rc-tree-select-selection__choice-zoom"
-            dropdownStyle={{ height: 200, overflow: 'auto' }}
+            dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
             dropdownPopupAlign={{ overflow: { adjustY: 0, adjustX: 0 }, offset: [0, 2] }}
             placeholder={<i>Please select...</i>}
             searchPlaceholder="Search..."
             treeLine
+            //treeDataSimpleMode={treeDataSimpleMode}
+            showSearch
+            allowClear
             maxTagTextLength={10}
             //value={value}
-            treeData={simpleTreeData}
-            treeNodeFilterProp="title"
-            treeCheckable
+            //treeData={simpleTreeData}
+            treeData={treeDataSample}
+            treeNodeFilterProp="title"            
+            multiple={false}
             //onChange={this.onChange}
             //onSelect={this.onSelect}
-        />
+        /> */}
+        <FormTreeDropDown/>
     </div>
 }
 
