@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import NoobSplitter from '../components/noobSplitter';
@@ -8,6 +8,7 @@ import ShowMessage, { NotifType } from '../helper/notification';
 import Toolbar from '../components/toolbar';
 import 'rc-tree-select/assets/index.css';
 import TreeSelect, { SHOW_PARENT } from 'rc-tree-select';
+import {findNodeByKey} from '../helper/treefilter';
 
 import './dataDesignerContent.css';
 
@@ -41,15 +42,18 @@ const radioGroupContents = [
     {label: "For selected Hierarchy node's children", name: 'rgrpHierScope', value: 'children', }
 ];
 
-const renderDataDesignerPanelContent = () => {
+const renderDataDesignerPanelContent = (props, state) => {
+    debugger
+    let findSelNode = findNodeByKey(props.hierarchyConso, state.hierarchyTree);
+    let selNodeIsFolder = !!findSelNode && findSelNode.item.unitType !== 'Target';
     return <div className="dataDesignerPanelContainer">
         <table className="formTable">
         <tbody>
             <tr>
                 <th>Hierarchy</th>
                 <td>
-                    <FormTreeDropDown name="HierarchyTree"/>
-                    <FormRadio name="HierarchyScope" initialSel="self" radioGroupContents={radioGroupContents}/>
+                    <FormTreeDropDown name="hierarchyTree" treeData={props.hierarchyConso}/>
+                    {selNodeIsFolder && <FormRadio name="HierarchyScope" initialSel="self" radioGroupContents={radioGroupContents}/>}
                 </td>
             </tr>
 
@@ -76,34 +80,21 @@ const onSubmit = (args) => {
     console.log('Date Designer Submit', args);
 }
 
-const DataDesignerForm = (containerWidth) => {
-    // return <div>
-    //     <div>Hierarchy combobox (single select)</div>
-    //     <div>Radio button: choose whether for itself (use case: dial gauges), or for children if Hierarchy selected is a folder</div>
-    //     <div>Dimensions combobox (multi, optional)</div>
-    //     <div>KPI Group combobox (multi, optional, default to use Count aggregation first)</div>
-    //     <div>KPI combobox (multi, optional, default to use Count aggregation first)</div>
-    //     <div>&nbsp;&nbsp;A. If for itself (e.g. Loop Performance Summary)</div>
-    //     <div>&nbsp;&nbsp;B. If for children (e.g. Loop Controllability)</div>
-    //     <div>Table+button: Data Preview</div>
-    // </div>
-
+const DataDesignerForm = (props, containerWidth, state, setStateCb) => {
     return <Form 
         className="hierConfigPanelContainer" 
         key='formDataDesigner' 
         onSubmit={onSubmit} 
         setControlValues={setControlValues}
+        watchedField={'hierarchyTree'}
         inputObj={null} 
-        // //inputObj={selectedNode} 
-        // setControlValues={setControlValues}
-        // watchedField={'inherit'}
-        // setStateCb={setMyState}
+        setStateCb={setStateCb}
         >        
         <Toolbar 
             containerWidth={containerWidth}
             menuItems={menuItems}
         />
-        {renderDataDesignerPanelContent()}
+        {renderDataDesignerPanelContent(props, state)}
     </Form>
 }
 
@@ -123,6 +114,7 @@ class DataDesignerContainer extends DesignerContentbase {
     constructor(props) {
         super(props);
         this.state = {
+            hierarchyTree: null,
             ...this.state
         }
     }
@@ -132,7 +124,7 @@ class DataDesignerContainer extends DesignerContentbase {
         // TODO: Put a minsize first. Should make the toolbar buttons responsive.
         return <NoobSplitter id="hierarchyDesigner" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES} minSize={230}>
             {DataListPanel()}
-            {DataDesignerForm(this.state.rightPixels)}
+            {DataDesignerForm(this.props, this.rightPixels, this.state, this.setState.bind(this))}
         </NoobSplitter>
 
     }
@@ -140,7 +132,7 @@ class DataDesignerContainer extends DesignerContentbase {
 
 function mapStateToProps(state) {
     return {
-
+        hierarchyConso: state.dataDesigner.hierarchyConso,
     }
 }
   

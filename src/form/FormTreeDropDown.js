@@ -7,10 +7,6 @@ import 'rc-tree-select/assets/index.css';
 import './FormTreeDropDown.css';
 import TreeSelect, { SHOW_PARENT } from 'rc-tree-select';
 
-
-function FormTreeDropDown({ name, label, ...rest }) {
-  const { register, setValue, unregister } = useContext(FormContext);
-
 function handleChange([value, props, treeNodeEvt]) {
   return {
     value: value
@@ -120,6 +116,9 @@ const treeDataSample = [
   },
 ];
 
+function FormTreeDropDown({ name, label, treeData, ...rest }) {
+  const { register, setValue, unregister } = useContext(FormContext);
+
   return (<SemanticForm.Field>
         <label key={'label-'+name}>{label}</label>
         <RHFInput
@@ -135,7 +134,7 @@ const treeDataSample = [
           showSearch
           allowClear
           maxTagTextLength={10}
-          treeData={treeDataSample}
+          treeData={treeData}
           treeNodeFilterProp="title"            
           multiple={false}
           treeIcon
@@ -148,7 +147,7 @@ const treeDataSample = [
         onChangeEvent={handleChange}
         />
     </SemanticForm.Field>
-  );
+    );
 }
 
 export default FormTreeDropDown;

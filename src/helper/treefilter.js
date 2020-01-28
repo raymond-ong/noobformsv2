@@ -55,6 +55,9 @@ export const expandFilteredNodes = (node, filter, matcher = defaultMatcher) => {
 };
 
 export const findNodeByKey = (data, key) => {
+    if (!data) {
+        return null;
+    }
     for (let i = 0; i < data.length; i++) {
         let item = data[i];
         if (item.key === key) {        
@@ -71,6 +74,7 @@ export const findNodeByKey = (data, key) => {
             }
         }
     }
+    return null;
 }
 
 export const findNodeByPos = (data, posArr, currLevel=0) => {
