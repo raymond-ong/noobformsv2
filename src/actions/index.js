@@ -14,6 +14,7 @@ export const FETCH_HIERARCHYCONSO = "FETCH_HIERARCHYCONSO"
 export const FETCH_AVAILABLEDATA = "FETCH_AVAILABLEDATA"
 export const FETCH_SAVEDLAYOUTS = "FETCH_SAVEDLAYOUTS"
 export const FETCH_HIERARCHYVIEWS = "FETCH_HIERARCHYVIEWS"
+export const FETCH_DIMENSIONS = "FETCH_DIMENSIONS"
 export const FETCH_HIERARCHYKPI = "FETCH_HIERARCHYKPI"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
@@ -139,6 +140,16 @@ export const fetchHierarchyViews = () => async dispatch => {
 
   dispatch({
     type: FETCH_HIERARCHYVIEWS,
+    payload: response
+  });
+}
+
+export const fetchDimensions = () => async dispatch => { 
+  console.log('[action] fetchDimensions');
+  const response = await masterData.get('dimensions')
+
+  dispatch({
+    type: FETCH_DIMENSIONS,
     payload: response
   });
 }

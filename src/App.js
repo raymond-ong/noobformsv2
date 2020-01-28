@@ -9,6 +9,7 @@ import {fetchHierarchy,
     fetchAvailableData, 
     fetchSavedLayouts, 
     fetchHierarchyViews, 
+    fetchDimensions,
     fetchHierarchyKpi,
     fetchHierarchyConso} from './actions';
 import {connect} from 'react-redux';
@@ -38,6 +39,7 @@ class App extends React.Component {
         this.props.fetchAvailableData();
         this.props.fetchSavedLayouts();
         this.props.fetchHierarchyKpi();
+        this.props.fetchDimensions();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
@@ -73,4 +75,5 @@ export default connect(null, {fetchHierarchy,
     fetchSavedLayouts, 
     fetchHierarchyViews, 
     fetchHierarchyKpi, 
-    fetchHierarchyConso})(App);
+    fetchHierarchyConso,
+    fetchDimensions})(App);
