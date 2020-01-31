@@ -1,0 +1,21 @@
+/* Clash between semantic ui and rc-tree-select */
+.rc-tree-select-search__field {
+    border: none !important;
+}
+
+
+/* Override the Windows xp like icons from rc-tree */
+.rc-tree-select-tree-icon__close,
+.rc-tree-select-tree-icon__open {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGeYUxB9wAAACBjSFJNAACHEAAAjBIAAP1NAACBPgAAWesAARIPAAA85gAAGc66ySIyAAABIWlDQ1BJQ0MgUHJvZmlsZQAAKM9jYGAycHRxcmUSYGDIzSspCnJ3UoiIjFJgP8/AxsDMAAaJycUFjgEBPiB2Xn5eKgMG+HaNgRFEX9YFmcVAGuBKLigqAdJ/gNgoJbU4mYGB0QDIzi4vKQCKM84BskWSssHsDSB2UUiQM5B9BMjmS4ewr4DYSRD2ExC7COgJIPsLSH06mM3EATYHwpYBsUtSK0D2MjjnF1QWZaZnlCgYWlpaKjim5CelKgRXFpek5hYreOYl5xcV5BcllqSmANVC3AcGghCFoBDTAGq00GSgMgDFA4T1ORAcvoxiZxBiCJBcWlQGZTIyGRPmI8yYI8HA4L+UgYHlD0LMpJeBYYEOAwP/VISYmiEDg4A+A8O+OQDAxk/9b5LlBAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAJVJREFUOE9jGPqAEUoz/F/AoAukpCE8OPjKmMBwGMrGCpANmM/AyZHAwMEBFYECXp7JDDw816A8dLAC1QApiQQGAQGoCEHwH4j5mSBsKGBjgzKIAs8ZzW58psSAmyACYQALCwQTD26BCIQBXFxQBtEAzQVcnFAG0YBiF4ANQETjSXUNBkZGCSiXGHAYGAt/oeyhCxgYALt4GZzn6m5wAAAAAElFTkSuQmCC') !important;
+    background-position: 0px;
+}
+
+.rc-tree-select-tree-icon__docu {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD6SURBVDhPpZO9agJBFEYn2qYNKClsI0kpdpZpA3kTxceIoOCbmNLOygdQ8AWiPkBIGT1n2F0WdxRkPzjMztxvfu7M3VBXD1l7qUd4h5fYC2EHS/iNvZIuF2jACFqwgC2oV/iAI0zhHypy8hz68Akr+Mvw2zFjevRWNAYNEzhdwZgevVH5SubssZ+hCCZkTI9e5xTyeAPwqKmdy+jR65ziBN62F9aLvdvSoze+UPIy7lEza5/AnLrQceCG1rABX8f6iHLyF5hXKu8yevTGS8xTsMIO8AM+1TUZ24PeSlW62N2FlCrlIbThG8xVvYGl7O4zKEq59s9UUyGcAeUVRlayUvMbAAAAAElFTkSuQmCC') !important;
+    background-position: 0px;
+}
+
+.rc-tree-select-tree-title {
+    cursor: pointer;
+}

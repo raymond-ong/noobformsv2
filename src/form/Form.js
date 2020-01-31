@@ -6,7 +6,13 @@ import * as constants from '../constants';
 
 export const FormContext = createContext();
 
-
+const sanitizeObj = (obj) => {
+  if (!obj) {
+    return;
+  }
+  Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key]);
+  return obj;
+}
 
 // Nicely designed wrapper class taken from
 // https://codesandbox.io/s/dazzling-napier-ne3e6
@@ -30,9 +36,14 @@ function Form({ children, onSubmit, inputObj, setControlValues, watchedField, se
       // Called only when watched value changes
       console.log('Form useEffect2', watchedValue);
       if (setStateCb) {
-        setStateCb({[watchedField]: watchedValue});
+        if (Array.isArray(watchedField)) {
+          setStateCb(sanitizeObj(watchedValue));
+        }
+        else {
+          setStateCb({[watchedField]: watchedValue});
+        }        
       }
-    }, [watchedValue]); // Means if inputObj value does not change, don't run useEffect again.
+    }, Array.isArray(watchedField) ? Object.values(watchedValue) : [watchedValue]); // Means if inputObj value does not change, don't run useEffect again.
 
   return (
     <FormContext.Provider value={{ register, setValue, handleSubmit, unregister }}>

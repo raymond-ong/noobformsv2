@@ -17,7 +17,7 @@
 }
 
 /* after adding button prop, the icon becomes misalign */
-.ui.selection.multiple.dropdown>.dropdown.icon {
+.contentWrapper .ui.selection.multiple.dropdown>.dropdown.icon {
   padding-top: 0px;
 }
 

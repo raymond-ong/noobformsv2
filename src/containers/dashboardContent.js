@@ -42,7 +42,6 @@ class DashboardContent extends DesignerContentbase {
         }
 
         // if there is an associated page, use that directly.
-        debugger
         let findUserSetting = userSettings.find(setting => setting.key === selectedNode.key);        
         if (findUserSetting && findUserSetting.inherit === false) {
             return findUserSetting.pageAssoc;

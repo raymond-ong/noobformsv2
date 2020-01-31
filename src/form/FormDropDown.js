@@ -3,12 +3,16 @@ import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
 import { Form as SemanticForm } from "semantic-ui-react";
 
-function FormDropDown({ name, label, ...rest }) {
+function FormDropDown({ name, label, multiple,...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
 
   function handleChange([, props]) {
-    return { value: props.value };
+    return { value: props.value};
   }
+
+  // TODO: If multiple is set, there is a console log that says value must be an array instead
+  // of undefined. Check if the problem still exists after getting rid of RHF.
+  let defaultValue = multiple ? [] : null;
 
   return (<SemanticForm.Field>
         <label key={'label-'+name}>{label}</label>
@@ -16,6 +20,7 @@ function FormDropDown({ name, label, ...rest }) {
         as={<SemanticForm.Dropdown 
             key={name}
             fluid 
+            multiple={multiple}
             search
             selection 
             style={{fontWeight:'normal', color: 'black', right: '0', left: 'auto'}}
