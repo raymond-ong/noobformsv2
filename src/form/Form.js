@@ -17,7 +17,7 @@ const sanitizeObj = (obj) => {
 // Nicely designed wrapper class taken from
 // https://codesandbox.io/s/dazzling-napier-ne3e6
 function Form({ children, onSubmit, inputObj, setControlValues, watchedField, setStateCb, ...rest }) {
-  const { register, setValue, handleSubmit, unregister, watch } = useForm();
+  const { register, setValue, handleSubmit, unregister, watch, errors } = useForm();
   const watchedValue = !!watchedField ? watch(watchedField) : null; // no way for us to pass back the value conveniently, but the form will rerender anyways
   const inputObjVals = !! inputObj ? [...Object.values(inputObj)] : null
   console.log('Form rerenders', inputObj, watchedValue);  
@@ -46,7 +46,7 @@ function Form({ children, onSubmit, inputObj, setControlValues, watchedField, se
     }, Array.isArray(watchedField) ? Object.values(watchedValue) : [watchedValue]); // Means if inputObj value does not change, don't run useEffect again.
 
   return (
-    <FormContext.Provider value={{ register, setValue, handleSubmit, unregister }}>
+    <FormContext.Provider value={{ register, setValue, handleSubmit, unregister, errors }}>
       <SemanticForm onSubmit={handleSubmit(onSubmit)} {...rest}>
         {children}
       </SemanticForm>

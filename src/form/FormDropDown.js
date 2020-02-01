@@ -3,7 +3,7 @@ import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
 import { Form as SemanticForm } from "semantic-ui-react";
 
-function FormDropDown({ name, label, multiple,...rest }) {
+function FormDropDown({ name, label, multiple, isRequired,...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
 
   function handleChange([, props]) {
@@ -22,13 +22,14 @@ function FormDropDown({ name, label, multiple,...rest }) {
             fluid 
             multiple={multiple}
             search
-            selection 
+            selection             
             style={{fontWeight:'normal', color: 'black', right: '0', left: 'auto'}}
             {...rest} />}
         name={name}
         register={register}
         unregister={unregister}
         setValue={setValue}
+        rules={{required: isRequired }}
         onChangeEvent={handleChange}
         />
     </SemanticForm.Field>

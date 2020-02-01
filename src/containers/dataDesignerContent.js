@@ -10,11 +10,13 @@ import 'rc-tree-select/assets/index.css';
 import TreeSelect, { SHOW_PARENT } from 'rc-tree-select';
 import {findNodeByKey} from '../helper/treefilter';
 import _ from "lodash";
+import {Button, Icon, Label} from 'semantic-ui-react';
 
 import './dataDesignerContent.css';
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
 const defaultScope = 'self';
+const ID_PREVIEW_BTN = 'dataDsgnPreview';
 
 const DataListPanel = () => {
     return <div>
@@ -29,30 +31,6 @@ const menuItems = {
     ],
 };
 
-/*
-const getUniqueKpiLists = (kpiGrps) = {
-    if (!kpiGrps) {
-        return null;
-    }
-
-    let retObj = {
-        groups: [],
-        kpis: []
-    };
-    for (let i=0; i < kpiGrps.length; i++) {
-        let currGrp = kpiGrps[i];
-        if (!retObj.groups.includes(currGrp.kpiGroupName)) {
-            retObj.groups.push(currGrp.kpiGroupName);
-        }
-        if (!retObj.kpis.includes(currGrp.kpiName)) {
-            retObj.kpis.push(currGrp.kpiName);
-        }
-    }
-
-    return retObj;
-};
-*/
-
 const addUniqueToArray = (srcArray, destArray) => {
     if (!srcArray || !destArray) {
         return;
@@ -63,6 +41,30 @@ const addUniqueToArray = (srcArray, destArray) => {
             continue;
         }
         destArray.push(srcArray[i]);
+    }
+}
+
+const addSelectedKpisToArray = (srcArray, destArray) => {
+    if (!srcArray || !destArray) {
+        return;
+    }
+
+    for (let i = 0; i < srcArray.length; i++) {
+        let currKpiGrp = srcArray[i];
+        
+        let findGrpQry = destArray.find(x => x.kpiGrp === currKpiGrp.kpiGrp);
+        if (!findGrpQry) {
+            destArray.push(currKpiGrp);
+            continue;
+        }
+
+        // If we find the group, check if it contains all KPI's
+        // Note: Do not assume all groups with same name necessarily have same set of KPI's
+        for (let j = 0; j < currKpiGrp.kpis.length; j++) {
+            if (!findGrpQry.kpis.includes(currKpiGrp.kpis[j])) {
+                findGrpQry.kpis.push(currKpiGrp.kpis[j]);
+            }
+        }        
     }
 }
 
@@ -80,104 +82,61 @@ const gatherKpiGroupOptions = (selectedNode, scope, hierarchyKpi, selectedKpiGro
     
     if (scope === 'self') {
         let kpiGrps = hierarchyKpi[selectedNode.item.key] || [];
-        let kpiGrpsFilteed = filterObj(kpiGrps, selectedKpiGroups);
+        let kpiGrpsFiltered = filterObj(kpiGrps, selectedKpiGroups); // We only add the KPI's that belong to the selected KPI Groups
         retObj.kpiGrps = Object.keys(kpiGrps);
-        retObj.kpis = [].concat.apply([], Object.values(kpiGrpsFilteed).map(x => Object.values(x)));
+
+        retObj.kpis = getKpiObjects(kpiGrpsFiltered);
+        //retObj.kpis = [].concat.apply([], Object.values(kpiGrpsFiltered).map(x => Object.values(x)));
     }
     else {
         // Gather all the uniq items from all its children (recursive)
         // Assume that the path is the basis for now
-        retObj.kpiGrps = [];
-        retObj.kpis = [];
+        retObj.kpiGrps = []; // All KPI Groups belonging to the hierarchy
+        retObj.kpis = []; // All KPI's belonging to the selected KPI groups only
         for (var key in hierarchyKpi) {
             
             if (key === selectedNode.item.key || !key.includes(selectedNode.item.key)) {
                 continue;
             }
-            debugger
             let kpiGrps = hierarchyKpi[key] || [];
-            let kpiGrpsFilteed = filterObj(kpiGrps, selectedKpiGroups);
             let currKpiGrps = Object.keys(kpiGrps);
-            let currKpis = [].concat.apply([], Object.values(kpiGrpsFilteed).map(x => Object.values(x)));
+            
             addUniqueToArray(currKpiGrps, retObj.kpiGrps);
-            addUniqueToArray(currKpis, retObj.kpis);
+            
+            let kpiGrpsFiltered = filterObj(kpiGrps, selectedKpiGroups);
+            let currKpis = getKpiObjects(kpiGrpsFiltered);
+            addSelectedKpisToArray(currKpis, retObj.kpis);
+
+            // let currKpis = [].concat.apply([], Object.values(kpiGrpsFiltered).map(x => Object.values(x)));
+            // addUniqueToArray(currKpis, retObj.kpis);
         }
     }
 
     return retObj;
 }
 
-/*
-const renderKpiGroups = (selectedNode, scope, hierarchyKpi) => {
-    // If hierarchy is a target, just render all the KPI groups
-    if (!hierarchyKpi || !selectedNode) {
+// KPI's belonging to different KPI groups may have the same name
+// e.g. "Time in Control" can be from "Loop Controllability" or "Valve Controllability"
+// To differentiate, we include the KPI Group also.
+const getKpiObjects = (kpiGroups) => {
+    if (!kpiGroups) {
         return null;
     }
-    console.log('renderKpiGroups', selectedNode, scope);
-    
-    if (scope === 'self') {
-        let kpiGrps = hierarchyKpi[selectedNode.item.key] || [];
-        console.log('renderKpiGroups', kpiGrps);
-        let uniqKpiGrps = _.uniq(kpiGrps.map(x => x.kpiGroupName));
-        let kpiGrpsOoptions = uniqKpiGrps.map(x => {
-            return {
-                key: 'dataDsgn_' + x,
-                text: x,
-                value: x
-            }});
-        
-        return <FormDropDown name="hierDsgnKpiGroup" options={kpiGrpsOoptions} multiple/>
-    }
-    else {
-        let allKpiGroups = [];
-        // Gather all the uniq items from all its children (recursive)
-        // Assume that the path is the basis for now
-        for (var key in hierarchyKpi) {
-            if (!key.includes(selectedNode.item.key)) {
-                continue;
-            }
-            let kpiGrps = hierarchyKpi[key] || [];
-            let uniqKpiGrps = _.uniq(kpiGrps.map(x => x.kpiGroupName));
-            for (let i = 0; i < uniqKpiGrps.length; i++) {
-                let currKpiGrp =  uniqKpiGrps[i];
-                if (!allKpiGroups.includes(currKpiGrp)) { // add just the unique ones
-                    allKpiGroups.push(currKpiGrp);
-                }
-            }
+
+    let retList = [];
+    for (let kpiGrp in kpiGroups) {
+        if (!kpiGroups.hasOwnProperty(kpiGrp)) {
+            continue;
         }
 
-        let kpiGrpsOoptions = allKpiGroups.map(x => {
-            return {
-                key: 'dataDsgn_' + x,
-                text: x,
-                value: x
-            }});
-        
-        return <FormDropDown name="hierDsgnKpiGroup" options={kpiGrpsOoptions} multiple />
+        retList.push({
+            kpiGrp: kpiGrp,
+            kpis: kpiGroups[kpiGrp]
+        });        
     }
+
+    return retList;
 }
-
-const renderKpis = (hierarchyKpi, hierDsgnKpiGroup) => {
-    // Find all the kpis from the selected kpi groups
-    console.log('renderKpis', hierDsgnKpiGroup);
-    let allKpis = [];
-    hierDsgnKpiGroup.forEach( currGrp => {
-        let kpis = hierarchyKpi[currGrp] || [];
-
-        kpis.forEach(kpi => {
-            allKpis.push({
-                key: 'dataDsgnKpi_' + kpi.kpiName,
-                text: kpi.kpiName,
-                value: kpi.kpiName
-            });    
-        });
-
-    });
-
-    debugger
-    return allKpis.map(x => <FormDropDown name="hierDsgnKpi" options={allKpis} multiple />)
-}
-*/
 
 const renderDropdown = (name, listItems) => {
     let dropdownOpts = listItems ? listItems.map(x => {
@@ -190,23 +149,64 @@ const renderDropdown = (name, listItems) => {
     return <FormDropDown name={name} options={dropdownOpts} multiple/>;
 }
 
+const renderKpiDropdown = (name, listItems) => {
+    let dropdownOpts = [];
+    if (listItems) {
+        listItems.forEach(kpiGrp => {
+            kpiGrp.kpis.forEach(kpi => {
+                dropdownOpts.push({
+                    key: `${kpiGrp.kpiGrp}%%${kpi}`,
+                    text: kpi,
+                    value: `${kpiGrp.kpiGrp}%%${kpi}`
+                    // value: {
+                    //     kpiGrp: kpiGrp.kpiGrp,
+                    //     kpi: kpi
+                    // } 
+                });
+            })
+        })
+    }
+    
+
+    // let dropdownOpts = listItems ? listItems.map(kpiGrp => {
+    //     kpiGrp.kpis.map(
+    //         kpi => {
+
+    //         }
+    //     )
+    // }}) : [];
+
+    return <FormDropDown name={name} options={dropdownOpts} multiple/>;
+}
+
 const radioGroupContents = [
     {label: 'For selected Hierarchy node', name: 'rgrpHierScope', value: 'self', },
     {label: "For selected Hierarchy node's children", name: 'rgrpHierScope', value: 'children', }
 ];
 
-const renderDataDesignerPanelContent = (props, state) => {
+const renderPreviewTable = () => {
+
+}
+
+const renderDataDesignerPanelContent = (props, state, errors) => {
     let findSelNode = findNodeByKey(props.hierarchyConso, state.hierarchyTree);
     let selNodeIsFolder = !!findSelNode && findSelNode.item.unitType !== 'Target';    
     let kpiGroupOptions = gatherKpiGroupOptions(findSelNode, state.HierarchyScope, props.hierarchyKpi, state.hierDsgnKpiGroup);    
 
+    let previewIcon = "eye";
+    let previewText = "Preview Data";
+    if (state.fetchingPreview) {
+        previewText = "Fetching Preview Data...";
+        previewIcon = "hourglass half";
+    }
+
     return <div className="dataDesignerPanelContainer">
-        <table className="formTable">
+        <table className="formTable formTableDataDesigner">
         <tbody>
             <tr>
                 <th>Hierarchy*</th>
                 <td>
-                    <FormTreeDropDown name="hierarchyTree" treeData={props.hierarchyConso}/>
+                    <FormTreeDropDown name="hierarchyTree" treeData={props.hierarchyConso} isRequired={true}/>
                     {selNodeIsFolder && <FormRadio name="HierarchyScope" initialSel={defaultScope} radioGroupContents={radioGroupContents}/>}
                 </td>
             </tr>
@@ -225,7 +225,6 @@ const renderDataDesignerPanelContent = (props, state) => {
             <tr>
                 <th>Kpi Group</th>
                 <td>
-                    {/* {renderKpiGroups(findSelNode, state.HierarchyScope, props.hierarchyKpi)} */}
                     {renderDropdown('hierDsgnKpiGroup', kpiGroupOptions.kpiGrps)}
                 </td>
             </tr>
@@ -233,25 +232,74 @@ const renderDataDesignerPanelContent = (props, state) => {
             <tr>
                 <th>Kpi</th>
                 <td>
-                    {/* {renderKpis(props.hierarchyKpi, state.hierDsgnKpiGroup)} */}
-                    {renderDropdown('hierDsgnKpi', kpiGroupOptions.kpis)}
+                    {renderKpiDropdown('hierDsgnKpi', kpiGroupOptions.kpis)}
                 </td>
             </tr>
-
         </tbody>
         </table>
+
+        {state.formInvalid && 
+            <div><Label basic color='red' pointing>
+            {state.formInvalid}
+            </Label></div>
+        }
+
+        {/* <button id={ID_PREVIEW_BTN} className={previewBtnClassName} icon="search">{previewText}</button> */}
+        <Button id={ID_PREVIEW_BTN} primary disabled={state.fetchingPreview}>
+            <Icon name={previewIcon}/>
+            {previewText}</Button>
+        {renderPreviewTable()}
     </div>
 }
 
-const onSubmit = (args) => {
-    console.log('Date Designer Submit', args);
+const getValidationError = (formData) => {
+    if (!formData) {
+        return "Form is empty!"
+    }
+
+    // Either Dimension or Kpi must be present
+    // If both are not present, return error
+    if (!formData.dataDsgnDimensions && 
+        !((formData.hierDsgnKpiGroup && formData.hierDsgnKpiGroup.length) || 
+            (formData.hierDsgnKpi && formData.hierDsgnKpi.length)
+        )
+    ) {
+            return "Eith Dimension or Kpi must be selected";
+    }
+
+    return null;
+}
+
+const onSubmit = (formData, setStateCb) => {
+    //debugger
+    console.log('Date Designer Submit', formData);
+    // [1] Perform some validation first
+    let validationError = getValidationError(formData);
+    if (validationError) {
+        setStateCb({
+            formInvalid: validationError
+        });
+        return;
+    }
+
+    if (document.activeElement.id === ID_PREVIEW_BTN) {
+        // Assume that if preview button was clicked, that would be the activeElement
+        setStateCb({
+            fetchingPreview: true,
+            formInvalid: null
+        });
+    }
+    else {
+
+    }
+
 }
 
 const DataDesignerForm = (props, containerWidth, state, setStateCb) => {
     return <Form 
         className="hierConfigPanelContainer" 
         key='formDataDesigner' 
-        onSubmit={onSubmit} 
+        onSubmit={(formData) => {onSubmit(formData, setStateCb)}} 
         setControlValues={setControlValues}
         watchedField={['hierarchyTree', 'HierarchyScope', 'hierDsgnKpiGroup']}
         // inputObj: set it to the loaded data source when saving is implemented
@@ -286,6 +334,8 @@ class DataDesignerContainer extends DesignerContentbase {
             hierarchyTree: null,
             HierarchyScope: defaultScope,
             hierDsgnKpiGroup: [],       // The currently selected KPI Group
+            fetchingPreview: false,
+            formInvalid: null,
             ...this.state
         }
     }

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
-import { Form as SemanticForm } from "semantic-ui-react";
+import { Form as SemanticForm, Label} from "semantic-ui-react";
 
 import 'rc-tree-select/assets/index.css';
 import './FormTreeDropDown.css';
@@ -116,8 +116,8 @@ const treeDataSample = [
   },
 ];
 
-function FormTreeDropDown({ name, label, treeData, ...rest }) {
-  const { register, setValue, unregister } = useContext(FormContext);
+function FormTreeDropDown({ name, label, treeData, isRequired,...rest }) {
+  const { register, setValue, unregister, errors } = useContext(FormContext);
 
   return (<SemanticForm.Field>
         <label key={'label-'+name}>{label}</label>
@@ -145,7 +145,14 @@ function FormTreeDropDown({ name, label, treeData, ...rest }) {
         unregister={unregister}
         setValue={setValue}
         onChangeEvent={handleChange}
+        rules={{required: isRequired }}
         />
+      {errors[name] && 
+        <div>
+        <Label basic color='red' pointing>
+          Please select a value
+        </Label>
+        </div>}
     </SemanticForm.Field>
     );
 }
