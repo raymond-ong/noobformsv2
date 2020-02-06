@@ -7,9 +7,9 @@ import { CLICK_MENU,
   FETCH_SAVEDLAYOUTS,
   SAVE_DESIGNER_LAYOUT } from "../actions/index";
 
-// Assumpation: All these data is for 1 tenant only
+// Assumption: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'dataDesigner',
+    activeMenu: 'dataSources',
     tabIndex: 4,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
@@ -21,13 +21,15 @@ const defaultState = {
     masterHierarchySettings: null, // All the hierarchy settings set by the user using the Hierarchy Designer
 }
 
+// TODO: Should move this to a constant location
 const tabIndexMapping = {
   home: 0,
   formsDesigner: 1,
   dashboardDesigner: 2,
   hierarchyDesigner: 3,
-  dataDesigner: 4,
-  settings: 5
+  dataSources: 4,
+  dataDesigner: 5,
+  settings: 6
 }
 
 export default function(state = defaultState, action) {

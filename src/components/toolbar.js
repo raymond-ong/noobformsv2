@@ -85,7 +85,7 @@ const renderCollapsedMenu = (menuItems, title, titleTooltip) => {
 
 
 const Toolbar = ({containerWidth, menuItems, title, titleTooltip}) => {
-    if (containerWidth > WIDTH_LARGE) {
+    if (containerWidth > WIDTH_LARGE || !containerWidth) {
         return renderFullMenu(menuItems, title, titleTooltip);
     }
     else {

@@ -211,7 +211,7 @@ const HierConfigPanel = ({containerWidth, selectedNode, userSettings, saveNodeCo
 
     return <Form 
         className="hierConfigPanelContainer" 
-        key='form' 
+        // key='form' 
         onSubmit={(args) => onSubmit(args, saveNodeConfig)} 
         inputObj={{selectedNode, userSettings}} 
         //inputObj={selectedNode} 

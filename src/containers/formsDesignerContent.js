@@ -14,7 +14,7 @@ import ShowMessage, {NotifType} from '../helper/notification';
 import {connect} from 'react-redux';
 import SaveAsDialog from '../components/saveAs';
 
-const DEFAULT_SPLIT_SIZES = [15, 85];
+const DEFAULT_SPLIT_SIZES = [30, 70];
 
 const panelItems = [
     {
@@ -132,6 +132,7 @@ const mapStateToProps = (state) => {
     return {
         layout: state.designer.layout,
         layoutData: state.designer.layoutData,
+        metadata: state.designer.metadata
     };
 }
 

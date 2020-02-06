@@ -10,7 +10,7 @@ import "../styles/Split.css";
 import ScrollTracker from '../components/scrollTracker';
 import PropertiesPanel from '../containers/propertiesPanel';
 
-const DEFAULT_SIZES = [33.33,33.33,33.33];
+const DEFAULT_SIZES = [30, 70];
 const CLASS_ACCORDION = "accordionPanel";
 
 // Basically this class contains the left hand panel that contains the toolbox and properties box
@@ -207,6 +207,7 @@ class ToolPanel extends React.Component {
         onDragEnd={this.onSplitDragEnd}
         onDragStart={this.onSplitDragStart}
         cursor="row-resize"
+        sizes={DEFAULT_SIZES}
         >
             {this.createPanels(this.props.containerWidth)}            
         </Split>
