@@ -1,3 +1,25 @@
 .dataSourceForm {
     padding: 10px;
 }
+
+.segmentTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.filterTable {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.filterTable td {
+    padding: 10px;
+}
+
+.filterRow {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid lightgray;
+}

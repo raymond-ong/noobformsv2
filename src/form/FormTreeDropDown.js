@@ -116,28 +116,29 @@ const treeDataSample = [
   },
 ];
 
-function FormTreeDropDown({ name, label, treeData, isRequired,...rest }) {
+function FormTreeDropDown({ name, label, treeData, isRequired, multiple,...rest }) {
   const { register, setValue, unregister, errors } = useContext(FormContext);
 
   return (<SemanticForm.Field>
         <label key={'label-'+name}>{label}</label>
         <RHFInput
         as={<TreeSelect
-          style={{ width: 300 }}
-          transitionName="rc-tree-select-dropdown-slide-up"
-          choiceTransitionName="rc-tree-select-selection__choice-zoom"
-          dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
+          style={{ width: '100%' }}
+          // transitionName="rc-tree-select-dropdown-slide-up"
+          // choiceTransitionName="rc-tree-select-selection__choice-zoom"
+          dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
           dropdownPopupAlign={{ overflow: { adjustY: 0, adjustX: 0 }, offset: [0, 2] }}
           placeholder={<div style={{color: "gray"}}>Please select...</div>}
           searchPlaceholder="Search..."
           // treeLine
-          showSearch
+          showSearch={!multiple}
           allowClear
           maxTagTextLength={10}
           treeData={treeData}
           treeNodeFilterProp="title"            
-          multiple={false}
+          multiple={multiple}
           treeIcon
+          treeCheckStrictly={true}
           {...iconPropsFunction}
       />}
         name={name}

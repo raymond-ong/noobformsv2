@@ -3,8 +3,9 @@ import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
 import { Form as SemanticForm, Popup } from "semantic-ui-react";
 
-function FormText({ name, rules, label, numeric, units, ...rest }) {
+function FormText({ name, rules, label, numeric, units, small, ...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
+  const styles = small ? {padding: '4px'} : {};
 
   return (<SemanticForm.Field>
             {label && <label>
@@ -25,6 +26,7 @@ function FormText({ name, rules, label, numeric, units, ...rest }) {
                       key={name} 
                       type={!!numeric ? 'number':'text'}
                       className="ui small" 
+                      style={styles}
                       {...rest}>                        
                       </input>
                 }

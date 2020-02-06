@@ -4,6 +4,7 @@ import { bindActionCreators } from "redux";
 import NoobSplitter from '../components/noobSplitter';
 import DesignerContentbase from './designerContentBase';
 import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTreeDropDown, FormRadio} from '../form/Form';
+import { Form as SemanticForm, Segment} from "semantic-ui-react";
 import ShowMessage, { NotifType } from '../helper/notification';
 import Toolbar from '../components/toolbar';
 import 'rc-tree-select/assets/index.css';
@@ -31,6 +32,7 @@ const menuItems = {
     ],
 };
 
+/*
 const addUniqueToArray = (srcArray, destArray) => {
     if (!srcArray || !destArray) {
         return;
@@ -71,6 +73,7 @@ const addSelectedKpisToArray = (srcArray, destArray) => {
 const filterObj = (obj, fields) => {
     return _.pick(obj, fields);
 }
+
 
 const gatherKpiGroupOptions = (selectedNode, scope, hierarchyKpi, selectedKpiGroups) => {
     // If hierarchy is a target, just render all the KPI groups
@@ -137,6 +140,7 @@ const getKpiObjects = (kpiGroups) => {
 
     return retList;
 }
+*/
 
 const renderDropdown = (name, listItems) => {
     let dropdownOpts = listItems ? listItems.map(x => {
@@ -149,6 +153,7 @@ const renderDropdown = (name, listItems) => {
     return <FormDropDown name={name} options={dropdownOpts} multiple/>;
 }
 
+/*
 const renderKpiDropdown = (name, listItems) => {
     let dropdownOpts = [];
     if (listItems) {
@@ -183,15 +188,98 @@ const radioGroupContents = [
     {label: 'For selected Hierarchy node', name: 'rgrpHierScope', value: 'self', },
     {label: "For selected Hierarchy node's children", name: 'rgrpHierScope', value: 'children', }
 ];
+*/
 
 const renderPreviewTable = () => {
 
 }
 
+// converts the dimensions from metadata into a format the tree-select component expects
+const convertApiMetadataDims = (apiMetadataDims) => {
+    if (!apiMetadataDims) {
+        return null;
+    }
+
+    return apiMetadataDims.map(x => {
+        let {name, items, ...rest} = x;
+        return {
+            name: name,
+            value: name,
+            title: name,
+            children: convertApiMetadataDims(items),
+            ...rest
+        }
+    });
+}
+
+const convertApiMetadataFilters = (apiMetadata) => {
+    // Basically, add the Request Params to the front (e.g. )
+    let metadataDims = convertApiMetadataDims(apiMetadata.Dimensions);
+    // Assume request params is single level only
+    let requestItems = apiMetadata.RequestParams.map(r => {
+        let {name, ...rest} = r;
+        return {
+            name: name,
+            value: name,
+            title: name,
+            children: [],
+            ...rest
+        }
+    });
+    metadataDims.unshift(...requestItems);    
+    return metadataDims;
+}
+
+const onTreeSelect = (value, node, extra) => {
+    // TODO:
+    // [1] If the parent node is selected, unselect all child nodes (implicitly, all child nodes are already included)
+}
+
+const renderFilterFields = (state, props) => {
+    if (!state || !state.filterFields) {
+        return null;
+    }
+
+    let filterFields = state.filterFields.map((filter, i) => <tr className="filterRow">
+        <td><SemanticForm.Field>
+                <FormTreeDropDown 
+                    name={"filterField" + i}
+                    treeData={props.filtersMetadata} 
+                    isRequired={true}
+                    label={"Field Name"}                     
+                />
+            </SemanticForm.Field>
+        </td>
+        <td><SemanticForm.Field>
+            <FormText
+                label={"Filter Value"}
+                small
+            />
+        </SemanticForm.Field>
+        </td>
+        {/* <SemanticForm.Field>
+            <Button red>Delete</Button>
+        </SemanticForm.Field> */}
+    </tr>);
+
+    return <table className="filterTable">{filterFields}
+        </table>
+}
+
+const renderFilterSegment = (state, props) => {
+    debugger
+    return <Segment><SemanticForm.Field>
+        <div className="segmentTitle">Filters:</div>
+        {renderFilterFields(state, props)}
+        <Button type="button">Add Filter</Button>
+    </SemanticForm.Field>
+    </Segment>
+}
+
 const renderDataDesignerPanelContent = (props, state, errors) => {
     let findSelNode = findNodeByKey(props.hierarchyConso, state.hierarchyTree);
-    let selNodeIsFolder = !!findSelNode && findSelNode.item.unitType !== 'Target';    
-    let kpiGroupOptions = gatherKpiGroupOptions(findSelNode, state.HierarchyScope, props.hierarchyKpi, state.hierDsgnKpiGroup);    
+    //let selNodeIsFolder = !!findSelNode && findSelNode.item.unitType !== 'Target';    
+    //let kpiGroupOptions = gatherKpiGroupOptions(findSelNode, state.HierarchyScope, props.hierarchyKpi, state.hierDsgnKpiGroup);    
 
     let previewIcon = "eye";
     let previewText = "Preview Data";
@@ -201,7 +289,7 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
     }
 
     return <div className="dataDesignerPanelContainer">
-        <table className="formTable formTableDataDesigner">
+        {/* <table className="formTable formTableDataDesigner">
         <tbody>
             <tr>
                 <th>Hierarchy*</th>
@@ -236,7 +324,21 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
                 </td>
             </tr>
         </tbody>
-        </table>
+        </table> */}
+
+        <Segment>
+        <div className="segmentTitle">Dimensions</div>
+        <FormTreeDropDown 
+            // label="Select Dimensions:"
+            name="hierarchyTree" 
+            treeData={convertApiMetadataDims(props.metadata.Dimensions)} 
+            isRequired={true} 
+            multiple
+            onSelect={onTreeSelect}
+        />
+        </Segment>
+
+        {renderFilterSegment(state, props)}
 
         {state.formInvalid && 
             <div><Label basic color='red' pointing>
@@ -264,7 +366,7 @@ const getValidationError = (formData) => {
             (formData.hierDsgnKpi && formData.hierDsgnKpi.length)
         )
     ) {
-            return "Eith Dimension or Kpi must be selected";
+            return "Either Dimension or Kpi must be selected";
     }
 
     return null;
@@ -286,7 +388,7 @@ const onSubmit = (formData, setStateCb) => {
         // Assume that if preview button was clicked, that would be the activeElement
         setStateCb({
             fetchingPreview: true,
-            formInvalid: null
+            formInvalid: null,            
         });
     }
     else {
@@ -336,12 +438,24 @@ class DataDesignerContainer extends DesignerContentbase {
             hierDsgnKpiGroup: [],       // The currently selected KPI Group
             fetchingPreview: false,
             formInvalid: null,
+            filterFields: [{
+                name: '',
+                value: null
+            },
+            {
+                name: '',
+                value: null
+            },
+            {
+                name: '',
+                value: null
+            }],
             ...this.state
         }
     }
     
     render() {
-        console.log('render hierarchyDesigner', this.state.rightPixels);
+        console.log('render DataDesignerContainer', this.props.metadata);
         // TODO: Put a minsize first. Should make the toolbar buttons responsive.
         return <NoobSplitter id="hierarchyDesigner" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES} minSize={230}>
             {DataListPanel()}
@@ -356,6 +470,9 @@ function mapStateToProps(state) {
         hierarchyConso: state.dataDesigner.hierarchyConso,
         dimensions: state.dataDesigner.dimensions,
         hierarchyKpi: state.dataDesigner.hierarchyKpi,
+        metadata: state.designer.metadata,
+        dimensionsMetadata: convertApiMetadataDims(state.designer.metadata.Dimensions),
+        filtersMetadata: convertApiMetadataFilters(state.designer.metadata),
     }
 }
   

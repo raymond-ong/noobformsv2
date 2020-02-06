@@ -204,10 +204,13 @@ const generateDefaultDashboard = () => {
 // DataTypes:
 // [Percent]  e.g. ODE, TA, PA. Cannot be used in pie chart
 // [Number]   e.g. Total Alarms. Children count can be summed up.
+// [Not specified] means it is string value
 const dummyMetaData = {
   RequestParams: [
     {
-      name: 'AnalysisPeriod',      
+      name: 'AnalysisPeriod',   
+      dataTypes: ['Date Range'],   
+      enumValues: ['Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
     },
     {
       name: 'Path',
@@ -215,54 +218,75 @@ const dummyMetaData = {
   ],
   Dimensions: [
     {
-      // special type (i.e. there is no dimension or measured data in data warehouse that says Analysis period)
-      name: 'Analysis Period',
-      value: 'Analysis Period',
-      dataTypes: ['Analysis Period'],
-      possibleValues: ['Today', 'Last 7 days', 'Last 30 days', ]
-    },
-    {
       // TODO: Maybe we remove the Device Info layer (i.e. Vendor, Model etc are first level dimensions)
       // In a relational DB, for PRM, we need to put Device Info in another table (separate from Hierarchy table) because there can be multiple hierarchy views
       // In a noSQL DB, we can flatten this out when storing
       name: 'Device Info',
-      value: 'DeviceInfo',
+      dataTypes: ['group'],   
       // supported controls: ['pie', 'bar']
       items: [
         {
+          name: 'Device ID',
+          dataTypes: ['string'],
+        },
+        {
+          name: 'Device Tag',
+          dataTypes: ['string'],   
+        },
+        {
           name: 'Vendor',
-          value: 'Vendor',
+          dataTypes: ['string'],   
         },
         {
           name: 'Model',
-          value: 'Model',
+          dataTypes: ['string'],   
         },
         {
           name: 'Revision',
-          value: 'Revision',
+          dataTypes: ['string'],   
         },
         {
           name: 'Priority',
-          value: 'Priority',
-          possibleValues: ['Low', 'Medium', 'High', 'High+'],
+          dataTypes: ['Enum'],   
+          enumValues: ['Low', 'Medium', 'High', 'High+'],
         },      
       ]
     },
     {
       name: 'Device Status',
-      value: 'Device Status',
+      dataTypes: ['group'],
       items: [
         {
-          name: 'PRM Device Status',
-          value: 'PRM Device Status',
-          possibleValues: ['Abnormal', 'Warning', 'Communication Error', 'Uncertain', 'Normal'],
-          dataTypes: ['Status']
+          name: 'PRM Device Status',          
+          enumValues: ['Abnormal', 'Warning', 'Communication Error', 'Uncertain', 'Normal'],
+          dataTypes: ['Enum']
         },
         {
-          name: 'NE107 Device Status',
-          value: 'NE107 Device Status',
-          possibleValues: ['Failure', 'Check Function', 'Out of Specification', 'Maintenance Required', 'Communication Error', 'Unknown,Normal'],
-          dataTypes: ['Status']
+          name: 'NE107 Device Status',          
+          enumValues: ['Failure', 'Check Function', 'Out of Specification', 'Maintenance Required', 'Communication Error', 'Unknown,Normal'],
+          dataTypes: ['Enum']
+        },
+      ]
+    },
+    {
+      name: 'Device Status Timing Breakdown',
+      dataTypes: ['group'],
+      items: [
+        {
+          name: 'Good%',
+          dataTypes: ['Percent']
+        },
+        {
+          name: 'Bad%',
+          dataTypes: ['Percent']
+        },
+        {
+          name: 'Fair%',
+          dataTypes: ['Percent']
+        },
+        {
+          name: 'Uncertain%',
+          dataTypes: ['Percent']
         },
       ]
     },
@@ -273,20 +297,20 @@ const dummyMetaData = {
         {
           name: 'ODE',
           value: 'ODE',
-          possibleValues: [1, 2, 3, 4, 5],
-          dataTypes: ['Status', 'Percent']
+          enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
+          dataTypes: ['Enum', 'Percent']
         },
         {
           name: 'TA',
           value: 'TA',
-          possibleValues: [1, 2, 3, 4, 5],
-          dataTypes: ['Status', 'Percent']
+          enumValues: [1, 2, 3, 4, 5],
+          dataTypes: ['Enum', 'Percent']
         },
         {
           name: 'PA',
           value: 'PA',
-          possibleValues: [1, 2, 3, 4, 5],
-          dataTypes: ['Status', 'Percent']
+          enumValues: [1, 2, 3, 4, 5],
+          dataTypes: ['Enum', 'Percent']
         },
       ]
     },
@@ -296,20 +320,14 @@ const dummyMetaData = {
       items: [
         {
           name: 'Alarm Frequency',
-          value: 'Alarm Frequency',
-          possibleValues: null,
           dataTypes: ['Number']
         },
         {
           name: 'AE Occurring',
-          value: 'AE Occurring',
-          possibleValues: null,
           dataTypes: ['Boolean']
         },
         {
           name: 'Raw Alarms',
-          value: 'Raw Alarms',
-          possibleValues: null,
           dataTypes: ['Annotation']
         },
       ]
@@ -317,41 +335,31 @@ const dummyMetaData = {
 
     {
       // Also possible: Network Path, class Path etc.
+      // For ISAE case, might not be possible since the hierarchy is not strucured
+      // So for ISAE case, it will just be single level Path
       name: 'Path',
       value: 'Path',
       items: [
         {
           name: 'Plant',
-          value: '//PLANT',
-          items: [
-            {
-              name: 'Site01',
-              value: '//PLANT/Site01',
-              items: [
-                {
-                  name: 'Area01',
-                  value: '//PLANT/Site01/Area01',
-                  items: [
-                    {
-                      name: 'Unit01',
-                      value: '//PLANT/Site01/Ara01/Unit01',
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              name: 'Site02',
-              value: '//PLANT/Site02',
-              items: []
-            },
-            {
-              name: 'Site03',
-              value: 'Site03',
-              items: []
-            },
-          ]
+          value: 'Plant', //e.g. MYPJT
         },
+        {
+          name: 'Site',
+          value: 'Site',
+        },
+        {
+          name: 'Area',
+          value: 'Area',
+        },
+        {
+          name: 'Unit',
+          value: 'Unit',
+        },
+        {
+          name: 'FulPath',
+          value: 'FulPath',
+        }        
       ]
     },  
   ]
