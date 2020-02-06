@@ -240,30 +240,28 @@ const renderFilterFields = (state, props) => {
         return null;
     }
 
-    let filterFields = state.filterFields.map((filter, i) => <tr className="filterRow">
-        <td><SemanticForm.Field>
-                <FormTreeDropDown 
-                    name={"filterField" + i}
-                    treeData={props.filtersMetadata} 
-                    isRequired={true}
-                    label={"Field Name"}                     
-                />
-            </SemanticForm.Field>
-        </td>
-        <td><SemanticForm.Field>
+    let filterFields = state.filterFields.map((filter, i) => <div className="filterRow">
+        <SemanticForm.Field className="filterField">
+            <FormTreeDropDown 
+                name={"filterField" + i}
+                treeData={props.filtersMetadata} 
+                isRequired={true}
+                label={"Field Name"}                     
+            />
+        </SemanticForm.Field>
+        <SemanticForm.Field className="filterField">
             <FormText
                 label={"Filter Value"}
                 small
             />
         </SemanticForm.Field>
-        </td>
-        {/* <SemanticForm.Field>
-            <Button red>Delete</Button>
-        </SemanticForm.Field> */}
-    </tr>);
+        <SemanticForm.Field className="filterFieldAligner">
+            <Button type="button" className="filterFieldBtn">Delete</Button>
+        </SemanticForm.Field>
+    </div>);
 
-    return <table className="filterTable">{filterFields}
-        </table>
+    return <div className="filterTable">{filterFields}
+        </div>
 }
 
 const renderFilterSegment = (state, props) => {
