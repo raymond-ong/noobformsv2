@@ -1,0 +1,19 @@
+.trialPageContainer {
+    width: 100%;    
+}
+
+.trialPageCharts {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    padding: 10px;
+}
+
+.trialPieContainer {
+    /* border: 1px solid gray; */
+}
+
+.trialPageFilters {
+    background-color: lightgray;
+    padding: 10px;    
+}

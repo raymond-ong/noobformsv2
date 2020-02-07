@@ -265,7 +265,6 @@ const renderFilterFields = (state, props) => {
 }
 
 const renderFilterSegment = (state, props) => {
-    debugger
     return <Segment><SemanticForm.Field>
         <div className="segmentTitle">Filters:</div>
         {renderFilterFields(state, props)}

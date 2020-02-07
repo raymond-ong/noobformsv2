@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import {Tab} from 'semantic-ui-react';
 import DataDesignerContent from './dataDesignerContent';
 import DataSourcesContent from './dataSourceContent';
+import TrialPage from './trialPage';
 
 const panes = [
     {
@@ -61,7 +62,15 @@ const panes = [
             <DataDesignerContent/>
           </Tab.Pane>
         ),
-      },          
+      },    
+      {
+        menuItem: 'trialPage',
+        pane: (
+          <Tab.Pane key='trialPage' style={{height: '100%', width: '100%', padding: '0px'}}>
+            <TrialPage/>
+          </Tab.Pane>
+        ),
+      },               
       {
         menuItem: 'Settings',
         pane: (

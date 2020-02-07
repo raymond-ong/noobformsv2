@@ -116,7 +116,7 @@ const treeDataSample = [
   },
 ];
 
-function FormTreeDropDown({ name, label, treeData, isRequired, multiple,...rest }) {
+function FormTreeDropDown({ name, label, treeData, isRequired, multiple, defaultValue,...rest }) {
   const { register, setValue, unregister, errors } = useContext(FormContext);
 
   return (<SemanticForm.Field>
@@ -138,6 +138,7 @@ function FormTreeDropDown({ name, label, treeData, isRequired, multiple,...rest 
           treeNodeFilterProp="title"            
           multiple={multiple}
           treeIcon
+          defaultValue={defaultValue}
           treeCheckStrictly={true}
           {...iconPropsFunction}
       />}

@@ -117,6 +117,7 @@ const navBarMenuItems = [
     { name: 'hierarchyDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
     { name: 'dataSources', title: 'Data Sources',  icon: 'database',   alignment: '' },
     { name: 'dataDesigner', title: 'Dataset Designer',  icon: 'cube',   alignment: '' },
+    { name: 'trialPage', title: 'Trial Page',  icon: 'gavel',    alignment: '' },
     { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]
 
