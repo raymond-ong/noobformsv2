@@ -240,7 +240,7 @@ const renderFilterFields = (state, props) => {
         return null;
     }
 
-    let filterFields = state.filterFields.map((filter, i) => <div className="filterRow">
+    let filterFields = state.filterFields.map((filter, i) => <div className="filterRow" key={"filterField" + i}>
         <SemanticForm.Field className="filterField">
             <FormTreeDropDown 
                 name={"filterField" + i}

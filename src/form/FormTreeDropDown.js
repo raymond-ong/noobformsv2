@@ -50,7 +50,7 @@ const switcherIcon = (obj) => {
     { transform: `rotate(${obj.expanded ? 90 : 0}deg)` });
 };
 
-const iconProps = {
+export const iconProps = {
   switcherIcon,
 };
 
@@ -116,7 +116,7 @@ const treeDataSample = [
   },
 ];
 
-function FormTreeDropDown({ name, label, treeData, isRequired, multiple, defaultValue,...rest }) {
+function FormTreeDropDown({ name, label, treeData, isRequired, multiple, defaultValue, value,...rest }) {
   const { register, setValue, unregister, errors } = useContext(FormContext);
 
   return (<SemanticForm.Field>

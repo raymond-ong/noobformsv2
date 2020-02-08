@@ -1,6 +1,6 @@
 import React, { PureComponent, Component, useRef, useEffect, useState } from 'react';
 import {
-  PieChart, Pie, Sector, Cell, ResponsiveContainer, Legend
+  PieChart, Pie, Sector, Cell, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
 import '../controls/common.css';
 import './pieChart.css';
@@ -188,6 +188,7 @@ export class PieWithData extends React.Component {
     return <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}} width={400} height={400}>
       {this.renderPieWithData(this.props)}
       {renderLegend()}
+      <Tooltip />
     </PieChart>
   }
 }
