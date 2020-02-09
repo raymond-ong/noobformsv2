@@ -153,7 +153,7 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
       paddingTop: "10px"
       }}/>
 
-      <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={false} onClick={(...args) => {
+      <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
         console.log('Bar clicked first cat', ...args);}
         }>
         {
