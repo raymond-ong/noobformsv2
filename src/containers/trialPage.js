@@ -1,6 +1,7 @@
 import React from 'react';
 import './trialPage.css';
 import {PieWithData} from '../charts/pieChart';
+import {BarChartWithData} from '../charts/barChart';
 import { render } from 'react-dom';
 import crossfilter from 'crossfilter2';
 import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTreeDropDown, FormRadio} from '../form/Form';
@@ -22,7 +23,13 @@ const dummyVendorModels = {
     'Huawei': ['P30', 'Mate30',]
 }
 
-const itemConds = ['brand new', 'used']
+const dummyBarchartData = [
+    {'Brand new': 50, 'Used': 30, vendor: 'Apple'},
+    {'Brand new': 40, 'Used': 20, vendor: 'Samsung'},
+    {'Brand new': 20, 'Used': 10, vendor: 'Huawei'},
+]
+
+const itemConds = ['Brand new', 'Used']
 
 const generateApiData = () => {
     let retlist = [];
@@ -87,23 +94,25 @@ const filterObj = (obj, fields) => {
     return _.pick(obj, fields);
 }
 
-const groupData = (data, groupingsList) => {
-    let cfData = crossfilter(data);
-    let dimVendorModel = cfData.dimension( d => {
+const groupData = (cfDataIn, groupingsList) => {
+    let cfData = cfDataIn;
+    let dimGrouping = cfData.dimension( d => {
+        let pickedData = filterObj(d, groupingsList);
+        return JSON.stringify(pickedData);
+    });
+
+    let dimFiltering = cfData.dimension( d => {
         let pickedData = filterObj(d, groupingsList);
         return JSON.stringify(pickedData);
     });
 
     let filterAppleIphone = {
         vendor: "Apple",
-        model: "iPhone"
+        //model: "iPhone"
     };
-    debugger
-    dimVendorModel.filter(JSON.stringify(filterAppleIphone));
+    //dimFiltering.filter(JSON.stringify(filterAppleIphone));
     //let grpVendorModels = dimVendorModel.group().reduceCount().all();
-    let grpVendorModels = dimVendorModel
-                            .filter(JSON.stringify(filterAppleIphone))
-                            .group().reduceCount().all();
+    let grpVendorModels = dimGrouping.group().reduceCount().all();
     
     return grpVendorModels.map(x => {
         return {
@@ -135,6 +144,28 @@ const getBottomMostGroup = (groupings) => {
     return groupings[groupings.length - 1];
 }
 
+const formatBarchartData = (groupedData, primaryAxis, secondaryGroup) => {
+    let retList = [];
+    for (let i = 0; i < groupedData.length; i++) {
+        let currGroupedData = groupedData[i];
+        let jsonStrObj = JSON.parse(currGroupedData.name);
+        let primAxisVal = jsonStrObj[primaryAxis];
+        let secondaryName = jsonStrObj[secondaryGroup];
+        let secondaryVal = currGroupedData.value;
+
+        let findItem = retList.find(x => x[primaryAxis] === primAxisVal);
+        if (!findItem) {
+            findItem = {
+                [primaryAxis]: primAxisVal
+            }
+            retList.push(findItem);
+        }
+        findItem[`${secondaryName}`] = secondaryVal;
+    }
+
+    return retList;
+}
+
 // Just add a parent field to the existing metaDimArray
 // To make it easier to get the hierarchical value
 const reformatMetaDim = (metaDimArray, parent=null) => {
@@ -159,10 +190,11 @@ class TrialPage extends React.Component {
         let defaultGrouping = metaDimHier[0].key;
         this.state = {
             dimHierMaster: reformattedMetaDim,
+            cfData: crossfilter(generateApiData()),
             data: generateApiData(),
             pageFilters: [],
             //overallGroupings: [defaultGrouping], // The grouping set in the tree drop down
-            groupingBoundVal: defaultGrouping
+            groupingBoundVal: defaultGrouping, // For the Pie chart
         }
 
         this.onGroupSelect = this.onGroupSelect.bind(this);
@@ -172,6 +204,7 @@ class TrialPage extends React.Component {
         return <div className="trialPageFilters">
             <div><b>Page filters:</b></div>
             {/* {this.state.pageFilters.map()} */}
+            {this.state.pageFilters.map(filter => <div>{JSON.stringify(filter)}</div>)}
             <Button size='mini' primary type="button">Clear Filters</Button>
         </div>
     }
@@ -179,18 +212,18 @@ class TrialPage extends React.Component {
     pieClickHandler = (pieWedgeInfo) => {
         let filterObj = JSON.parse(pieWedgeInfo.name);
         console.log('pieClickHandler', pieWedgeInfo, filterObj);
-        
+        this.setState({
+            pageFilters: [filterObj]
+        });
     }
 
     onGroupSelect = (value) => {
-        debugger
         this.setState({
             groupingBoundVal: value
         })
     }
 
     getGroupings = () => {
-        debugger
         let treeDropdownVal = this.state.groupingBoundVal;
         let treeNodeSel = findNodeByKey(this.state.dimHierMaster, treeDropdownVal);
         if (!treeNodeSel) {
@@ -211,7 +244,7 @@ class TrialPage extends React.Component {
         // [1] Group the data 
         // [1A] Get the groupings from the tree dropdown first
         let groupings = this.getGroupings();
-        let groupedData = groupData1(this.state.data, groupings);
+        let groupedData = groupData(this.state.cfData, groupings);
     
         return <div className="trialPieContainer">
             <TreeDropdown 
@@ -228,14 +261,72 @@ class TrialPage extends React.Component {
     }
 
     renderTable = () => {
-        return <div>Table</div>
+        let dimensions = ['deviceId', 'vendor', 'model', 'itemCond']; // configed by user
+        let data = this.state.cfData.allFiltered();
+        
+        return <div>
+            <b>Num Records: {data.length}</b>
+            <table className="trialTable">
+            <thead>
+                {dimensions.map(d => <th>{d}</th>)}
+            </thead>
+            <tbody>
+                {data.map((d) => { return <tr>
+                    {
+                        Object.keys(d).map(k => <td>{d[k]}</td>)
+                    }
+                    </tr>})
+                }
+            </tbody>
+        </table>
+        </div>
+    }
+
+    renderBarchart = () => {        
+        let data = dummyBarchartData;
+        let primaryAxis = 'vendor';
+        let secondaryGroup = 'itemCond';
+        let groupedData = groupData(this.state.cfData, [primaryAxis,secondaryGroup]);
+        let formattedGroupData = formatBarchartData(groupedData, primaryAxis, secondaryGroup);
+        let secondaryKeyVals = groupedData.map(grpData => {
+            let nameJson = grpData.name;
+            let keyObj = JSON.parse(nameJson);
+            return keyObj[secondaryGroup];
+        });
+        let uniqSecondaryVals = _.uniq(secondaryKeyVals);
+
+        return <BarChartWithData
+            data={formattedGroupData}
+            primary={primaryAxis}
+            secondaryList={uniqSecondaryVals}
+        />
+    }
+
+    filterData = () => {
+        if (!this.state.pageFilters || !this.state.pageFilters.length) {
+            return;
+        }
+
+        for (let i = 0; i < this.state.pageFilters.length; i++) {
+            let currFilter = this.state.pageFilters[i];
+            Object.keys(currFilter).forEach(key => {
+                let filterVal = currFilter[key];
+                let dimFilter = this.state.cfData.dimension(d => d[key])
+                dimFilter.filter(filterVal);
+            })            
+        }
+
     }
 
     render() {
+        // Perform filtering if there is a pagefilter
+        this.filterData();
+
         return <div className="trialPageContainer">
             {this.renderPageFilters()}
             <div className="trialPageCharts">
             {this.renderPieChart()}
+            {this.renderBarchart()}
             {this.renderTable()}
             </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { PureComponent, useRef, useEffect, useState } from 'react';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,Cell
   } from 'recharts';
   import './barChart.css';  
 
@@ -8,7 +8,9 @@ import '../controls/common.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 
-export const data = [
+const COLORS = ['green', 'red', 'gold', 'gray', 'cyan', 'magenta', 'black', 'lime', 'teal', 'pink', 'violet', 'orange', 'blue', 'indigo'];
+
+export const sampleData = [
   {
     date: '2000-01', "Time in Preferred Mode": 4000, "Time in Control": 2400, "Time MV out of Limits": 2400,
   },
@@ -98,14 +100,14 @@ export const BarChartForReport = (props) => {
   return (
     <div className="reChartContainer" ref={chartContainerEl}>
       <div className="controlLabel">{props.data.label}</div>
-        {renderChartContents(true, myState.width, myState.height)}
+        {renderChartContents(true, myState.width, myState.height, sampleData)}
     </div>
   );  
 }
 
 // Just specify null for width and height if the BarChart is going to be placed inside a ResponsiveContainer
 // Important to set isAnimationActive to false during printing
-const renderChartContents = (bAnimate, width, height) => {
+const renderChartContents = (bAnimate, width, height, data) => {
   return (
     <BarChart
               width={width}
@@ -132,6 +134,59 @@ const renderChartContents = (bAnimate, width, height) => {
   )
 }
 
+const renderChartContentsReal = (bAnimate, width, height, data, primary, secondaryList) => {
+  return (
+    <BarChart
+              width={width}
+              height={height}
+              data={data}
+              margin={{
+              top: 20, right: 10, left: 5, bottom: 30,
+              }}
+          >
+      <CartesianGrid vertical={false}/>
+      <XAxis dataKey={primary} />
+      <YAxis axisLine={false}/>
+      <Tooltip />
+
+      <Legend  wrapperStyle={{
+      paddingTop: "10px"
+      }}/>
+
+      <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={false} onClick={(...args) => {
+        console.log('Bar clicked first cat', ...args);}
+        }>
+        {
+          data.map((entry, index) => (
+            <Cell key={`cell-${index}`} stroke={'black'}  strokeWidth={2} myCellId={secondaryList[0]+index}/>
+          ))
+        }
+      </Bar>
+      <Bar dataKey={secondaryList[1]} fill="gold" onClick={(...args) => {
+        console.log('Bar clicked second cat', ...args);}
+        }/>      
+    </BarChart>
+  )
+}
+
+export class BarChartWithData extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeIndex: null
+    }
+  }
+
+  render() {
+
+    return (renderChartContentsReal(true, 400, 400, 
+      this.props.data, 
+      this.props.primary, 
+      this.props.secondaryList));
+  }
+}
+
+
 function BarChartResponsive(props) {
   let classNames = 'reChartContainer';
   if (props.selected === true) {
@@ -142,10 +197,11 @@ function BarChartResponsive(props) {
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
       <ResponsiveContainer width={"100%"} height="100%">
-        {renderChartContents(true, null, null)}
+        {renderChartContents(true, null, null, sampleData)}
       </ResponsiveContainer>
     </div>
   );
 }
+
 
 export default noobControlHoc(BarChartResponsive);
