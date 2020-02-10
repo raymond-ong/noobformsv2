@@ -146,7 +146,7 @@ export class PieWithData extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: null
+      activeIndex: props.activeIndex
     };
   }
 
@@ -161,7 +161,12 @@ export class PieWithData extends React.Component {
     }
   }
 
+  componentDidUpdate(previousProps, previousState) {
+    debugger
+  }
+
   renderPieWithData = (props) => {
+    debugger
     return <Pie
       data={props.data}
       labelLine={true}
@@ -173,7 +178,7 @@ export class PieWithData extends React.Component {
       dataKey="value"
       isAnimationActive={false}
       onClick={this.onPieClick}
-      activeIndex={this.state.activeIndex}
+      activeIndex={this.props.activeIndex}
       activeShape={renderActiveShape}
     >
       {

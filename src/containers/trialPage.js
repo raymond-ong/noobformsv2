@@ -51,45 +51,6 @@ const generateApiData = () => {
     return retlist;
 }
 
-const groupData1 = (data) => {
-    let cfData = crossfilter(data);
-    let dimVendor = cfData.dimension( d => d.vendor);
-    // dimVendor.filter(d => {
-    //     return d !== "Apple"
-    // });
-    let grpVendors = dimVendor
-    .filter(d => {
-        return d !== "Apple"
-    })
-    .group().reduceCount().all();
-    
-    return grpVendors.map(x => {
-        return {
-            name: x.key,
-            value: x.value
-        }
-    })
-}
-
-const groupData2 = (data) => {
-    // Group by vendor, then model
-    let cfData = crossfilter(data);
-    let dimVendorModel = cfData.dimension( d => {
-        return JSON.stringify({
-            vendor: d.vendor,
-            model: d.model
-        });
-    });
-    let grpVendorModels = dimVendorModel.group().reduceCount().all();
-    
-    return grpVendorModels.map(x => {
-        return {
-            name: x.key,
-            value: x.value
-        }
-    })
-}
-
 const filterObj = (obj, fields) => {
     return _.pick(obj, fields);
 }
@@ -259,11 +220,15 @@ class TrialPage extends React.Component {
     pieClickHandler = (pieWedgeInfo) => {
         let currGroup = this.state.groupingBoundVal;
         let groupings = this.getGroupings(currGroup);
-        let filterObj = JSON.parse(pieWedgeInfo.name);
-        filterObj.source = "pieChart";
-        filterObj.groupingInfo = JSON.stringify(groupings);
+        let filterObj = {
+            filterVal: JSON.parse(pieWedgeInfo.name),
+            source: "pieChart",
+            groupingInfo: JSON.stringify(groupings)
+        };
         console.log('pieClickHandler', pieWedgeInfo, filterObj);
         debugger
+
+        // TODO: remove any existing filter from pie chart dimension before applying a new one
         this.setState({
             pageFilters: [filterObj]
         });
@@ -311,6 +276,41 @@ class TrialPage extends React.Component {
         return retList;
     }
 
+    calculateActiveIndex = (groupData, controlId, groupingsStr, pageFilters) => {
+        // // I think no need to check the control ID. The groupData and groupingsStr should already be for this controlId.
+        // let findIndex = groupData.findIndex(g => g.name === "groupingsStr");
+        
+        // if (findIndex === -1) {
+        //     return null;
+        // }
+        // return findIndex;
+
+        let findFilterForControl = pageFilters.find(f => f.source === controlId && f.groupingInfo === groupingsStr);
+        if (!findFilterForControl) {
+            return null;
+        }
+
+        let dataIndex = groupData.findIndex(data => {
+            let nameStr = data.name;
+            let nameObj = JSON.parse(nameStr);
+
+            // This data must satisfy all filter props
+            for (let prop in findFilterForControl.filterVal) {
+                if (findFilterForControl.filterVal[prop] !== nameObj[prop]) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        if (dataIndex >= 0) {
+            return dataIndex;
+        }
+
+        return null;        
+    }
+
     renderPieChart = () => {
         // [1] Group the data 
         // [1A] Get the groupings from the tree dropdown first
@@ -321,8 +321,8 @@ class TrialPage extends React.Component {
         debugger
         let dimFind = dimArr.find(g => g.groupingInfo === groupingsStr);
         
-
         let groupedData = getDimGroupCount(dimFind.dimension);
+        let activeIndex = this.calculateActiveIndex(groupedData, 'pieChart', groupingsStr, this.state.pageFilters);
     
         // TODO: we need to set the correct active index if there is a filter on this control and group
         // Maybe we can assume that recharts will use the groupedData index as-as.
@@ -337,7 +337,8 @@ class TrialPage extends React.Component {
             />
             <PieWithData 
                 data={groupedData}
-                pieClickCallback={this.pieClickHandler}/>
+                pieClickCallback={this.pieClickHandler}
+                activeIndex={activeIndex}/>
         </div>
     }
 
@@ -425,28 +426,18 @@ class TrialPage extends React.Component {
                 // Not yet implemented filter for bar chart. todo...
             }
 
+            let currFilterVal = currFilter.filterVal;
 
-
-            let currFilterClone = {...currFilter};
-            delete currFilterClone.source;
-            delete currFilterClone.groupingInfo;
-            let currFilterKeys = Object.keys(currFilterClone);
-
-            // Don't use stringify to compare!
-            //dimObj.filter(JSON.stringify(currFilterClone));
-
-            // Iterate through each of the filter and check if the data satisfies each filter
+            // c. Iterate through each of the filter and check if the data satisfies each filter
             dimObj.filter( dJsonStr => {
                 let jsonObj = JSON.parse(dJsonStr);
                 
-                for (let iFilter = 0; iFilter < currFilterKeys.length; iFilter++) {
-                    let currFilterKey = currFilterKeys[iFilter];
-                    let jsonObjVal = jsonObj[currFilterKey];
-                    if (jsonObjVal !== currFilterClone[currFilterKey]) {
+                for (let prop in currFilterVal) {
+                    let jsonObjVal = jsonObj[prop];
+                    if (jsonObjVal !== currFilterVal[prop]) {
                         return false
                     }
                 }
-
                 return true;
             });
         }        
@@ -478,7 +469,7 @@ class TrialPage extends React.Component {
             {this.renderPageFilters()}
             <div className="trialPageCharts">
             {this.renderPieChart()}
-            {/* {this.renderBarchart()} */}
+            {this.renderBarchart()}
             {this.renderTable()}
             </div>
         </div>
