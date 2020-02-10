@@ -219,8 +219,8 @@ class TrialPage extends React.Component {
             //overallGroupings: [defaultGrouping], // The grouping set in the tree drop down
             groupingBoundVal: defaultGrouping, // For the Pie chart
             controlDims: {
-                pieChart: initialPiechartDim,
-                barChart: initialBarchartDim
+                pieChart: [initialPiechartDim],
+                barChart: [initialBarchartDim]
             }
         }
 
@@ -228,14 +228,23 @@ class TrialPage extends React.Component {
     }
 
     preparePieChartDim = (defaultGroupings, cfData) => {
-        return getDimensionObj(cfData,defaultGroupings)
+        let dim = getDimensionObj(cfData,defaultGroupings);
+        return {
+            groupingInfo: JSON.stringify(defaultGroupings),
+            dimension: dim
+        }
+
         //return cfData.dimension(d => d.vendor);
     }
 
     prepareBarChartDim = (cfData) => {
         let primaryAxis = 'vendor';
         let secondaryGroup = 'itemCond';
-        return getDimensionObj(cfData,[primaryAxis, secondaryGroup]);
+        let dim = getDimensionObj(cfData,[primaryAxis, secondaryGroup]);
+        return {
+            groupingInfo: '', // TODO, since we haven't implemented grouping for bar chart yet
+            dimension: dim
+        }
     }
 
     renderPageFilters = () => {
@@ -248,26 +257,41 @@ class TrialPage extends React.Component {
     }
 
     pieClickHandler = (pieWedgeInfo) => {
+        let currGroup = this.state.groupingBoundVal;
+        let groupings = this.getGroupings(currGroup);
         let filterObj = JSON.parse(pieWedgeInfo.name);
         filterObj.source = "pieChart";
+        filterObj.groupingInfo = JSON.stringify(groupings);
         console.log('pieClickHandler', pieWedgeInfo, filterObj);
+        debugger
         this.setState({
             pageFilters: [filterObj]
         });
     }
 
     onGroupSelect = (value) => {
-        // TODO: update the dimension of the controls also
-        let groupings = this.getGroupings(value)
-        let newPiechartDim = this.preparePieChartDim(groupings, this.state.cfData);
+        // TODO: update the dimension of the controls also....maybe we need to keep the old dimensions too in case the user switches back to the previous grouping
+        let groupings = this.getGroupings(value);
+        let groupingsStr = JSON.stringify(groupings);
+        // Check if this grouping is already in the state
+        // If not, create a new one and push
+        let findGrouping = this.state.controlDims.pieChart.find(g => g.groupingInfo === groupingsStr);
 
-        this.setState({
-            groupingBoundVal: value,
-            controlDims: {
-                ...this.state.controlDims,
-                pieChart: newPiechartDim
-            }
-        })
+        if (!findGrouping) {
+            let newPiechartDim = this.preparePieChartDim(groupings, this.state.cfData);
+            this.setState({
+                groupingBoundVal: value,
+                controlDims: {
+                    ...this.state.controlDims,
+                    pieChart: [...this.state.controlDims.pieChart, newPiechartDim]
+                }
+            })
+        }
+        else {
+            this.setState({
+                groupingBoundVal: value,
+            });
+        }      
     }
 
     getGroupings = (treeDropdownVal) => {
@@ -290,10 +314,19 @@ class TrialPage extends React.Component {
     renderPieChart = () => {
         // [1] Group the data 
         // [1A] Get the groupings from the tree dropdown first
-        let dim = this.state.controlDims.pieChart;
-        //let groupings = this.getGroupings();
-        let groupedData = getDimGroupCount(dim);
+        let dimArr = this.state.controlDims.pieChart;
+        let treeDropdownVal = this.state.groupingBoundVal;
+        let groupings = this.getGroupings(treeDropdownVal);
+        let groupingsStr = JSON.stringify(groupings);
+        debugger
+        let dimFind = dimArr.find(g => g.groupingInfo === groupingsStr);
+        
+
+        let groupedData = getDimGroupCount(dimFind.dimension);
     
+        // TODO: we need to set the correct active index if there is a filter on this control and group
+        // Maybe we can assume that recharts will use the groupedData index as-as.
+        // If that's the case we can calculate
         return <div className="trialPieContainer">
             <TreeDropdown 
                 treeData={metaDimHier} 
@@ -358,16 +391,64 @@ class TrialPage extends React.Component {
         // let dimObj = this.state.controlDims.pieChart;
         // dimObj.filter('{"vendor":"Apple"}');  
 
-        
+        // Apply the filter on the source only
+        // E.g. Pie chart applied filter
+        // -> Look for the pie chart's dimension from State, then apply the filter on that only
         for (let i = 0; i < this.state.pageFilters.length; i++) {
             let currFilter = this.state.pageFilters[i];
-            let filterSource = currFilter.source;
-            let dimObj = this.state.controlDims[filterSource];   
-            let currFilterClone = {...currFilter}                 ;
-            delete currFilterClone.source;
 
-            // TODO: Don't use stringify to compare!
-            dimObj.filter(JSON.stringify(currFilterClone));
+            // a. Find the source of the filter. It will return an array of dims (one per grouping)
+            let filterSource = currFilter.source;
+            let filterGroupingInfo = currFilter.groupingInfo;
+            let dimArr = this.state.controlDims[filterSource];   
+            let dimObj = null;
+
+            // b. Find the dim based on the current grouping
+            if (filterSource === 'pieChart') {
+                let currGrouping = this.state.groupingBoundVal;
+                let groupingVal = this.getGroupings(currGrouping);
+                let groupingValStr = JSON.stringify(groupingVal);
+                if (filterGroupingInfo !== groupingValStr) {
+                    // We don't perform filter if the currently selected group is not the same
+                    continue;
+                }
+
+                let dimFind = dimArr.find(x => x.groupingInfo === groupingValStr);
+                if (!dimFind) {
+                    // Not expected to be here
+                    debugger
+                    continue;
+                }
+                dimObj = dimFind.dimension;
+            }
+            else {
+                // Not yet implemented filter for bar chart. todo...
+            }
+
+
+
+            let currFilterClone = {...currFilter};
+            delete currFilterClone.source;
+            delete currFilterClone.groupingInfo;
+            let currFilterKeys = Object.keys(currFilterClone);
+
+            // Don't use stringify to compare!
+            //dimObj.filter(JSON.stringify(currFilterClone));
+
+            // Iterate through each of the filter and check if the data satisfies each filter
+            dimObj.filter( dJsonStr => {
+                let jsonObj = JSON.parse(dJsonStr);
+                
+                for (let iFilter = 0; iFilter < currFilterKeys.length; iFilter++) {
+                    let currFilterKey = currFilterKeys[iFilter];
+                    let jsonObjVal = jsonObj[currFilterKey];
+                    if (jsonObjVal !== currFilterClone[currFilterKey]) {
+                        return false
+                    }
+                }
+
+                return true;
+            });
         }        
 
     }
@@ -397,7 +478,7 @@ class TrialPage extends React.Component {
             {this.renderPageFilters()}
             <div className="trialPageCharts">
             {this.renderPieChart()}
-            {this.renderBarchart()}
+            {/* {this.renderBarchart()} */}
             {this.renderTable()}
             </div>
         </div>
