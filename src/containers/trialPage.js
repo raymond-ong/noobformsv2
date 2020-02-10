@@ -276,7 +276,15 @@ class TrialPage extends React.Component {
             <div><b>Page filters:</b></div>
             {/* {this.state.pageFilters.map()} */}
             {this.state.pageFilters.map(filter => <div>{JSON.stringify(filter)}</div>)}
-            <Button size='mini' primary type="button">Clear Filters</Button>
+            <Button size='mini' primary type="button" 
+                onClick={e => {
+                    this.setState({pageFilters:[]});
+                    let allControlDims = [...this.state.controlDims.pieChart, ...this.state.controlDims.barChart];
+                    allControlDims.forEach(d => {
+                        d.dimension.filter(null);
+                    })
+                }
+                }>Clear Filters</Button>
         </div>
     }
 
