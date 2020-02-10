@@ -29,6 +29,18 @@ const dummyBarchartData = [
     {'Brand new': 20, 'Used': 10, vendor: 'Huawei'},
 ]
 
+const categoryLookup = {
+    'iMac': 'Computer',
+    'iPhone': 'Phone',
+    'Macbook': 'Computer',
+    'iPad': 'Tablet',
+    'Galaxy S':'Phone',
+    'Galaxy Note':'Phone',
+    'Galaxy Tab':'Tablet',
+    'P30': 'Phone',
+    'Mate30': 'Phone',
+}
+
 const itemConds = ['Brand new', 'Used']
 
 const generateApiData = () => {
@@ -42,7 +54,8 @@ const generateApiData = () => {
                     deviceId: `${prop}-${currModel}-${n}`,
                     vendor: prop,
                     model: currModel,
-                    itemCond: itemConds[n % itemConds.length]
+                    itemCond: itemConds[n % itemConds.length],
+                    category: categoryLookup[currModel]
                 });        
             }
         }
@@ -101,7 +114,8 @@ const groupData = (cfDataIn, groupingsList) => {
     })
 }
 
-const metaDimHier = [
+// Expected to be a user config
+const metaDimHier4Pie = [
     {
         key: 'vendor',
         value: 'vendor',
@@ -110,6 +124,20 @@ const metaDimHier = [
             key: 'model',
             value: 'model',
             title: 'Model',    
+        }],        
+    }
+]
+
+// Expected to be a user config
+const metaDimHier4Bar = [
+    {
+        key: 'vendor',
+        value: 'vendor',
+        title: 'Vendor',
+        children: [{
+            key: 'category',
+            value: 'category',
+            title: 'Category',    
         }],        
     }
 ]
@@ -123,7 +151,8 @@ const getBottomMostGroup = (groupings) => {
     return groupings[groupings.length - 1];
 }
 
-const formatBarchartData = (groupedData, primaryAxis, secondaryGroup) => {
+// old
+const formatBarchartDataOld = (groupedData, primaryAxis, secondaryGroup) => {
     let retList = [];
     for (let i = 0; i < groupedData.length; i++) {
         let currGroupedData = groupedData[i];
@@ -131,6 +160,32 @@ const formatBarchartData = (groupedData, primaryAxis, secondaryGroup) => {
         let primAxisVal = jsonStrObj[primaryAxis];
         let secondaryName = jsonStrObj[secondaryGroup];
         let secondaryVal = currGroupedData.value;
+
+        let findItem = retList.find(x => x[primaryAxis] === primAxisVal);
+        if (!findItem) {
+            findItem = {
+                [primaryAxis]: primAxisVal
+            }
+            retList.push(findItem);
+        }
+        findItem[`${secondaryName}`] = secondaryVal;
+    }
+
+    return retList;
+}
+
+const formatBarchartData = (groupedData, primaryAxes, secondaryGroup) => {
+    let retList = [];
+    let primaryAxis = JSON.stringify(primaryAxes);
+    for (let i = 0; i < groupedData.length; i++) {
+        let currGroupedData = groupedData[i];
+        let jsonStrObj = JSON.parse(currGroupedData.name);
+
+        // let primAxisVal = jsonStrObj[primaryAxis];
+        let secondaryName = jsonStrObj[secondaryGroup];
+        let secondaryVal = currGroupedData.value;
+
+        let primAxisVal = JSON.stringify(filterObj(jsonStrObj, primaryAxes));
 
         let findItem = retList.find(x => x[primaryAxis] === primAxisVal);
         if (!findItem) {
@@ -165,27 +220,35 @@ class TrialPage extends React.Component {
     
     constructor(props) {
         super(props);
-        let reformattedMetaDim = reformatMetaDim(metaDimHier);
+        let reformattedMetaDimPie = reformatMetaDim(metaDimHier4Pie);
+        let reformattedMetaDimBar = reformatMetaDim(metaDimHier4Bar);
         let cfData = crossfilter(generateApiData());
-        let defaultGrouping = metaDimHier[0].key;
+        let defaultGrouping = metaDimHier4Pie[0].key;
 
         let initialPiechartDim = this.preparePieChartDim([defaultGrouping], cfData);
-        let initialBarchartDim = this.prepareBarChartDim(cfData);
+        let initialBarchartDim = this.prepareBarChartDim([defaultGrouping], cfData);
 
         this.state = {
-            dimHierMaster: reformattedMetaDim,
+            dimHierMaster: {
+                pieChart: reformattedMetaDimPie,
+                barChart: reformattedMetaDimBar
+            },
             cfData: cfData,
             data: generateApiData(),
             pageFilters: [], // For each control ID, one filter only
             //overallGroupings: [defaultGrouping], // The grouping set in the tree drop down
-            groupingBoundVal: defaultGrouping, // For the Pie chart
+            groupingBoundVal: {
+                pieChart: defaultGrouping, 
+                barChart: defaultGrouping, 
+            },
             controlDims: {
                 pieChart: [initialPiechartDim],
                 barChart: [initialBarchartDim]
             }
         }
 
-        this.onGroupSelect = this.onGroupSelect.bind(this);
+        this.onGroupSelectPie = this.onGroupSelectPie.bind(this);
+        this.onGroupSelectBar = this.onGroupSelectBar.bind(this);
     }
 
     preparePieChartDim = (defaultGroupings, cfData) => {
@@ -198,10 +261,10 @@ class TrialPage extends React.Component {
         //return cfData.dimension(d => d.vendor);
     }
 
-    prepareBarChartDim = (cfData) => {
-        let primaryAxis = 'vendor';
+    prepareBarChartDim = (defaultGroupings, cfData) => {
+        //let primaryAxis = 'vendor'; // let this be the configurable axis
         let secondaryGroup = 'itemCond';
-        let dim = getDimensionObj(cfData,[primaryAxis, secondaryGroup]);
+        let dim = getDimensionObj(cfData,[...defaultGroupings, secondaryGroup]);
         return {
             groupingInfo: '', // TODO, since we haven't implemented grouping for bar chart yet
             dimension: dim
@@ -218,15 +281,14 @@ class TrialPage extends React.Component {
     }
 
     pieClickHandler = (pieWedgeInfo) => {
-        let currGroup = this.state.groupingBoundVal;
-        let groupings = this.getGroupings(currGroup);
+        let currGroup = this.state.groupingBoundVal.pieChart;
+        let groupings = this.getGroupings(currGroup, 'pieChart');
         let filterObj = {
             filterVal: JSON.parse(pieWedgeInfo.name),
             source: "pieChart",
             groupingInfo: JSON.stringify(groupings)
         };
         console.log('pieClickHandler', pieWedgeInfo, filterObj);
-        debugger
 
         // Remove any existing filter from pie chart dimension before applying a new one
         // E.g. Previous filter is Vendor:Apple + Model:iPhone
@@ -255,8 +317,8 @@ class TrialPage extends React.Component {
         });
     }
 
-    onGroupSelect = (value) => {
-        let groupings = this.getGroupings(value);
+    onGroupSelectPie = (value) => {
+        let groupings = this.getGroupings(value, 'pieChart');
         let groupingsStr = JSON.stringify(groupings);
 
         // Remove the filter from previous lower groups
@@ -283,7 +345,10 @@ class TrialPage extends React.Component {
         if (!findGrouping) {
             let newPiechartDim = this.preparePieChartDim(groupings, this.state.cfData);
             this.setState({
-                groupingBoundVal: value,
+                groupingBoundVal: {
+                    ...this.state.groupingBoundVal, 
+                    pieChart: value
+                },
                 controlDims: {
                     ...this.state.controlDims,
                     pieChart: [...this.state.controlDims.pieChart, newPiechartDim]
@@ -292,14 +357,65 @@ class TrialPage extends React.Component {
         }
         else {
             this.setState({
-                groupingBoundVal: value,
+                groupingBoundVal: {
+                    ...this.state.groupingBoundVal,
+                    pieChart: value
+                },
             });
         }      
     }
 
-    getGroupings = (treeDropdownVal) => {
+    onGroupSelectBar = (value) => {
+        let groupings = this.getGroupings(value, 'barChart');
+        let groupingsStr = JSON.stringify(groupings);
+
+        // Remove the filter from previous lower groups
+        // let prevGroup = this.state.groupingBoundVal;
+        // let prevGroupStr = JSON.stringify(this.getGroupings(prevGroup));
+        debugger
+        let lowerDims = this.state.controlDims.barChart.filter(d => d.groupingInfo.length > groupingsStr.length);
+        let removedFilters = [];
+        lowerDims.forEach(lowerDim => {
+            lowerDim.dimension.filter(null);
+            removedFilters.push(lowerDim.groupingInfo);
+        });
+
+        this.setState({
+            pageFilters: this.state.pageFilters.filter(f => !removedFilters.includes(f.groupingInfo))
+        });
+
+
+        // Update the dimension of the controls also....maybe we need to keep the old dimensions too in case the user switches back to the previous grouping
+        // Check if this grouping is already in the state
+        // If not, create a new one and push
+        let findGrouping = this.state.controlDims.barChart.find(g => g.groupingInfo === groupingsStr);
+
+        if (!findGrouping) {
+            let newBarchartDim = this.prepareBarChartDim(groupings, this.state.cfData);
+            this.setState({
+                groupingBoundVal: {
+                    ...this.state.groupingBoundVal,
+                    barChart: value
+                },
+                controlDims: {
+                    ...this.state.controlDims,
+                    barChart: [...this.state.controlDims.barChart, newBarchartDim]
+                }
+            })
+        }
+        else {
+            this.setState({
+                groupingBoundVal: {
+                    ...this.state.groupingBoundVal, 
+                    barChart: value
+                },
+            });
+        }      
+    }
+
+    getGroupings = (treeDropdownVal, controlId) => {
         //let  = this.state.groupingBoundVal;
-        let treeNodeSel = findNodeByKey(this.state.dimHierMaster, treeDropdownVal);
+        let treeNodeSel = findNodeByKey(this.state.dimHierMaster[controlId], treeDropdownVal);
         if (!treeNodeSel) {
             return [];
         }
@@ -315,13 +431,6 @@ class TrialPage extends React.Component {
     }
 
     calculateActiveIndex = (groupData, controlId, groupingsStr, pageFilters) => {
-        // // I think no need to check the control ID. The groupData and groupingsStr should already be for this controlId.
-        // let findIndex = groupData.findIndex(g => g.name === "groupingsStr");
-        
-        // if (findIndex === -1) {
-        //     return null;
-        // }
-        // return findIndex;
 
         let findFilterForControl = pageFilters.find(f => f.source === controlId && f.groupingInfo === groupingsStr);
         if (!findFilterForControl) {
@@ -353,10 +462,9 @@ class TrialPage extends React.Component {
         // [1] Group the data 
         // [1A] Get the groupings from the tree dropdown first
         let dimArr = this.state.controlDims.pieChart;
-        let treeDropdownVal = this.state.groupingBoundVal;
-        let groupings = this.getGroupings(treeDropdownVal);
+        let treeDropdownVal = this.state.groupingBoundVal.pieChart;
+        let groupings = this.getGroupings(treeDropdownVal, 'pieChart');
         let groupingsStr = JSON.stringify(groupings);
-        debugger
         let dimFind = dimArr.find(g => g.groupingInfo === groupingsStr);
         
         let groupedData = getDimGroupCount(dimFind.dimension);
@@ -367,9 +475,9 @@ class TrialPage extends React.Component {
         // If that's the case we can calculate
         return <div className="trialPieContainer">
             <TreeDropdown 
-                treeData={metaDimHier} 
-                value={this.state.groupingBoundVal}
-                onSelect={this.onGroupSelect}
+                treeData={metaDimHier4Pie} 
+                value={this.state.groupingBoundVal.pieChart}
+                onSelect={this.onGroupSelectPie}
                 treeDefaultExpandAll
                 // defaultValue={getBottomMostGroup(this.state.overallGroupings)}
             />
@@ -381,10 +489,10 @@ class TrialPage extends React.Component {
     }
 
     renderTable = () => {
-        let dimensions = ['deviceId', 'vendor', 'model', 'itemCond']; // configed by user
+        let dimensions = ['deviceId', 'vendor', 'model', 'itemCond', 'category']; // configed by user
         let data = this.state.cfData.allFiltered();
         
-        return <div>
+        return <div className="trialChartContainer trialChartContainer">
             <b>Num Records: {data.length}</b>
             <table className="trialTable">
             <thead>
@@ -404,10 +512,16 @@ class TrialPage extends React.Component {
 
     renderBarchart = () => {        
         //let data = dummyBarchartData;
-        let primaryAxis = 'vendor';
+        //let primaryAxis = 'vendor';        
+        let treeDropdownVal = this.state.groupingBoundVal.barChart;
+        let groupings = this.getGroupings(treeDropdownVal, 'barChart');
+
         let secondaryGroup = 'itemCond';
-        let groupedData = groupData(this.state.cfData, [primaryAxis,secondaryGroup]);
-        let formattedGroupData = formatBarchartData(groupedData, primaryAxis, secondaryGroup);
+        let groupedData = groupData(this.state.cfData, [...groupings,secondaryGroup]);
+        //let groupedData = groupData(this.state.cfData, ['vendor', secondaryGroup]);
+        debugger
+        let formattedGroupData = formatBarchartData(groupedData, groupings, secondaryGroup);
+        let primaryAxis = JSON.stringify(groupings);
         let secondaryKeyVals = groupedData.map(grpData => {
             let nameJson = grpData.name;
             let keyObj = JSON.parse(nameJson);
@@ -415,11 +529,20 @@ class TrialPage extends React.Component {
         });
         let uniqSecondaryVals = _.uniq(secondaryKeyVals);
 
-        return <BarChartWithData
-            data={formattedGroupData}
-            primary={primaryAxis}
-            secondaryList={uniqSecondaryVals}
-        />
+        return <div className="trialPieContainer trialChartContainer">
+            <TreeDropdown 
+                treeData={metaDimHier4Bar} 
+                value={this.state.groupingBoundVal.barChart}
+                onSelect={this.onGroupSelectBar}
+                treeDefaultExpandAll
+                // defaultValue={getBottomMostGroup(this.state.overallGroupings)}
+            />
+            <BarChartWithData
+                data={formattedGroupData}
+                primary={primaryAxis}
+                secondaryList={uniqSecondaryVals}
+            />
+        </div>
     }
 
     filterData = () => {
@@ -427,6 +550,7 @@ class TrialPage extends React.Component {
             return;
         }
 
+        debugger
         // let dimObj = this.state.controlDims.pieChart;
         // dimObj.filter('{"vendor":"Apple"}');  
 
@@ -444,8 +568,8 @@ class TrialPage extends React.Component {
 
             // b. Find the dim based on the current grouping
             if (filterSource === 'pieChart') {
-                let currGrouping = this.state.groupingBoundVal;
-                let groupingVal = this.getGroupings(currGrouping);
+                let currGrouping = this.state.groupingBoundVal[filterSource];
+                let groupingVal = this.getGroupings(currGrouping, filterSource);
                 let groupingValStr = JSON.stringify(groupingVal);
                 if (filterGroupingInfo !== groupingValStr) {
                     // We don't perform filter if the currently selected group is not the same

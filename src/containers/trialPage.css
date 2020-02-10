@@ -27,6 +27,11 @@
     overflow: auto;
 }
 
+.trialChartContainer {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 .trialTable tr,
 .trialTable thead {
     border: 1px solid lightgray;

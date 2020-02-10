@@ -156,6 +156,41 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
       <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
         console.log('Bar clicked first cat', ...args);}
         }>
+        {/* {
+          data.map((entry, index) => (
+            <Cell key={`cell-${index}`} stroke={'black'}  strokeWidth={2} myCellId={secondaryList[0]+index}/>
+          ))
+        } */}
+      </Bar>
+      <Bar dataKey={secondaryList[1]} fill="gold" onClick={(...args) => {
+        console.log('Bar clicked second cat', ...args);}
+        }/>      
+    </BarChart>
+  )
+}
+
+const renderChartContentsRealOld = (bAnimate, width, height, data, primary, secondaryList) => {
+  return (
+    <BarChart
+              width={width}
+              height={height}
+              data={data}
+              margin={{
+              top: 20, right: 10, left: 5, bottom: 30,
+              }}
+          >
+      <CartesianGrid vertical={false}/>
+      <XAxis dataKey={primary} />
+      <YAxis axisLine={false}/>
+      <Tooltip />
+
+      <Legend  wrapperStyle={{
+      paddingTop: "10px"
+      }}/>
+
+      <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
+        console.log('Bar clicked first cat', ...args);}
+        }>
         {
           data.map((entry, index) => (
             <Cell key={`cell-${index}`} stroke={'black'}  strokeWidth={2} myCellId={secondaryList[0]+index}/>
@@ -179,7 +214,7 @@ export class BarChartWithData extends React.Component {
 
   render() {
 
-    return (renderChartContentsReal(true, 400, 400, 
+    return (renderChartContentsReal(true, 600, 400, 
       this.props.data, 
       this.props.primary, 
       this.props.secondaryList));

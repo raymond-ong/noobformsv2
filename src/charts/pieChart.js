@@ -162,11 +162,9 @@ export class PieWithData extends React.Component {
   }
 
   componentDidUpdate(previousProps, previousState) {
-    debugger
   }
 
   renderPieWithData = (props) => {
-    debugger
     return <Pie
       data={props.data}
       labelLine={true}
