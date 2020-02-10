@@ -176,7 +176,7 @@ class TrialPage extends React.Component {
             dimHierMaster: reformattedMetaDim,
             cfData: cfData,
             data: generateApiData(),
-            pageFilters: [],
+            pageFilters: [], // For each control ID, one filter only
             //overallGroupings: [defaultGrouping], // The grouping set in the tree drop down
             groupingBoundVal: defaultGrouping, // For the Pie chart
             controlDims: {
@@ -228,16 +228,54 @@ class TrialPage extends React.Component {
         console.log('pieClickHandler', pieWedgeInfo, filterObj);
         debugger
 
-        // TODO: remove any existing filter from pie chart dimension before applying a new one
+        // Remove any existing filter from pie chart dimension before applying a new one
+        // E.g. Previous filter is Vendor:Apple + Model:iPhone
+        // If new filter is Vendor: Apple, remove the previous filter first
+        // let treeDropdownVal = this.state.groupingBoundVal;
+        // let groupStr = JSON.stringify(this.getGroupings(treeDropdownVal));
+        // let otherPieDims = this.state.controlDims.pieChart.filter(d => 
+        //     d.groupingInfo !== groupStr 
+        //     && d.groupingInfo.length > groupStr.length);
+        // otherPieDims.forEach(otherDim => {
+        //     // If other dimension is lower (more complex), remove. If higher, retain.
+        //     otherDim.dimension.filter(null);
+        // })
+
+        // If the same source && grouping Info, replace the existing one.
+        // Else, just push new item
+
+        // TODO (nice to have): if everything exactly same, remove it instead
+        let findSameSourceAndGroupingInfoIndex = this.state.pageFilters.findIndex(f => f.source === 'pieChart' && f.groupingInfo === filterObj.groupingInfo);
+        if (findSameSourceAndGroupingInfoIndex >= 0) {
+            this.state.pageFilters.splice(findSameSourceAndGroupingInfoIndex, 1);
+        }
+
         this.setState({
-            pageFilters: [filterObj]
+            pageFilters: [...this.state.pageFilters, filterObj]
         });
     }
 
     onGroupSelect = (value) => {
-        // TODO: update the dimension of the controls also....maybe we need to keep the old dimensions too in case the user switches back to the previous grouping
         let groupings = this.getGroupings(value);
         let groupingsStr = JSON.stringify(groupings);
+
+        // Remove the filter from previous lower groups
+        // let prevGroup = this.state.groupingBoundVal;
+        // let prevGroupStr = JSON.stringify(this.getGroupings(prevGroup));
+        debugger
+        let lowerDims = this.state.controlDims.pieChart.filter(d => d.groupingInfo.length > groupingsStr.length);
+        let removedFilters = [];
+        lowerDims.forEach(lowerDim => {
+            lowerDim.dimension.filter(null);
+            removedFilters.push(lowerDim.groupingInfo);
+        });
+
+        this.setState({
+            pageFilters: this.state.pageFilters.filter(f => !removedFilters.includes(f.groupingInfo))
+        });
+
+
+        // Update the dimension of the controls also....maybe we need to keep the old dimensions too in case the user switches back to the previous grouping
         // Check if this grouping is already in the state
         // If not, create a new one and push
         let findGrouping = this.state.controlDims.pieChart.find(g => g.groupingInfo === groupingsStr);
