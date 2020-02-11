@@ -20,6 +20,7 @@
     "react-grid-layout": "^0.17.1",
     "react-hook-form": "^3.28.14",
     "react-hook-form-input": "^1.1.7",
+    "react-image-mapper": "0.0.15",
     "react-notifications-component": "^2.2.3",
     "react-redux": "^7.1.1",
     "react-scripts": "3.1.0",

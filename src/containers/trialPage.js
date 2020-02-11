@@ -8,6 +8,7 @@ import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTree
 import { Button } from 'semantic-ui-react';
 import {findNodeByKey} from '../helper/treefilter';
 import TreeDropdown from '../controls/treeDropdown';
+import ImageMap from '../components/imageMap';
 import _ from "lodash";
 
 const dataPie = [
@@ -614,6 +615,11 @@ class TrialPage extends React.Component {
 
     }
 
+    
+    renderMap = () => {
+        return <ImageMap/>;
+    }
+
     testFilter = () => {
         debugger
         let cfData = this.state.cfData;
@@ -638,6 +644,7 @@ class TrialPage extends React.Component {
         return <div className="trialPageContainer">
             {this.renderPageFilters()}
             <div className="trialPageCharts">
+            {this.renderMap()}
             {this.renderPieChart()}
             {this.renderBarchart()}
             {this.renderTable()}
