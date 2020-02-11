@@ -153,43 +153,6 @@ const renderDropdown = (name, listItems) => {
     return <FormDropDown name={name} options={dropdownOpts} multiple/>;
 }
 
-/*
-const renderKpiDropdown = (name, listItems) => {
-    let dropdownOpts = [];
-    if (listItems) {
-        listItems.forEach(kpiGrp => {
-            kpiGrp.kpis.forEach(kpi => {
-                dropdownOpts.push({
-                    key: `${kpiGrp.kpiGrp}%%${kpi}`,
-                    text: kpi,
-                    value: `${kpiGrp.kpiGrp}%%${kpi}`
-                    // value: {
-                    //     kpiGrp: kpiGrp.kpiGrp,
-                    //     kpi: kpi
-                    // } 
-                });
-            })
-        })
-    }
-    
-
-    // let dropdownOpts = listItems ? listItems.map(kpiGrp => {
-    //     kpiGrp.kpis.map(
-    //         kpi => {
-
-    //         }
-    //     )
-    // }}) : [];
-
-    return <FormDropDown name={name} options={dropdownOpts} multiple/>;
-}
-
-const radioGroupContents = [
-    {label: 'For selected Hierarchy node', name: 'rgrpHierScope', value: 'self', },
-    {label: "For selected Hierarchy node's children", name: 'rgrpHierScope', value: 'children', }
-];
-*/
-
 const renderPreviewTable = () => {
 
 }
@@ -286,42 +249,29 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
     }
 
     return <div className="dataDesignerPanelContainer">
-        {/* <table className="formTable formTableDataDesigner">
-        <tbody>
-            <tr>
-                <th>Hierarchy*</th>
-                <td>
-                    <FormTreeDropDown name="hierarchyTree" treeData={props.hierarchyConso} isRequired={true}/>
-                    {selNodeIsFolder && <FormRadio name="HierarchyScope" initialSel={defaultScope} radioGroupContents={radioGroupContents}/>}
-                </td>
-            </tr>
+        <Segment>
+        <div className="segmentTitle">Data Source</div>
+        <FormDropDown 
+            // label="Select Dimensions:"
+            name="dataSource" 
+            isRequired={true} 
+            multiple
+            onSelect={onTreeSelect}
+            small
+        />
+        </Segment>        
 
-            <tr>
-                <th>Dimension</th>
-                <td>
-                <FormDropDown
-                    name={'dataDsgnDimensions'}
-                    label={null}
-                    options={props.dimensions}    
-                />
-                </td>
-            </tr>
-
-            <tr>
-                <th>Kpi Group</th>
-                <td>
-                    {renderDropdown('hierDsgnKpiGroup', kpiGroupOptions.kpiGrps)}
-                </td>
-            </tr>
-
-            <tr>
-                <th>Kpi</th>
-                <td>
-                    {renderKpiDropdown('hierDsgnKpi', kpiGroupOptions.kpis)}
-                </td>
-            </tr>
-        </tbody>
-        </table> */}
+        <Segment>
+        <div className="segmentTitle">Metadata Name</div>
+        <FormDropDown 
+            // label="Select Dimensions:"
+            name="metadataName" 
+            isRequired={true} 
+            multiple
+            onSelect={onTreeSelect}
+            small
+        />
+        </Segment>                
 
         <Segment>
         <div className="segmentTitle">Dimensions</div>

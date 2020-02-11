@@ -134,6 +134,10 @@ const renderChartContents = (bAnimate, width, height, data) => {
   )
 }
 
+// Notes:
+// Maybe let the user to customize the following:
+// - interval (ticks)
+// - X axis height
 const renderChartContentsReal = (bAnimate, width, height, data, primary, secondaryList) => {
   return (
     <BarChart

@@ -205,16 +205,27 @@ const generateDefaultDashboard = () => {
 // [Percent]  e.g. ODE, TA, PA. Cannot be used in pie chart
 // [Number]   e.g. Total Alarms. Children count can be summed up.
 // [Not specified] means it is string value
+
+// Note: this metadata set is for device-level metadata
+//  TODO: We need to fetch the comment library stuff also
+// We also need to define a metadata for alarm-level metadata
 const dummyMetaData = {
+  name: 'Device Metadata',
+  // Defines how other Dataset-types can link to this Dataset.
+  // For example, Alarms data can be linked to this dataset via DeviceId
+  // This also defines the unit of Data. Means this data has a DeviceId
+  dataKey: 'DeviceId', // This should be one of the dimensions
   RequestParams: [
     {
       name: 'AnalysisPeriod',   
       dataTypes: ['Date Range'],   
       enumValues: ['Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
     },
-    {
-      name: 'Path',
-    }
+    // {
+      // I think no need...since this is already defined in the Dimensions. We only include the "special" ones that are not inside the Dimensions
+      // name: 'Path',
+      // dataTypes: ['string'],
+    // },    
   ],
   Dimensions: [
     {
@@ -234,24 +245,51 @@ const dummyMetaData = {
           dataTypes: ['string'],   
         },
         {
-          name: 'Vendor',
-          dataTypes: ['string'],   
-        },
-        {
-          name: 'Model',
-          dataTypes: ['string'],   
-        },
-        {
-          name: 'Revision',
-          dataTypes: ['string'],   
-        },
-        {
           name: 'Priority',
           dataTypes: ['Enum'],   
           enumValues: ['Low', 'Medium', 'High', 'High+'],
+
+          // measures: to be used only in request data if client wants server to provide the calculated value already, instead of client computing for the value
+          // But client can use this info to populate some ui configs?
+          measures: [
+            {
+              name: 'Count',
+              expression: 'count'
+            }
+          ]
         },      
+        {
+          name: 'Category',
+          dataTypes: ['string'],   
+        },           
+        {
+          name: 'FullPath',
+          dataTypes: ['string'],   
+        }        
       ]
-    },
+    }, // End: Device Info group
+    {
+      name: 'VendorModel Info',
+      dataTypes: ['group'],   
+      items: [
+        {
+          name: 'Vendor',
+          dataTypes: ['string', 'group'],
+          items: [
+            {
+              name: 'Model',
+              dataTypes: ['string'],
+              items: [
+                {
+                  name: 'Revision',
+                  dataTypes: ['string'],
+                }
+              ]    
+            }
+          ]
+        }
+      ]
+    }, // End: Vendor Model group
     {
       name: 'Device Status',
       dataTypes: ['group'],
@@ -296,21 +334,45 @@ const dummyMetaData = {
       items: [
         {
           name: 'ODE',
-          value: 'ODE',
-          enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
-          dataTypes: ['Enum', 'Percent']
+          items: [
+            {
+              name: 'Status',
+              dataTypes: ['Enum'],
+              enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
+            },
+            {
+              name: 'Value',
+              dataTypes: ['Number'],
+            }
+          ]          
         },
         {
           name: 'TA',
-          value: 'TA',
-          enumValues: [1, 2, 3, 4, 5],
-          dataTypes: ['Enum', 'Percent']
+          items: [
+            {
+              name: 'Status',
+              dataTypes: ['Enum'],
+              enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
+            },
+            {
+              name: 'Value',
+              dataTypes: ['Number'],
+            }
+          ]          
         },
         {
           name: 'PA',
-          value: 'PA',
-          enumValues: [1, 2, 3, 4, 5],
-          dataTypes: ['Enum', 'Percent']
+          items: [
+            {
+              name: 'Status',
+              dataTypes: ['Enum'],
+              enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
+            },
+            {
+              name: 'Value',
+              dataTypes: ['Number'],
+            }
+          ]          
         },
       ]
     },
@@ -337,33 +399,83 @@ const dummyMetaData = {
       // Also possible: Network Path, class Path etc.
       // For ISAE case, might not be possible since the hierarchy is not strucured
       // So for ISAE case, it will just be single level Path
-      name: 'Path',
+      name: 'Path', // Assume Plant Path for now
       value: 'Path',
       items: [
         {
-          name: 'Plant',
-          value: 'Plant', //e.g. MYPJT
+          name: 'Plant', //e.g. MYPJT
+          dataTypes: ['string', 'group'],
+          items: [
+            {
+              name: 'Site',
+              dataTypes: ['string', 'group'],
+              items: [
+                {
+                  name: 'Area',
+                  dataTypes: ['string', 'group'],
+                  items: [
+                    {
+                      name: 'Unit',
+                      dataTypes: ['string'],
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
         },
-        {
-          name: 'Site',
-          value: 'Site',
-        },
-        {
-          name: 'Area',
-          value: 'Area',
-        },
-        {
-          name: 'Unit',
-          value: 'Unit',
-        },
-        {
-          name: 'FulPath',
-          value: 'FulPath',
-        }        
       ]
     },  
   ]
 };
+
+const alarmsDummyMetadata = {
+  name: 'Alarms Metadata',
+  dataKey: 'alarmId', // null, if it's not available. Means this is not open for 'extension'
+  RequestParams: [
+    {
+      // If this is the only parameter, retrievea all the alarms from within the Analysis Period
+      // TODO: Consider adding a 'required' flag
+      name: 'AnalysisPeriod',   
+      dataTypes: ['Date Range'],   
+      enumValues: ['Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
+    },
+    {
+      // Sample only -- no need to declare this as Device Id is already part of the Dimensions
+      // name: 'Device Id',   
+      // dataTypes: ['string'],   
+    },
+    {
+      name: 'RequestKey',
+      dataTypes: ['string'],   
+    }
+  ],
+  Dimensions: [
+    {
+      name: 'Timestamp',
+      dataTypes: ['Datetime']
+    },
+    {
+      name: 'Start Date',
+      dataTypes: ['Datetime']
+    },
+    {
+      name: 'End Date',
+      dataTypes: ['Datetime']
+    },
+    {
+      name: 'Event Type',
+      dataTypes: ['string']
+    },
+    {
+      name: 'Message',
+      dataTypes: ['string']
+    },
+
+  ]
+}
+
+const allDummyMetadata = [];
 
 const defaultState = {
     toolPanelTreeSelected: null,
