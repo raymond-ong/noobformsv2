@@ -145,13 +145,13 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
               }}
           >
       <CartesianGrid vertical={false}/>
-      <XAxis dataKey={primary} />
+      <XAxis height={100} dataKey={primary} tick={<CustomizedAxisTick />} interval={0} />
       <YAxis axisLine={false}/>
       <Tooltip />
-
-      <Legend  wrapperStyle={{
+      <Legend  verticalAlign="top" wrapperStyle={{
       paddingTop: "10px"
       }}/>
+
 
       <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
         console.log('Bar clicked first cat', ...args);}
@@ -169,6 +169,7 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
   )
 }
 
+/*
 const renderChartContentsRealOld = (bAnimate, width, height, data, primary, secondaryList) => {
   return (
     <BarChart
@@ -184,7 +185,7 @@ const renderChartContentsRealOld = (bAnimate, width, height, data, primary, seco
       <YAxis axisLine={false}/>
       <Tooltip />
 
-      <Legend  wrapperStyle={{
+      <Legend wrapperStyle={{
       paddingTop: "10px"
       }}/>
 
@@ -202,6 +203,24 @@ const renderChartContentsRealOld = (bAnimate, width, height, data, primary, seco
         }/>      
     </BarChart>
   )
+}
+*/
+
+class CustomizedAxisTick extends PureComponent {
+  render() {
+    const {
+      x, y, stroke, payload,
+    } = this.props;
+
+    let jsonObj = JSON.parse(payload.value);
+    debugger
+    
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-45)">{Object.values(jsonObj).join(' / ')}</text>
+      </g>
+    );
+  }
 }
 
 export class BarChartWithData extends React.Component {
