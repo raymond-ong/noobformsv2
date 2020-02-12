@@ -158,7 +158,7 @@ const renderPreviewTable = () => {
 }
 
 // converts the dimensions from metadata into a format the tree-select component expects
-const convertApiMetadataDims = (apiMetadataDims) => {
+const convertApiMetadataDims = (apiMetadataDims, parent=null) => {
     if (!apiMetadataDims) {
         return null;
     }
@@ -166,10 +166,10 @@ const convertApiMetadataDims = (apiMetadataDims) => {
     return apiMetadataDims.map(x => {
         let {name, items, ...rest} = x;
         return {
-            name: name,
-            value: name,
+            name: parent ? `${parent.name}.${name}` : name,
+            value: parent ? `${parent.name}.${name}` : name,
             title: name,
-            children: convertApiMetadataDims(items),
+            children: convertApiMetadataDims(items, x),
             ...rest
         }
     });
@@ -255,9 +255,8 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
             // label="Select Dimensions:"
             name="dataSource" 
             isRequired={true} 
-            multiple
             onSelect={onTreeSelect}
-            small
+            options={[]}            
         />
         </Segment>        
 
@@ -267,9 +266,8 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
             // label="Select Dimensions:"
             name="metadataName" 
             isRequired={true} 
-            multiple
             onSelect={onTreeSelect}
-            small
+            options={[]}
         />
         </Segment>                
 

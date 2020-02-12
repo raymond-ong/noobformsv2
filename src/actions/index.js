@@ -114,16 +114,6 @@ export const fetchHierarchyConso = () => async dispatch => {
   return true;
 }
 
-export const fetchAvailableData = () => async dispatch => { 
-  console.log('[action] fetchAvailableData');
-  const response = await masterData.get('availabledata')
-
-  dispatch({
-    type: FETCH_AVAILABLEDATA,
-    payload: response
-  });
-}
-
 export const fetchSavedLayouts = () => async dispatch => { 
   console.log('[action] fetchSavedLayouts');
   const response = await masterData.get('layout')
@@ -183,7 +173,7 @@ export const updateLayout = (updatedControls) => {
 // Save the layout to persistent storage like database or web local storage
 // TODO: Warn user, or inform user about replacing file, if that name already exists
 export const saveLayout = (layout, name, layoutData) => async dispatch => { 
-  console.log('[action] fetchAvailableData');
+  console.log('[action] saveLayout');
 
   let response = null;
   try {
@@ -209,7 +199,7 @@ export const saveLayout = (layout, name, layoutData) => async dispatch => {
 // Save the layout to persistent storage like database or web local storage
 // TODO: Warn user, or inform user about replacing file, if that name already exists
 export const saveHierarchyView = (hierarchyData, userSettings) => async dispatch => { 
-  console.log('[action] fetchAvailableData');
+  console.log('[action] saveHierarchyView');
 
   let response = null;  
   let formattedHierarchyData = sanitizeTreeData(hierarchyData);

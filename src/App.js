@@ -6,7 +6,6 @@ import MainContent from './containers/mainContent';
 import "../src/styles/App.css";
 //import masterData from './api/masterData';
 import {fetchHierarchy, 
-    fetchAvailableData, 
     fetchSavedLayouts, 
     fetchHierarchyViews, 
     fetchDimensions,
@@ -36,7 +35,6 @@ class App extends React.Component {
             // Note: we are using redux thunk...Will the then() function be executed after network fetch or after reducer is done?
             .then(() => this.props.fetchHierarchyViews())
             .catch( err => ShowMessage("Unable to fetch hierarchy", NotifType.danger, err.message));
-        this.props.fetchAvailableData();
         this.props.fetchSavedLayouts();
         this.props.fetchHierarchyKpi();
         this.props.fetchDimensions();
@@ -71,7 +69,6 @@ class App extends React.Component {
 
 //dndBackend = DragDropContext(TouchBackend);
 export default connect(null, {fetchHierarchy, 
-    fetchAvailableData, 
     fetchSavedLayouts, 
     fetchHierarchyViews, 
     fetchHierarchyKpi, 

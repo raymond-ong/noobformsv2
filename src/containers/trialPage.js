@@ -505,12 +505,14 @@ class TrialPage extends React.Component {
             <b>Num Records: {data.length}</b>
             <table className="trialTable">
             <thead>
-                {dimensions.map(d => <th>{d}</th>)}
+                <tr>
+                {dimensions.map(d => <th key={`trialTableHeader-${d}`}>{d}</th>)}
+                </tr>
             </thead>
             <tbody>
-                {data.map((d) => { return <tr>
+                {data.map((d, index) => { return <tr key={`trialTableData-${index}`}>
                     {
-                        Object.keys(d).map(k => <td>{d[k]}</td>)
+                        Object.keys(d).map(k => <td key={`trialTableData-${index}-${d[k]}`}>{d[k]}</td>)
                     }
                     </tr>})
                 }
