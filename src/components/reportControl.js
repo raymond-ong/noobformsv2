@@ -35,6 +35,7 @@ const ReportControl = ({controlData, containerWidth, numCols}) => {
 
     console.log('render ReportControl', controlData.i, widthOfCtrl);
     controlData.selected = false; // Override...so that it won't show up as selected
+    controlData.maxWidth = `${widthOfCtrl}px`; 
    
     // [c] Render:
     // [c.1] return the landing pad first, which is only shown when the control is being resized

@@ -121,9 +121,13 @@ const render1Section_1 = (index, start) => {
     }},
 
     // [4 new] Bar Chart
-    {i: `ctrl-bar${index}`, x: 3, y: offset + 1, w: 3, h: 4, ctrlType: 'barchart',       
+    // {i: `ctrl-bar${index}`, x: 3, y: offset + 1, w: 3, h: 4, ctrlType: 'barchart',       
+    //     data: {
+    //         label: 'Bar:',
+    // }},
+    {i: `ctrl-imageMap${index}`, x: 3, y: offset + 1, w: 3, h: 4, ctrlType: 'imageMap',       
         data: {
-            label: 'Bar:',
+            label: 'ImageMap:',
     }},
 
     // [5] Priority
