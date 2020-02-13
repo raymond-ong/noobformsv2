@@ -217,7 +217,6 @@ class CustomizedAxisTick extends PureComponent {
     } = this.props;
 
     let jsonObj = JSON.parse(payload.value);
-    debugger
     
     return (
       <g transform={`translate(${x},${y})`}>

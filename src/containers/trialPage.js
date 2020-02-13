@@ -8,7 +8,7 @@ import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTree
 import { Button } from 'semantic-ui-react';
 import {findNodeByKey} from '../helper/treefilter';
 import TreeDropdown from '../controls/treeDropdown';
-import ImageMap from '../components/imageMap';
+import ImageMap from '../controls/imageMap';
 import _ from "lodash";
 
 const dataPie = [
@@ -530,7 +530,6 @@ class TrialPage extends React.Component {
         let secondaryGroup = 'itemCond';
         let groupedData = groupData(this.state.cfData, [...groupings,secondaryGroup]);
         //let groupedData = groupData(this.state.cfData, ['vendor', secondaryGroup]);
-        debugger
         let formattedGroupData = formatBarchartData(groupedData, groupings, secondaryGroup);
         let primaryAxis = JSON.stringify(groupings);
         let secondaryKeyVals = groupedData.map(grpData => {
@@ -618,8 +617,8 @@ class TrialPage extends React.Component {
     }
 
     
-    renderMap = () => {
-        return <ImageMap/>;
+    renderMap = (useOther=null) => {
+        return <ImageMap useOther={useOther}/>;
     }
 
     testFilter = () => {
@@ -646,7 +645,7 @@ class TrialPage extends React.Component {
         return <div className="trialPageContainer">
             {this.renderPageFilters()}
             <div className="trialPageCharts">
-            {this.renderMap()}
+            {this.renderMap(true)}
             {this.renderPieChart()}
             {this.renderBarchart()}
             {this.renderTable()}

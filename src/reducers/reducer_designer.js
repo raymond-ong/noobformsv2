@@ -119,10 +119,13 @@ const generateDefaultLayout = () => {
   // }},
 
   // dc bar chart
-  {i: 'ctrl-dcbar0', x: 6, y:1, w: 3, h: 4,ctrlType: 'dcbar', data: {
-    label: 'DC Chart:'
+  // {i: 'ctrl-dcbar0', x: 6, y:1, w: 3, h: 4,ctrlType: 'dcbar', data: {
+  //   label: 'DC Chart:'
+  // }},
+  // dc bar chart
+  {i: 'ctrl-imageMap0', x: 6, y:1, w: 3, h: 4,ctrlType: 'imageMap', data: {
+    label: 'Image Map:'
   }},
-
   ];
 }
 
@@ -219,7 +222,7 @@ const dummyMetaData = {
     {
       name: 'AnalysisPeriod',   
       dataTypes: ['Date Range'],   
-      enumValues: ['Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
+      enumValues: ['Latest value only', 'Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
     },
     // {
       // I think no need...since this is already defined in the Dimensions. We only include the "special" ones that are not inside the Dimensions
@@ -530,8 +533,11 @@ const defaultControlData = {
     percent: 65
   },
   'pagebreak': {
-  }
-  
+  },
+  'imageMap': {
+    label: 'Image Map:',
+  },
+ 
 }
 
 const assignIdAndDefaultData = (control, layout) => {

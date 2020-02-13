@@ -22,6 +22,8 @@ export default class ImageMapper extends Component {
 		this.styles = {
 			container: { position: "relative" },
 			canvas: { ...absPos, pointerEvents: "none", zIndex: 2 },
+			// [Ray] Remove the z-index, so that the resizer can be visible
+			//img: { ...absPos, zIndex: 1, userSelect: "none" },
 			img: { ...absPos, zIndex: 1, userSelect: "none" },
 			map: (props.onClick && { cursor: "pointer" }) || undefined
 		};

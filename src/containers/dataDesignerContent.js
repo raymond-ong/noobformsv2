@@ -285,6 +285,23 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
 
         {renderFilterSegment(state, props)}
 
+        <Segment>
+        <div className="segmentTitle">Other Settings</div>
+        <FormTreeDropDown 
+            label="Sort:"
+            name="hierarchyTreeSort" 
+            treeData={convertApiMetadataDims(props.metadata.Dimensions)} 
+            isRequired={true} 
+            multiple
+            onSelect={onTreeSelect}
+        />
+        <FormText
+            label={"Size"}
+            name={"datasetSize"}
+            small
+        />
+        </Segment>
+
         {state.formInvalid && 
             <div><Label basic color='red' pointing>
             {state.formInvalid}

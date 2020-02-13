@@ -25,12 +25,12 @@ export const toolBoxItems = [
          category: 'forms',
          minW: 3, minH:1,
     },    
-    {
-         name: 'checkbox',
-         displayName: 'Checkbox',
-         icon: 'check square outline',
-         category: 'forms'
-    },                
+//     {
+//          name: 'checkbox',
+//          displayName: 'Checkbox',
+//          icon: 'check square outline',
+//          category: 'forms'
+//     },                
     {
          name: 'richtext',
          displayName: 'Rich Text',
@@ -38,42 +38,42 @@ export const toolBoxItems = [
          category: 'forms',
          minW: 3, minH:3,
     },                
-    {
-         name: 'numeric',
-         displayName: 'Number',
-         icon: 'sort numeric down',
-         category: 'forms'
-    },                
-    {
-         name: 'user',
-         displayName: 'User',
-         icon: 'user circle outline',
-         category: 'forms'
-    },     
-    {
-          name: 'status',
-          displayName: 'Status',
-          icon: 'circle outline',
-          category: 'forms'
-     },     
-     {
-          name: 'date',
-          displayName: 'Date',
-          icon: 'calendar alternate outline',
-          category: 'forms'
-     },     
-     {
-          name: 'attachment',
-          displayName: 'Attachments',
-          icon: 'attach',
-          category: 'forms'
-     },     
-     {
-          name: 'history',
-          displayName: 'History',
-          icon: 'history',
-          category: 'forms'
-     },     
+//     {
+//          name: 'numeric',
+//          displayName: 'Number',
+//          icon: 'sort numeric down',
+//          category: 'forms'
+//     },                
+//     {
+//          name: 'user',
+//          displayName: 'User',
+//          icon: 'user circle outline',
+//          category: 'forms'
+//     },     
+//     {
+//           name: 'status',
+//           displayName: 'Status',
+//           icon: 'circle outline',
+//           category: 'forms'
+//      },     
+//      {
+//           name: 'date',
+//           displayName: 'Date',
+//           icon: 'calendar alternate outline',
+//           category: 'forms'
+//      },     
+//      {
+//           name: 'attachment',
+//           displayName: 'Attachments',
+//           icon: 'attach',
+//           category: 'forms'
+//      },     
+//      {
+//           name: 'history',
+//           displayName: 'History',
+//           icon: 'history',
+//           category: 'forms'
+//      },     
      {
          // Should support expressions, like the Target Name, Vendor, Model etc.
        name: 'label',
@@ -81,13 +81,13 @@ export const toolBoxItems = [
        icon: 'info',
        category: 'common'
     },
-    {
-          // Should provide a configurable URL
-       name: 'image',
-       displayName: 'Image',
-       icon: 'image outline',
-       category: 'common'
-    },
+//     {
+//           // Should provide a configurable URL
+//        name: 'image',
+//        displayName: 'Image',
+//        icon: 'image outline',
+//        category: 'common'
+//     },
     {
          name: 'barchart',
          displayName: 'Bar Chart',
@@ -130,18 +130,19 @@ export const toolBoxItems = [
     },
    {
      // Should provide a configurable URL
-     name: 'treemap',
-     displayName: 'Tree Map',
+     name: 'imageMap',
+     displayName: 'Image Map',
      icon: 'map pin',
-     category: 'common'
+     category: 'common',
+     minW: 3, minH:3,
    },
-   {
-     // E.g. permits for a page
-     name: 'childtemplate',
-     displayName: 'Child Template',
-     icon: 'clone outline',
-     category: 'form'
-   },
+//    {
+//      // E.g. permits for a page
+//      name: 'childtemplate',
+//      displayName: 'Child Template',
+//      icon: 'clone outline',
+//      category: 'form'
+//    },
    {
      name: 'pagebreak',
      displayName: 'Page Break',

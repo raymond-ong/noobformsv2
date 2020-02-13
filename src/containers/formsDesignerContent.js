@@ -14,7 +14,7 @@ import ShowMessage, {NotifType} from '../helper/notification';
 import {connect} from 'react-redux';
 import SaveAsDialog from '../components/saveAs';
 
-const DEFAULT_SPLIT_SIZES = [30, 70];
+const DEFAULT_SPLIT_SIZES = [20, 80];
 
 const panelItems = [
     {
