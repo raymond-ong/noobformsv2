@@ -57,7 +57,7 @@ const generateDefaultLayout = () => {
   // {i: 'ctrl-status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
 
   // [5] Priority
-  {i: 'ctrl-combo0', x: 9, y: 3, w: 3, h: 1, ctrlType: 'combo', data: {
+  {i: 'ctrl-combo0', x: 9, y: 2, w: 3, h: 1, ctrlType: 'combo', data: {
       placeholder: 'Please select...',
       options: dropdownOptions,
       label: 'Courses:'
@@ -84,11 +84,15 @@ const generateDefaultLayout = () => {
 
 
   // [8] Remarks
-  {i: 'ctrl-textbox0', x: 9, y: 4, w: 3, h: 1,ctrlType: 'textbox', data: {
-    placeholder: 'Input Remarks...',
-    label: 'Remarks:'
-  }},
+  // {i: 'ctrl-textbox0', x: 9, y: 4, w: 3, h: 1,ctrlType: 'textbox', data: {
+  //   placeholder: 'Input Remarks...',
+  //   label: 'Remarks:'
+  // }},
 
+  // [9] DatePicker
+  {i: 'ctrl-date0', x: 9, y: 3, w: 3, h: 1,ctrlType: 'date', data: {
+    label: 'Analysis Period:'
+  }},
 
   // [B] Subsection
   {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {

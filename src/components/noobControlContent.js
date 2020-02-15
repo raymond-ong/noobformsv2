@@ -21,6 +21,7 @@ import GaugeChart from '../charts/gauge_rechart';
 import GaugeJs from '../charts/gaugejs_react';
 import PageBreak from '../controls/pagebreak';
 import ImageMap from '../controls/imageMap';
+import Datepicker from '../controls/datepicker';
 
 // Separate the content-part into a standalone component from the control wrapper
 // Reason: this will be the only part that will be resized or moved while dragging (moving or resizing)
@@ -86,13 +87,17 @@ export const getContentDiv = (controlData) => {
             // Parent form must insert page-break-before style into the next control instead
             content = <PageBreak {...controlData}/>
             break;
-        case undefined:            content = <div className="emptyControl"></div>
+        case undefined:            
+            content = <div className="emptyControl"></div>
             break;
         case 'dcbar':
             content = <DcBar {...controlData}/>
             break;
         case 'imageMap':
             content = <ImageMap {...controlData}/>
+            break;
+        case 'date':
+            content = <Datepicker {...controlData}/>
             break;
         default:
             content = <div>{controlData.i}</div>

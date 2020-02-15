@@ -56,12 +56,12 @@ export const toolBoxItems = [
 //           icon: 'circle outline',
 //           category: 'forms'
 //      },     
-//      {
-//           name: 'date',
-//           displayName: 'Date',
-//           icon: 'calendar alternate outline',
-//           category: 'forms'
-//      },     
+     {
+          name: 'date',
+          displayName: 'Date',
+          icon: 'calendar alternate outline',
+          category: 'forms'
+     },     
 //      {
 //           name: 'attachment',
 //           displayName: 'Attachments',
