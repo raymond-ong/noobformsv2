@@ -8,6 +8,7 @@ import './FormTreeDropDown.css';
 import TreeSelect, { SHOW_PARENT } from 'rc-tree-select';
 
 function handleChange([value, props, treeNodeEvt]) {
+  debugger
   return {
     value: value
   }

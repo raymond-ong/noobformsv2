@@ -480,13 +480,13 @@ const bigLayout = () => {
     retList =[...retList, ...data1.data];
     currEndIdx = data1.endIndex + 1;
 
-    let data2 = render1Section_2(1, currEndIdx);
-    retList =[...retList, ...data2.data];
-    currEndIdx = data2.endIndex + 1;
+    // let data2 = render1Section_2(1, currEndIdx);
+    // retList =[...retList, ...data2.data];
+    // currEndIdx = data2.endIndex + 1;
 
-    let data3 = render1Section_3(2, currEndIdx);
-    retList =[...retList, ...data3.data];
-    currEndIdx = data3.endIndex + 1;
+    // let data3 = render1Section_3(2, currEndIdx);
+    // retList =[...retList, ...data3.data];
+    // currEndIdx = data3.endIndex + 1;
 
     // retList = [...retList, {i: `ctrl-section`, x: 0, y: currEndIdx + 0, w: 12, h: 1, ctrlType: 'section', data: {
     //     //title: 'General Information' + index,
@@ -495,21 +495,21 @@ const bigLayout = () => {
     //     level: 1
     // }}];
 
-    let data4 = render1Section_4(3, currEndIdx);
-    retList =[...retList, ...data4.data];
-    currEndIdx = data4.endIndex + 1;
+    // let data4 = render1Section_4(3, currEndIdx);
+    // retList =[...retList, ...data4.data];
+    // currEndIdx = data4.endIndex + 1;
     
-    let data5 = render1Section_5(4, currEndIdx);
-    retList =[...retList, ...data5.data];
-    currEndIdx = data5.endIndex + 1;
+    // let data5 = render1Section_5(4, currEndIdx);
+    // retList =[...retList, ...data5.data];
+    // currEndIdx = data5.endIndex + 1;
 
-    let data6 = render1Section_6(5, currEndIdx);
-    retList =[...retList, ...data6.data];
-    currEndIdx = data6.endIndex + 1;    
+    // let data6 = render1Section_6(5, currEndIdx);
+    // retList =[...retList, ...data6.data];
+    // currEndIdx = data6.endIndex + 1;    
 
-    let data7 = render1Section_7(6, currEndIdx);
-    retList =[...retList, ...data7.data];
-    currEndIdx = data7.endIndex + 1;        
+    // let data7 = render1Section_7(6, currEndIdx);
+    // retList =[...retList, ...data7.data];
+    // currEndIdx = data7.endIndex + 1;        
 
     return retList;
 }

@@ -28,7 +28,7 @@ const DateSelector = (props) => {
         </div>
 
         <div className="dateLabel">End:</div>
-        <div className="datepickerWrapper">
+        <div className="datepickerWrapper datepickerWrapperEnd">
             <DatePicker
             selected={endDate}
             onChange={date => setEndDate(date)}

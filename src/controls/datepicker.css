@@ -6,6 +6,11 @@
 .dateLabel {
     font-weight: bold;
     padding-right: 10px;
+    height: 100%;
+    /* align to the center vertically */
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
 }
 
 .react-datepicker-wrapper {
@@ -19,4 +24,8 @@
 
 .datepickerWrapper {
     width: 100%;
+}
+
+.datepickerWrapperEnd {
+    padding-top: 5px;
 }

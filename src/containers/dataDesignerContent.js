@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import NoobSplitter from '../components/noobSplitter';
 import DesignerContentbase from './designerContentBase';
-import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTreeDropDown, FormRadio} from '../form/Form';
+import Form, {Text as FormText, FormCheckbox, Dropdown as FormDropDown, FormTreeDropDown, FormRadio, FormDateRange} from '../form/Form';
 import { Form as SemanticForm, Segment} from "semantic-ui-react";
 import ShowMessage, { NotifType } from '../helper/notification';
 import Toolbar from '../components/toolbar';
@@ -208,7 +208,7 @@ const renderFilterFields = (state, props) => {
             <FormTreeDropDown 
                 name={"filterField" + i}
                 treeData={props.filtersMetadata} 
-                isRequired={true}
+                isRequired={false}
                 label={"Field Name"}                     
             />
         </SemanticForm.Field>
@@ -250,11 +250,17 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
 
     return <div className="dataDesignerPanelContainer">
         <Segment>
+        <div className="segmentTitle">Analysis Period Test</div>
+        <FormDateRange  name="AnalysisPeriod"
+        />
+        </Segment>   
+
+        <Segment>
         <div className="segmentTitle">Data Source</div>
         <FormDropDown 
             // label="Select Dimensions:"
             name="dataSource" 
-            isRequired={true} 
+            isRequired={false} 
             onSelect={onTreeSelect}
             options={[]}            
         />
@@ -265,7 +271,7 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
         <FormDropDown 
             // label="Select Dimensions:"
             name="metadataName" 
-            isRequired={true} 
+            isRequired={false} 
             onSelect={onTreeSelect}
             options={[]}
         />
@@ -277,7 +283,7 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
             // label="Select Dimensions:"
             name="hierarchyTree" 
             treeData={convertApiMetadataDims(props.metadata.Dimensions)} 
-            isRequired={true} 
+            isRequired={false} 
             multiple
             onSelect={onTreeSelect}
         />
@@ -291,7 +297,7 @@ const renderDataDesignerPanelContent = (props, state, errors) => {
             label="Sort:"
             name="hierarchyTreeSort" 
             treeData={convertApiMetadataDims(props.metadata.Dimensions)} 
-            isRequired={true} 
+            isRequired={false} 
             multiple
             onSelect={onTreeSelect}
         />
@@ -336,7 +342,7 @@ const getValidationError = (formData) => {
 
 const onSubmit = (formData, setStateCb) => {
     //debugger
-    console.log('Date Designer Submit', formData);
+    console.log('Data Designer Submit', formData);
     // [1] Perform some validation first
     let validationError = getValidationError(formData);
     if (validationError) {
@@ -363,9 +369,10 @@ const DataDesignerForm = (props, containerWidth, state, setStateCb) => {
     return <Form 
         className="hierConfigPanelContainer" 
         key='formDataDesigner' 
-        onSubmit={(formData) => {onSubmit(formData, setStateCb)}} 
+        //onSubmit={(formData) => {onSubmit(formData, setStateCb)}} 
+        onSubmit={data => {debugger}}
         setControlValues={setControlValues}
-        watchedField={['hierarchyTree', 'HierarchyScope', 'hierDsgnKpiGroup']}
+        watchedField={[]}
         // inputObj: set it to the loaded data source when saving is implemented
         inputObj={null} 
         setStateCb={setStateCb}
@@ -387,6 +394,8 @@ const setControlValues = (setValueFunc, inputObj) => {
 
     //setValueFunc('HierarchyScope', 'children');
     //setValueFunc('hierDsgnKpiGroup', []);
+
+    //setValueFunc('AnalysisPeriodStart', new Date());
 }
 
 // This is where the user configures the datasources that can be linked to the controls

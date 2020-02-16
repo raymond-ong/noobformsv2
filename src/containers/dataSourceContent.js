@@ -29,6 +29,7 @@ const DataSourceConfigPanel = (state) => {
 
     return <Form 
         className="dataSourceContainer" 
+        onSubmit={data => {debugger}}
         >        
         <Toolbar 
             menuItems={menuItems}
