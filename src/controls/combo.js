@@ -18,6 +18,7 @@ const noobCombo = (props) => {
         selection
         search
         options={props.data.options}
+        onMouseDown={e => {console.log("[Dropdown] onMouseDown!")}}
         button  // Add button and className so that we can control the size
         className='icon small'
         style={{fontWeight:'normal', color: 'gray', right: '0', left: 'auto'}} // Thi
