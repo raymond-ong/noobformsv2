@@ -8,11 +8,12 @@ import DesignerContentbase from './designerContentBase';
 import Toolbar from '../components/toolbar';
 import NoobForm from '../components/noobForm';
 import './designerCommon.css';
-import {saveLayout} from '../actions';
+import {saveLayout, openLayout} from '../actions';
 import ShowMessage, {NotifType} from '../helper/notification';
 
 import {connect} from 'react-redux';
 import SaveAsDialog from '../components/saveAs';
+import OpenDialog from '../components/openDialog';
 
 const DEFAULT_SPLIT_SIZES = [20, 80];
 
@@ -51,7 +52,9 @@ class formsDesignerContent extends DesignerContentbase {
 
         this.state = {
             ...this.state,
-            showSaveForm: false
+            showSaveForm: false,
+            showOpenForm: false,
+            openedLayoutName: null,            
         }
     }
 
@@ -62,7 +65,7 @@ class formsDesignerContent extends DesignerContentbase {
             this.saveAsCallback();
         }
         else {
-            this.handleSave();
+            this.handleSave(this.props.layoutData.name);
         }
     }
     
@@ -97,10 +100,72 @@ class formsDesignerContent extends DesignerContentbase {
     
     openCallback = () => {
         console.log('Open callback');
-    }    
+        this.setState({
+            showOpenForm: true
+        });
+    }
+
+    // For closing the Open-Layout Dialog
+    handleCloseOpenDlg = () => {
+        console.log('handleCloseSave');
+        if (this.state.showOpenForm) {
+            this.setState({
+                showOpenForm: false
+            })
+        }
+    }
+
+    // After the user has selected a layout, then clicked open
+    handleOpenLayout = (layoutName) => {
+        // 
+        if (this.state.showOpenForm) {
+            this.setState({
+                openedLayoutName: layoutName,
+                showOpenForm: false
+            })
+        }
+
+        // Also fire a redux action to update
+        let layoutToUse = this.getLayoutToUse();
+        this.props.openLayout(layoutToUse.controls, layoutToUse.layoutData)
+    }
+
+    getLayoutToUse = () => {
+        // If the user did not open, just use the default layout from the reducer
+        let defaultReturn = {
+            controls: this.props.layout,
+            layoutData: this.props.layoutData, 
+            title: "Untitled",
+            titleTooltip: "Form is not yet saved"
+        };
+
+        if (!this.state.openedLayoutName) {
+            return defaultReturn;
+        }
+
+        // Find 
+        let layoutFromApi = this.props.savedLayouts.find(x => x.name === this.state.openedLayoutName);
+        if (!layoutFromApi) {
+            return defaultReturn;
+        }
+        return {
+            controls: JSON.parse(layoutFromApi.layoutJson),
+            layoutData: {
+                columns: layoutFromApi.numCols,
+                rows: layoutFromApi.numRows,
+                name: layoutFromApi.name,
+            },
+            title: layoutFromApi.name,
+            titleTooltip: "Last saved on " + layoutFromApi.lastUpdateDate
+        };
+    }
     
     render() {
         console.log('render designerContent', this.state.leftPixels);
+        let options = Array.isArray(this.props.savedLayouts) &&
+                    this.props.savedLayouts.map((layout) => {return {key: `option_${layout.name}`, text: layout.name, value: layout.name}});
+        let layoutToUse = this.getLayoutToUse();
+
         return <NoobSplitter id="designerPanel" onDragEnd={this.onSplitDragEnd} defaultSize={DEFAULT_SPLIT_SIZES}>
             <ToolPanel panelItems={panelItems} containerWidth={this.state.leftPixels}/>
             <div id="rightContainer" className="designerContainer">
@@ -108,20 +173,30 @@ class formsDesignerContent extends DesignerContentbase {
                 <Toolbar 
                     containerWidth={this.state.rightPixels}
                     menuItems={this.menuItems}
-                    title={"Untitled"}
-                    titleTooltip={"Form is not yet saved"}
+                    title={layoutToUse.title}
+                    titleTooltip={layoutToUse.titleTooltip}
                 />
                 <div className="layoutEditorContainer">
                     <NoobForm 
                         containerWidth={this.state.rightPixels}
+                        // layoutData={layoutToUse.layoutData}
+                        // controls={layoutToUse.controls}
                         layoutData={this.props.layoutData}
-                        controls={this.props.layout}/>
+                        controls={this.props.layout}
+                        />
                 </div>
                 <SaveAsDialog showSaveForm={this.state.showSaveForm}
                             title={"Save Layout"}
                             formLabel={"Layout name:"}
                             onSave={this.handleSave}
                             onClose={this.handleCloseSave}
+                />
+                <OpenDialog showOpenForm={this.state.showOpenForm}
+                            title={"Open Layout"}
+                            formLabel={"Layout name:"}
+                            onOpen={this.handleOpenLayout}
+                            onClose={this.handleCloseOpenDlg}
+                            options={options}
                 />
             </div>
         </NoobSplitter>
@@ -132,12 +207,13 @@ const mapStateToProps = (state) => {
     return {
         layout: state.designer.layout,
         layoutData: state.designer.layoutData,
-        metadata: state.designer.metadata
+        metadata: state.designer.metadata,
+        savedLayouts: state.mainApp.masterLayouts
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ saveLayout }, dispatch);
+    return bindActionCreators({ saveLayout, openLayout }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(formsDesignerContent);

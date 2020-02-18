@@ -744,9 +744,10 @@ class NoobForm extends React.Component {
 
     handleToolItemDrop(ctrlDest, itemDropped) {
         console.log('handleToolItemDrop', ctrlDest, itemDropped);
+        let newDate = new Date();
         // Fire an action to let the redux store know that a control has been added
         this.props.updateLayout([{
-            i: ctrlDest.i,  // TODO: Generate an ID in reducer
+            i: ctrlDest.i + newDate.toString(),  // TODO: Generate an ID in reducer
             ctrlType: itemDropped.toolItemTypeName,
             x: ctrlDest.x,
             y: ctrlDest.y,
@@ -781,7 +782,7 @@ class NoobForm extends React.Component {
     renderControl(control, containerWidth, numCols) {
         return <NoobControl 
                 key={'ctrl'+control.i} 
-                controlData={control}
+                controlData={{...control}}
                 parentDropCallback={this.onDropControl}
                 resizerMouseDown={this.onResizerMouseDown}
                 resizingControlId={this.state.resizingControlId}
@@ -834,6 +835,8 @@ class NoobForm extends React.Component {
                 }
                 else {
                     //retList.push(this.renderControl(findControl));
+                    debugger
+                    console.log('renderControlsWithLayout', findControl.i, findControl.x, findControl.y, findControl.w, findControl.h);
                     let controlJsx = this.renderControl(findControl, containerWidth, layoutData.columns);
                     retList.push({
                         id: findControl.i,

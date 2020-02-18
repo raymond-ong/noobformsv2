@@ -38,12 +38,12 @@ const renderFullMenu = (menuItems, title, titleTooltip) => {
         </div>
 
         <div className="center">
-            {title && <div className="title">Untitled</div>}
+            {title && <div className="title">{title}</div>}
             {titleTooltip && <Popup 
                 inverted
                 basic
                 size='tiny' style={{opacity: '0.8'}} 
-                content='Form is not yet saved' 
+                content={titleTooltip}
                 trigger={<div className="infoContainer">
                 <i className="ui icon info circle"/>
             </div>} />}

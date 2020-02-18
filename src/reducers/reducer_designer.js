@@ -1,6 +1,7 @@
 import { SELECT_TOOLPANEL_TREE, 
           SELECT_CONTROL, 
           UPDATE_DESIGNER_LAYOUT,
+          OPEN_LAYOUT,
           UPDATE_CONTROL_PROPS,
           DELETE_CONTROL,
           SAVE_DESIGNER_LAYOUT,
@@ -8,6 +9,7 @@ import { SELECT_TOOLPANEL_TREE,
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 // This is for the Forms layout
+// TODO: Control Id's: we need to generate a unique one. Because if you open a saved layout and it has the same id but different props, react will pass cached props.
 const generateDefaultLayout = () => {
   // [1] Section
   return [
@@ -18,7 +20,7 @@ const generateDefaultLayout = () => {
   // }},
 
 
-  {i: 'ctrl-section0', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
+  {i: 'ctrl-section0X', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
       title: 'General Information',
       //backgroundColor: 'lightsteelblue'
       level: 1
@@ -39,13 +41,13 @@ const generateDefaultLayout = () => {
   //     }},
 
   // [3 new] Pie Chart
-  {i: 'ctrl-pie0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+  {i: 'ctrl-pie0X', x: 0, y: 1, w: 3, h: 4, ctrlType: 'pie',       
       data: {
           label: 'Pie:',
       }},
 
   // [4 new] Bar Chart
-  {i: 'ctrl-bar0', x: 3, y: 1, w: 3, h: 4, ctrlType: 'barchart',       
+  {i: 'ctrl-bar0X', x: 3, y: 1, w: 3, h: 4, ctrlType: 'barchart',       
       data: {
           label: 'Bar:',
       }},
@@ -57,7 +59,7 @@ const generateDefaultLayout = () => {
   // {i: 'ctrl-status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
 
   // [5] Priority
-  {i: 'ctrl-combo0', x: 9, y: 2, w: 3, h: 1, ctrlType: 'combo', data: {
+  {i: 'ctrl-combo0X', x: 9, y: 2, w: 3, h: 1, ctrlType: 'combo', data: {
       placeholder: 'Please select...',
       options: dropdownOptions,
       label: 'Courses:'
@@ -74,7 +76,7 @@ const generateDefaultLayout = () => {
   // [7] Attachments
   //{i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
   // [7 New] Label
-  {i: 'ctrl-label0', x: 9, y: 1, w: 3, h: 1,ctrlType: 'label', data: {
+  {i: 'ctrl-label0X', x: 9, y: 1, w: 3, h: 1,ctrlType: 'label', data: {
     label: 'I am a label',
     color: 'blue',
     backgroundColor: 'khaki',
@@ -90,7 +92,7 @@ const generateDefaultLayout = () => {
   // }},
 
   // [9] DatePicker
-  {i: 'ctrl-date0', x: 9, y: 3, w: 3, h: 1,ctrlType: 'date', data: {
+  {i: 'ctrl-date0X', x: 9, y: 3, w: 3, h: 1,ctrlType: 'date', data: {
     label: 'Analysis Period:'
   }},
 
@@ -105,7 +107,7 @@ const generateDefaultLayout = () => {
   //{i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   //[2] Table - 1
-  {i: 'ctrl-table0', x: 0, y:6, w: 12, h: 2,ctrlType: 'table', data: {
+  {i: 'ctrl-table0X', x: 0, y:6, w: 12, h: 2,ctrlType: 'table', data: {
     label: 'Table:'
   }},
 
@@ -127,7 +129,7 @@ const generateDefaultLayout = () => {
   //   label: 'DC Chart:'
   // }},
   // dc bar chart
-  {i: 'ctrl-imageMap0', x: 6, y:1, w: 3, h: 4,ctrlType: 'imageMap', data: {
+  {i: 'ctrl-imageMap0X', x: 6, y:1, w: 3, h: 4,ctrlType: 'imageMap', data: {
     label: 'Image Map:'
   }},
   ];
@@ -691,6 +693,13 @@ export default function(state = defaultState, action) {
     case SAVE_DESIGNER_LAYOUT:
       // TODO: After a successful Save, server will return the object saved
       // It's expected to be the same, but ideally we should replace local state's object with the one from the server
+      break;
+    case OPEN_LAYOUT:
+      return {
+        ...state,
+        layout: [...action.payload.controls],
+        layoutData: action.payload.layoutData,
+      }
   }
   return state;
 }

@@ -18,6 +18,7 @@ export const FETCH_DIMENSIONS = "FETCH_DIMENSIONS"
 export const FETCH_HIERARCHYKPI = "FETCH_HIERARCHYKPI"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
+export const OPEN_LAYOUT = "OPEN_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
 export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
 export const DELETE_CONTROL = "DELETE_CONTROL";
@@ -168,6 +169,16 @@ export const updateLayout = (updatedControls) => {
     type: UPDATE_DESIGNER_LAYOUT,
     payload: updatedControls
   }
+}
+
+export const openLayout = (controls, layoutData) => {
+  return {
+    type: OPEN_LAYOUT,
+    payload: {
+      controls,
+      layoutData
+    }
+  };
 }
 
 // Save the layout to persistent storage like database or web local storage

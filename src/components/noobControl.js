@@ -82,7 +82,7 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
       });
 
     //console.log('render NoobControl', controlData.i, isOverShallow, canDrop, droppingItemType);
-    console.log('render NoobControl', containerWidth, numCols);
+    console.log('render NoobControl', controlData.i, controlData.x, controlData.y, controlData.w, controlData.h);
     
 
     // [b] Preparations

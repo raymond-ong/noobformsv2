@@ -142,7 +142,7 @@ const renderActiveShape = (props) => {
   );
 };
 
-export class PieResponsiveData extends React.Component {
+class PieResponsiveDataBase extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -214,15 +214,24 @@ export class PieResponsiveData extends React.Component {
   }
 
   render() {
-    return <ResponsiveContainer  width="100%" height="100%">
-      <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}}>
-      {this.renderPieWithData(this.props)}
-      {renderLegend()}
-      <Tooltip />
-    </PieChart>
-    </ResponsiveContainer>
+    let classNames = 'reChartContainer';
+    if (this.props.selected === true) {
+        classNames += ' ctrl-selected'
+    }
+
+    return <div id="pieContainer1" className={classNames}>
+      <div className="controlLabel">{this.props.data.label}</div>
+      <ResponsiveContainer  width="100%" height="100%">
+        <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+        {this.renderPieWithData(this.props)}
+        {renderLegend()}
+        <Tooltip />
+      </PieChart>
+      </ResponsiveContainer>
+    </div>
   }
 } // end: PieResponsiveData class
+export const PieResponsiveData = noobControlHoc(PieResponsiveDataBase);
 
 export class PieWithData extends React.Component {
   constructor(props) {

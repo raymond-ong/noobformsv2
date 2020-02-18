@@ -4,10 +4,6 @@ import Form, {Text as FormText, IconSelector, ColorSelector} from '../form/Form'
 
 const KEY_NAME = "Name";
 
-const onSubmit = (args) => {
-    console.log('Save Form submitted', args);
-}
-
 const SaveAsDialog = ({showSaveForm, title, formLabel, onSave, onClose}) => {
     // Watch the state, to disable the Save button if it's empty
     const [myState, setMyState] = useState({
