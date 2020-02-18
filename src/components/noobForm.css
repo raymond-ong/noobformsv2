@@ -39,7 +39,7 @@
 
 /* Show gray background to empty controls to make them easier to distinguish from actual controls */ 
 .emptyControl {
-    background: rgba(100,100,100,0.3);
+    /* background: rgba(100,100,100,0.3); */
     height: 100%;
     width: 100%;
     position: absolute;

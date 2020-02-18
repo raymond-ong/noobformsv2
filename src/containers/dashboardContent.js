@@ -106,11 +106,11 @@ function mapStateToProps(state) {
     // Select the appropriate hierarchy tree to be included into the props
     let masterHierarchyViews = state.mainApp.masterHierarchyViews;
     let defaultView = masterHierarchyViews && masterHierarchyViews[0];
-
+    
     return {
         hierarchyView: defaultView,
         masterLayouts: state.mainApp.masterLayouts,
-        selectedNode: state.dashboard.selectedNode
+        selectedNode: state.dashboard.selectedNode,
     }
 }
   

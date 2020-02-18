@@ -14,7 +14,7 @@ import DcBar from '../charts/dcjsBarChart';
 
 
 import { useDrag } from 'react-dnd'
-import PieChart, {PieForReport} from '../charts/pieChart';
+import PieChart, {PieForReport, PieWithData, PieResponsiveData} from '../charts/pieChart';
 import BarChart, {BarChartForReport} from '../charts/barChart';
 import Gauge from '../charts/gauge';
 import GaugeChart from '../charts/gauge_rechart';
@@ -63,10 +63,11 @@ export const getContentDiv = (controlData) => {
             break;
         case 'pie':
             if (isReporting) {
+                //content = <PieForReport {...controlData}/>
                 content = <PieForReport {...controlData}/>
             }
             else {
-                content = <PieChart {...controlData}/>
+                content = <PieResponsiveData {...controlData}/>
             }                
             break;
         case 'barchart':
@@ -87,7 +88,7 @@ export const getContentDiv = (controlData) => {
             // Parent form must insert page-break-before style into the next control instead
             content = <PageBreak {...controlData}/>
             break;
-        case undefined:            
+        case undefined:    
             content = <div className="emptyControl"></div>
             break;
         case 'dcbar':

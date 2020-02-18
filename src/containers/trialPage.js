@@ -491,7 +491,7 @@ class TrialPage extends React.Component {
                 // defaultValue={getBottomMostGroup(this.state.overallGroupings)}
             />
             <PieWithData 
-                data={groupedData}
+                apiData={groupedData}
                 pieClickCallback={this.pieClickHandler}
                 activeIndex={activeIndex}/>
         </div>
@@ -548,7 +548,7 @@ class TrialPage extends React.Component {
                 // defaultValue={getBottomMostGroup(this.state.overallGroupings)}
             />
             <BarChartWithData
-                data={formattedGroupData}
+                apiData={formattedGroupData}
                 primary={primaryAxis}
                 secondaryList={uniqSecondaryVals}
             />

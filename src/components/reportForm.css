@@ -29,7 +29,7 @@
 }
 
 .reportControl {
-    /* border: 1px dashed gray; */
+    border: 1px dashed gray;
     /* needed to position the resizer */
     position: relative;
     /* overflow: visible; */
@@ -46,8 +46,8 @@
 }
 
 /* Show gray background to empty controls to make them easier to distinguish from actual controls */ 
-.emptyControl {
-    background: rgba(100,100,100,0.1);
+.emptyReportControl {
+    /* background: rgba(100,100,100,0.1); */
     height: 100%;
     width: 100%;
     position: absolute;

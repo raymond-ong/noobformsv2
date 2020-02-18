@@ -22,6 +22,7 @@ class ReportForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+
         };
     }
 
@@ -51,6 +52,25 @@ class ReportForm extends React.Component {
     }
 
     renderControl(control, containerWidth, numCols) {
+        // Debug for Pie chart, add some more properties that we need to configure
+        if (control.ctrlType === 'pie') {
+            control.dataProps = {
+                dataUrl: "http://localhost:5000/api/data",
+                requestType: 'GetDeviceCounts',
+                aggregation: 'count',
+                granularity: null,
+                grouping: ['Vendor', 'Model'],
+                parameters: [{
+                    name: "Analysis Period",
+                    value: "CustomRange",
+                    startDate: "",
+                    endDate: "",
+                }]                
+
+            }
+        }
+
+
         return <ReportControl 
                 key={'ctrl'+control.i} 
                 controlData={control}
@@ -258,53 +278,6 @@ class ReportForm extends React.Component {
         }};
 
         return (
-            // <div className='reportFormContainer'>
-            // First line
-            // <h1>HelloA</h1>
-            // Something in between
-            // <h1>HelloB</h1>
-            // </div>
-        // [A] Try: do not mix table with CSS Grid
-        // <div className='reportFormContainer'>
-        //     Hello!
-        //     <div className="nextPaged" 
-        //     // style={{pageBreakBefore: "always", pageBreakAfter: "always"}}
-        //     >
-        //     I should be in next page!
-        //     </div>
-        //     Last Page
-        //     <h1>H1 try1</h1>
-        //     {/* <ReportTable style={{gridRowEnd: 'span 2', gridColumnEnd: 'span 12', border: '1px solid red'}} {...reportTableData}/> */}
-        //     <ReportControl controlData={reportTableData}/>
-        //     <h1>H1 try2</h1>
-        // </div>)
-
-        // [B] This does not work because Table and Grid do not go well together
-        // <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)" }}>
-        //     <div 
-        //         id="reportForm" 
-        //         className="reportForm" 
-        //     >
-        //     {/* <Section {...sectionData} style={{gridRowEnd: 'span 1', gridColumnEnd: 'span 12'}}/> */}
-        //     <div>Hello1</div>
-        //     <div>Hello2</div>
-        //     <div>Hello3</div>
-        //     <div>Hello4</div>
-        //     <div>Hello5</div>
-        //     <div>Hello6</div>
-        //     <div>Hello7</div>
-        //     <div>Hello8</div>
-        //     <div>Hello9</div>
-        //     <div>Hello10</div>
-        //     <div>Hello11</div>
-        //     <div>Hello12</div>
-        //     <div>Hello13</div>
-        //     <div>Hello14</div>
-        //     <ReportTable style={{gridRowEnd: 'span 2', gridColumnEnd: 'span 12', border: '1px solid red'}} {...reportTableData}/>
-        // </div>
-
-        // [C] this does not work if there is a table in layout...CSS Grid conflicts with pagination
-        //     
         <div className="reportFormsContainer" style={{maxWidth: `${window.innerWidth-50}px`}}>
             {'[DEBUG] ContainerWidth: ' + window.innerWidth}
             {this.renderGroups(groupsList, divStyle)}            

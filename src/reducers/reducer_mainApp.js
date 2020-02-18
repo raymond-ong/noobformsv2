@@ -9,8 +9,8 @@ import { CLICK_MENU,
 
 // Assumption: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'dataDesigner',
-    tabIndex: 5,
+    activeMenu: 'home',
+    tabIndex: 0,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
@@ -18,7 +18,6 @@ const defaultState = {
     masterAvailableData: null,
     masterLayouts: null,
     masterHierarchyViews: null,
-    masterHierarchySettings: null, // All the hierarchy settings set by the user using the Hierarchy Designer
 }
 
 // TODO: Should move this to a constant location

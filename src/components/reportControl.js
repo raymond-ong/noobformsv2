@@ -1,5 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import {getContentDiv} from './noobControlContent';
+import { Dimmer, Loader, Segment } from 'semantic-ui-react';
+
+
+import axios from 'axios';
 import './reportForm.css'
 
 
@@ -8,12 +12,48 @@ const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
 
-const ReportControl = ({controlData, containerWidth, numCols}) => {
-    
-    
-    
+const renderLoader = (controlData) => {
+    return <Segment style={{width: '100%'}}>
+            <Dimmer active inverted>
+                <Loader>{`Fetching ${controlData.ctrlType} data`}</Loader>
+            </Dimmer>
+            </Segment>;
+}
 
-    // [b] Preparations
+const ReportControl = ({controlData, containerWidth, numCols}) => {
+    console.log('[DEBUG] render ReportControl', controlData.i);
+    // [a] Data Preparations
+    const [apiData, setApiData] = useState();
+    const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
+
+    useEffect(() => {        
+        const fetchData = async (dataProps) => {
+            console.log('[DEBUG] useEffect ReportControl', controlData.i);
+            setIsLoading(true);
+            const result = await axios
+                .post('http://localhost:60000/api/data', {HierarchyPath: "test"})
+                .catch(error => {
+                    console.error("Error fetching control data", controlData.i, error);
+
+                });
+
+            if (result && result.data) {
+                setApiData(result.data);
+            }
+            setIsLoading(false);
+        };
+
+        if (controlData.dataProps) {                        
+            fetchData(controlData.dataProps);
+        }
+    }, []); 
+
+
+    // [b] UI Preparations
+    if (controlData.dataProps && !isLoading) {
+        controlData.apiData = apiData
+    }
+
     let classNames = 'reportControl';
     let usableWidth = containerWidth; // 20 for the noobform left and right padding of 10 each
     let widthOfCtrl = usableWidth * controlData.w / 12.0; // 12 is the number of columns; minus 5 for the grid gap
@@ -48,7 +88,8 @@ const ReportControl = ({controlData, containerWidth, numCols}) => {
                 className={classNames} 
                 style={ctrlStyle}
             >
-                {getContentDiv(controlData)}
+                {controlData.dataProps && isLoading && renderLoader(controlData)}
+                {(!controlData.dataProps || (controlData.dataProps && !isLoading)) && getContentDiv(controlData)}
         </div>
 }
 

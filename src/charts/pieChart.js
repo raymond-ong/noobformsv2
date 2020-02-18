@@ -7,7 +7,7 @@ import './pieChart.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 
-const data = [
+const sampleData = [
   { name: 'Good', value: 400 },
   { name: 'Bad', value: 300 },
   { name: 'Fair', value: 300 },
@@ -142,6 +142,88 @@ const renderActiveShape = (props) => {
   );
 };
 
+export class PieResponsiveData extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeIndex: props.activeIndex
+    };
+  }
+
+  onPieClick = (sectorInfo, index) => {
+    //let sectorIndex = args[1];
+    this.setState({
+      activeIndex: index
+    });
+
+    if (this.props.pieClickCallback) {
+      this.props.pieClickCallback(sectorInfo);
+    }
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+  }
+
+  extractName(groupingArr, data) {
+    let vals = groupingArr.map(g => data[g]);
+    return vals.join(' / ');
+  }
+
+  formatApiData(apiData, dataProps) {
+    let grouping = dataProps.grouping;
+    return apiData.map(d => {
+      let extractedName = this.extractName(grouping, d);
+
+      return {
+        name: extractedName,
+        value: d.count
+      }
+    })
+  }
+
+  renderPieWithData = (props) => {
+    let formattedData = props.apiData || sampleData;
+    if (!formattedData) {
+      return null;
+    }
+
+    if (props.dataProps) {
+      formattedData = this.formatApiData(props.apiData.data, props.dataProps);
+    }
+
+    return <Pie
+      data={formattedData}
+      labelLine={true}
+      //label={renderCustomizedLabel}
+      label
+      //label={renderLabel}
+      //   outerRadius={100}
+      fill="#8884d8"
+      dataKey="value"
+      isAnimationActive={false}
+      onClick={this.onPieClick}
+      activeIndex={this.props.activeIndex}
+      activeShape={renderActiveShape}
+    >
+      { formattedData && formattedData.length > 0 &&
+        formattedData.map((entry, index) => {
+          return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        })
+      }
+    </Pie>;    
+  }
+
+  render() {
+    return <ResponsiveContainer  width="100%" height="100%">
+      <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+      {this.renderPieWithData(this.props)}
+      {renderLegend()}
+      <Tooltip />
+    </PieChart>
+    </ResponsiveContainer>
+  }
+} // end: PieResponsiveData class
+
 export class PieWithData extends React.Component {
   constructor(props) {
     super(props);
@@ -164,9 +246,31 @@ export class PieWithData extends React.Component {
   componentDidUpdate(previousProps, previousState) {
   }
 
+  extractName(groupingArr, data) {
+    let vals = groupingArr.map(g => data[g]);
+    return vals.join(' / ');
+  }
+
+  formatApiData(apiData, dataProps) {
+    let grouping = dataProps.grouping;
+    return apiData.map(d => {
+      let extractedName = this.extractName(grouping, d);
+
+      return {
+        name: extractedName,
+        value: d.count
+      }
+    })
+  }
+
   renderPieWithData = (props) => {
+    let formattedData = props.apiData || sampleData;
+    if (props.dataProps) {
+      formattedData = this.formatApiData(props.data.data, props.dataProps);
+    }
+
     return <Pie
-      data={props.data}
+      data={formattedData}
       labelLine={true}
       //label={renderCustomizedLabel}
       label
@@ -179,8 +283,8 @@ export class PieWithData extends React.Component {
       activeIndex={this.props.activeIndex}
       activeShape={renderActiveShape}
     >
-      {
-        props.data.map((entry, index) => {
+      { formattedData && formattedData.length > 0 &&
+        formattedData.map((entry, index) => {
           return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         })
       }
@@ -194,13 +298,13 @@ export class PieWithData extends React.Component {
       <Tooltip />
     </PieChart>
   }
-}
+} // end: PieWithData class
 
 // Common function
 // Renders Pie Chart and Legends
 const renderPie = () => {
   return <Pie
-      data={data}
+      data={sampleData}
       labelLine={true}
       //label={renderCustomizedLabel}
       label
@@ -211,7 +315,7 @@ const renderPie = () => {
       isAnimationActive={false}      
     >
       {
-        data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+        sampleData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
       }
     </Pie>;    
 }
@@ -221,66 +325,6 @@ const renderLegend = () => {
     margin={{top: 10, right: 10, left: 10, bottom: 10}}
     verticalAlign="bottom" height={36}/>
 }
-
-
-// const PieChartSample = (props) => {
-//   console.log('render pie!', props);
-
-//   const pieContainerEl = useRef();
-//   const [myState, setMyState] = useState({
-//     height: 0,
-//     width: 0
-//   });
-
-//   useEffect(() => {
-//     console.log('[DEBUG] useEffect pie', pieContainerEl);
-//     if (!pieContainerEl || !pieContainerEl.current) {
-//       return;
-//     }
-//     let rect = pieContainerEl.current.getClientRects()[0]
-//     setMyState({
-//       height: rect.height,
-//       width: rect.width
-//     })
-    
-//   }, []);
-
-//   let classNames = 'reChartContainer';
-//   if (props.selected === true) {
-//       classNames += ' ctrl-selected'
-//   }
-//   let width = props.containerWidth ? props.containerWidth : '100%'
-//   return (
-//     <div id="pieContainer1" className={classNames} ref={pieContainerEl}>
-//       <div className="controlLabel">{props.data.label}</div>
-//       {/* <ResponsiveContainer  width={width} height="100%"> */}
-//         <PieChart 
-//           id="thePie" 
-//           margin={{top: 20, right: 10, left: 10, bottom: 40}}
-//           height={myState.height}
-//           width={myState.width}
-//         >
-//           <Pie
-//             data={data}
-//             labelLine={true}
-//           //   label={renderCustomizedLabel}
-//           label
-//           //label={renderLabel}
-//           //   outerRadius={100}
-//             fill="#8884d8"
-//             dataKey="value"
-//             isAnimationActive={false}
-//           >
-//             {
-//               data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-//             }
-//           </Pie>
-//           <Legend verticalAlign="top" height={36}/>
-//         </PieChart>
-//       {/* </ResponsiveContainer> */}
-//     </div>
-//   );  
-// }
 
 export default noobControlHoc(PieResponsive);
 
