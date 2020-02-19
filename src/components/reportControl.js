@@ -17,7 +17,6 @@ const GRID_GAP = 5;
 
 const handleChartClick = (sliceInfo, controlData, clickChartSlice) => {
     // Fire a redux action
-    debugger
     clickChartSlice(sliceInfo, controlData.dataProps.datasetId, controlData.i);
 }
 
@@ -45,6 +44,7 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, d
     // [b] UI Preparations
     if (controlData.dataProps && !isLoading) {
         controlData.apiData = apiData;
+        controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
         controlData.handleChartClick = sliceInfo => handleChartClick(sliceInfo, controlData, clickChartSlice);
     }
 

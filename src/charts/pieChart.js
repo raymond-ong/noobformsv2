@@ -6,7 +6,7 @@ import '../controls/common.css';
 import './pieChart.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
-import {extractName, filterObj} from '../helper/chartHelper';
+import {extractName, filterObj, calculateActiveIndex} from '../helper/chartHelper';
 
 const sampleData = [
   { name: 'Good', value: 400 },
@@ -190,6 +190,8 @@ export class PieResponsiveDataBase extends React.Component {
       formattedData = this.formatApiData(props.apiData.data, props.dataProps);
     }
 
+    let activeIndex = calculateActiveIndex(props.datasetFilters, formattedData, props.i)
+
     return <Pie
       data={formattedData}
       labelLine={true}
@@ -201,7 +203,7 @@ export class PieResponsiveDataBase extends React.Component {
       dataKey="value"
       isAnimationActive={false}
       onClick={this.onPieClick}
-      activeIndex={this.props.activeIndex}
+      activeIndex={activeIndex}
       activeShape={renderActiveShape}
     >
       { formattedData && formattedData.length > 0 &&

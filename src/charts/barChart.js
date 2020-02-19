@@ -230,7 +230,6 @@ const renderBars = (uniqSeriesNames) => {
 // seriesName: e.g. "PRM Device Status"
 // aggregation: "count"
 const renderChartContentsUngroupedData = (bAnimate, width, height, data, categories, seriesName, aggregation) => {
-  debugger
   let uniqSeriesNames = getUniqueValues(data, seriesName);
   let formattedData = formatBarchartData(data, categories, seriesName, aggregation)
 
@@ -348,8 +347,6 @@ class BarResponsiveDataBase extends React.Component {
     if (this.props.selected === true) {
         classNames += ' ctrl-selected'
     }
-
-    debugger
 
     return (
       <div className={classNames}>
