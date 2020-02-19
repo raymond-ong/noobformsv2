@@ -7,6 +7,7 @@ import {
 import '../controls/common.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
+import _ from "lodash";
 
 const COLORS = ['green', 'red', 'gold', 'gray', 'cyan', 'magenta', 'black', 'lime', 'teal', 'pink', 'violet', 'orange', 'blue', 'indigo'];
 
@@ -138,7 +139,9 @@ const renderChartContents = (bAnimate, width, height, data) => {
 // Maybe let the user to customize the following:
 // - interval (ticks)
 // - X axis height
-const renderChartContentsReal = (bAnimate, width, height, data, primary, secondaryList) => {
+// seriesList - must contain the actual names (e.g. "Good", "Bad","Fair")
+// This function is for the trial page only
+const renderChartContentsTrial = (bAnimate, width, height, data, category, seriesList) => {
   return (
     <BarChart
               width={width}
@@ -149,7 +152,7 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
               }}
           >
       <CartesianGrid vertical={false}/>
-      <XAxis height={100} dataKey={primary} tick={<CustomizedAxisTick />} interval={0} />
+      <XAxis height={100} dataKey={category} tick={<CustomizedAxisTickTrial />} interval={0} />
       <YAxis axisLine={false}/>
       <Tooltip />
       <Legend  verticalAlign="top" wrapperStyle={{
@@ -157,7 +160,7 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
       }}/>
 
 
-      <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
+      <Bar dataKey={seriesList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
         console.log('Bar clicked first cat', ...args);}
         }>
         {/* {
@@ -166,51 +169,109 @@ const renderChartContentsReal = (bAnimate, width, height, data, primary, seconda
           ))
         } */}
       </Bar>
-      <Bar dataKey={secondaryList[1]} fill="gold" onClick={(...args) => {
+      <Bar dataKey={seriesList[1]} fill="gold" onClick={(...args) => {
         console.log('Bar clicked second cat', ...args);}
         }/>      
     </BarChart>
   )
 }
 
-/*
-const renderChartContentsRealOld = (bAnimate, width, height, data, primary, secondaryList) => {
+const getUniqueValues = (data, seriesName) => {
+  return _.uniq(data.map(d => d[seriesName]));
+}
+
+const extractName = (groupingArr, data) => {
+  let vals = groupingArr.map(g => data[g]);
+  return vals.join(' / ');
+}
+
+const formatBarchartData = (data, categories, seriesName, aggregation) => {
+  let retList = [];
+  for (let i = 0; i < data.length; i++) {
+    let currData = data[i];
+    let currCategoryVal = extractName(categories, currData); //e.g. "Yokogawa / EJA"
+    let findRetList = retList.find(r => r.name === currCategoryVal);
+    if (!findRetList) {
+      findRetList = {name: currCategoryVal};
+      retList.push(findRetList);
+    }
+
+    let seriesVal = currData[seriesName];
+    findRetList[seriesVal] = currData[aggregation];    
+  }
+
+  return retList;
+}
+
+// For rendering an individual bar inside a barchart
+const renderBars = (uniqSeriesNames) => {
+  return uniqSeriesNames.map((seriesName, index) => {
+    return <Bar dataKey={seriesName} fill={COLORS[index % COLORS.length]} strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
+      console.log('Bar clicked first cat', ...args);}
+      }>  
+    </Bar>
+  }
+  );      
+}
+
+// Input data sample:
+// {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJA", count: 100},
+// {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJA", count: 100},
+// {PRM Device Status: "FAIR", Vendor: "Yokogawa", Model: "EJA", count: 100},
+// {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJX", count: 100},
+// {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJX", count: 100},
+// {PRM Device Status: "FAIR", Vendor: "Yokogawa", Model: "EJX", count: 100},
+// 
+// Need to transform/compress it to:
+// {name: "Yokogawa / EJA", GOOD: 100, BAD: 100, FAIR: 100},
+// {name: "Yokogawa / EJX", GOOD: 100, BAD: 100, FAIR: 100},
+// 
+// categories: e.g. ["Vendor", "Model"]
+// seriesName: e.g. "PRM Device Status"
+// aggregation: "count"
+const renderChartContentsUngroupedData = (bAnimate, width, height, data, categories, seriesName, aggregation) => {
+  debugger
+  let uniqSeriesNames = getUniqueValues(data, seriesName);
+  let formattedData = formatBarchartData(data, categories, seriesName, aggregation)
+
   return (
     <BarChart
               width={width}
               height={height}
-              data={data}
+              data={formattedData}
               margin={{
-              top: 20, right: 10, left: 5, bottom: 30,
+              top: 0, right: 10, left: 5, bottom: 30,
               }}
           >
       <CartesianGrid vertical={false}/>
-      <XAxis dataKey={primary} />
+      <XAxis height={100} dataKey={"name"} tick={<CustomizedAxisTick />} interval={0} />
       <YAxis axisLine={false}/>
       <Tooltip />
-
-      <Legend wrapperStyle={{
-      paddingTop: "10px"
+      <Legend  verticalAlign="top" wrapperStyle={{
+      paddingBottom: "20px"
       }}/>
+        {renderBars(uniqSeriesNames)}
 
-      <Bar dataKey={secondaryList[0]} fill="green" strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
-        console.log('Bar clicked first cat', ...args);}
-        }>
-        {
-          data.map((entry, index) => (
-            <Cell key={`cell-${index}`} stroke={'black'}  strokeWidth={2} myCellId={secondaryList[0]+index}/>
-          ))
-        }
-      </Bar>
-      <Bar dataKey={secondaryList[1]} fill="gold" onClick={(...args) => {
-        console.log('Bar clicked second cat', ...args);}
-        }/>      
     </BarChart>
   )
 }
-*/
 
 class CustomizedAxisTick extends PureComponent {
+  render() {
+    const {
+      x, y, stroke, payload,
+    } = this.props;
+
+   
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-45)">{payload.value}</text>
+      </g>
+    );
+  }
+}
+
+class CustomizedAxisTickTrial extends PureComponent {
   render() {
     const {
       x, y, stroke, payload,
@@ -236,7 +297,7 @@ export class BarChartWithData extends React.Component {
 
   render() {
 
-    return (renderChartContentsReal(true, 600, 400, 
+    return (renderChartContentsTrial(true, 600, 400, 
       this.props.data, 
       this.props.primary, 
       this.props.secondaryList));
@@ -259,6 +320,49 @@ function BarChartResponsive(props) {
     </div>
   );
 }
+
+const getChartContents = (props) => {
+  if (props.dataProps) {
+    return renderChartContentsUngroupedData(true, 600, 400, 
+      props.apiData.data, 
+      props.dataProps.categories, 
+      props.dataProps.seriesName,
+      props.dataProps.aggregation)
+  }
+  else {
+    return renderChartContents(true, null, null, sampleData);
+  }
+}
+
+
+class BarResponsiveDataBase extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeIndex: null
+    }
+  }
+
+  render() {
+    let classNames = 'reChartContainer';
+    if (this.props.selected === true) {
+        classNames += ' ctrl-selected'
+    }
+
+    debugger
+
+    return (
+      <div className={classNames}>
+        <div className="controlLabel">{this.props.data.label}</div>
+        <ResponsiveContainer width={"100%"} height="100%">        
+        {getChartContents(this.props)}        
+        </ResponsiveContainer>
+      </div>);
+  }
+}
+
+export const BarResponsiveData = noobControlHoc(BarResponsiveDataBase)
+
 
 
 export default noobControlHoc(BarChartResponsive);

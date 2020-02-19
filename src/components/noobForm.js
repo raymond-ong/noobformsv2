@@ -835,7 +835,6 @@ class NoobForm extends React.Component {
                 }
                 else {
                     //retList.push(this.renderControl(findControl));
-                    debugger
                     console.log('renderControlsWithLayout', findControl.i, findControl.x, findControl.y, findControl.w, findControl.h);
                     let controlJsx = this.renderControl(findControl, containerWidth, layoutData.columns);
                     retList.push({

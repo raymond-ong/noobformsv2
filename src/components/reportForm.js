@@ -59,7 +59,25 @@ class ReportForm extends React.Component {
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,
-                grouping: ['Vendor', 'Model'],
+                Groupings: ['Vendor', 'Model'],
+                parameters: [{
+                    name: "Analysis Period",
+                    value: "CustomRange",
+                    startDate: "",
+                    endDate: "",
+                }]                
+
+            }
+        }
+        else if (control.ctrlType === 'barchart') {
+            control.dataProps = {
+                dataUrl: "http://localhost:5000/api/data",
+                requestType: 'GetDeviceCounts',
+                aggregation: 'count',
+                granularity: null,
+                categories: ['Vendor', 'Model'],
+                seriesName: 'PRM Device Status', // Actual values: "Normal", "Comm Error" etc
+                Groupings: ['Vendor', 'Model', 'PRM Device Status'],
                 parameters: [{
                     name: "Analysis Period",
                     value: "CustomRange",

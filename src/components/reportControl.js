@@ -31,7 +31,7 @@ const ReportControl = ({controlData, containerWidth, numCols}) => {
             console.log('[DEBUG] useEffect ReportControl', controlData.i);
             setIsLoading(true);
             const result = await axios
-                .post('http://localhost:60000/api/data', {HierarchyPath: "test"})
+                .post('http://localhost:60000/api/data', {...controlData.dataProps})
                 .catch(error => {
                     console.error("Error fetching control data", controlData.i, error);
 

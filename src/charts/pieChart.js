@@ -170,7 +170,7 @@ class PieResponsiveDataBase extends React.Component {
   }
 
   formatApiData(apiData, dataProps) {
-    let grouping = dataProps.grouping;
+    let grouping = dataProps.Groupings;
     return apiData.map(d => {
       let extractedName = this.extractName(grouping, d);
 
@@ -222,7 +222,7 @@ class PieResponsiveDataBase extends React.Component {
     return <div id="pieContainer1" className={classNames}>
       <div className="controlLabel">{this.props.data.label}</div>
       <ResponsiveContainer  width="100%" height="100%">
-        <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}}>
+        <PieChart margin={{top: 20, right: 20, left: 20, bottom: 25}}>
         {this.renderPieWithData(this.props)}
         {renderLegend()}
         <Tooltip />
@@ -230,7 +230,7 @@ class PieResponsiveDataBase extends React.Component {
       </ResponsiveContainer>
     </div>
   }
-} // end: PieResponsiveData class
+} // end: PieResponsiveDataBase class
 export const PieResponsiveData = noobControlHoc(PieResponsiveDataBase);
 
 export class PieWithData extends React.Component {
@@ -331,8 +331,9 @@ const renderPie = () => {
 
 const renderLegend = () => {
   return <Legend 
-    margin={{top: 10, right: 10, left: 10, bottom: 10}}
-    verticalAlign="bottom" height={36}/>
+    wrapperStyle={{overflow: "auto", height: "65px"}}
+    margin={{top: 0, right: 0, left: 0, bottom: 0}}
+    verticalAlign="bottom"/>
 }
 
 export default noobControlHoc(PieResponsive);

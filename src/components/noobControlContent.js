@@ -15,7 +15,7 @@ import DcBar from '../charts/dcjsBarChart';
 
 import { useDrag } from 'react-dnd'
 import PieChart, {PieForReport, PieWithData, PieResponsiveData} from '../charts/pieChart';
-import BarChart, {BarChartForReport} from '../charts/barChart';
+import BarChart, {BarChartForReport, BarResponsiveData} from '../charts/barChart';
 import Gauge from '../charts/gauge';
 import GaugeChart from '../charts/gauge_rechart';
 import GaugeJs from '../charts/gaugejs_react';
@@ -75,7 +75,8 @@ export const getContentDiv = (controlData) => {
                 content = <BarChartForReport {...controlData}/>                
             }
             else {
-                content = <BarChart {...controlData}/>
+                debugger
+                content = <BarResponsiveData {...controlData}/>
             }            
             break;
         case 'gauge':
