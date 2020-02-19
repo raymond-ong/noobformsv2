@@ -298,7 +298,7 @@ export class BarChartWithData extends React.Component {
   render() {
 
     return (renderChartContentsTrial(true, 600, 400, 
-      this.props.data, 
+      this.props.apiData, 
       this.props.primary, 
       this.props.secondaryList));
   }

@@ -301,7 +301,7 @@ export class PieWithData extends React.Component {
   }
 
   render() {
-    return <PieChart margin={{top: 20, right: 20, left: 20, bottom: 40}} width={400} height={400}>
+    return <PieChart margin={{top: 20, right: 20, left: 20, bottom: 25}} width={400} height={400}>
       {this.renderPieWithData(this.props)}
       {renderLegend()}
       <Tooltip />
