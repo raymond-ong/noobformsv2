@@ -206,7 +206,7 @@ const formatBarchartData = (data, categories, seriesName, aggregation) => {
 // For rendering an individual bar inside a barchart
 const renderBars = (uniqSeriesNames) => {
   return uniqSeriesNames.map((seriesName, index) => {
-    return <Bar dataKey={seriesName} fill={COLORS[index % COLORS.length]} strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
+    return <Bar key={`bar-${seriesName}-${index}`} dataKey={seriesName} fill={COLORS[index % COLORS.length]} strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
       console.log('Bar clicked first cat', ...args);}
       }>  
     </Bar>

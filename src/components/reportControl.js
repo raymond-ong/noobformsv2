@@ -1,16 +1,25 @@
 import React, { Component, useState, useEffect } from 'react';
 import {getContentDiv} from './noobControlContent';
 import { Dimmer, Loader, Segment } from 'semantic-ui-react';
-
-
+import {fetchData} from '../components/chartManager';
 import axios from 'axios';
 import './reportForm.css'
+
+import {connect} from 'react-redux';
+import { bindActionCreators } from "redux";
+import {clickChartSlice} from '../actions/index';
 
 
 const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
+
+const handleChartClick = (sliceInfo, controlData, clickChartSlice) => {
+    // Fire a redux action
+    debugger
+    clickChartSlice(sliceInfo, controlData.dataProps.datasetId, controlData.i);
+}
 
 const renderLoader = (controlData) => {
     return <Segment style={{width: '100%'}}>
@@ -20,38 +29,23 @@ const renderLoader = (controlData) => {
             </Segment>;
 }
 
-const ReportControl = ({controlData, containerWidth, numCols}) => {
+const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, datasetFilters}) => {
     console.log('[DEBUG] render ReportControl', controlData.i);
     // [a] Data Preparations
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {        
-        const fetchData = async (dataProps) => {
-            console.log('[DEBUG] useEffect ReportControl', controlData.i);
-            setIsLoading(true);
-            const result = await axios
-                .post('http://localhost:60000/api/data', {...controlData.dataProps})
-                .catch(error => {
-                    console.error("Error fetching control data", controlData.i, error);
-
-                });
-
-            if (result && result.data) {
-                setApiData(result.data);
-            }
-            setIsLoading(false);
-        };
-
         if (controlData.dataProps) {                        
-            fetchData(controlData.dataProps);
+            fetchData(controlData, setIsLoading, setApiData, datasetFilters);
         }
-    }, []); 
+    }, [datasetFilters]); 
 
 
     // [b] UI Preparations
     if (controlData.dataProps && !isLoading) {
-        controlData.apiData = apiData
+        controlData.apiData = apiData;
+        controlData.handleChartClick = sliceInfo => handleChartClick(sliceInfo, controlData, clickChartSlice);
     }
 
     let classNames = 'reportControl';
@@ -89,8 +83,24 @@ const ReportControl = ({controlData, containerWidth, numCols}) => {
                 style={ctrlStyle}
             >
                 {controlData.dataProps && isLoading && renderLoader(controlData)}
-                {(!controlData.dataProps || (controlData.dataProps && !isLoading)) && getContentDiv(controlData)}
+                {(!controlData.dataProps || (controlData.dataProps && !isLoading)) && getContentDiv(controlData, "dashboard")}
         </div>
 }
 
-export default ReportControl;
+const mapStateToProps = (state, ownProps) => {
+    let controlData = ownProps.controlData;
+    if (!controlData || !controlData.dataProps) {
+        return {};    // to avoid re-rendering controls that do not have dataProps
+    }
+
+    // We are only concerned about changes in the datasetId this control belongs to
+    return {
+        datasetFilters: state.dashboard.chartClickFilters[controlData.dataProps.datasetId]
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({ clickChartSlice }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ReportControl);

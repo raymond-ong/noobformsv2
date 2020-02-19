@@ -55,34 +55,35 @@ class ReportForm extends React.Component {
         // Debug for Pie chart, add some more properties that we need to configure
         if (control.ctrlType === 'pie') {
             control.dataProps = {
-                dataUrl: "http://localhost:5000/api/data",
+                dataUrl: "http://localhost:60000/api/data",
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,
                 Groupings: ['Vendor', 'Model'],
-                parameters: [{
-                    name: "Analysis Period",
-                    value: "CustomRange",
-                    startDate: "",
-                    endDate: "",
-                }]                
-
+                datasetId: 0, // other controls belonging to the same datasetId will have related filters
+                RequestParams: [{
+                    Name: "Analysis Period",
+                    Value: "CustomRange",
+                    StartDate: null,
+                    EndDate: null,
+                }]
             }
         }
         else if (control.ctrlType === 'barchart') {
             control.dataProps = {
-                dataUrl: "http://localhost:5000/api/data",
+                dataUrl: "http://localhost:60000/api/data",
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,
                 categories: ['Vendor', 'Model'],
                 seriesName: 'PRM Device Status', // Actual values: "Normal", "Comm Error" etc
                 Groupings: ['Vendor', 'Model', 'PRM Device Status'],
-                parameters: [{
-                    name: "Analysis Period",
-                    value: "CustomRange",
-                    startDate: "",
-                    endDate: "",
+                datasetId: 0,
+                RequestParams: [{
+                    Name: "Analysis Period",
+                    Value: "CustomRange",
+                    StartDate: null,
+                    EndDate: null,
                 }]                
 
             }
@@ -264,6 +265,7 @@ class ReportForm extends React.Component {
             let formStyle = index > 0 && group.pageBreak ? {...divStyle, pageBreakBefore: "always"} : divStyle;
             return <div className="reportForm"
                         style={formStyle}
+                        key={`reportForm-${group}-${index}`}
                     >{group.items.map(control => {
                 return control.jsx
             })}</div>

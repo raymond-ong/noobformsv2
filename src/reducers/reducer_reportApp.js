@@ -588,7 +588,7 @@ const defaultReportLayout = [
 const defaultState = {
     //layout: defaultReportLayout,
     layout: bigLayout(),
-    layoutData: defaultLayoutData,    
+    layoutData: defaultLayoutData,     
 }
 
 export default function(state = defaultState, action) {

@@ -14,7 +14,7 @@ import DcBar from '../charts/dcjsBarChart';
 
 
 import { useDrag } from 'react-dnd'
-import PieChart, {PieForReport, PieWithData, PieResponsiveData} from '../charts/pieChart';
+import PieChart, {PieForReport, PieWithData, PieResponsiveData, PieResponsiveDataBase} from '../charts/pieChart';
 import BarChart, {BarChartForReport, BarResponsiveData} from '../charts/barChart';
 import Gauge from '../charts/gauge';
 import GaugeChart from '../charts/gauge_rechart';
@@ -31,7 +31,8 @@ export const ControlDragTypes = {
     CONTROL: 'Control'
 }
 
-export const getContentDiv = (controlData) => {
+// mode: either "dashboard" or "design"
+export const getContentDiv = (controlData, mode) => {
     // Wrap the contents so that when resizing or moving, they will be together
     // Also this should be floated. We don't want to resize or move the parent
     let content = null;
@@ -65,6 +66,9 @@ export const getContentDiv = (controlData) => {
             if (isReporting) {
                 //content = <PieForReport {...controlData}/>
                 content = <PieForReport {...controlData}/>
+            }
+            else if (mode === 'dashboard') {
+                content = <PieResponsiveDataBase {...controlData}/>
             }
             else {
                 content = <PieResponsiveData {...controlData}/>

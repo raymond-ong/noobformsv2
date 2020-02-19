@@ -24,7 +24,8 @@ export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
 export const DELETE_CONTROL = "DELETE_CONTROL";
 export const SAVE_HIER_DESIGN_NODE = "SAVE_HIER_DESIGN_NODE";
 export const SAVE_HIERARCHYVIEW = "SAVE_HIERARCHYVIEW";
-export const SELECT_DASHBOARD_TREE = "SELECT_DASHBOARD_TREE"
+export const SELECT_DASHBOARD_TREE = "SELECT_DASHBOARD_TREE";
+export const CLICK_CHART_SLICE = "CLICK_CHART_SLICE";
 
 export function menuClicked(menuName) { 
     return {
@@ -251,6 +252,18 @@ export function selectDashboardTree(hierarchyNode) {
     type: SELECT_DASHBOARD_TREE,
     payload: {
       ...hierarchyNode
+    }
+  };
+}
+
+
+export function clickChartSlice(sliceInfo, datasetId, controlId) {
+  return {
+    type: CLICK_CHART_SLICE,
+    payload: {
+      sliceInfo,
+      datasetId,
+      controlId
     }
   };
 }

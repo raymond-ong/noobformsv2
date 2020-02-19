@@ -96,8 +96,7 @@ class DashboardContent extends DesignerContentbase {
                     controlledExpansion
             />
             }
-            {this.renderForm(layoutName, layoutObj)}
-            
+            {this.renderForm(layoutName, layoutObj)}            
         </NoobSplitter>
     }
 }

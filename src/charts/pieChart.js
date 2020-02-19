@@ -6,6 +6,7 @@ import '../controls/common.css';
 import './pieChart.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
+import {extractName, filterObj} from '../helper/chartHelper';
 
 const sampleData = [
   { name: 'Good', value: 400 },
@@ -75,6 +76,7 @@ export const PieForReport = (props) => {
 
 // The ResponsiveContainer from recharts is OK when viewing from the web browser,
 // but buggy during PDF generation (e.g. not taking entire width and height of the container)
+// Not used anymore...
 const PieResponsive = (props) => {
   let classNames = 'reChartContainer';
   if (props.selected === true) {
@@ -142,7 +144,8 @@ const renderActiveShape = (props) => {
   );
 };
 
-class PieResponsiveDataBase extends React.Component {
+// This is the latest one that's used
+export class PieResponsiveDataBase extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -156,27 +159,23 @@ class PieResponsiveDataBase extends React.Component {
       activeIndex: index
     });
 
-    if (this.props.pieClickCallback) {
-      this.props.pieClickCallback(sectorInfo);
+    if (this.props.handleChartClick) {
+      this.props.handleChartClick(sectorInfo);
     }
   }
 
   componentDidUpdate(previousProps, previousState) {
   }
 
-  extractName(groupingArr, data) {
-    let vals = groupingArr.map(g => data[g]);
-    return vals.join(' / ');
-  }
-
   formatApiData(apiData, dataProps) {
     let grouping = dataProps.Groupings;
     return apiData.map(d => {
-      let extractedName = this.extractName(grouping, d);
+      let extractedName = extractName(grouping, d);
 
       return {
         name: extractedName,
-        value: d.count
+        value: d.count,
+        origObj: filterObj(d, grouping)
       }
     })
   }
@@ -233,6 +232,7 @@ class PieResponsiveDataBase extends React.Component {
 } // end: PieResponsiveDataBase class
 export const PieResponsiveData = noobControlHoc(PieResponsiveDataBase);
 
+// This is for the trial page only!
 export class PieWithData extends React.Component {
   constructor(props) {
     super(props);
