@@ -20,8 +20,8 @@ const handleChartClick = (sliceInfo, groupingStackStr, controlData, clickChartSl
     clickChartSlice(sliceInfo, groupingStackStr, controlData.dataProps.datasetId, controlData.i);
 }
 
-const handleGroupSelect = (groupingValue, controlData, selectChartGroup) => {
-    selectChartGroup(groupingValue, controlData);
+const handleGroupSelect = (groupingValue, seriesName, controlData, selectChartGroup) => {
+    selectChartGroup(groupingValue, seriesName, controlData);
 }
 
 const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping}) => {
@@ -44,7 +44,7 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, s
         controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
         controlData.currControlGrouping = currControlGrouping;
         controlData.handleChartClick = (sliceInfo, groupingStackStr) => handleChartClick(sliceInfo, groupingStackStr, controlData, clickChartSlice);
-        controlData.handleGroupSelect = groupValue => handleGroupSelect(groupValue, controlData, selectChartGroup);
+        controlData.handleGroupSelect = (groupValue, seriesName) => handleGroupSelect(groupValue, seriesName, controlData, selectChartGroup);
     }
 
     let classNames = 'reportControl';

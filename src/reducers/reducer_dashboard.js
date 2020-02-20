@@ -33,8 +33,12 @@ const processChartClick = (filtersRoot, actionPayload) => {
 
 const processChartGroups = (groupings, actionPayload) => {
     // Just replace the grouping for the controlId directly
-    let {controlData, groupVal} = actionPayload;
-    groupings[controlData.i] = groupVal;
+    let {controlData, seriesName, groupVal} = actionPayload;
+    //groupings[controlData.i] = groupVal;
+    groupings[controlData.i] = {
+        groupStack: groupVal,
+        seriesName
+    };
 }
 
 // actionPayload is same as the payload in processChartGroups
@@ -49,6 +53,9 @@ const removeLowerLevelFilters = (actionPayload, filtersRoot) => {
     }
 
     let datasetFilters = filtersRoot[controlData.dataProps.datasetId];
+    if (!datasetFilters) {
+        return null;
+    }
     let controlFilters = datasetFilters[controlData.i];
     if (!controlFilters) {
         return null;

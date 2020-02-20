@@ -77,9 +77,10 @@ class ReportForm extends React.Component {
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,
-                categories: ['Vendor', 'Model'],
+                categories: ['Vendor'],
+                configedCategories: ['Vendor', 'Model'], // This is the grouping engineered
                 seriesName: 'PRM Device Status', // Actual values: "Normal", "Comm Error" etc
-                Groupings: ['Vendor', 'Model', 'PRM Device Status'],
+                Groupings: ['Vendor', 'PRM Device Status'], // Will be sent to the API server...This should be the default value at first          
                 datasetId: 0,
                 RequestParams: [{
                     Name: "Analysis Period",

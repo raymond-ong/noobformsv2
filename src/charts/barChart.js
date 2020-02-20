@@ -8,6 +8,8 @@ import '../controls/common.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 import _ from "lodash";
+import TreeDropdown from '../controls/treeDropdown';
+import {extractName, filterObj, calculateActiveIndex, convertGroupingToTreeDropOptions} from '../helper/chartHelper';
 
 const COLORS = ['green', 'red', 'gold', 'gray', 'cyan', 'magenta', 'black', 'lime', 'teal', 'pink', 'violet', 'orange', 'blue', 'indigo'];
 
@@ -180,11 +182,6 @@ const getUniqueValues = (data, seriesName) => {
   return _.uniq(data.map(d => d[seriesName]));
 }
 
-const extractName = (groupingArr, data) => {
-  let vals = groupingArr.map(g => data[g]);
-  return vals.join(' / ');
-}
-
 const formatBarchartData = (data, categories, seriesName, aggregation) => {
   let retList = [];
   for (let i = 0; i < data.length; i++) {
@@ -239,7 +236,7 @@ const renderChartContentsUngroupedData = (bAnimate, width, height, data, categor
               height={height}
               data={formattedData}
               margin={{
-              top: 0, right: 10, left: 5, bottom: 30,
+              top: 0, right: 10, left: 5, bottom: 50,
               }}
           >
       <CartesianGrid vertical={false}/>
@@ -320,28 +317,59 @@ function BarChartResponsive(props) {
   );
 }
 
-const getChartContents = (props) => {
-  if (props.dataProps) {
-    if (!props.apiData) {
-      return <div></div>;
-    }
-    return renderChartContentsUngroupedData(true, 600, 400, 
-      props.apiData.data, 
-      props.dataProps.categories, 
-      props.dataProps.seriesName,
-      props.dataProps.aggregation)
+const getDefaultGrouping = (groupingHier) => {
+  if (!Array.isArray(groupingHier)) {
+    return null;
   }
-  else {
-    return renderChartContents(true, null, null, sampleData);
-  }
-}
 
+  return groupingHier[0];
+}
 
 class BarResponsiveDataBase extends React.Component {
   constructor(props) {
     super(props);
+    let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.configedCategories) : null;
     this.state = {
-      activeIndex: null
+      activeIndex: null,
+      groupingBoundVal: initialGroupingVal
+    }
+    this.onGroupSelect = this.onGroupSelect.bind(this);
+  }
+
+  onGroupSelect(value, node) {
+    console.log("[Barchart] onGroupSelect", value, node.props);
+    this.setState({
+      groupingBoundVal: value,
+    });
+
+    // Remove the filter from previous lower groups
+    // Send a new API Request to the backend
+    // Just fire a callback and let it be handled in upper level?
+    // Maybe just store the "temp" grouping (non-default) of controls of the dashboard in redux store
+    if (this.props.handleGroupSelect) {
+      let stacks = node.props.stackValue;
+      // For bar chart, we need to add the series field also      
+      this.props.handleGroupSelect(stacks, this.props.dataProps.seriesName);
+    }
+  }
+  
+  getChartContents = () => {
+    if (this.props.dataProps) {
+      if (!this.props.apiData) {
+        return <div></div>;
+      }
+
+      debugger
+      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : this.props.dataProps.categories;
+
+      return renderChartContentsUngroupedData(true, 600, 400, 
+        this.props.apiData.data, 
+        grouping, 
+        this.props.dataProps.seriesName,
+        this.props.dataProps.aggregation)
+    }
+    else {
+      return renderChartContents(true, null, null, sampleData);
     }
   }
 
@@ -354,8 +382,16 @@ class BarResponsiveDataBase extends React.Component {
     return (
       <div className={classNames}>
         <div className="controlLabel">{this.props.data.label}</div>
+        <div>
+          {this.props.dataProps && <TreeDropdown 
+            treeData={convertGroupingToTreeDropOptions(this.props.dataProps.configedCategories)} 
+            value={this.state.groupingBoundVal}
+            onSelect={this.onGroupSelect}
+            treeDefaultExpandAll
+          />}
+        </div>
         <ResponsiveContainer width={"100%"} height="100%">        
-        {getChartContents(this.props)}        
+        {this.getChartContents(this.props)}        
         </ResponsiveContainer>
       </div>);
   }

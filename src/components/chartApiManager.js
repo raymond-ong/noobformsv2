@@ -71,7 +71,10 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
     let postObj = {...controlData.dataProps}; // make a new copy
     if (!!currControlGrouping) {
         // Groupings already has a default value. Override it if the user selects another grouping
-        postObj.Groupings = currControlGrouping;
+        postObj.Groupings = [...currControlGrouping.groupStack];
+        if (currControlGrouping.seriesName) {
+            postObj.Groupings.push(currControlGrouping.seriesName);
+        }
     }
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
