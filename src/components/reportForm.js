@@ -54,12 +54,14 @@ class ReportForm extends React.Component {
     renderControl(control, containerWidth, numCols) {
         // Debug for Pie chart, add some more properties that we need to configure
         if (control.ctrlType === 'pie') {
+            console.log("[ReportForm] Overriding Pie chart dataProps");
             control.dataProps = {
                 dataUrl: "http://localhost:60000/api/data",
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
-                granularity: null,
-                Groupings: ['Vendor', 'Model'],
+                granularity: null,                
+                Groupings: ['Vendor'], // will be sent to the API server...This should be the default value at first
+                configedGroupings: ['Vendor', 'Model'], // This is the grouping engineered
                 datasetId: 0, // other controls belonging to the same datasetId will have related filters
                 RequestParams: [{
                     Name: "Analysis Period",

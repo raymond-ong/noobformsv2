@@ -1,13 +1,13 @@
 import React, { Component, useState, useEffect } from 'react';
 import {getContentDiv} from './noobControlContent';
 import { Dimmer, Loader, Segment } from 'semantic-ui-react';
-import {fetchData} from '../components/chartManager';
+import {fetchData} from './chartApiManager';
 import axios from 'axios';
 import './reportForm.css'
 
 import {connect} from 'react-redux';
 import { bindActionCreators } from "redux";
-import {clickChartSlice} from '../actions/index';
+import {clickChartSlice, selectChartGroup} from '../actions/index';
 
 
 const ROW_HEIGHT = 40;
@@ -20,7 +20,11 @@ const handleChartClick = (sliceInfo, controlData, clickChartSlice) => {
     clickChartSlice(sliceInfo, controlData.dataProps.datasetId, controlData.i);
 }
 
-const renderLoader = (controlData) => {
+const handleGroupSelect = (groupingValue, controlData, selectChartGroup) => {
+    selectChartGroup(groupingValue, controlData.i);
+}
+
+const renderLoader = (controlData,) => {
     return <Segment style={{width: '100%'}}>
             <Dimmer active inverted>
                 <Loader>{`Fetching ${controlData.ctrlType} data`}</Loader>
@@ -28,24 +32,28 @@ const renderLoader = (controlData) => {
             </Segment>;
 }
 
-const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, datasetFilters}) => {
-    console.log('[DEBUG] render ReportControl', controlData.i);
+const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, selectChartGroup, datasetFilters, controlGroups}) => {
     // [a] Data Preparations
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {        
         if (controlData.dataProps) {                        
-            fetchData(controlData, setIsLoading, setApiData, datasetFilters);
+            fetchData(controlData, setIsLoading, setApiData, datasetFilters, controlGroups);
         }
-    }, [datasetFilters]); 
+    }, [datasetFilters, controlGroups]); 
 
 
     // [b] UI Preparations
     if (controlData.dataProps && !isLoading) {
-        controlData.apiData = apiData;
+        // TODO: not sure if this would affect the global object (permanently stored to the global object)
+        // If yes, just clone this object
+        debugger
+        controlData.apiData = apiData;        
         controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
+        controlData.controlGroups = controlGroups;
         controlData.handleChartClick = sliceInfo => handleChartClick(sliceInfo, controlData, clickChartSlice);
+        controlData.handleGroupSelect = groupValue => handleGroupSelect(groupValue, controlData, selectChartGroup);
     }
 
     let classNames = 'reportControl';
@@ -67,7 +75,7 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, d
     ctrlStyle.gridColumnEnd = 'span ' + controlData.w;
     ctrlStyle.maxWidth = `${widthOfCtrl}px`; 
 
-    console.log('render ReportControl', controlData.i, widthOfCtrl);
+    console.log('render ReportControl', controlData.i, isLoading);
     controlData.selected = false; // Override...so that it won't show up as selected
     controlData.maxWidth = `${widthOfCtrl}px`; 
    
@@ -82,8 +90,13 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, d
                 className={classNames} 
                 style={ctrlStyle}
             >
-                {controlData.dataProps && isLoading && renderLoader(controlData)}
-                {(!controlData.dataProps || (controlData.dataProps && !isLoading)) && getContentDiv(controlData, "dashboard")}
+                {/* {controlData.dataProps && isLoading && renderLoader(controlData)} */}
+                {/* {(!controlData.dataProps || (controlData.dataProps && !isLoading)) && getContentDiv(controlData, "dashboard")} */}
+                {isLoading && <Dimmer active inverted>
+                    <Loader>{`Fetching ${controlData.ctrlType} data`}</Loader>
+                    </Dimmer>
+                }
+                {getContentDiv(controlData, "dashboard")}
         </div>
 }
 
@@ -95,12 +108,14 @@ const mapStateToProps = (state, ownProps) => {
 
     // We are only concerned about changes in the datasetId this control belongs to
     return {
-        datasetFilters: state.dashboard.chartClickFilters[controlData.dataProps.datasetId]
+        // Contains the slices/bars clicked by the user
+        datasetFilters: state.dashboard.chartClickFilters[controlData.dataProps.datasetId],
+        controlGroups: state.dashboard.chartTempGroupings[controlData.i]
     }
 }
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators({ clickChartSlice }, dispatch);
+    return bindActionCreators({ clickChartSlice, selectChartGroup }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReportControl);

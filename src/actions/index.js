@@ -26,6 +26,7 @@ export const SAVE_HIER_DESIGN_NODE = "SAVE_HIER_DESIGN_NODE";
 export const SAVE_HIERARCHYVIEW = "SAVE_HIERARCHYVIEW";
 export const SELECT_DASHBOARD_TREE = "SELECT_DASHBOARD_TREE";
 export const CLICK_CHART_SLICE = "CLICK_CHART_SLICE";
+export const SELECT_CHART_GROUP = "SELECT_CHART_GROUP";
 
 export function menuClicked(menuName) { 
     return {
@@ -263,6 +264,17 @@ export function clickChartSlice(sliceInfo, datasetId, controlId) {
     payload: {
       sliceInfo,
       datasetId,
+      controlId
+    }
+  };
+}
+
+
+export function selectChartGroup(groupVal, controlId) {
+  return {
+    type: SELECT_CHART_GROUP,
+    payload: {
+      groupVal,
       controlId
     }
   };

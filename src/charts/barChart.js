@@ -322,6 +322,9 @@ function BarChartResponsive(props) {
 
 const getChartContents = (props) => {
   if (props.dataProps) {
+    if (!props.apiData) {
+      return <div></div>;
+    }
     return renderChartContentsUngroupedData(true, 600, 400, 
       props.apiData.data, 
       props.dataProps.categories, 

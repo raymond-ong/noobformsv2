@@ -2,11 +2,12 @@ import React, { PureComponent, Component, useRef, useEffect, useState } from 're
 import {
   PieChart, Pie, Sector, Cell, ResponsiveContainer, Legend, Tooltip
 } from 'recharts';
+import TreeDropdown from '../controls/treeDropdown';
 import '../controls/common.css';
 import './pieChart.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
-import {extractName, filterObj, calculateActiveIndex} from '../helper/chartHelper';
+import {extractName, filterObj, calculateActiveIndex, convertGroupingToTreeDropOptions} from '../helper/chartHelper';
 
 const sampleData = [
   { name: 'Good', value: 400 },
@@ -144,12 +145,24 @@ const renderActiveShape = (props) => {
   );
 };
 
+
+const getDefaultGrouping = (groupingHier) => {
+  if (!Array.isArray(groupingHier)) {
+    return null;
+  }
+
+  return groupingHier[0];
+}
+
 // This is the latest one that's used
 export class PieResponsiveDataBase extends React.Component {
   constructor(props) {
+    console.log('[pieChart] constructor...');
     super(props);
+    this.onGroupSelect = this.onGroupSelect.bind(this);
     this.state = {
-      activeIndex: props.activeIndex
+      activeIndex: props.activeIndex,
+      groupingBoundVal: props.dataProps? getDefaultGrouping(props.dataProps.configedGroupings) : null, // bound to treedropdown
     };
   }
 
@@ -164,11 +177,24 @@ export class PieResponsiveDataBase extends React.Component {
     }
   }
 
-  componentDidUpdate(previousProps, previousState) {
+  onGroupSelect(value, node) {
+    console.log("[Piechart] onGroupSelect", value, node.props);
+    this.setState({
+      groupingBoundVal: value
+    });
+
+    // Remove the filter from previous lower groups
+    // Send a new API Request to the backend
+    // Just fire a callback and let it be handled in upper level?
+    // Maybe just store the "temp" grouping (non-default) of controls of the dashboard in redux store
+    if (this.props.handleGroupSelect) {
+      this.props.handleGroupSelect(node.props.stackValue);
+    }
   }
 
-  formatApiData(apiData, dataProps) {
-    let grouping = dataProps.Groupings;
+  formatApiData(apiData, dataProps, controlGroups) {
+    let grouping = controlGroups ? controlGroups : dataProps.Groupings;
+    debugger
     return apiData.map(d => {
       let extractedName = extractName(grouping, d);
 
@@ -181,13 +207,15 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   renderPieWithData = (props) => {
-    let formattedData = props.apiData || sampleData;
-    if (!formattedData) {
-      return null;
-    }
-
+    let formattedData = null;
     if (props.dataProps) {
-      formattedData = this.formatApiData(props.apiData.data, props.dataProps);
+      if (!props.apiData) {
+        return null
+      }
+      formattedData = this.formatApiData(props.apiData.data, props.dataProps, props.controlGroups);
+    }
+    else {
+      formattedData = sampleData;
     }
 
     let activeIndex = calculateActiveIndex(props.datasetFilters, formattedData, props.i)
@@ -222,8 +250,16 @@ export class PieResponsiveDataBase extends React.Component {
 
     return <div id="pieContainer1" className={classNames}>
       <div className="controlLabel">{this.props.data.label}</div>
+      <div>
+        {this.props.dataProps && <TreeDropdown 
+          treeData={convertGroupingToTreeDropOptions(this.props.dataProps.configedGroupings)} 
+          value={this.state.groupingBoundVal}
+          onSelect={this.onGroupSelect}
+          treeDefaultExpandAll
+        />}
+      </div>
       <ResponsiveContainer  width="100%" height="100%">
-        <PieChart margin={{top: 20, right: 20, left: 20, bottom: 25}}>
+        <PieChart margin={{top: 20, right: 20, left: 20, bottom: 45}}>
         {this.renderPieWithData(this.props)}
         {renderLegend()}
         <Tooltip />

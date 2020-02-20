@@ -23,10 +23,14 @@ const getOtherControlFilters = (controlId, datasetFilters) => {
 }
 
 // This class is responsible for making API calls to get data, or handling click or grouping events
-export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters) => {
+export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, controlGroups) => {
     console.log('[DEBUG] fetchData ReportControl', controlData.i);
     setIsLoading(true);
-    let postObj = {...controlData.dataProps};
+    let postObj = {...controlData.dataProps}; // make a new copy
+    if (!!controlGroups) {
+        debugger
+        postObj.Groupings = controlGroups;
+    }
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
         if (!Array.isArray(postObj.RequestParams)) {

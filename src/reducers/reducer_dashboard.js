@@ -1,4 +1,4 @@
-import {SELECT_DASHBOARD_TREE, FETCH_HIERARCHYVIEWS, CLICK_CHART_SLICE} from '../actions';
+import {SELECT_DASHBOARD_TREE, FETCH_HIERARCHYVIEWS, CLICK_CHART_SLICE, SELECT_CHART_GROUP} from '../actions';
 
 // This is the reducer of the dashboard content
 const defaultState = {
@@ -11,6 +11,7 @@ const defaultState = {
     //         },
     // }
     chartClickFilters: {},   // DatasetId vs list of filters. Should clear this when new node is selected
+    chartTempGroupings: {}, // controlId vs new groupings...default groupings won't come here
 
 }
 
@@ -21,7 +22,13 @@ const processChartClick = (filtersRoot, actionPayload) => {
     }
     let datasetFilters = filtersRoot[datasetId];
     datasetFilters[controlId] = sliceInfo;
-    filtersRoot[datasetId] = {...datasetFilters}; // to force re-render
+    filtersRoot[datasetId] = {...datasetFilters}; // to force re-render (expectation: only controls belonging to this datasetId)
+}
+
+const processChartGroups = (groupings, actionPaylaod) => {
+    // Just relace the grouping for the controlId directly
+    let {controlId, groupVal} = actionPaylaod;
+    groupings[controlId] = groupVal;
 }
 
 export default function(state=defaultState, action) {
@@ -30,7 +37,8 @@ export default function(state=defaultState, action) {
             return {
                 ...state,
                 selectedNode: action.payload,
-                chartClickFilters: {},   // reset when a new node is clicked         
+                chartClickFilters: {},   // reset when a new node is clicked      
+                chartTempGroupings: {}   
             };
         case FETCH_HIERARCHYVIEWS:
             // Auto select the first node from the the first view
@@ -54,6 +62,14 @@ export default function(state=defaultState, action) {
             return {
                 ...state,
                 chartClickFilters: newFilters
+            };
+
+        case SELECT_CHART_GROUP:
+            let newGroupings = {...state.chartTempGroupings};
+            processChartGroups(newGroupings, action.payload);
+            return {
+                ...state,
+                chartTempGroupings: newGroupings
             };
     }
 
