@@ -79,7 +79,6 @@ export const getContentDiv = (controlData, mode) => {
                 content = <BarChartForReport {...controlData}/>                
             }
             else {
-                debugger
                 content = <BarResponsiveData {...controlData}/>
             }            
             break;

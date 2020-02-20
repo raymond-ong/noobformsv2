@@ -9,21 +9,26 @@ export const filterObj = (obj, fields) => {
     return _.pick(obj, fields);
 } 
 
-export const calculateActiveIndex = (datasetFilter, data, controlId) => {
+export const calculateActiveIndex = (datasetFilter, data, controlId, groupingStackStr) => {
     if (!datasetFilter) {
         return null;
     }
 
     debugger
+
     let controlIdFilter = datasetFilter[controlId];
     if (!controlIdFilter) {
+        return null
+    }
+    let sliceInfo = controlIdFilter[groupingStackStr];
+    if (!sliceInfo) {
         return null;
     }
 
     let dataIndex = data.findIndex(d => {
         // this data must satisfy all filter criteria
-        for (let prop in controlIdFilter.origObj) {
-            let propVal = controlIdFilter.origObj[prop];
+        for (let prop in sliceInfo.origObj) {
+            let propVal = sliceInfo.origObj[prop];
             if (d.origObj[prop] !== propVal) {
                 return false;
             }

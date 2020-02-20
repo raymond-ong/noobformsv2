@@ -15,44 +15,35 @@ const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
 
-const handleChartClick = (sliceInfo, controlData, clickChartSlice) => {
+const handleChartClick = (sliceInfo, groupingStackStr, controlData, clickChartSlice) => {
     // Fire a redux action
-    clickChartSlice(sliceInfo, controlData.dataProps.datasetId, controlData.i);
+    clickChartSlice(sliceInfo, groupingStackStr, controlData.dataProps.datasetId, controlData.i);
 }
 
 const handleGroupSelect = (groupingValue, controlData, selectChartGroup) => {
-    selectChartGroup(groupingValue, controlData.i);
+    selectChartGroup(groupingValue, controlData);
 }
 
-const renderLoader = (controlData,) => {
-    return <Segment style={{width: '100%'}}>
-            <Dimmer active inverted>
-                <Loader>{`Fetching ${controlData.ctrlType} data`}</Loader>
-            </Dimmer>
-            </Segment>;
-}
-
-const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, selectChartGroup, datasetFilters, controlGroups}) => {
+const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping}) => {
     // [a] Data Preparations
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {        
         if (controlData.dataProps) {                        
-            fetchData(controlData, setIsLoading, setApiData, datasetFilters, controlGroups);
+            fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping);
         }
-    }, [datasetFilters, controlGroups]); 
+    }, [datasetFilters, currControlGrouping]); 
 
 
     // [b] UI Preparations
     if (controlData.dataProps && !isLoading) {
         // TODO: not sure if this would affect the global object (permanently stored to the global object)
         // If yes, just clone this object
-        debugger
         controlData.apiData = apiData;        
         controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
-        controlData.controlGroups = controlGroups;
-        controlData.handleChartClick = sliceInfo => handleChartClick(sliceInfo, controlData, clickChartSlice);
+        controlData.currControlGrouping = currControlGrouping;
+        controlData.handleChartClick = (sliceInfo, groupingStackStr) => handleChartClick(sliceInfo, groupingStackStr, controlData, clickChartSlice);
         controlData.handleGroupSelect = groupValue => handleGroupSelect(groupValue, controlData, selectChartGroup);
     }
 
@@ -90,8 +81,6 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, s
                 className={classNames} 
                 style={ctrlStyle}
             >
-                {/* {controlData.dataProps && isLoading && renderLoader(controlData)} */}
-                {/* {(!controlData.dataProps || (controlData.dataProps && !isLoading)) && getContentDiv(controlData, "dashboard")} */}
                 {isLoading && <Dimmer active inverted>
                     <Loader>{`Fetching ${controlData.ctrlType} data`}</Loader>
                     </Dimmer>
@@ -110,7 +99,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
         // Contains the slices/bars clicked by the user
         datasetFilters: state.dashboard.chartClickFilters[controlData.dataProps.datasetId],
-        controlGroups: state.dashboard.chartTempGroupings[controlData.i]
+        currControlGrouping: state.dashboard.chartTempGroupings[controlData.i]
     }
 }
 

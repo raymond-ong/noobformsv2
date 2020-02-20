@@ -160,9 +160,11 @@ export class PieResponsiveDataBase extends React.Component {
     console.log('[pieChart] constructor...');
     super(props);
     this.onGroupSelect = this.onGroupSelect.bind(this);
+    let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.configedGroupings) : null;
     this.state = {
       activeIndex: props.activeIndex,
-      groupingBoundVal: props.dataProps? getDefaultGrouping(props.dataProps.configedGroupings) : null, // bound to treedropdown
+      groupingBoundVal: initialGroupingVal, // bound to treedropdown
+      //groupingBoundValStack: initialGroupingVal ? [initialGroupingVal] : null, // same as groupingBoundVal but in stack format, store this also, for convenience
     };
   }
 
@@ -173,14 +175,23 @@ export class PieResponsiveDataBase extends React.Component {
     });
 
     if (this.props.handleChartClick) {
-      this.props.handleChartClick(sectorInfo);
+      // A control can have 1 filter per grouping level
+      // we store the grouping stack as string to make it easier to compare
+      let groupingStackStr = this.getGroupingStackStr();
+
+      this.props.handleChartClick(sectorInfo, groupingStackStr);
     }
+  }
+
+  getGroupingStackStr = () => {
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
+    return JSON.stringify(groupingStack);
   }
 
   onGroupSelect(value, node) {
     console.log("[Piechart] onGroupSelect", value, node.props);
     this.setState({
-      groupingBoundVal: value
+      groupingBoundVal: value,
     });
 
     // Remove the filter from previous lower groups
@@ -192,8 +203,8 @@ export class PieResponsiveDataBase extends React.Component {
     }
   }
 
-  formatApiData(apiData, dataProps, controlGroups) {
-    let grouping = controlGroups ? controlGroups : dataProps.Groupings;
+  formatApiData(apiData, dataProps, currControlGrouping) {
+    let grouping = currControlGrouping ? currControlGrouping : dataProps.Groupings;
     debugger
     return apiData.map(d => {
       let extractedName = extractName(grouping, d);
@@ -212,13 +223,13 @@ export class PieResponsiveDataBase extends React.Component {
       if (!props.apiData) {
         return null
       }
-      formattedData = this.formatApiData(props.apiData.data, props.dataProps, props.controlGroups);
+      formattedData = this.formatApiData(props.apiData.data, props.dataProps, props.currControlGrouping);
     }
     else {
       formattedData = sampleData;
     }
 
-    let activeIndex = calculateActiveIndex(props.datasetFilters, formattedData, props.i)
+    let activeIndex = calculateActiveIndex(props.datasetFilters, formattedData, props.i, this.getGroupingStackStr())
 
     return <Pie
       data={formattedData}
