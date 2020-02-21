@@ -1,6 +1,6 @@
 import React, { PureComponent, useRef, useEffect, useState } from 'react';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,Cell
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,Cell, LabelList
   } from 'recharts';
   import './barChart.css';  
 
@@ -200,12 +200,53 @@ const formatBarchartData = (data, categories, seriesName, aggregation) => {
   return retList;
 }
 
-// For rendering an individual bar inside a barchart
-const renderBars = (uniqSeriesNames) => {
+const renderCustomizedLabel = (props) => {
+  debugger
+  const {
+    x, y, width, height, value,
+  } = props;
+  const radius = 10;
+
+  const yOffset = 5;
+  const sideLen = 10;
+
+  //let trianglePts = `${x + width / 2} ${y-yOffset}, ${x + width / 4} ${y}, ${x+sideLen + width / 4} ${y}`;
+  let trianglePts = `${x + width / 2 - sideLen /2 } ${y-yOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-yOffset- sideLen}, ${x+width/2} ${y-yOffset}`;
+
+  // TODO: Draw a triangle on top if the bar is the selected series of the selected index
+  return (
+    <g>
+      <polygon id="e1_polygon" points={trianglePts} fill="#555"/>
+      {/* <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" /> */}
+      {/* <text x={x + width / 2} y={y - radius} fill="lightgray" textAnchor="middle" dominantBaseline="middle">
+        {value}
+      </text> */}
+    </g>
+  );
+};
+
+// For rendering an individual bar (group) inside a barchart
+const renderBars = (uniqSeriesNames, formattedData) => {
+  //console.log("renderBars", uniqSeriesNames); // Normal, Error, Warning
   return uniqSeriesNames.map((seriesName, index) => {
-    return <Bar key={`bar-${seriesName}-${index}`} dataKey={seriesName} fill={COLORS[index % COLORS.length]} strokeWidth={4} isAnimationActive={true} onClick={(...args) => {
-      console.log('Bar clicked first cat', ...args);}
+    return <Bar 
+        key={`bar-${seriesName}-${index}`} 
+        dataKey={seriesName} 
+        fill={COLORS[index % COLORS.length]} 
+        isAnimationActive={true} 
+        onClick={(data, i) => {
+      console.log('Bar clicked ', i, seriesName, data);}
       }>  
+    {/* {
+      formattedData.map((entry, index) => {
+        let stroke = null
+        if (seriesName === "Normal" && index === 0) {
+          //stroke = "red";
+        }
+        return <Cell key={`cell-${index}`} stroke={stroke}  strokeWidth={2} />
+      })
+    } */}
+      <LabelList dataKey={seriesName} content={renderCustomizedLabel} mySeriesName={seriesName} myIndex={index}/>    
     </Bar>
   }
   );      
@@ -227,7 +268,7 @@ const renderBars = (uniqSeriesNames) => {
 // seriesName: e.g. "PRM Device Status"
 // aggregation: "count"
 const renderChartContentsUngroupedData = (bAnimate, width, height, data, categories, seriesName, aggregation) => {
-  let uniqSeriesNames = getUniqueValues(data, seriesName);
+  let uniqSeriesNames = getUniqueValues(data, seriesName); // Good, bad, fair, e.g.
   let formattedData = formatBarchartData(data, categories, seriesName, aggregation)
 
   return (
@@ -246,7 +287,7 @@ const renderChartContentsUngroupedData = (bAnimate, width, height, data, categor
       <Legend  verticalAlign="top" wrapperStyle={{
       paddingBottom: "20px"
       }}/>
-        {renderBars(uniqSeriesNames)}
+        {renderBars(uniqSeriesNames, formattedData)}   
 
     </BarChart>
   )
@@ -287,7 +328,6 @@ export class BarChartWithData extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeIndex: null
     }
   }
 
@@ -330,7 +370,8 @@ class BarResponsiveDataBase extends React.Component {
     super(props);
     let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.configedCategories) : null;
     this.state = {
-      activeIndex: null,
+      activeCategoryIndex: null, // This is the active category index (index value follows the formattedData index)
+      activeSeries: null, // This is the active series inside the active category (e.g. "Normal", "Warning")
       groupingBoundVal: initialGroupingVal
     }
     this.onGroupSelect = this.onGroupSelect.bind(this);
@@ -356,10 +397,10 @@ class BarResponsiveDataBase extends React.Component {
   getChartContents = () => {
     if (this.props.dataProps) {
       if (!this.props.apiData) {
+        // Means API data not yet fetched
         return <div></div>;
       }
 
-      debugger
       let grouping = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : this.props.dataProps.categories;
 
       return renderChartContentsUngroupedData(true, 600, 400, 
@@ -369,6 +410,7 @@ class BarResponsiveDataBase extends React.Component {
         this.props.dataProps.aggregation)
     }
     else {
+      // Show sample data
       return renderChartContents(true, null, null, sampleData);
     }
   }

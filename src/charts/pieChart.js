@@ -205,7 +205,6 @@ export class PieResponsiveDataBase extends React.Component {
 
   formatApiData(apiData, dataProps, currControlGrouping) {
     let grouping = currControlGrouping ? currControlGrouping.groupStack : dataProps.Groupings;
-    debugger
     return apiData.map(d => {
       let extractedName = extractName(grouping, d);
 

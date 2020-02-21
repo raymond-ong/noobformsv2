@@ -61,7 +61,6 @@ const removeLowerLevelFilters = (actionPayload, filtersRoot) => {
         return null;
     }
 
-    debugger
     let groupsToRemove = Object.keys(controlFilters).filter(x => x.length > groupValStr.length);
     if (groupsToRemove.length > 0) {        
         groupsToRemove.forEach(g => {
