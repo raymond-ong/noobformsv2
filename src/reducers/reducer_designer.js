@@ -7,10 +7,19 @@ import { SELECT_TOOLPANEL_TREE,
           SAVE_DESIGNER_LAYOUT,
           deleteControl} from "../actions/index";
 
+import {OLD_DUMMY_DATA, dropdownOptions, dropdownOptionsFew} from '../helper/dummyMetadata';
+
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 // This is for the Forms layout
 // TODO: Control Id's: we need to generate a unique one. Because if you open a saved layout and it has the same id but different props, react will pass cached props.
-const generateDefaultLayout = () => {
+// Ideally, this function should return immediately if metadata has not been fetched yet.
+// 
+const generateDefaultLayout = (metadata) => {
+
+  if (!metadata) {
+    return [];
+  }
+
   // [1] Section
   return [
   // {i: 'ctrl-combo0', x: 0, y: 0, w: 3, h: 1, ctrlType: 'combo', data: {
@@ -44,6 +53,9 @@ const generateDefaultLayout = () => {
   {i: 'ctrl-pie0X', x: 0, y: 1, w: 3, h: 4, ctrlType: 'pie',       
       data: {
           label: 'Pie:',
+          dataProps: {
+            
+          }
       }},
 
   // [4 new] Bar Chart
@@ -135,42 +147,6 @@ const generateDefaultLayout = () => {
   ];
 }
 
-const dropdownOptions = [
-  { key: 'angular', text: 'Angular', value: 'angular' },
-  { key: 'css', text: 'CSS', value: 'css' },
-  { key: 'design', text: 'Graphic Design', value: 'design' },
-  { key: 'ember', text: 'Ember', value: 'ember' },
-  { key: 'html', text: 'HTML', value: 'html' },
-  { key: 'ia', text: 'Information Architecture', value: 'ia' },
-  { key: 'javascript', text: 'Javascript', value: 'javascript' },
-  { key: 'mech', text: 'Mechanical Engineering', value: 'mech' },
-  { key: 'meteor', text: 'Meteor', value: 'meteor' },
-  { key: 'node', text: 'NodeJS', value: 'node' },
-  { key: 'plumbing', text: 'Plumbing', value: 'plumbing' },
-  { key: 'python', text: 'Python', value: 'python' },
-  { key: 'rails', text: 'Rails', value: 'rails' },
-  { key: 'react', text: 'React', value: 'react' },
-  { key: 'repair', text: 'Kitchen Repair', value: 'repair' },
-  { key: 'ruby', text: 'Ruby', value: 'ruby' },
-  { key: 'ui', text: 'UI Design', value: 'ui' },
-  { key: 'ux', text: 'User Experience', value: 'ux' },
-  { key: 'test1', text: 'A quick brown fox jumps over the lazy dog', value: 'test1' },
-  { key: 'test2', text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+', value: 'test2' },
-  { key: 'test3', text: '春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。', value: 'test3' },
-];
-
-const dropdownOptionsFew = [
-  { key: 'apple', text: 'Apple', value: 'apple' },
-  { key: 'banana', text: 'Banana', value: 'banana' },
-  { key: 'carrot', text: 'Carrot', value: 'carrot' },
-  { key: 'dolphin', text: 'Dolphin', value: 'dolphin' },
-  { key: 'elephant', text: 'Elephant', value: 'elephant' },
-  { key: 'fish', text: 'Fish', value: 'fish' },
-  { key: 'grapefruit', text: 'Grapefruit', value: 'grapefruit' },
-  { key: 'hummingbird', text: 'Humming Bird', value: 'hummingbird' },
-  { key: 'iguana', text: 'Iguana', value: 'iguana' },
-];
-
 const defaultLayoutData = {
   columns: 12,
   rows: 12
@@ -210,281 +186,7 @@ const generateDefaultDashboard = () => {
   ];
 }
 
-// DataTypes:
-// [Percent]  e.g. ODE, TA, PA. Cannot be used in pie chart
-// [Number]   e.g. Total Alarms. Children count can be summed up.
-// [Not specified] means it is string value
 
-// Note: this metadata set is for device-level metadata
-//  TODO: We need to fetch the comment library stuff also
-// We also need to define a metadata for alarm-level metadata
-const dummyMetaData = {
-  name: 'Device Metadata',
-  // Defines how other Dataset-types can link to this Dataset.
-  // For example, Alarms data can be linked to this dataset via DeviceId
-  // This also defines the unit of Data. Means this data has a DeviceId
-  dataKey: 'DeviceId', // This should be one of the dimensions
-  RequestParams: [
-    {
-      name: 'AnalysisPeriod',   
-      dataTypes: ['Date Range'],   
-      enumValues: ['Latest value only', 'Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
-    },
-    // {
-      // I think no need...since this is already defined in the Dimensions. We only include the "special" ones that are not inside the Dimensions
-      // name: 'Path',
-      // dataTypes: ['string'],
-    // },    
-  ],
-  Dimensions: [
-    {
-      // TODO: Maybe we remove the Device Info layer (i.e. Vendor, Model etc are first level dimensions)
-      // In a relational DB, for PRM, we need to put Device Info in another table (separate from Hierarchy table) because there can be multiple hierarchy views
-      // In a noSQL DB, we can flatten this out when storing
-      name: 'Device Info',
-      dataTypes: ['group'],   
-      // supported controls: ['pie', 'bar']
-      items: [
-        {
-          name: 'Device ID',
-          dataTypes: ['string'],
-        },
-        {
-          name: 'Device Tag',
-          dataTypes: ['string'],   
-        },
-        {
-          name: 'Priority',
-          dataTypes: ['Enum'],   
-          enumValues: ['Low', 'Medium', 'High', 'High+'],
-
-          // measures: to be used only in request data if client wants server to provide the calculated value already, instead of client computing for the value
-          // But client can use this info to populate some ui configs?
-          measures: [
-            {
-              name: 'Count',
-              expression: 'count'
-            }
-          ]
-        },      
-        {
-          name: 'Category',
-          dataTypes: ['string'],   
-        },           
-        {
-          name: 'FullPath',
-          dataTypes: ['string'],   
-        }        
-      ]
-    }, // End: Device Info group
-    {
-      name: 'VendorModel Info',
-      dataTypes: ['group'],   
-      items: [
-        {
-          name: 'Vendor',
-          dataTypes: ['string', 'group'],
-          items: [
-            {
-              name: 'Model',
-              dataTypes: ['string'],
-              items: [
-                {
-                  name: 'Revision',
-                  dataTypes: ['string'],
-                }
-              ]    
-            }
-          ]
-        }
-      ]
-    }, // End: Vendor Model group
-    {
-      name: 'Device Status',
-      dataTypes: ['group'],
-      items: [
-        {
-          name: 'PRM Device Status',          
-          enumValues: ['Abnormal', 'Warning', 'Communication Error', 'Uncertain', 'Normal'],
-          dataTypes: ['Enum']
-        },
-        {
-          name: 'NE107 Device Status',          
-          enumValues: ['Failure', 'Check Function', 'Out of Specification', 'Maintenance Required', 'Communication Error', 'Unknown,Normal'],
-          dataTypes: ['Enum']
-        },
-      ]
-    },
-    {
-      name: 'Device Status Timing Breakdown',
-      dataTypes: ['group'],
-      items: [
-        {
-          name: 'Good%',
-          dataTypes: ['Percent']
-        },
-        {
-          name: 'Bad%',
-          dataTypes: ['Percent']
-        },
-        {
-          name: 'Fair%',
-          dataTypes: ['Percent']
-        },
-        {
-          name: 'Uncertain%',
-          dataTypes: ['Percent']
-        },
-      ]
-    },
-    {
-      name: 'Device Availability',
-      value: 'Device Availability',
-      items: [
-        {
-          name: 'ODE',
-          items: [
-            {
-              name: 'Status',
-              dataTypes: ['Enum'],
-              enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
-            },
-            {
-              name: 'Value',
-              dataTypes: ['Number'],
-            }
-          ]          
-        },
-        {
-          name: 'TA',
-          items: [
-            {
-              name: 'Status',
-              dataTypes: ['Enum'],
-              enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
-            },
-            {
-              name: 'Value',
-              dataTypes: ['Number'],
-            }
-          ]          
-        },
-        {
-          name: 'PA',
-          items: [
-            {
-              name: 'Status',
-              dataTypes: ['Enum'],
-              enumValues: [1, 2, 3, 4, 5], // These are these nameless icons in FA KPI ☀️⛅☁️⛈️⚡
-            },
-            {
-              name: 'Value',
-              dataTypes: ['Number'],
-            }
-          ]          
-        },
-      ]
-    },
-    {
-      name: 'Alarm Info',
-      value: 'Alarm Info',
-      items: [
-        {
-          name: 'Alarm Frequency',
-          dataTypes: ['Number']
-        },
-        {
-          name: 'AE Occurring',
-          dataTypes: ['Boolean']
-        },
-        {
-          name: 'Raw Alarms',
-          dataTypes: ['Annotation']
-        },
-      ]
-    },
-
-    {
-      // Also possible: Network Path, class Path etc.
-      // For ISAE case, might not be possible since the hierarchy is not strucured
-      // So for ISAE case, it will just be single level Path
-      name: 'Path', // Assume Plant Path for now
-      value: 'Path',
-      items: [
-        {
-          name: 'Plant', //e.g. MYPJT
-          dataTypes: ['string', 'group'],
-          items: [
-            {
-              name: 'Site',
-              dataTypes: ['string', 'group'],
-              items: [
-                {
-                  name: 'Area',
-                  dataTypes: ['string', 'group'],
-                  items: [
-                    {
-                      name: 'Unit',
-                      dataTypes: ['string'],
-                    },
-                  ]
-                },
-              ]
-            },
-          ]
-        },
-      ]
-    },  
-  ]
-};
-
-const alarmsDummyMetadata = {
-  name: 'Alarms Metadata',
-  dataKey: 'alarmId', // null, if it's not available. Means this is not open for 'extension'
-  RequestParams: [
-    {
-      // If this is the only parameter, retrievea all the alarms from within the Analysis Period
-      // TODO: Consider adding a 'required' flag
-      name: 'AnalysisPeriod',   
-      dataTypes: ['Date Range'],   
-      enumValues: ['Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
-    },
-    {
-      // Sample only -- no need to declare this as Device Id is already part of the Dimensions
-      // name: 'Device Id',   
-      // dataTypes: ['string'],   
-    },
-    {
-      name: 'RequestKey',
-      dataTypes: ['string'],   
-    }
-  ],
-  Dimensions: [
-    {
-      name: 'Timestamp',
-      dataTypes: ['Datetime']
-    },
-    {
-      name: 'Start Date',
-      dataTypes: ['Datetime']
-    },
-    {
-      name: 'End Date',
-      dataTypes: ['Datetime']
-    },
-    {
-      name: 'Event Type',
-      dataTypes: ['string']
-    },
-    {
-      name: 'Message',
-      dataTypes: ['string']
-    },
-
-  ]
-}
-
-const allDummyMetadata = [];
 
 const defaultState = {
     toolPanelTreeSelected: null,
@@ -499,7 +201,7 @@ const defaultState = {
     dashLayoutData: {},
 
     // For the metadata in configuring the data sources
-    metadata: dummyMetaData
+    metadata: OLD_DUMMY_DATA
 }
 
 const defaultControlData = {
@@ -524,7 +226,10 @@ const defaultControlData = {
     label: 'Table:'
   },
   'pie' : {
-    label: 'Pie:'
+    label: 'Pie:',
+    dataProps: {
+
+    }
   },
   'barchart' : {
     label: 'Bar:'
@@ -532,7 +237,9 @@ const defaultControlData = {
   'label': {
     label: 'New Label',
     icon: 'lightbulb',
-    backgroundColor: 'khaki'
+    backgroundColor: 'khaki',
+    color: 'black',
+    fontSize: '12'
   },
   'gauge': {
     label: 'new Gauge:',

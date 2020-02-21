@@ -208,7 +208,7 @@ const renderCustomizedLabel = (props) => {
   const radius = 10;
 
   const yOffset = 5;
-  const sideLen = 10;
+  const sideLen = 8;
 
   //let trianglePts = `${x + width / 2} ${y-yOffset}, ${x + width / 4} ${y}, ${x+sideLen + width / 4} ${y}`;
   let trianglePts = `${x + width / 2 - sideLen /2 } ${y-yOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-yOffset- sideLen}, ${x+width/2} ${y-yOffset}`;
@@ -216,7 +216,7 @@ const renderCustomizedLabel = (props) => {
   // TODO: Draw a triangle on top if the bar is the selected series of the selected index
   return (
     <g>
-      <polygon id="e1_polygon" points={trianglePts} fill="#555"/>
+      {/* <polygon id="e1_polygon" points={trianglePts} fill="#555"/> */}
       {/* <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" /> */}
       {/* <text x={x + width / 2} y={y - radius} fill="lightgray" textAnchor="middle" dominantBaseline="middle">
         {value}

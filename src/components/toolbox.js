@@ -93,14 +93,14 @@ export const toolBoxItems = [
          displayName: 'Bar Chart',
          icon: 'chart bar',
          category: 'common',
-         minW: 3, minH:3,
+         minW: 3, minH:4,
     },
     {
          name: 'pie',
          displayName: 'Pie Chart',
          icon: 'chart pie',
          category: 'common',
-         minW: 3, minH:3,
+         minW: 3, minH:4,
     },
      {
           name: 'gauge',

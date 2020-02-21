@@ -10,7 +10,7 @@ import "../styles/Split.css";
 import ScrollTracker from '../components/scrollTracker';
 import PropertiesPanel from '../containers/propertiesPanel';
 
-const DEFAULT_SIZES = [30, 70];
+const DEFAULT_SIZES = [25, 75];
 const CLASS_ACCORDION = "accordionPanel";
 
 // Basically this class contains the left hand panel that contains the toolbox and properties box
@@ -82,15 +82,25 @@ class ToolPanel extends React.Component {
 
     recalculatePanelSizes = (panelsData) => {
         let expandedPanels = panelsData.filter(panel => panel.isCollapsed === false);
-        let oneSize = 100.0 / expandedPanels.length;            
-        panelsData.forEach(panel => {
-            if (panel.isCollapsed) {
-                panel.size = 0;
+        let oneSize = 100.0 / expandedPanels.length;
+        // If there is no panel collapsed, use the suggested DEFAULT_SIZE
+        // Sanity: if DEFAULT_SIZES length is not the same as the actual number of panels, we don't use DEFAULT_SIZES 
+        if (panelsData.find(p => p.isCollapsed) || DEFAULT_SIZES.length !== panelsData.length) {
+            panelsData.forEach(panel => {
+                if (panel.isCollapsed) {
+                    panel.size = 0;
+                }
+                else {
+                    panel.size = oneSize;
+                }
+            })    
+        }
+        else {
+            for (let i=0; i < panelsData.length; i++) {
+                let currPanel = panelsData[i];
+                currPanel.size = DEFAULT_SIZES[i]
             }
-            else {
-                panel.size = oneSize;
-            }
-        })
+        }
 
         return panelsData;
     }

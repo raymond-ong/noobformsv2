@@ -387,3 +387,12 @@ const renderLegend = () => {
 export default noobControlHoc(PieResponsive);
 
 // export default noobControlHoc(Example);
+
+// PropertiesPanel portion
+export const pieProps = [
+  {
+    // label prop: no need to include if no need to customize. Will automatically title-ize the 'name'
+    name: 'dataProps', 
+    propType: 'section',
+  },
+];

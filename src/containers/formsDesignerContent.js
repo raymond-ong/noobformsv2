@@ -15,7 +15,7 @@ import {connect} from 'react-redux';
 import SaveAsDialog from '../components/saveAs';
 import OpenDialog from '../components/openDialog';
 
-const DEFAULT_SPLIT_SIZES = [20, 80];
+const DEFAULT_SPLIT_SIZES = [25, 75];
 
 const panelItems = [
     {

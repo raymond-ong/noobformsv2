@@ -9,11 +9,21 @@ import splitWord from '../helper/wordSplitter';
 
 import {sectionProps} from '../controls/section';
 import {labelProps} from '../controls/label';
+import {pieProps} from '../charts/pieChart';
 import * as constants from '../constants';
 import Form, {Text as FormText, IconSelector, ColorSelector} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 import ShowMessage, {NotifType} from '../helper/notification';
+import {Divider, Header, Icon} from 'semantic-ui-react';
 
+const renderDivider = (name, icon) => {
+    return <Divider horizontal>
+        <Header as='h5'>
+        <Icon name={icon} />
+        {name}
+        </Header>
+    </Divider>
+}
 
 const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
     let specialProps = [];
@@ -25,6 +35,9 @@ const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
         case 'label':
             specialProps = labelProps;
             break;
+        case 'pie':
+            specialProps = pieProps;
+            break;
         default:
             break;
     }
@@ -32,7 +45,9 @@ const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
     return <Form className="propsFormContainer ui small form" key='form' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
             <div className="propsForm">
             {renderCommonProps(selectedControl)}
-            {renderControlDataProps(specialProps, selectedControl)}
+            {renderProps(specialProps, selectedControl.data)}
+            {selectedControl.data.dataProps && renderDivider("Data Config", "database")}
+            {selectedControl.data.dataProps && renderProps(specialProps, selectedControl.data.dataProps)}
             </div>
             <div className="footerToolbar">
                 <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
@@ -77,20 +92,20 @@ const setControlValues = (setValueFunc, selectedControl) => {
     });
 }
 
-const renderControlDataProps = (specialProps, selectedControl) => {
-    if (!selectedControl) {
+const renderProps = (specialProps, controlProps, controlId) => {
+    if (!controlProps) {
         return;
     }
 
     let retList = [];
 
-    Object.keys(selectedControl.data).forEach((key, index) => {
+    Object.keys(controlProps).forEach((key, index) => {
         let foundSpecialProp = specialProps.find(x => x.name === key);
         if (foundSpecialProp) {
             switch(foundSpecialProp.propType) {
                 case 'combo':
                     retList.push(<FormDropDown
-                        key={selectedControl.i+'_'+key}
+                        key={controlId+'_'+key}
                         name={key}
                         label={splitWord(key)+":"}
                         options={foundSpecialProp.options}
@@ -98,34 +113,38 @@ const renderControlDataProps = (specialProps, selectedControl) => {
                     break;
                 case 'icon':
                     retList.push(<IconSelector
-                        key={selectedControl.i+'_'+key}
+                        key={controlId+'_'+key}
                         name={key}
                         label={splitWord(key)+":"}
-                        intialicon={selectedControl.data.icon}
+                        intialicon={controlProps.icon}
                     />);
                     break;
                 case 'color':
                     retList.push(<ColorSelector
-                        key={selectedControl.i+'_'+key}
+                        key={controlId+'_'+key}
                         name={key}
                         label={splitWord(key)+":"}
-                        intialcolor={selectedControl.data[foundSpecialProp.name]}
+                        intialcolor={controlProps[foundSpecialProp.name]} // can be color or backgroundColor
                     />);
                     break;
                 case 'number':
-                    retList.push(<FormText key={selectedControl.i+'_'+key}
+                    retList.push(<FormText key={controlId+'_'+key}
                         numeric
                         name={key}
                         label={splitWord(key)+':'}
                         units={foundSpecialProp.units}
                     />);
                     break;
+                case 'section':
+                    // Just skip this.
+                    // There should be another call to this function to render the contents of that section
+                    break;
                 default:
                     break;            
             }
         }
         else {
-            retList.push(<FormText key={selectedControl.i+'_'+key}
+            retList.push(<FormText key={controlId+'_'+key}
                 name={key}
                 label={splitWord(key)+':'}
             />);
@@ -134,6 +153,8 @@ const renderControlDataProps = (specialProps, selectedControl) => {
 
     return retList;
 }
+
+
 
 const PropertiesPanel = ({selectedControl, updateControlProps, deleteControl}) => {
     if (!selectedControl) {
