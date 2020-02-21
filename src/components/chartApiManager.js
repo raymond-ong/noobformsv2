@@ -5,7 +5,6 @@ import axios from 'axios';
 const getOtherControlFilters = (controlId, datasetFilters, groupingsArr) => {
     let retList = [];
     let currGroupingStr = JSON.stringify(groupingsArr);
-    debugger
     for (let currCtrlId in datasetFilters) {
         if (currCtrlId === controlId) {
             continue;

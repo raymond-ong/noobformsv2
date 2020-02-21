@@ -207,7 +207,6 @@ class ToolPanel extends React.Component {
         onDragEnd={this.onSplitDragEnd}
         onDragStart={this.onSplitDragStart}
         cursor="row-resize"
-        sizes={DEFAULT_SIZES}
         >
             {this.createPanels(this.props.containerWidth)}            
         </Split>
