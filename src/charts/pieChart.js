@@ -184,7 +184,7 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   getGroupingStackStr = () => {
-    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
     return JSON.stringify(groupingStack);
   }
 
