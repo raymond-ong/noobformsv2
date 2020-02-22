@@ -1,0 +1,8 @@
+#dashboardFiltersTable td{
+    border: 1px solid gray;
+    padding-right: 10px;
+}
+
+#dashboardFiltersTable thead td{
+    background-color: lightgray;
+}

@@ -302,7 +302,7 @@ class ReportForm extends React.Component {
 
         return (
         <div className="reportFormsContainer" style={{maxWidth: `${window.innerWidth-50}px`}}>
-            {'[DEBUG] ContainerWidth: ' + window.innerWidth}
+            {/* {'[DEBUG] ContainerWidth: ' + window.innerWidth} */}
             {this.renderGroups(groupsList, divStyle)}            
         </div>    
         );    

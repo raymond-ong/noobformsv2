@@ -1,4 +1,5 @@
 import {SELECT_DASHBOARD_TREE, FETCH_HIERARCHYVIEWS, CLICK_CHART_SLICE, SELECT_CHART_GROUP} from '../actions';
+import {getOtherControlFilters} from '../components/chartApiManager';
 
 // This is the reducer of the dashboard content
 const defaultState = {
@@ -15,6 +16,10 @@ const defaultState = {
 
 }
 
+const findOtherControlFilters = (filtersRoot, datasetFilters, controlId) => {
+
+}
+
 const processChartClick = (filtersRoot, actionPayload) => {
     let {sliceInfo, groupingStackStr, datasetId, controlId} = actionPayload;
     if (!filtersRoot[datasetId]) {
@@ -26,8 +31,18 @@ const processChartClick = (filtersRoot, actionPayload) => {
         controlFilters = {};
         datasetFilters[controlId] = controlFilters;
     }
-    controlFilters[groupingStackStr] = sliceInfo;
+    
+    let sliceInfoClone = {...sliceInfo};
 
+    debugger
+    // Need to add other controls' filters also because essentially, other controls' filters are already factored in this control's filters
+    let otherControlFilters = getOtherControlFilters(controlId, datasetFilters);
+    sliceInfoClone.carryOverFilters = {};
+    otherControlFilters.forEach(otherFilter => {
+        //sliceInfoClone.carryOverFilters[otherFilter.Name] = otherFilter.Value;
+    })
+
+    controlFilters[groupingStackStr] = sliceInfoClone;
     filtersRoot[datasetId] = {...datasetFilters}; // to force re-render (expectation: only controls belonging to this datasetId)
 }
 

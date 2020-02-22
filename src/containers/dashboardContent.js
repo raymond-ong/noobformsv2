@@ -63,12 +63,52 @@ class DashboardContent extends DesignerContentbase {
         }
     }
 
+    renderDatasetFilters = () => {
+        if (!this.props.chartClickFilters || Object.keys(this.props.chartClickFilters).length <= 0) {
+            return null;
+        }
+
+        return (<table id="dashboardFiltersTable">
+            <thead>
+                <tr style={{border: "1px solid gray"}}>
+                    <td>Dataset ID</td>
+                    <td>Control ID</td>
+                    <td>Stack ID</td>
+                    <td>Own Filter</td>
+                    <td>Carryover Filter</td>
+                </tr>
+            </thead>
+            <tbody>
+            {
+                Object.keys(this.props.chartClickFilters).map(datasetId => {
+                    let currDatasetFilters = this.props.chartClickFilters[datasetId];
+                    return Object.keys(currDatasetFilters).map(currCtrlId => {
+                        let currControlFilter = currDatasetFilters[currCtrlId];   
+                        return Object.keys(currControlFilter).map(currStackStr => {
+                            let currStackFilter = currControlFilter[currStackStr];
+                            return <tr style={{border: "1px solid gray"}}>
+                                <td>Dataset: {datasetId}, </td>
+                                <td>ControlId: {currCtrlId}, </td>
+                                <td>Group: {currStackStr}, </td>
+                                <td>{JSON.stringify(currStackFilter.origObj)}</td>
+                                <td>{JSON.stringify(currStackFilter.carryOverFilters)}</td>
+                            </tr>
+                        })
+                        
+                    })
+                })
+            }
+            </tbody>
+        </table>)
+    }
+
     renderForm = (layoutName, layoutObj) => {
         if (!this.props.selectedNode || !this.props.selectedNode.key) {
             return <div className="ui message orange">Please select a node from the treeview on the left!</div>
         }
         return <div>
-            {"[DEBUG] Layout Name: " + layoutName}
+            {/* {"[DEBUG] Layout Name: " + layoutName} */}
+            {this.renderDatasetFilters()}
             <ReportForm
                 containerWidth={this.state.rightPixels}
                 layoutData={layoutObj.layoutData}
@@ -110,6 +150,7 @@ function mapStateToProps(state) {
         hierarchyView: defaultView,
         masterLayouts: state.mainApp.masterLayouts,
         selectedNode: state.dashboard.selectedNode,
+        chartClickFilters: state.dashboard.chartClickFilters
     }
 }
   

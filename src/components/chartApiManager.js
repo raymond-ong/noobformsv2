@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Like crossfilter concept, we filter other control's filters only.
 // Do not include current control's filters because we still need to show the other slices but grayed out.
-const getOtherControlFilters = (controlId, datasetFilters) => {
+export const getOtherControlFilters = (controlId, datasetFilters, includeCarryOver=false) => {
     let retList = [];
     for (let currCtrlId in datasetFilters) {
         if (currCtrlId === controlId) {
@@ -24,7 +24,16 @@ const getOtherControlFilters = (controlId, datasetFilters) => {
                 Name: prop,
                 Value: sliceInfo.origObj[prop]
             });
-        }        
+        }
+
+        if (includeCarryOver) {
+            for (let prop in sliceInfo.carryOverFilters) {
+                retList.push({
+                    Name: prop,
+                    Value: sliceInfo.carryOverFilters[prop]
+                });
+            }    
+        }
     }
 
     return retList;
