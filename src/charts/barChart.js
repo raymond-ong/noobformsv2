@@ -128,9 +128,7 @@ const renderChartContents = (bAnimate, width, height, data) => {
       <Legend  wrapperStyle={{
       paddingTop: "10px"
       }}/>
-      <Bar dataKey="Time in Control" fill="green" stackId="a" isAnimationActive={false} onClick={(args) => {
-        console.log(args);}
-        }/>
+      <Bar dataKey="Time in Control" fill="green" stackId="a" isAnimationActive={false} />
       <Bar isAnimationActive={bAnimate} dataKey="Time in Preferred Mode" fill="gold" stackId="a"/>      
       <Bar isAnimationActive={bAnimate} dataKey="Time MV out of Limits" fill="gray" stackId="a"/>      
     </BarChart>
@@ -171,9 +169,7 @@ const renderChartContentsTrial = (bAnimate, width, height, data, category, serie
           ))
         } */}
       </Bar>
-      <Bar dataKey={seriesList[1]} fill="gold" onClick={(...args) => {
-        console.log('Bar clicked second cat', ...args);}
-        }/>      
+      <Bar dataKey={seriesList[1]} fill="gold"/>      
     </BarChart>
   )
 }
@@ -187,111 +183,25 @@ const formatBarchartData = (data, categories, seriesName, aggregation) => {
   for (let i = 0; i < data.length; i++) {
     let currData = data[i];
     let currCategoryVal = extractName(categories, currData); //e.g. "Yokogawa / EJA"
+    let currCategoryObj = filterObj(currData, categories);
     let findRetList = retList.find(r => r.name === currCategoryVal);
     if (!findRetList) {
-      findRetList = {name: currCategoryVal};
+      findRetList = {
+        name: currCategoryVal, 
+        origCatObj: currCategoryObj,
+        origSeriesName: seriesName
+      };
       retList.push(findRetList);
     }
 
     let seriesVal = currData[seriesName];
-    findRetList[seriesVal] = currData[aggregation];    
+    findRetList[seriesVal] = currData[aggregation];
   }
 
   return retList;
 }
 
-const renderCustomizedLabel = (props) => {
-  debugger
-  const {
-    x, y, width, height, value,
-  } = props;
-  const radius = 10;
 
-  const yOffset = 5;
-  const sideLen = 8;
-
-  //let trianglePts = `${x + width / 2} ${y-yOffset}, ${x + width / 4} ${y}, ${x+sideLen + width / 4} ${y}`;
-  let trianglePts = `${x + width / 2 - sideLen /2 } ${y-yOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-yOffset- sideLen}, ${x+width/2} ${y-yOffset}`;
-
-  // TODO: Draw a triangle on top if the bar is the selected series of the selected index
-  return (
-    <g>
-      {/* <polygon id="e1_polygon" points={trianglePts} fill="#555"/> */}
-      {/* <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" /> */}
-      {/* <text x={x + width / 2} y={y - radius} fill="lightgray" textAnchor="middle" dominantBaseline="middle">
-        {value}
-      </text> */}
-    </g>
-  );
-};
-
-// For rendering an individual bar (group) inside a barchart
-const renderBars = (uniqSeriesNames, formattedData) => {
-  //console.log("renderBars", uniqSeriesNames); // Normal, Error, Warning
-  return uniqSeriesNames.map((seriesName, index) => {
-    return <Bar 
-        key={`bar-${seriesName}-${index}`} 
-        dataKey={seriesName} 
-        fill={COLORS[index % COLORS.length]} 
-        isAnimationActive={true} 
-        onClick={(data, i) => {
-      console.log('Bar clicked ', i, seriesName, data);}
-      }>  
-    {/* {
-      formattedData.map((entry, index) => {
-        let stroke = null
-        if (seriesName === "Normal" && index === 0) {
-          //stroke = "red";
-        }
-        return <Cell key={`cell-${index}`} stroke={stroke}  strokeWidth={2} />
-      })
-    } */}
-      <LabelList dataKey={seriesName} content={renderCustomizedLabel} mySeriesName={seriesName} myIndex={index}/>    
-    </Bar>
-  }
-  );      
-}
-
-// Input data sample:
-// {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJA", count: 100},
-// {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJA", count: 100},
-// {PRM Device Status: "FAIR", Vendor: "Yokogawa", Model: "EJA", count: 100},
-// {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJX", count: 100},
-// {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJX", count: 100},
-// {PRM Device Status: "FAIR", Vendor: "Yokogawa", Model: "EJX", count: 100},
-// 
-// Need to transform/compress it to:
-// {name: "Yokogawa / EJA", GOOD: 100, BAD: 100, FAIR: 100},
-// {name: "Yokogawa / EJX", GOOD: 100, BAD: 100, FAIR: 100},
-// 
-// categories: e.g. ["Vendor", "Model"]
-// seriesName: e.g. "PRM Device Status"
-// aggregation: "count"
-const renderChartContentsUngroupedData = (bAnimate, width, height, data, categories, seriesName, aggregation) => {
-  let uniqSeriesNames = getUniqueValues(data, seriesName); // Good, bad, fair, e.g.
-  let formattedData = formatBarchartData(data, categories, seriesName, aggregation)
-
-  return (
-    <BarChart
-              width={width}
-              height={height}
-              data={formattedData}
-              margin={{
-              top: 0, right: 10, left: 5, bottom: 50,
-              }}
-          >
-      <CartesianGrid vertical={false}/>
-      <XAxis height={100} dataKey={"name"} tick={<CustomizedAxisTick />} interval={0} />
-      <YAxis axisLine={false}/>
-      <Tooltip />
-      <Legend  verticalAlign="top" wrapperStyle={{
-      paddingBottom: "20px"
-      }}/>
-        {renderBars(uniqSeriesNames, formattedData)}   
-
-    </BarChart>
-  )
-}
 
 class CustomizedAxisTick extends PureComponent {
   render() {
@@ -377,6 +287,116 @@ class BarResponsiveDataBase extends React.Component {
     this.onGroupSelect = this.onGroupSelect.bind(this);
   }
 
+  handleClick = (data, index, seriesVal) => {
+    console.log('Bar clicked ', index, seriesVal);
+    this.setState({
+      activeCategoryIndex: index,
+      activeSeries: seriesVal
+    });
+
+    // Fire a redux action
+    // origObj e.g. {vendor: "Yokogawa", "PRM Device Status": "Normal"} ...basically the filter for this bar
+    // unlike pie chart, origObj is not readily available at this point so we need to build it
+    let origObj = {
+      ...data.origCatObj,
+      [data.origSeriesName]: seriesVal
+    };
+
+    if (this.props.handleChartClick) {
+      // A control can have 1 filter per grouping level
+      // we store the grouping stack as string to make it easier to compare
+      let groupingStackStr = this.getGroupingStackStr();
+
+      this.props.handleChartClick({origObj}, groupingStackStr);
+    }
+  }
+
+  getGroupingStackStr = () => {
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
+    return JSON.stringify(groupingStack);
+  }
+
+// For rendering an individual bar (group) inside a barchart
+  renderBars = (uniqSeriesVals, formattedData) => {
+    //console.log("renderBars", uniqSeriesNames); // Normal, Error, Warning
+    return uniqSeriesVals.map((seriesVal, seriesIndex) => {
+      return <Bar 
+          key={`bar-${seriesVal}-${seriesIndex}`} 
+          dataKey={seriesVal} 
+          fill={COLORS[seriesIndex % COLORS.length]} 
+          isAnimationActive={true} 
+          onClick={(data, index) => this.handleClick(data, index, seriesVal)}
+        >
+        <LabelList dataKey={seriesVal} content={this.renderCustomizedLabel} mySeriesName={seriesVal}/>    
+      </Bar>
+    }
+    );      
+  }
+
+  renderCustomizedLabel = (props) => {
+    const {
+      x, y, width, height, value, mySeriesName, index
+    } = props;
+
+    if (this.state.activeCategoryIndex !== index || 
+        this.state.activeSeries !== mySeriesName) {
+      return null;
+    }  
+    
+    const yOffset = 5;
+    const sideLen = 8;
+    let trianglePts = `${x + width / 2 - sideLen /2 } ${y-yOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-yOffset- sideLen}, ${x+width/2} ${y-yOffset}`;
+  
+    // Draw a triangle on top if the bar is the selected series of the selected index
+    return (
+      <g>
+        <polygon id="e1_polygon" points={trianglePts} fill="#555"/>
+        {/* <text x={x + width / 2} y={y - radius} fill="lightgray" textAnchor="middle" dominantBaseline="middle">
+          {value}
+        </text> */}
+      </g>
+    );
+  };
+
+  // Input data sample:
+  // {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJA", count: 100},
+  // {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJA", count: 100},
+  // {PRM Device Status: "FAIR", Vendor: "Yokogawa", Model: "EJA", count: 100},
+  // {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJX", count: 100},
+  // {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJX", count: 100},
+  // {PRM Device Status: "FAIR", Vendor: "Yokogawa", Model: "EJX", count: 100},
+  // 
+  // Need to transform/compress it to:
+  // {name: "Yokogawa / EJA", GOOD: 100, BAD: 100, FAIR: 100},
+  // {name: "Yokogawa / EJX", GOOD: 100, BAD: 100, FAIR: 100},
+  // 
+  // categories: e.g. ["Vendor", "Model"]
+  // seriesName: e.g. "PRM Device Status"
+  // aggregation: "count"
+  renderChartContentsUngroupedData = (data, categories, seriesName, aggregation) => {
+    let uniqSeriesVals = getUniqueValues(data, seriesName); // Good, bad, fair, e.g.
+    let formattedData = formatBarchartData(data, categories, seriesName, aggregation)
+
+    return (
+      <BarChart
+                data={formattedData}
+                margin={{
+                top: 0, right: 10, left: 5, bottom: 50,
+                }}
+            >
+        <CartesianGrid vertical={false}/>
+        <XAxis height={100} dataKey={"name"} tick={<CustomizedAxisTick />} interval={0} />
+        <YAxis axisLine={false}/>
+        <Tooltip />
+        <Legend  verticalAlign="top" wrapperStyle={{
+        paddingBottom: "20px"
+        }}/>
+          {this.renderBars(uniqSeriesVals, formattedData)}   
+
+      </BarChart>
+    )
+  }  
+
   onGroupSelect(value, node) {
     console.log("[Barchart] onGroupSelect", value, node.props);
     this.setState({
@@ -403,7 +423,7 @@ class BarResponsiveDataBase extends React.Component {
 
       let grouping = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : this.props.dataProps.categories;
 
-      return renderChartContentsUngroupedData(true, 600, 400, 
+      return this.renderChartContentsUngroupedData(
         this.props.apiData.data, 
         grouping, 
         this.props.dataProps.seriesName,

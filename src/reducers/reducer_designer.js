@@ -7,7 +7,7 @@ import { SELECT_TOOLPANEL_TREE,
           SAVE_DESIGNER_LAYOUT,
           deleteControl} from "../actions/index";
 
-import {OLD_DUMMY_DATA, dropdownOptions, dropdownOptionsFew} from '../helper/dummyMetadata';
+import {DUMMY_APR_METADATA, OLD_DUMMY_DATA, dropdownOptions, dropdownOptionsFew} from '../helper/dummyMetadata';
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 // This is for the Forms layout
@@ -193,7 +193,7 @@ const defaultState = {
     //selectedControlId: null, // Don't put here. Just put inside the controls data. This is to avoid rendering all controls.
     // It is OK to put the selectedControlId inside the reducer for showing the Control Props
     resizingControlId: null, // try to just use local state to keep track. The whole designer only needs to know after resizing.
-    layout: generateDefaultLayout(),
+    layout: generateDefaultLayout(DUMMY_APR_METADATA),
     layoutData: defaultLayoutData,
 
     // For the dashboard

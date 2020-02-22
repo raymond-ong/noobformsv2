@@ -2,9 +2,8 @@ import axios from 'axios';
 
 // Like crossfilter concept, we filter other control's filters only.
 // Do not include current control's filters because we still need to show the other slices but grayed out.
-const getOtherControlFilters = (controlId, datasetFilters, groupingsArr) => {
+const getOtherControlFilters = (controlId, datasetFilters) => {
     let retList = [];
-    let currGroupingStr = JSON.stringify(groupingsArr);
     for (let currCtrlId in datasetFilters) {
         if (currCtrlId === controlId) {
             continue;
@@ -31,9 +30,16 @@ const getOtherControlFilters = (controlId, datasetFilters, groupingsArr) => {
     return retList;
 }
 
-const getOwnControlHigherLevelFilters = (controlId, datasetFilters, groupingsArr) => {
+// purpose: if from parent level, a filter has been made, then user drills down to child level,
+// the parent filter must still be applied
+// currGroupingsArr: can be null if user never changed the grouping level 
+//
+const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGroupingsArr) => {
     let retList = [];
-    let currGroupingStr = JSON.stringify(groupingsArr);
+    if (!currGroupingsArr) {
+        return retList;
+    }
+    let currGroupingStr = JSON.stringify(currGroupingsArr);
     for (let currCtrlId in datasetFilters) {
         if (currCtrlId !== controlId) {
             continue;
@@ -80,8 +86,8 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         if (!Array.isArray(postObj.RequestParams)) {
             postObj.RequestParams = [];
         }
-        let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters, postObj.Groupings);
-        let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, postObj.Groupings);
+        let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters);
+        let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping.groupStack : null);
         postObj.RequestParams = postObj.RequestParams.concat(otherControlFilters);
         postObj.RequestParams = postObj.RequestParams.concat(ownHigherLevelFilters);
     }

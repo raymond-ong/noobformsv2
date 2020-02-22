@@ -14,8 +14,6 @@ export const calculateActiveIndex = (datasetFilter, data, controlId, groupingSta
         return null;
     }
 
-    debugger
-
     let controlIdFilter = datasetFilter[controlId];
     if (!controlIdFilter) {
         return null
