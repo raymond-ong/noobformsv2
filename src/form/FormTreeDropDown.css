@@ -16,6 +16,11 @@
     background-position: 0px;
 }
 
-.rc-tree-select-tree-title {
+.rc-tree-select-tree-node-content-wrapper-normal {
     cursor: pointer;
+}
+
+.rc-tree-select-tree-treenode-disabled > span, .rc-tree-select-tree-treenode-disabled > a, .rc-tree-select-tree-treenode-disabled > a span {
+    cursor: not-allowed;
+    color: #888;
 }

@@ -391,8 +391,24 @@ export default noobControlHoc(PieResponsive);
 // PropertiesPanel portion
 export const pieProps = [
   {
-    // label prop: no need to include if no need to customize. Will automatically title-ize the 'name'
     name: 'dataProps', 
     propType: 'section',
+  },
+  {
+    name: 'datasetId', 
+    propType: 'number',
+  },
+  {
+    name: 'requestType', 
+    propType: 'metadata',
+    metadataField: 'requestTypes',
+    metadataPropType: 'dropdown'
+  },
+  {
+    // label prop: no need to include if no need to customize. Will automatically title-ize the 'name'
+    name: 'groupings', 
+    propType: 'metadata',
+    metadataField: 'dimensions',
+    metadataPropType: 'treeDropdown'
   },
 ];

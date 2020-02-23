@@ -10,8 +10,8 @@ import {DUMMY_APR_METADATA} from '../helper/dummyMetadata';
 
 // Assumption: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'home',
-    tabIndex: 0,
+    activeMenu: 'formsDesigner',
+    tabIndex: 1,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
@@ -20,7 +20,7 @@ const defaultState = {
     masterLayouts: null,
     masterHierarchyViews: null,
     // For the data retrieval
-    masterMetadata: [DUMMY_APR_METADATA]
+    masterMetadata: DUMMY_APR_METADATA
 }
 
 // TODO: Should move this to a constant location

@@ -11,10 +11,13 @@ import {sectionProps} from '../controls/section';
 import {labelProps} from '../controls/label';
 import {pieProps} from '../charts/pieChart';
 import * as constants from '../constants';
-import Form, {Text as FormText, IconSelector, ColorSelector} from '../form/Form';
+import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 import ShowMessage, {NotifType} from '../helper/notification';
 import {Divider, Header, Icon} from 'semantic-ui-react';
+import {getMetadataOptions, getMetadataTreeDropdownOptions} from '../helper/metadataManager';
+
+const PREFIX_DATAPROPS = 'dataProps.';
 
 const renderDivider = (name, icon) => {
     return <Divider horizontal>
@@ -25,7 +28,7 @@ const renderDivider = (name, icon) => {
     </Divider>
 }
 
-const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
+const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
     let specialProps = [];
     switch(selectedControl.ctrlType) {
         case 'section':
@@ -45,9 +48,9 @@ const renderControlProps = (selectedControl, onSubmit, onDelete)  => {
     return <Form className="propsFormContainer ui small form" key='form' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
             <div className="propsForm">
             {renderCommonProps(selectedControl)}
-            {renderProps(specialProps, selectedControl.data)}
+            {renderProps(specialProps, selectedControl.data, selectedControl.i, metadata)}
             {selectedControl.data.dataProps && renderDivider("Data Config", "database")}
-            {selectedControl.data.dataProps && renderProps(specialProps, selectedControl.data.dataProps)}
+            {selectedControl.data.dataProps && renderProps(specialProps, selectedControl.data.dataProps, selectedControl.i, metadata, PREFIX_DATAPROPS)}
             </div>
             <div className="footerToolbar">
                 <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
@@ -88,11 +91,22 @@ const setControlValues = (setValueFunc, selectedControl) => {
     setValueFunc(constants.NAME_CONTROL_TYPE, toolItemType.displayName);
 
     Object.keys(selectedControl.data).forEach((key, index) => {
+        // skip the dataProps
+        if (key === 'dataProps') {
+            return;
+        }
         setValueFunc(key, selectedControl.data[key]);
     });
+
+    if (selectedControl.data.dataProps) {
+        Object.keys(selectedControl.data.dataProps).forEach((key, index) => {
+            setValueFunc(PREFIX_DATAPROPS+key, selectedControl.data.dataProps[key]);
+        });
+    }
 }
 
-const renderProps = (specialProps, controlProps, controlId) => {
+// namePrefix: set to 'dataProps.' for dataProps. Purpose is to nest the value.
+const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix="") => {
     if (!controlProps) {
         return;
     }
@@ -106,7 +120,7 @@ const renderProps = (specialProps, controlProps, controlId) => {
                 case 'combo':
                     retList.push(<FormDropDown
                         key={controlId+'_'+key}
-                        name={key}
+                        name={namePrefix+key}
                         label={splitWord(key)+":"}
                         options={foundSpecialProp.options}
                     />);
@@ -114,7 +128,7 @@ const renderProps = (specialProps, controlProps, controlId) => {
                 case 'icon':
                     retList.push(<IconSelector
                         key={controlId+'_'+key}
-                        name={key}
+                        name={namePrefix+key}
                         label={splitWord(key)+":"}
                         intialicon={controlProps.icon}
                     />);
@@ -122,7 +136,7 @@ const renderProps = (specialProps, controlProps, controlId) => {
                 case 'color':
                     retList.push(<ColorSelector
                         key={controlId+'_'+key}
-                        name={key}
+                        name={namePrefix+key}
                         label={splitWord(key)+":"}
                         intialcolor={controlProps[foundSpecialProp.name]} // can be color or backgroundColor
                     />);
@@ -130,14 +144,17 @@ const renderProps = (specialProps, controlProps, controlId) => {
                 case 'number':
                     retList.push(<FormText key={controlId+'_'+key}
                         numeric
-                        name={key}
+                        name={namePrefix+key}
                         label={splitWord(key)+':'}
-                        units={foundSpecialProp.units}
+                        toolTip={foundSpecialProp.toolTip}
                     />);
                     break;
                 case 'section':
                     // Just skip this.
                     // There should be another call to this function to render the contents of that section
+                    break;
+                case 'metadata':
+                    retList.push(renderMetadataField(key, metadata, foundSpecialProp, controlId, namePrefix));
                     break;
                 default:
                     break;            
@@ -145,7 +162,7 @@ const renderProps = (specialProps, controlProps, controlId) => {
         }
         else {
             retList.push(<FormText key={controlId+'_'+key}
-                name={key}
+                name={namePrefix+key}
                 label={splitWord(key)+':'}
             />);
         }
@@ -154,9 +171,31 @@ const renderProps = (specialProps, controlProps, controlId) => {
     return retList;
 }
 
+const renderMetadataField = (metaFieldName, metadata, metaSpecialProps, controlId, namePrefix) => {
+    switch(metaSpecialProps.metadataPropType) {
+        case 'dropdown':
+            return <FormDropDown
+                    key={controlId+'_'+metaFieldName}
+                    name={namePrefix+metaFieldName}
+                    label={splitWord(metaFieldName)+":"}
+                    options={getMetadataOptions(metadata, metaSpecialProps.metadataField)}
+                />
+        case 'treeDropdown':
+            return <FormTreeDropDown
+                key={controlId+'_'+metaFieldName}
+                name={namePrefix+metaFieldName}
+                treeData={getMetadataTreeDropdownOptions(metadata, metaSpecialProps.metadataField)} 
+                isRequired={false}
+                label={splitWord(metaFieldName)+":"}
+                />
+        default:
+            break;
+    }
 
+    return null;
+}
 
-const PropertiesPanel = ({selectedControl, updateControlProps, deleteControl}) => {
+const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteControl}) => {
     if (!selectedControl) {
         return <div className="ui message warning">No control selected in the Designer</div>
     }
@@ -182,12 +221,13 @@ const PropertiesPanel = ({selectedControl, updateControlProps, deleteControl}) =
         ShowMessage('Control Deleted!', NotifType.success, '');
     };
 
-    return renderControlProps(selectedControl, onSubmit, onDelete);
+    return renderControlProps(selectedControl, metadata, onSubmit, onDelete);
 }
 
 const mapStateToProps = (state) => {
     return {
-        selectedControl: state.designer.layout.find(c => c.selected === true)
+        selectedControl: state.designer.layout.find(c => c.selected === true),
+        metadata: state.mainApp.masterMetadata
     }
   }
 

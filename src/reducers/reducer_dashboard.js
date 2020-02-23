@@ -34,13 +34,13 @@ const processChartClick = (filtersRoot, actionPayload) => {
     
     let sliceInfoClone = {...sliceInfo};
 
-    debugger
-    // Need to add other controls' filters also because essentially, other controls' filters are already factored in this control's filters
-    let otherControlFilters = getOtherControlFilters(controlId, datasetFilters);
-    sliceInfoClone.carryOverFilters = {};
-    otherControlFilters.forEach(otherFilter => {
-        //sliceInfoClone.carryOverFilters[otherFilter.Name] = otherFilter.Value;
-    })
+    // debugger
+    // // Need to add other controls' filters also because essentially, other controls' filters are already factored in this control's filters
+    // let otherControlFilters = getOtherControlFilters(controlId, datasetFilters);
+    // sliceInfoClone.carryOverFilters = {};
+    // otherControlFilters.forEach(otherFilter => {
+    //     sliceInfoClone.carryOverFilters[otherFilter.Name] = otherFilter.Value;
+    // })
 
     controlFilters[groupingStackStr] = sliceInfoClone;
     filtersRoot[datasetId] = {...datasetFilters}; // to force re-render (expectation: only controls belonging to this datasetId)

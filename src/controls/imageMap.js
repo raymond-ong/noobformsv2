@@ -91,7 +91,7 @@ class ImageMap extends React.Component {
     
     computeWidthHeight(origImgW, origImgH, maxWidthPx) {
         if (!!maxWidthPx) {
-            let propsMaxWidth = parseFloat(maxWidthPx) - 25;
+            let propsMaxWidth = parseFloat(maxWidthPx) - 5;
             let scaledImageH = propsMaxWidth / origImgW * origImgH;
             return {
                 w: propsMaxWidth,
@@ -112,6 +112,7 @@ class ImageMap extends React.Component {
         }
         let classNames = this.props.selected === true ? 'ctrl-selected' : '';
         var computedSize = this.computeWidthHeight(this.state.origImgW, this.state.origImgH, this.props.maxWidth);
+        console.log("[ImageMap] Computed W, H: ", computedSize, "max Width: ", this.props.maxWidth);
 
         return <div style={{ position: "relative" }} className={classNames}>
             <ImageMapper src="http://1.bp.blogspot.com/-IiQzSfQwqys/UMc798CtfzI/AAAAAAAAAG0/IQCyIR2eZeU/s1600/layout.gif"

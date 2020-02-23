@@ -38,7 +38,7 @@ const panelItems = [
 class formsDesignerContent extends DesignerContentbase {
     constructor(props) {
         super(props);
-        this.defaultSizes = DEFAULT_SPLIT_SIZES;
+        //this.defaultSizes = DEFAULT_SPLIT_SIZES;
         this.menuItems = {
             'left': [
                 {key:'designertb_save', icon: 'save', text: 'Save', callback: this.saveCallback},
@@ -161,7 +161,7 @@ class formsDesignerContent extends DesignerContentbase {
     }
     
     render() {
-        console.log('render designerContent', this.state.leftPixels);
+        console.log('render designerContent', this.state.rightPixels);
         let options = Array.isArray(this.props.savedLayouts) &&
                     this.props.savedLayouts.map((layout) => {return {key: `option_${layout.name}`, text: layout.name, value: layout.name}});
         let layoutToUse = this.getLayoutToUse();

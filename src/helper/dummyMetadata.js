@@ -83,13 +83,7 @@ export const DUMMY_APR_METADATA = {
 					dataType: "string",
 					aggregations: ["count"]
 				},
-				
-				{
-					name: "CommType",
-					dataType: "string",
-					aggregations: ["count"]
-				},
-				{
+        {
 					name: "Priority",
 					dataType: "enum",
 					enumValues: ["Low", "Medium", "High", "High+"],

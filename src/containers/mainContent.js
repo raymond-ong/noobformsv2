@@ -27,7 +27,7 @@ const panes = [
         menuItem: 'FormsDesigner',
         pane: (
           <Tab.Pane key='formsDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
-            <FormsDesignerContent/>
+            <FormsDesignerContent defaultSizes={[25, 75]}/>
           </Tab.Pane>
         ),
       },

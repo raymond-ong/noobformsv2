@@ -48,6 +48,6 @@ export const labelProps = [
     {
         name: 'fontSize', 
         propType: 'number',
-        units: 'px'
+        toolTip: 'in pixels unit'
     },
 ]

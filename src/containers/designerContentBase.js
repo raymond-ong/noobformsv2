@@ -11,17 +11,17 @@ const GRID_GAP = 8;
 class DesignerContentBase extends React.Component {
     constructor(props) {
         super(props);
+        this.defaultSizes = props.defaultSizes ? props.defaultSizes : DEFAULT_SPLIT_SIZES;
         window.addEventListener('resize', this.onWindowResize);
-        this.defaultSizes = DEFAULT_SPLIT_SIZES;
         this.state = {
-            leftPixels: DEFAULT_SPLIT_SIZES[0] * (window.innerWidth - GRID_GAP) / 100.0,
-            rightPixels: DEFAULT_SPLIT_SIZES[1] * (window.innerWidth - GRID_GAP) / 100.0,
-            currRightPercent: DEFAULT_SPLIT_SIZES[1]
+            leftPixels: this.defaultSizes[0] * (window.innerWidth - GRID_GAP) / 100.0,
+            rightPixels: this.defaultSizes[1] * (window.innerWidth - GRID_GAP) / 100.0,
+            currRightPercent: this.defaultSizes[1]
         };
     }
 
     componentDidMount() {
-        console.log('[designerContentBase] componentDidMount');
+        console.log('[designerContentBase] componentDidMount, rightixels supposedly:', this.defaultSizes, this.defaultSizes[1] * window.innerWidth / 100.0);
         // Note: this causes the designer to render twice! Not a good design!
         // Maybe my own designer does not need this.
         // Actually this is only needed with React-grid-layout because the width is a props

@@ -54,7 +54,9 @@ const generateDefaultLayout = (metadata) => {
       data: {
           label: 'Pie:',
           dataProps: {
-            
+            datasetId: 0,
+            requestType: 'GetDeviceCounts',
+            groupings: ''
           }
       }},
 
@@ -62,6 +64,11 @@ const generateDefaultLayout = (metadata) => {
   {i: 'ctrl-bar0X', x: 3, y: 1, w: 3, h: 4, ctrlType: 'barchart',       
       data: {
           label: 'Bar:',
+          dataProps: {
+            datasetId: 0,
+            requestType: 'GetDeviceCounts',
+            groupings: ''
+          }
       }},
 
       // // [3] Date

@@ -75,7 +75,7 @@ class DashboardContent extends DesignerContentbase {
                     <td>Control ID</td>
                     <td>Stack ID</td>
                     <td>Own Filter</td>
-                    <td>Carryover Filter</td>
+                    {/* <td>Carryover Filter</td> */}
                 </tr>
             </thead>
             <tbody>
@@ -91,7 +91,7 @@ class DashboardContent extends DesignerContentbase {
                                 <td>ControlId: {currCtrlId}, </td>
                                 <td>Group: {currStackStr}, </td>
                                 <td>{JSON.stringify(currStackFilter.origObj)}</td>
-                                <td>{JSON.stringify(currStackFilter.carryOverFilters)}</td>
+                                {/* <td>{JSON.stringify(currStackFilter.carryOverFilters)}</td> */}
                             </tr>
                         })
                         

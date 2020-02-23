@@ -26,14 +26,14 @@ export const getOtherControlFilters = (controlId, datasetFilters, includeCarryOv
             });
         }
 
-        if (includeCarryOver) {
-            for (let prop in sliceInfo.carryOverFilters) {
-                retList.push({
-                    Name: prop,
-                    Value: sliceInfo.carryOverFilters[prop]
-                });
-            }    
-        }
+        // if (includeCarryOver) {
+        //     for (let prop in sliceInfo.carryOverFilters) {
+        //         retList.push({
+        //             Name: prop,
+        //             Value: sliceInfo.carryOverFilters[prop]
+        //         });
+        //     }    
+        // }
     }
 
     return retList;
@@ -99,6 +99,9 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping.groupStack : null);
         postObj.RequestParams = postObj.RequestParams.concat(otherControlFilters);
         postObj.RequestParams = postObj.RequestParams.concat(ownHigherLevelFilters);
+        // TODO: if in the final request params, if there are properties that overlap with the current group's own current filter, REMOVE it. 
+        // It will look weird to see a pie chart with just one wedge. Show also the other inactive slices.
+        // Ideally, the groupings of each control should not overlap. This will only happen if there are overlaps.
     }
 
     const result = await axios
