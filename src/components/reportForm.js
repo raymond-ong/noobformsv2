@@ -60,8 +60,9 @@ class ReportForm extends React.Component {
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,                
-                Groupings: ['Vendor'], // will be sent to the API server...This should be the default value at first
-                configedGroupings: ['Vendor', 'Model'], // This is the grouping engineered
+                Groupings: ['Vendor'], // will be sent to the API server...This should be the default value at first, used as initial value
+                configedGrouping: '', // For Props Panel UI, for storing the selected grouping
+                configedGroupings: ['Vendor', 'Model'], // computed during rendering; this is the grouping hierachy; should not be here
                 datasetId: 0, // other controls belonging to the same datasetId will have related filters
                 RequestParams: [{
                     Name: "Analysis Period",
@@ -72,16 +73,16 @@ class ReportForm extends React.Component {
             }
         }
         else if (control.ctrlType === 'barchart') {
-            control.data.stacked = true;
+            control.data.stacked = false;
             control.dataProps = {
                 dataUrl: "http://localhost:60000/api/data",
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,
-                categories: ['Vendor'],
+                categories: ['Vendor'], // used as initial value
                 configedCategories: ['Vendor', 'Model'], // This is the grouping engineered
                 seriesName: 'PRM Device Status', // Actual values: "Normal", "Comm Error" etc
-                Groupings: ['Vendor', 'PRM Device Status'], // Will be sent to the API server...This should be the default value at first          
+                Groupings: ['Vendor', 'PRM Device Status'], // Will be sent to the API server...This should be the default value at first (used as initial value)
                 datasetId: 0,
                 RequestParams: [{
                     Name: "Analysis Period",

@@ -30,9 +30,17 @@ const generateDefaultLayout = (metadata) => {
 
 
   {i: 'ctrl-section0X', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
-      title: 'General Information',
+      title: 'Default Section',
       //backgroundColor: 'lightsteelblue'
       level: 1
+  }},
+
+  {i: 'ctrl-label0X', x: 0, y: 1, w: 12, h: 1,ctrlType: 'label', data: {
+    label: 'This is the default sample layout. In the Page Designer, chart data being displayed below are sample data only!',
+    color: 'black',
+    backgroundColor: 'khaki',
+    fontSize: '14',
+    icon: 'lightbulb'
   }},
 
   //[2] Description
@@ -50,7 +58,7 @@ const generateDefaultLayout = (metadata) => {
   //     }},
 
   // [3 new] Pie Chart
-  {i: 'ctrl-pie0X', x: 0, y: 1, w: 3, h: 4, ctrlType: 'pie',       
+  {i: 'ctrl-pie0X', x: 0, y: 2, w: 6, h: 6, ctrlType: 'pie',       
       data: {
           label: 'Pie:',
           dataProps: {
@@ -61,10 +69,10 @@ const generateDefaultLayout = (metadata) => {
       }},
 
   // [4 new] Bar Chart
-  {i: 'ctrl-bar0X', x: 3, y: 1, w: 3, h: 4, ctrlType: 'barchart',       
+  {i: 'ctrl-bar0X', x: 0, y: 8, w: 6, h: 6, ctrlType: 'barchart',       
       data: {
           label: 'Bar:',
-          stacked: true,
+          stacked: false,
           dataProps: {
             datasetId: 0,
             requestType: 'GetDeviceCounts',
@@ -72,18 +80,31 @@ const generateDefaultLayout = (metadata) => {
           }
       }},
 
-      // // [3] Date
+  //[2 NEW] Gauge chart
+  {i: 'ctrl-gauge0x', x: 6, y: 2, w: 6, h: 6, ctrlType: 'gauge',       
+      data: {
+          label: 'Gauge:',
+          percent: 95.5
+  }},
+
+  // Image Map
+  {i: 'ctrl-imageMap0X', x: 6, y:8, w: 6, h: 6,ctrlType: 'imageMap', data: {
+    label: 'Image Map:'
+  }},
+
+
+  // // [3] Date
   // {i: 'ctrl-date0', x: 6, y: 1, w: 3, h: 1, ctrlType: 'date'},
 
   // // [4] Status
   // {i: 'ctrl-status0', x: 6, y: 2, w: 3, h: 1, ctrlType: 'status'},
 
   // [5] Priority
-  {i: 'ctrl-combo0X', x: 9, y: 2, w: 3, h: 1, ctrlType: 'combo', data: {
-      placeholder: 'Please select...',
-      options: dropdownOptions,
-      label: 'Courses:'
-  }},
+  // {i: 'ctrl-combo0X', x: 9, y: 2, w: 3, h: 1, ctrlType: 'combo', data: {
+  //     placeholder: 'Please select...',
+  //     options: dropdownOptions,
+  //     label: 'Courses:'
+  // }},
 
   // [6] User
   // {i: 'ctrl-user0', x: 6, y: 4, w: 3, h: 1, ctrlType: 'user'},
@@ -96,13 +117,13 @@ const generateDefaultLayout = (metadata) => {
   // [7] Attachments
   //{i: 'ctrl-attachment0', x: 9, y: 1, w: 3, h: 2,ctrlType: 'attachment'},
   // [7 New] Label
-  {i: 'ctrl-label0X', x: 9, y: 1, w: 3, h: 1,ctrlType: 'label', data: {
-    label: 'I am a label',
-    color: 'blue',
-    backgroundColor: 'khaki',
-    fontSize: '18',
-    icon: 'tag'
-  }},
+  // {i: 'ctrl-label0X', x: 9, y: 1, w: 3, h: 1,ctrlType: 'label', data: {
+  //   label: 'I am a label',
+  //   color: 'blue',
+  //   backgroundColor: 'khaki',
+  //   fontSize: '18',
+  //   icon: 'tag'
+  // }},
 
 
   // [8] Remarks
@@ -112,24 +133,24 @@ const generateDefaultLayout = (metadata) => {
   // }},
 
   // [9] DatePicker
-  {i: 'ctrl-date0X', x: 9, y: 3, w: 3, h: 1,ctrlType: 'date', data: {
-    label: 'Analysis Period:'
-  }},
+  // {i: 'ctrl-date0X', x: 9, y: 3, w: 3, h: 1,ctrlType: 'date', data: {
+  //   label: 'Analysis Period:'
+  // }},
 
   // [B] Subsection
-  {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
-      title: 'Loop Summary',
-      //backgroundColor: 'lightsteelblue'
-      level: 2
-  }},
+  // {i: 'ctrl-section1', x: 0, y: 5, w: 12, h: 1, ctrlType: 'section', data: {
+  //     title: 'Loop Summary',
+  //     //backgroundColor: 'lightsteelblue'
+  //     level: 2
+  // }},
 
   // [1] History
   //{i: 'ctrl-history0', x: 0, y: 6, w: 12, h: 2, ctrlType: 'history'},
 
   //[2] Table - 1
-  {i: 'ctrl-table0X', x: 0, y:6, w: 12, h: 2,ctrlType: 'table', data: {
-    label: 'Table:'
-  }},
+  // {i: 'ctrl-table0X', x: 0, y:6, w: 12, h: 2,ctrlType: 'table', data: {
+  //   label: 'Table:'
+  // }},
 
   // //[2] Table - 2
   // {i: 'ctrl-table1', x: 3, y: 8, w: 3, h: 2,ctrlType: 'table', data: {
@@ -149,15 +170,15 @@ const generateDefaultLayout = (metadata) => {
   //   label: 'DC Chart:'
   // }},
   // dc bar chart
-  {i: 'ctrl-imageMap0X', x: 6, y:1, w: 3, h: 4,ctrlType: 'imageMap', data: {
-    label: 'Image Map:'
-  }},
+  // {i: 'ctrl-imageMap0X', x: 6, y:1, w: 3, h: 4,ctrlType: 'imageMap', data: {
+  //   label: 'Image Map:'
+  // }},
   ];
 }
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 12
+  rows: 20
 }
 
 // This is the default layout for the Dashboard

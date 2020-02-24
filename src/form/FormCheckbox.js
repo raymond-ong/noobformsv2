@@ -1,16 +1,29 @@
 import React, { useContext } from "react";
 import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
-import { Form as SemanticForm } from "semantic-ui-react";
+import { Form as SemanticForm, Popup } from "semantic-ui-react";
 
-function FormCheckbox({ name, ...rest }) {
+function FormCheckbox({ name, label, toolTip, ...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
 
   function handleChange([, props]) {
     return { checked: props.checked };
   }
 
-  return (
+  return (<SemanticForm.Field>
+    {label && <label>
+              <span key={'label-'+name}>{label}</span>
+              &nbsp;
+              {!!toolTip && <Popup 
+                  inverted
+                  basic
+                  size='tiny' style={{opacity: '0.8'}} 
+                  content={toolTip}
+                  trigger={<div style={{display: 'inline-block', color: 'gray'}}>
+                  <i className="ui icon info circle"/>
+                  </div>} />
+              }
+    </label>}    
     <RHFInput
       as={<SemanticForm.Checkbox {...rest} />}
       name={name}
@@ -21,6 +34,7 @@ function FormCheckbox({ name, ...rest }) {
       setValue={setValue}
       onChangeEvent={handleChange}
     />
+    </SemanticForm.Field>
   );
 }
 

@@ -12,7 +12,7 @@ import {selectedControl} from '../actions/index';
 import EditDialog from './editDialog';
 
 
-const ROW_HEIGHT = 40;
+export const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 

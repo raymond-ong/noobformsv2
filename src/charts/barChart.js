@@ -52,10 +52,19 @@ export const sampleData = [
   },
 ];
 
+const sampleGroups = [
+  {
+      key: 'kpi',
+      value: 'kpi',
+      title: 'KPI',
+  }
+]
+
 const monthTickFormatter = (tick) => {
   const date = new Date(tick);
 
-  return date.getMonth() + 1;
+  return tick;
+  //return date.getMonth() + 1;
 };
 
 const renderQuarterTick = (tickProps) => {
@@ -117,16 +126,19 @@ const renderChartContents = (bAnimate, width, height, data) => {
               height={height}
               data={data}
               margin={{
-              top: 20, right: 10, left: 5, bottom: 30,
+              top: 0, right: 10, left: 5, bottom: 50,
               }}
           >
       <CartesianGrid vertical={false}/>
-      <XAxis dataKey="date" tickFormatter={monthTickFormatter} />
-      <XAxis dataKey="date" axisLine={false} tickLine={false} interval={0} tick={renderQuarterTick} height={1} scale="band" xAxisId="quarter" />
+      <XAxis dataKey="date" tick={<CustomizedAxisTick />} 
+        height={100} interval={0}
+        // tickFormatter={monthTickFormatter} 
+      />
+      {/* <XAxis dataKey="date" axisLine={false} tickLine={false} interval={0} tick={renderQuarterTick} height={1} scale="band" xAxisId="quarter" /> */}
       <YAxis axisLine={false}/>
       <Tooltip />
-      <Legend  wrapperStyle={{
-      paddingTop: "10px"
+      <Legend verticalAlign="top" wrapperStyle={{
+      paddingBottom: "20px"
       }}/>
       <Bar dataKey="Time in Control" fill="green" stackId="a" isAnimationActive={false} />
       <Bar isAnimationActive={bAnimate} dataKey="Time in Preferred Mode" fill="gold" stackId="a"/>      
@@ -461,6 +473,12 @@ class BarResponsiveDataBase extends React.Component {
             onSelect={this.onGroupSelect}
             treeDefaultExpandAll
           />}
+          {!this.props.dataProps && <TreeDropdown 
+            treeData={sampleGroups} 
+            value={sampleGroups[0].key}
+            treeDefaultExpandAll
+            disabled
+          />}                
         </div>
         <ResponsiveContainer width={"100%"} height="100%">        
         {this.getChartContents(this.props)}        
@@ -471,6 +489,26 @@ class BarResponsiveDataBase extends React.Component {
 
 export const BarResponsiveData = noobControlHoc(BarResponsiveDataBase)
 
-
-
 export default noobControlHoc(BarChartResponsive);
+
+// For Properties Panel
+export const barProps = [
+  {
+    name: 'stacked', 
+    propType: 'bool',
+  },
+  {
+    name: 'dataProps', 
+    propType: 'section',
+  },
+  {
+    name: 'datasetId', 
+    propType: 'number',
+  },
+  {
+    name: 'requestType', 
+    propType: 'metadata',
+    metadataField: 'requestTypes',
+    metadataPropType: 'dropdown'
+  },
+];

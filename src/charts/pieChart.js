@@ -16,6 +16,14 @@ const sampleData = [
   { name: 'Uncertain', value: 200 },
 ];
 
+const sampleGroups = [
+  {
+      key: 'status',
+      value: 'status',
+      title: 'Status',
+  }
+]
+
 const COLORS = ['green', 'red', 'gold', 'gray', 'cyan', 'magenta', 'black', 'lime', 'teal', 'pink', 'violet', 'orange', 'blue', 'indigo'];
 
 const RADIAN = Math.PI / 180;
@@ -267,6 +275,12 @@ export class PieResponsiveDataBase extends React.Component {
           onSelect={this.onGroupSelect}
           treeDefaultExpandAll
         />}
+        {!this.props.dataProps && <TreeDropdown 
+          treeData={sampleGroups} 
+          value={sampleGroups[0].key}
+          treeDefaultExpandAll
+          disabled
+        />}        
       </div>
       <ResponsiveContainer  width="100%" height="100%">
         <PieChart margin={{top: 20, right: 20, left: 20, bottom: 45}}>
@@ -388,7 +402,7 @@ export default noobControlHoc(PieResponsive);
 
 // export default noobControlHoc(Example);
 
-// PropertiesPanel portion
+// Properties Panel Portion
 export const pieProps = [
   {
     name: 'dataProps', 

@@ -10,8 +10,9 @@ import splitWord from '../helper/wordSplitter';
 import {sectionProps} from '../controls/section';
 import {labelProps} from '../controls/label';
 import {pieProps} from '../charts/pieChart';
+import {barProps} from '../charts/barChart';
 import * as constants from '../constants';
-import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown} from '../form/Form';
+import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown, FormCheckbox} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 import ShowMessage, {NotifType} from '../helper/notification';
 import {Divider, Header, Icon} from 'semantic-ui-react';
@@ -40,6 +41,9 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
             break;
         case 'pie':
             specialProps = pieProps;
+            break;
+        case 'barchart':
+            specialProps = barProps;
             break;
         default:
             break;
@@ -149,6 +153,12 @@ const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix
                         toolTip={foundSpecialProp.toolTip}
                     />);
                     break;
+                case 'bool':
+                    retList.push(<FormCheckbox key={controlId+'_'+key}
+                        name={namePrefix+key}
+                        label={splitWord(key)+':'}
+                    />);
+                    break;
                 case 'section':
                     // Just skip this.
                     // There should be another call to this function to render the contents of that section
@@ -187,6 +197,7 @@ const renderMetadataField = (metaFieldName, metadata, metaSpecialProps, controlI
                 treeData={getMetadataTreeDropdownOptions(metadata, metaSpecialProps.metadataField)} 
                 isRequired={false}
                 label={splitWord(metaFieldName)+":"}
+                dropdownStyle={{ height: 300, overflow: 'auto' }}
                 />
         default:
             break;

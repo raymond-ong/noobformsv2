@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Gauge as CanvasGauge, Donut, TextRenderer} from 'gaugeJS/dist/gauge.min';
 import noobControlHoc from '../hoc/noobControlsHoc';
 import './gauge.css';
+import {ROW_HEIGHT} from '../components/noobControl';
 
 //https://github.com/keanemind/react-gaugejs/blob/master/Gauge.js
 /**
@@ -102,6 +103,23 @@ function Gauge(props) {
       classNames += ' ctrl-selected'
   }
 
+  // aspect ratio of w:h is 2:1
+  // We compute the height based on the number of rows allocated (default height only)
+  // then we compute the width
+  let height = props.h * ROW_HEIGHT - 50; // subtract 50 for the gauge size
+  let width = height*2;
+  if (props.maxWidth) {
+    let maxWidth = parseInt(props.maxWidth);
+    if (width > maxWidth) {
+      width = maxWidth;
+      height = width / 2;
+    }
+  }
+  
+  let heightPx = `${height}px`; // subtract 50 for the gauge size
+  let widthPx = `${height*2}px`;
+  debugger
+
   // TODO: Ruined the web resizing after fixing the report alignment/sizing
   // Separate the function for web/reporting if necessary
   // Another issue: the gauge canvas does not appear if the gauge is not visible during the time it was rendered (e.g. default tab is not forms designer)
@@ -111,7 +129,7 @@ function Gauge(props) {
       <div className="controlLabel">{props.data.label}</div>
       <div className="gauge-svgContainer">
       <div className="gauge-svgContainer2">
-        <canvas ref={canvas} style={{width:"100%"}} className="canvas-preview" ></canvas>
+        <canvas ref={canvas} style={{width:widthPx, height: heightPx}} className="canvas-preview" ></canvas>
         <div ref={span} className="preview-textfield gauge-label"></div>
       </div>      
       </div>      
