@@ -8,6 +8,7 @@ import './pieChart.css';
 import './rechartsCommon.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 import {extractName, filterObj, calculateActiveIndex, convertGroupingToTreeDropOptions} from '../helper/chartHelper';
+import {getMetadataDimTreeDropdownOptions} from '../helper/metadataManager';
 
 const sampleData = [
   { name: 'Good', value: 400 },
@@ -168,7 +169,8 @@ export class PieResponsiveDataBase extends React.Component {
     console.log('[pieChart] constructor...');
     super(props);
     this.onGroupSelect = this.onGroupSelect.bind(this);
-    let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.configedGroupings) : null;
+    //let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.categories) : null;
+    let initialGroupingVal = props.data.dataProps? props.data.dataProps.categories : null;
     this.state = {
       activeIndex: props.activeIndex,
       groupingBoundVal: initialGroupingVal, // bound to treedropdown
@@ -212,7 +214,7 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   formatApiData(apiData, dataProps, currControlGrouping) {
-    let grouping = currControlGrouping ? currControlGrouping.groupStack : dataProps.Groupings;
+    let grouping = currControlGrouping ? currControlGrouping.groupStack : [dataProps.categories];
     return apiData.map(d => {
       let extractedName = extractName(grouping, d);
 
@@ -225,15 +227,16 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   renderPieWithData = (props) => {
+    debugger
     let formattedData = null;
-    if (props.dataProps) {
-      if (!props.apiData) {
-        return null
-      }
-      formattedData = this.formatApiData(props.apiData.data, props.dataProps, props.currControlGrouping);
-    }
-    else {
+    if (props.designMode) {
       formattedData = sampleData;
+    }
+    else if (props.data.dataProps) {
+      if (!props.apiData || !props.metadata) {
+        return null;
+      }
+      formattedData = this.formatApiData(props.apiData.data, props.data.dataProps, props.currControlGrouping);
     }
 
     let activeIndex = calculateActiveIndex(props.datasetFilters, formattedData, props.i, this.getGroupingStackStr())
@@ -264,18 +267,19 @@ export class PieResponsiveDataBase extends React.Component {
     let classNames = 'reChartContainer';
     if (this.props.selected === true) {
         classNames += ' ctrl-selected'
-    }
+    }    
 
     return <div id="pieContainer1" className={classNames}>
       <div className="controlLabel">{this.props.data.label}</div>
       <div>
-        {this.props.dataProps && <TreeDropdown 
-          treeData={convertGroupingToTreeDropOptions(this.props.dataProps.configedGroupings)} 
+        {!this.props.designMode && this.props.data.dataProps && this.props.metadata &&<TreeDropdown 
+          //treeData={convertGroupingToTreeDropOptions(this.props.dataProps.categories, props.metadata)} 
+          treeData={getMetadataDimTreeDropdownOptions(this.props.data.dataProps.categories, this.props.metadata)} 
           value={this.state.groupingBoundVal}
           onSelect={this.onGroupSelect}
           treeDefaultExpandAll
         />}
-        {!this.props.dataProps && <TreeDropdown 
+        {this.props.designMode && <TreeDropdown 
           treeData={sampleGroups} 
           value={sampleGroups[0].key}
           treeDefaultExpandAll
@@ -419,10 +423,20 @@ export const pieProps = [
     metadataPropType: 'dropdown'
   },
   {
-    // label prop: no need to include if no need to customize. Will automatically title-ize the 'name'
-    name: 'groupings', 
+    name: 'categories', 
     propType: 'metadata',
     metadataField: 'dimensions',
     metadataPropType: 'treeDropdown'
+  },
+
+  {
+    // TODO: this is for aggregation dropdown
+    // Value depends on the selected dimension
+    name: 'aggregation', 
+    propType: 'metadata',
+    metadataField: null,
+    metadataPropType: 'dropdown',
+    metadataAssoc: 'categories',
+    metadataAssocField: 'aggregations'
   },
 ];

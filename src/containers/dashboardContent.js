@@ -102,7 +102,7 @@ class DashboardContent extends DesignerContentbase {
         </table>)
     }
 
-    renderForm = (layoutName, layoutObj) => {
+    renderForm = (layoutName, layoutObj, metadata) => {
         if (!this.props.selectedNode || !this.props.selectedNode.key) {
             return <div className="ui message orange">Please select a node from the treeview on the left!</div>
         }
@@ -113,13 +113,14 @@ class DashboardContent extends DesignerContentbase {
                 containerWidth={this.state.rightPixels}
                 layoutData={layoutObj.layoutData}
                 controls={layoutObj.controls}
+                metadata={metadata}
             />
         </div>
     }
     
     // TODO: We need a toolbar to let the user specify the analysis date, and other functions like save to PDF
     render() {
-        console.log('render dashboard...', this.props);
+        console.log('render dashboard...', this.props, this.state.rightPixels);
         let treeData = this.props.hierarchyView && reconstructHierarchyStack(JSON.parse(this.props.hierarchyView.hierarchyJson));
         let userSettings = this.props.hierarchyView && JSON.parse(this.props.hierarchyView.nodeSettingsJson)
         let layoutName = this.getLayoutName(userSettings);
@@ -136,7 +137,7 @@ class DashboardContent extends DesignerContentbase {
                     controlledExpansion
             />
             }
-            {this.renderForm(layoutName, layoutObj)}            
+            {this.renderForm(layoutName, layoutObj, this.props.metadata)}            
         </NoobSplitter>
     }
 }
@@ -150,7 +151,8 @@ function mapStateToProps(state) {
         hierarchyView: defaultView,
         masterLayouts: state.mainApp.masterLayouts,
         selectedNode: state.dashboard.selectedNode,
-        chartClickFilters: state.dashboard.chartClickFilters
+        chartClickFilters: state.dashboard.chartClickFilters,
+        metadata: state.mainApp.masterMetadata
     }
 }
   

@@ -1,6 +1,6 @@
 export const DUMMY_APR_METADATA = {
 	name: "PRM APR",
-	server: "http://localhost:5000/api/meta",
+	server: "http://localhost:60000/api/data",
 	// Will help the server 
 	requestTypes: [
 		{
@@ -250,7 +250,7 @@ export const DUMMY_APR_METADATA = {
 					dataType: "string", // e.g. "Phase 1"
 				},
 				{
-					name: "Plant KPI",
+					name: "Plant KPI Status",
 					dataType: "string", // e.g. Notmal, High Risk, Non-Visualized
 				},				
 			]

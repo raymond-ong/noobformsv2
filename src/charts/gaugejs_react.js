@@ -118,7 +118,6 @@ function Gauge(props) {
   
   let heightPx = `${height}px`; // subtract 50 for the gauge size
   let widthPx = `${height*2}px`;
-  debugger
 
   // TODO: Ruined the web resizing after fixing the report alignment/sizing
   // Separate the function for web/reporting if necessary

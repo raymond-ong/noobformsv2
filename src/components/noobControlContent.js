@@ -31,7 +31,7 @@ export const ControlDragTypes = {
     CONTROL: 'Control'
 }
 
-// mode: either "dashboard" or "design"
+// mode: either "dashboard" or "designMode"
 export const getContentDiv = (controlData, mode) => {
     // Wrap the contents so that when resizing or moving, they will be together
     // Also this should be floated. We don't want to resize or move the parent
@@ -71,7 +71,7 @@ export const getContentDiv = (controlData, mode) => {
                 content = <PieResponsiveDataBase {...controlData}/>
             }
             else {
-                content = <PieResponsiveData {...controlData}/>
+                content = <PieResponsiveData {...controlData} designMode/>
             }                
             break;
         case 'barchart':
@@ -149,7 +149,7 @@ const NoobControlContent = (controlData) => {
     //     hideOnScroll
     // />
     return <div className="contentWrapper" ref={drag} style={styles}>
-        {getContentDiv(controlData)}  
+        {getContentDiv(controlData, 'designMode')}  
     </div>        
 }
 

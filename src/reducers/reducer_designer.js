@@ -64,7 +64,7 @@ const generateDefaultLayout = (metadata) => {
           dataProps: {
             datasetId: 0,
             requestType: 'GetDeviceCounts',
-            groupings: ''
+            categories: ''
           }
       }},
 
@@ -76,7 +76,7 @@ const generateDefaultLayout = (metadata) => {
           dataProps: {
             datasetId: 0,
             requestType: 'GetDeviceCounts',
-            groupings: ''
+            categories: ''
           }
       }},
 

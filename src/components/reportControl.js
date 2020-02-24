@@ -24,20 +24,20 @@ const handleGroupSelect = (groupingValue, seriesName, controlData, selectChartGr
     selectChartGroup(groupingValue, seriesName, controlData);
 }
 
-const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping}) => {
+const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping, metadata}) => {
     // [a] Data Preparations
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {        
-        if (controlData.dataProps) {                        
-            fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping);
+        if (controlData.data.dataProps) {                        
+            fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata);
         }
     }, [datasetFilters, currControlGrouping]); 
 
 
     // [b] UI Preparations
-    if (controlData.dataProps && !isLoading) {
+    if (controlData.data.dataProps && !isLoading) {
         // TODO: not sure if this would affect the global object (permanently stored to the global object)
         // If yes, just clone this object
         controlData.apiData = apiData;        
@@ -45,6 +45,7 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, s
         controlData.currControlGrouping = currControlGrouping;
         controlData.handleChartClick = (sliceInfo, groupingStackStr) => handleChartClick(sliceInfo, groupingStackStr, controlData, clickChartSlice);
         controlData.handleGroupSelect = (groupValue, seriesName) => handleGroupSelect(groupValue, seriesName, controlData, selectChartGroup);
+        controlData.metadata = metadata;
     }
 
     let classNames = 'reportControl';
@@ -65,11 +66,10 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, s
     ctrlStyle.gridRowEnd = 'span ' + controlData.h;
     ctrlStyle.gridColumnEnd = 'span ' + controlData.w;
     ctrlStyle.maxWidth = `${widthOfCtrl}px`; 
-
-    console.log('render ReportControl', controlData.i, isLoading);
+    
     controlData.selected = false; // Override...so that it won't show up as selected
     controlData.maxWidth = `${widthOfCtrl}px`; 
-   
+    console.log('render ReportControl', controlData.i, widthOfCtrl, containerWidth);
     // [c] Render:
     // [c.1] return the landing pad first, which is only shown when the control is being resized
     // [c.2] followed by the content
@@ -91,14 +91,14 @@ const ReportControl = ({controlData, containerWidth, numCols, clickChartSlice, s
 
 const mapStateToProps = (state, ownProps) => {
     let controlData = ownProps.controlData;
-    if (!controlData || !controlData.dataProps) {
+    if (!controlData || !controlData.data.dataProps) {
         return {};    // to avoid re-rendering controls that do not have dataProps
     }
 
     // We are only concerned about changes in the datasetId this control belongs to
     return {
         // Contains the slices/bars clicked by the user
-        datasetFilters: state.dashboard.chartClickFilters[controlData.dataProps.datasetId],
+        datasetFilters: state.dashboard.chartClickFilters[controlData.data.dataProps.datasetId],
         currControlGrouping: state.dashboard.chartTempGroupings[controlData.i]
     }
 }

@@ -19,7 +19,7 @@ const panes = [
         pane: (
         <Tab.Pane key='home' style={{height: '100%', width: '100%', padding: '0px'}}>
             {/* <HomeContent/> */}
-            <DashboardContent/>
+            <DashboardContent defaultSizes={[15, 85]}/>
         </Tab.Pane>
         ),
     },

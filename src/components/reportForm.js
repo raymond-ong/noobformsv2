@@ -54,6 +54,7 @@ class ReportForm extends React.Component {
     renderControl(control, containerWidth, numCols) {
         // Debug for Pie chart, add some more properties that we need to configure
         if (control.ctrlType === 'pie') {
+            /*
             console.log("[ReportForm] Overriding Pie chart dataProps");
             control.dataProps = {
                 dataUrl: "http://localhost:60000/api/data",
@@ -61,7 +62,7 @@ class ReportForm extends React.Component {
                 aggregation: 'count',
                 granularity: null,                
                 Groupings: ['Vendor'], // will be sent to the API server...This should be the default value at first, used as initial value
-                configedGrouping: '', // For Props Panel UI, for storing the selected grouping
+                //categories: '', // For Props Panel UI, for storing the selected grouping
                 configedGroupings: ['Vendor', 'Model'], // computed during rendering; this is the grouping hierachy; should not be here
                 datasetId: 0, // other controls belonging to the same datasetId will have related filters
                 RequestParams: [{
@@ -71,6 +72,7 @@ class ReportForm extends React.Component {
                     EndDate: null,
                 }]
             }
+            */
         }
         else if (control.ctrlType === 'barchart') {
             control.data.stacked = false;
@@ -80,7 +82,7 @@ class ReportForm extends React.Component {
                 aggregation: 'count',
                 granularity: null,
                 categories: ['Vendor'], // used as initial value
-                configedCategories: ['Vendor', 'Model'], // This is the grouping engineered
+                //configedCategories: ['Vendor', 'Model'], // This is the grouping engineered
                 seriesName: 'PRM Device Status', // Actual values: "Normal", "Comm Error" etc
                 Groupings: ['Vendor', 'PRM Device Status'], // Will be sent to the API server...This should be the default value at first (used as initial value)
                 datasetId: 0,
@@ -89,8 +91,7 @@ class ReportForm extends React.Component {
                     Value: "CustomRange",
                     StartDate: null,
                     EndDate: null,
-                }]                
-
+                }]
             }
         }
 
@@ -100,6 +101,7 @@ class ReportForm extends React.Component {
                 controlData={control}
                 containerWidth={containerWidth}
                 numCols={numCols}
+                metadata={this.props.metadata}
                 />
     }
 
@@ -278,13 +280,23 @@ class ReportForm extends React.Component {
     }
 
     render() {
-        console.log('render ReportForm...');
-        let {controls, layoutData} = this.props;
-        if (!layoutData || !controls) {
+        console.log('render ReportForm...', this.props.containerWidth);
+        let {controls, layoutData, metadata,} = this.props;
+        if (!layoutData || !controls || !metadata) {
+            console.log('render ReportForm...return null beacuse layout/controls/metadata is not yet fetched');
             return null;
         }
 
-        let groupsList = this.renderControls(layoutData, controls, window.innerWidth-50); // minus 50 for the left and right margin of PDF
+        // minus 50 for the left and right margin of PDF
+        let formWidth = document.URL.toLowerCase().endsWith('reporting') ? 
+            window.innerWidth-50:
+            this.props.containerWidth;
+        if (!document.URL.toLowerCase().endsWith('reporting')) {
+        }
+
+        //let groupsList = this.renderControls(layoutData, controls, window.innerWidth-50); // minus 50 for the left and right margin of PDF
+        let groupsList = this.renderControls(layoutData, controls, formWidth);
+
         //let controlsJsx = controlsList.map(c => c.jsx);
     
         var divStyle = {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`};
@@ -306,7 +318,7 @@ class ReportForm extends React.Component {
         <div className="reportFormsContainer" style={{maxWidth: `${window.innerWidth-50}px`}}>
             {/* {'[DEBUG] ContainerWidth: ' + window.innerWidth} */}
             {this.renderGroups(groupsList, divStyle)}            
-        </div>    
+        </div>
         );    
     }
 }

@@ -79,22 +79,28 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
 }
 
 // This class is responsible for making API calls to get data, or handling click or grouping events
-export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping) => {
+export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata) => {
     console.log('[DEBUG] fetchData ReportControl', controlData.i);
+    debugger
     setIsLoading(true);
-    let postObj = {...controlData.dataProps}; // make a new copy
+    let postObj = {...controlData.data.dataProps}; // make a new copy
     if (!!currControlGrouping) {
-        // Groupings already has a default value. Override it if the user selects another grouping
         postObj.Groupings = [...currControlGrouping.groupStack];
         if (currControlGrouping.seriesName) {
             postObj.Groupings.push(currControlGrouping.seriesName);
         }
     }
+    else {
+        // categories is a string value
+        postObj.Groupings = [controlData.data.dataProps.categories];
+    }
+
+    if (!Array.isArray(postObj.RequestParams)) {
+        postObj.RequestParams = [];
+    }
+        
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
-        if (!Array.isArray(postObj.RequestParams)) {
-            postObj.RequestParams = [];
-        }
         let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters);
         let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping.groupStack : null);
         postObj.RequestParams = postObj.RequestParams.concat(otherControlFilters);
@@ -105,7 +111,7 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
     }
 
     const result = await axios
-        .post(controlData.dataProps.dataUrl, postObj)
+        .post(metadata.server, postObj)
         .catch(error => {
             console.error("Error fetching control data", controlData.i, error);
 
