@@ -2,10 +2,12 @@ import React from 'react';
 import './common.css';
 import './richtext.css';
 import 'draft-js/dist/Draft.css';
+import { stateFromHTML } from 'draft-js-import-html'
+
 
 import noobControlHoc from '../hoc/noobControlsHoc';
 
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, ContentState } from 'draft-js';
 
 const styleMap = {
     CODE: {
@@ -23,10 +25,46 @@ const styleMap = {
     }
   }
 
+// const options = {
+//     entityStyleFn: ( entity ) => {
+//       debugger
+//         if ( entity.get('type').toLowerCase() === 'link' ) {
+//             const data = entity.getData();
+//             return {
+//                 element: 'a',
+//                 attributes: {
+//                     href: data.url,
+//                     target: data.targetOption
+//                 }
+//             };
+//         } 
+//     }
+// };
+
 class RichText extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
+        //this.state = {editorState: EditorState.createEmpty()};
+        //this.state = {editorState: EditorState.createWithContent(ContentState.createFromText('Hello'))};
+        //let html = '<div><h5>I am an H5 Tag</h5><h4>I am an H4 Tag</h4><p><a href="www.google.com">www.google.com</a></p></div>';
+        //let html = '<p>First sentence</p><p>Second sentence</p><a href="www.google.com">www.google.com</a></p>';
+        let html = '<table><thead><tr><td>Hello</td><td>World</td></tr></thead></table>';
+        let options = {
+          entityStyleFn: entity => {
+            const entityType = entity.get('type').toLowerCase();
+            if (entityType === 'link') {
+              const data = entity.getData();
+              return {
+                element: 'a',
+                attributes: {
+                  target: data.targetOption,
+                  href: data.url
+                }
+              };
+            }
+          }
+        }
+        this.state = {editorState: EditorState.createWithContent(stateFromHTML(html, options))};
 
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => this.setState({editorState});
@@ -93,18 +131,18 @@ class RichText extends React.Component {
             <div className={classNames}>
                 <div className="controlLabel">{this.props.data.label}</div>
                 <div className="RichEditor-root">
-                    <div className="toolBarStrip">
+                    {/* <div className="toolBarStrip"> */}
                         {/* Inline Controls: Bold, Italic etc */}
-                        <InlineStyleControls
+                        {/* <InlineStyleControls
                         editorState={editorState}
                         onToggle={this.toggleInlineStyle}
-                        />
+                        /> */}
                         {/* Block Controls: H1, H2, BlockQuote, Code etc */}
-                        <BlockStyleControls
+                        {/* <BlockStyleControls
                         editorState={editorState}
                         onToggle={this.toggleBlockType}
                         />
-                    </div>
+                    </div> */}
 
                     <div className={className} onClick={this.focus}>
                         <Editor

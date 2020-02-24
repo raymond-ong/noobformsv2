@@ -318,6 +318,7 @@ class BarResponsiveDataBase extends React.Component {
 
 // For rendering an individual bar (group) inside a barchart
   renderBars = (uniqSeriesVals, formattedData) => {
+    let stackId = this.props.data.stacked === true ? 'a' : null;
     //console.log("renderBars", uniqSeriesNames); // Normal, Error, Warning
     return uniqSeriesVals.map((seriesVal, seriesIndex) => {
       return <Bar 
@@ -325,6 +326,7 @@ class BarResponsiveDataBase extends React.Component {
           dataKey={seriesVal} 
           fill={COLORS[seriesIndex % COLORS.length]} 
           isAnimationActive={true} 
+          stackId={stackId}
           onClick={(data, index) => this.handleClick(data, index, seriesVal)}
         >
         <LabelList dataKey={seriesVal} content={this.renderCustomizedLabel} mySeriesName={seriesVal}/>    
@@ -343,14 +345,22 @@ class BarResponsiveDataBase extends React.Component {
       return null;
     }  
     
-    const yOffset = 5;
+    const xyOffset = 1;
     const sideLen = 8;
-    let trianglePts = `${x + width / 2 - sideLen /2 } ${y-yOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-yOffset- sideLen}, ${x+width/2} ${y-yOffset}`;
+    let trianglePts;
+    if (this.props.data.stacked) {
+      // draw on left
+      trianglePts = `${ x - xyOffset} ${ y + height/2}, ${ x - xyOffset - sideLen} ${ y + height/2 - sideLen /2}, ${ x - xyOffset - sideLen} ${ y + height/2 + sideLen /2}`;
+    }
+    else {
+      // draw on top
+      trianglePts = `${x + width / 2 - sideLen /2 } ${y-xyOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-xyOffset- sideLen}, ${x+width/2} ${y-xyOffset}`;
+    }
   
     // Draw a triangle on top if the bar is the selected series of the selected index
     return (
       <g>
-        <polygon id="e1_polygon" points={trianglePts} fill="#555"/>
+        <polygon id="e1_polygon" points={trianglePts} fill="rgba(0, 0, 0, 0.7)"/>
         {/* <text x={x + width / 2} y={y - radius} fill="lightgray" textAnchor="middle" dominantBaseline="middle">
           {value}
         </text> */}

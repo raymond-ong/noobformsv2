@@ -72,6 +72,7 @@ class ReportForm extends React.Component {
             }
         }
         else if (control.ctrlType === 'barchart') {
+            control.data.stacked = true;
             control.dataProps = {
                 dataUrl: "http://localhost:60000/api/data",
                 requestType: 'GetDeviceCounts',
