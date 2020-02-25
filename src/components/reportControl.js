@@ -17,7 +17,7 @@ const GRID_GAP = 5;
 
 const handleChartClick = (sliceInfo, groupingStackStr, controlData, clickChartSlice) => {
     // Fire a redux action
-    clickChartSlice(sliceInfo, groupingStackStr, controlData.dataProps.datasetId, controlData.i);
+    clickChartSlice(sliceInfo, groupingStackStr, controlData.data.dataProps.datasetId, controlData.i);
 }
 
 const handleGroupSelect = (groupingValue, seriesName, controlData, selectChartGroup) => {
@@ -30,14 +30,14 @@ const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChar
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {        
-        if (controlData.data.dataProps) {                        
+        if (controlData.data && controlData.data.dataProps) {                        
             fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata);
         }
     }, [datasetFilters, currControlGrouping]); 
 
 
     // [b] UI Preparations
-    if (controlData.data.dataProps && !isLoading) {
+    if (controlData.data && controlData.data.dataProps && !isLoading) {
         // TODO: not sure if this would affect the global object (permanently stored to the global object)
         // If yes, just clone this object
         controlData.apiData = apiData;        
@@ -91,7 +91,7 @@ const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChar
 
 const mapStateToProps = (state, ownProps) => {
     let controlData = ownProps.controlData;
-    if (!controlData || !controlData.data.dataProps) {
+    if (!controlData || !controlData.data || !controlData.data.dataProps) {
         return {};    // to avoid re-rendering controls that do not have dataProps
     }
 

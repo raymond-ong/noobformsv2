@@ -64,7 +64,7 @@ const generateDefaultLayout = (metadata) => {
           dataProps: {
             datasetId: 0,
             requestType: 'GetDeviceCounts',
-            categories: ''
+            categories: '',
           }
       }},
 
@@ -76,7 +76,9 @@ const generateDefaultLayout = (metadata) => {
           dataProps: {
             datasetId: 0,
             requestType: 'GetDeviceCounts',
-            categories: ''
+            categories: '', // For a vertical bar chart, this is the X-axis
+            seriesName: '', // For a vertical bar chart, this is the Y-axis (e.g. count)
+            aggregation: 'count'
           }
       }},
 

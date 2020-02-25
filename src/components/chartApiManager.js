@@ -85,24 +85,28 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
     setIsLoading(true);
     let postObj = {...controlData.data.dataProps}; // make a new copy
     if (!!currControlGrouping) {
-        postObj.Groupings = [...currControlGrouping.groupStack];
-        if (currControlGrouping.seriesName) {
-            postObj.Groupings.push(currControlGrouping.seriesName);
-        }
+        postObj.Groupings = [...currControlGrouping];
+        // if (currControlGrouping.seriesName) {
+        //     postObj.Groupings.push(currControlGrouping.seriesName);
+        // }
     }
     else {
         // categories is a string value
         postObj.Groupings = [controlData.data.dataProps.categories];
     }
 
+    if (controlData.data.dataProps.seriesName) {
+        postObj.Groupings.push(controlData.data.dataProps.seriesName);
+    }
+
     if (!Array.isArray(postObj.RequestParams)) {
         postObj.RequestParams = [];
     }
-        
+
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
         let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters);
-        let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping.groupStack : null);
+        let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping : null);
         postObj.RequestParams = postObj.RequestParams.concat(otherControlFilters);
         postObj.RequestParams = postObj.RequestParams.concat(ownHigherLevelFilters);
         // TODO: if in the final request params, if there are properties that overlap with the current group's own current filter, REMOVE it. 

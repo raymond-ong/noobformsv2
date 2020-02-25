@@ -108,11 +108,11 @@ export const DUMMY_APR_METADATA = {
 									dataType: "string",
 									aggregations: ["count"],
 									items: [
-                                        {
-                                            name: "Revision",
-                                            dataType: "string",							
-                                            aggregations: ["count"],
-                                        }
+                    {
+                      name: "Revision",
+                      dataType: "string",
+                      aggregations: ["count"],
+                    }
 									]
 								}
 							]
@@ -130,18 +130,18 @@ export const DUMMY_APR_METADATA = {
 							dataType: "string",
 							aggregations: ["count"],
 							items: [
-                                {
-                                    name: "Area",
-                                    dataType: "string",							
-                                    aggregations: ["count"],
-                                    items: [
-                                        {
-                                            name: "Unit",
-                                            dataType: "string",
-                                            aggregations: ["count"],
-                                        }
-                                    ]
-                                }
+                {
+                  name: "Area",
+                  dataType: "string",							
+                  aggregations: ["count"],
+                  items: [
+                    {
+                      name: "Unit",
+                      dataType: "string",
+                      aggregations: ["count"],
+                    }
+                  ]
+                }
 							]
 						}
 					]
@@ -173,7 +173,7 @@ export const DUMMY_APR_METADATA = {
 				},
 				{
 					// Repeat for NE107 Device Status
-					name: "Latest PRM Device Status", // TODO: We can also create another group called "Device Availability"
+					name: "PRM Device Status", // TODO: We can also create another group called "Device Availability"
 					dataType: "enum",
 					enumValues: ['Abnormal', 'Warning', 'Communication Error', 'Uncertain', 'Normal'], // Should expect Analysis Period parameter
 					aggregations: ["count"],
@@ -255,7 +255,25 @@ export const DUMMY_APR_METADATA = {
 				},				
 			]
 			
-		} // END: Overall KPI
+    }, // END: Overall KPI
+    {
+			name: "Timestamp",
+			dataType: "group",
+			items: [
+				{
+					name: "Year",
+					dataType: "string"
+				},
+				{
+					name: "Month",
+					dataType: "string"
+				},
+				{
+					name: "Day",
+					dataType: "datetime"
+				},
+			]
+		}, // END: Timestamp
 	],
 };
 

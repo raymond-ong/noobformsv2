@@ -27,7 +27,7 @@ class ReportForm extends React.Component {
     }
 
     findControlPojo(controlId) {
-        if (!this || !this.props || !this.props.controls) {            
+        if (!this || !this.props || !this.props.controls) {
             console.log("findControlPojo: props is empty");
             return null;
         }
@@ -75,24 +75,29 @@ class ReportForm extends React.Component {
             */
         }
         else if (control.ctrlType === 'barchart') {
-            control.data.stacked = false;
+            /*
+            control.data.stacked = false;            
             control.dataProps = {
                 dataUrl: "http://localhost:60000/api/data",
                 requestType: 'GetDeviceCounts',
                 aggregation: 'count',
                 granularity: null,
-                categories: ['Vendor'], // used as initial value
+                categories: ['Vendor'], // used as initial value...new: For Props Panel UI, for storing the selected grouping
                 //configedCategories: ['Vendor', 'Model'], // This is the grouping engineered
                 seriesName: 'PRM Device Status', // Actual values: "Normal", "Comm Error" etc
                 Groupings: ['Vendor', 'PRM Device Status'], // Will be sent to the API server...This should be the default value at first (used as initial value)
                 datasetId: 0,
-                RequestParams: [{
-                    Name: "Analysis Period",
-                    Value: "CustomRange",
-                    StartDate: null,
-                    EndDate: null,
-                }]
+                RequestParams: [
+                    {
+                        // This is taken from page level parameter (like SSRS param)
+                        Name: "Analysis Period",
+                        Value: "CustomRange",
+                        StartDate: null,
+                        EndDate: null,
+                    }
+                ]
             }
+            */
         }
 
 

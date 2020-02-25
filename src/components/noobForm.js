@@ -910,7 +910,7 @@ class NoobForm extends React.Component {
             onMouseMove={(e) => {this.onMouseMove(e, controlIds)}}
             onTouchMove={(e) => {this.onMouseMove(e, controlIds)}}
 
-            onMouseDown={(e) => {debugger;}}
+            onMouseDown={(e) => {console.log('[noobForm] MouseDown')}}
             style={divStyle}>
             {controlsJsx}            
         </div>    

@@ -68,6 +68,7 @@ export const getContentDiv = (controlData, mode) => {
                 content = <PieForReport {...controlData}/>
             }
             else if (mode === 'dashboard') {
+                // Forgot why we need to use the Base. I think there were conflicts with the mouseDown.
                 content = <PieResponsiveDataBase {...controlData}/>
             }
             else {
@@ -79,7 +80,8 @@ export const getContentDiv = (controlData, mode) => {
                 content = <BarChartForReport {...controlData}/>                
             }
             else {
-                content = <BarResponsiveData {...controlData}/>
+                let designMode = mode !== 'dashboard';
+                content = <BarResponsiveData {...controlData} designMode={designMode}/>
             }            
             break;
         case 'gauge':

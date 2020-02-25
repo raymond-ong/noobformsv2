@@ -10,6 +10,7 @@ import noobControlHoc from '../hoc/noobControlsHoc';
 import _ from "lodash";
 import TreeDropdown from '../controls/treeDropdown';
 import {extractName, filterObj, calculateActiveIndex, convertGroupingToTreeDropOptions} from '../helper/chartHelper';
+import {getMetadataDimTreeDropdownOptions} from '../helper/metadataManager';
 
 const COLORS = ['green', 'red', 'gold', 'gray', 'cyan', 'magenta', 'black', 'lime', 'teal', 'pink', 'violet', 'orange', 'blue', 'indigo'];
 
@@ -54,9 +55,9 @@ export const sampleData = [
 
 const sampleGroups = [
   {
-      key: 'kpi',
-      value: 'kpi',
-      title: 'KPI',
+      key: 'month',
+      value: 'month',
+      title: 'Month',
   }
 ]
 
@@ -119,7 +120,9 @@ export const BarChartForReport = (props) => {
 
 // Just specify null for width and height if the BarChart is going to be placed inside a ResponsiveContainer
 // Important to set isAnimationActive to false during printing
-const renderChartContents = (bAnimate, width, height, data) => {
+// This is for the designer only
+const renderChartContents = (bAnimate, width, height, data, stacked) => {
+  let stackId = stacked === true ? 'a' : null;
   return (
     <BarChart
               width={width}
@@ -140,9 +143,9 @@ const renderChartContents = (bAnimate, width, height, data) => {
       <Legend verticalAlign="top" wrapperStyle={{
       paddingBottom: "20px"
       }}/>
-      <Bar dataKey="Time in Control" fill="green" stackId="a" isAnimationActive={false} />
-      <Bar isAnimationActive={bAnimate} dataKey="Time in Preferred Mode" fill="gold" stackId="a"/>      
-      <Bar isAnimationActive={bAnimate} dataKey="Time MV out of Limits" fill="gray" stackId="a"/>      
+      <Bar dataKey="Time in Control" fill="green" stackId={stackId} isAnimationActive={false} />
+      <Bar isAnimationActive={bAnimate} dataKey="Time in Preferred Mode" fill="gold" stackId={stackId}/>      
+      <Bar isAnimationActive={bAnimate} dataKey="Time MV out of Limits" fill="gray" stackId={stackId}/>      
     </BarChart>
   )
 }
@@ -190,18 +193,18 @@ const getUniqueValues = (data, seriesName) => {
   return _.uniq(data.map(d => d[seriesName]));
 }
 
-const formatBarchartData = (data, categories, seriesName, aggregation) => {
+const formatBarchartData = (data, groupings, seriesName, aggregation) => {
   let retList = [];
   for (let i = 0; i < data.length; i++) {
     let currData = data[i];
-    let currCategoryVal = extractName(categories, currData); //e.g. "Yokogawa / EJA"
-    let currCategoryObj = filterObj(currData, categories);
+    let currCategoryVal = extractName(groupings, currData); //e.g. "Yokogawa / EJA"
+    let currCategoryObj = filterObj(currData, groupings);
     let findRetList = retList.find(r => r.name === currCategoryVal);
     if (!findRetList) {
       findRetList = {
         name: currCategoryVal, 
         origCatObj: currCategoryObj,
-        origSeriesName: seriesName
+        //origSeriesName: seriesName
       };
       retList.push(findRetList);
     }
@@ -262,7 +265,7 @@ export class BarChartWithData extends React.Component {
   }
 }
 
-
+// This is for the Designer sample only
 function BarChartResponsive(props) {
   let classNames = 'reChartContainer';
   if (props.selected === true) {
@@ -273,7 +276,7 @@ function BarChartResponsive(props) {
     <div className={classNames}>
       <div className="controlLabel">{props.data.label}</div>
       <ResponsiveContainer width={"100%"} height="100%">
-        {renderChartContents(true, null, null, sampleData)}
+        {renderChartContents(true, null, null, sampleData, props.stacked)}
       </ResponsiveContainer>
     </div>
   );
@@ -290,7 +293,8 @@ const getDefaultGrouping = (groupingHier) => {
 class BarResponsiveDataBase extends React.Component {
   constructor(props) {
     super(props);
-    let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.configedCategories) : null;
+    //let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.configedCategories) : null;
+    let initialGroupingVal = props.data.dataProps? props.data.dataProps.categories : null;
     this.state = {
       activeCategoryIndex: null, // This is the active category index (index value follows the formattedData index)
       activeSeries: null, // This is the active series inside the active category (e.g. "Normal", "Warning")
@@ -311,7 +315,6 @@ class BarResponsiveDataBase extends React.Component {
     // unlike pie chart, origObj is not readily available at this point so we need to build it
     let origObj = {
       ...data.origCatObj,
-      [data.origSeriesName]: seriesVal
     };
 
     if (this.props.handleChartClick) {
@@ -324,7 +327,7 @@ class BarResponsiveDataBase extends React.Component {
   }
 
   getGroupingStackStr = () => {
-    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
     return JSON.stringify(groupingStack);
   }
 
@@ -337,26 +340,28 @@ class BarResponsiveDataBase extends React.Component {
           key={`bar-${seriesVal}-${seriesIndex}`} 
           dataKey={seriesVal} 
           fill={COLORS[seriesIndex % COLORS.length]} 
-          isAnimationActive={true} 
+          // Turn off animation because of rechart bug: the triangles in renderCustomizedLabel() are rendered intermittently
+          isAnimationActive={false} 
           stackId={stackId}
           onClick={(data, index) => this.handleClick(data, index, seriesVal)}
         >
-        <LabelList dataKey={seriesVal} content={this.renderCustomizedLabel} mySeriesName={seriesVal}/>    
+        <LabelList dataKey={"name"} content={this.renderCustomizedLabel} mySeriesName={seriesVal}/>    
       </Bar>
     }
     );      
   }
 
-  renderCustomizedLabel = (props) => {
+  renderCustomizedLabel = (props) => {    
     const {
       x, y, width, height, value, mySeriesName, index
-    } = props;
+    } = props;    
 
     if (this.state.activeCategoryIndex !== index || 
         this.state.activeSeries !== mySeriesName) {
       return null;
     }  
     
+    debugger
     const xyOffset = 1;
     const sideLen = 8;
     let trianglePts;
@@ -368,14 +373,13 @@ class BarResponsiveDataBase extends React.Component {
       // draw on top
       trianglePts = `${x + width / 2 - sideLen /2 } ${y-xyOffset- sideLen}, ${x + width / 2 + sideLen /2 } ${y-xyOffset- sideLen}, ${x+width/2} ${y-xyOffset}`;
     }
+
+    console.log('renderCustomizedLabel', mySeriesName, index, trianglePts);
   
     // Draw a triangle on top if the bar is the selected series of the selected index
     return (
       <g>
         <polygon id="e1_polygon" points={trianglePts} fill="rgba(0, 0, 0, 0.7)"/>
-        {/* <text x={x + width / 2} y={y - radius} fill="lightgray" textAnchor="middle" dominantBaseline="middle">
-          {value}
-        </text> */}
       </g>
     );
   };
@@ -395,9 +399,10 @@ class BarResponsiveDataBase extends React.Component {
   // categories: e.g. ["Vendor", "Model"]
   // seriesName: e.g. "PRM Device Status"
   // aggregation: "count"
-  renderChartContentsUngroupedData = (data, categories, seriesName, aggregation) => {
+  renderChartContentsUngroupedData = (data, groupings, seriesName, aggregation) => {
     let uniqSeriesVals = getUniqueValues(data, seriesName); // Good, bad, fair, e.g.
-    let formattedData = formatBarchartData(data, categories, seriesName, aggregation)
+    debugger
+    let formattedData = formatBarchartData(data, groupings, seriesName, aggregation)
 
     return (
       <BarChart
@@ -413,7 +418,7 @@ class BarResponsiveDataBase extends React.Component {
         <Legend  verticalAlign="top" wrapperStyle={{
         paddingBottom: "20px"
         }}/>
-          {this.renderBars(uniqSeriesVals, formattedData)}   
+          {this.renderBars(uniqSeriesVals)}   
 
       </BarChart>
     )
@@ -432,28 +437,28 @@ class BarResponsiveDataBase extends React.Component {
     if (this.props.handleGroupSelect) {
       let stacks = node.props.stackValue;
       // For bar chart, we need to add the series field also      
-      this.props.handleGroupSelect(stacks, this.props.dataProps.seriesName);
+      this.props.handleGroupSelect(stacks, this.props.data.dataProps.seriesName);
     }
   }
   
   getChartContents = () => {
-    if (this.props.dataProps) {
+    if (!this.props.designMode) {
       if (!this.props.apiData) {
         // Means API data not yet fetched
         return <div></div>;
       }
 
-      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : this.props.dataProps.categories;
+      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping : [this.props.data.dataProps.categories];
 
       return this.renderChartContentsUngroupedData(
         this.props.apiData.data, 
         grouping, 
-        this.props.dataProps.seriesName,
-        this.props.dataProps.aggregation)
+        this.props.data.dataProps.seriesName,
+        this.props.data.dataProps.aggregation)
     }
     else {
       // Show sample data
-      return renderChartContents(true, null, null, sampleData);
+      return renderChartContents(true, null, null, sampleData, this.props.data.stacked);
     }
   }
 
@@ -467,13 +472,14 @@ class BarResponsiveDataBase extends React.Component {
       <div className={classNames}>
         <div className="controlLabel">{this.props.data.label}</div>
         <div>
-          {this.props.dataProps && <TreeDropdown 
-            treeData={convertGroupingToTreeDropOptions(this.props.dataProps.configedCategories)} 
+          {!this.props.designMode && this.props.data.dataProps && this.props.metadata && <TreeDropdown 
+            //treeData={convertGroupingToTreeDropOptions(this.props.dataProps.configedCategories)} 
+            treeData={getMetadataDimTreeDropdownOptions(this.props.data.dataProps.categories, this.props.metadata)} 
             value={this.state.groupingBoundVal}
             onSelect={this.onGroupSelect}
             treeDefaultExpandAll
           />}
-          {!this.props.dataProps && <TreeDropdown 
+          {this.props.designMode && !this.props.dataProps && <TreeDropdown 
             treeData={sampleGroups} 
             value={sampleGroups[0].key}
             treeDefaultExpandAll
@@ -511,4 +517,17 @@ export const barProps = [
     metadataField: 'requestTypes',
     metadataPropType: 'dropdown'
   },
+  {
+    name: 'categories', 
+    propType: 'metadata',
+    metadataField: 'dimensions',
+    metadataPropType: 'treeDropdown'
+  },
+  {
+    name: 'seriesName', 
+    propType: 'metadata',
+    metadataField: 'dimensions',
+    metadataPropType: 'treeDropdown'
+  },
+
 ];

@@ -194,7 +194,7 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   getGroupingStackStr = () => {
-    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
     return JSON.stringify(groupingStack);
   }
 
@@ -214,7 +214,7 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   formatApiData(apiData, dataProps, currControlGrouping) {
-    let grouping = currControlGrouping ? currControlGrouping.groupStack : [dataProps.categories];
+    let grouping = currControlGrouping ? currControlGrouping : [dataProps.categories];
     return apiData.map(d => {
       let extractedName = extractName(grouping, d);
 
@@ -227,7 +227,6 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   renderPieWithData = (props) => {
-    debugger
     let formattedData = null;
     if (props.designMode) {
       formattedData = sampleData;

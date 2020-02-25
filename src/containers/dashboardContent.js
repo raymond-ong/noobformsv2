@@ -80,13 +80,13 @@ class DashboardContent extends DesignerContentbase {
             </thead>
             <tbody>
             {
-                Object.keys(this.props.chartClickFilters).map(datasetId => {
+                Object.keys(this.props.chartClickFilters).map((datasetId, iDataset) => {
                     let currDatasetFilters = this.props.chartClickFilters[datasetId];
-                    return Object.keys(currDatasetFilters).map(currCtrlId => {
+                    return Object.keys(currDatasetFilters).map((currCtrlId, iCtrl) => {
                         let currControlFilter = currDatasetFilters[currCtrlId];   
-                        return Object.keys(currControlFilter).map(currStackStr => {
+                        return Object.keys(currControlFilter).map((currStackStr, iStack) => {
                             let currStackFilter = currControlFilter[currStackStr];
-                            return <tr style={{border: "1px solid gray"}}>
+                            return <tr key={`filterTable-${iStack}`} style={{border: "1px solid gray"}}>
                                 <td>Dataset: {datasetId}, </td>
                                 <td>ControlId: {currCtrlId}, </td>
                                 <td>Group: {currStackStr}, </td>

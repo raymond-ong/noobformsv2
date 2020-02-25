@@ -48,12 +48,9 @@ const processChartClick = (filtersRoot, actionPayload) => {
 
 const processChartGroups = (groupings, actionPayload) => {
     // Just replace the grouping for the controlId directly
-    let {controlData, seriesName, groupVal} = actionPayload;
+    let {controlData, groupVal} = actionPayload;
     //groupings[controlData.i] = groupVal;
-    groupings[controlData.i] = {
-        groupStack: groupVal,
-        seriesName
-    };
+    groupings[controlData.i] = groupVal;
 }
 
 // actionPayload is same as the payload in processChartGroups
