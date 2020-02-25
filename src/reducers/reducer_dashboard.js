@@ -34,14 +34,6 @@ const processChartClick = (filtersRoot, actionPayload) => {
     
     let sliceInfoClone = {...sliceInfo};
 
-    // debugger
-    // // Need to add other controls' filters also because essentially, other controls' filters are already factored in this control's filters
-    // let otherControlFilters = getOtherControlFilters(controlId, datasetFilters);
-    // sliceInfoClone.carryOverFilters = {};
-    // otherControlFilters.forEach(otherFilter => {
-    //     sliceInfoClone.carryOverFilters[otherFilter.Name] = otherFilter.Value;
-    // })
-
     controlFilters[groupingStackStr] = {
         sliceInfo: sliceInfoClone,
         seriesInfo
@@ -51,11 +43,8 @@ const processChartClick = (filtersRoot, actionPayload) => {
 
 const processChartGroups = (groupings, actionPayload) => {
     // Just replace the grouping for the controlId directly
-    let {controlData, seriesName, groupVal} = actionPayload;
-    groupings[controlData.i] = {
-        groupStack: groupVal,
-        seriesName // seems like we don't need this here...we only need this during filtering
-    };
+    let {controlData, groupVal} = actionPayload;
+    groupings[controlData.i] = groupVal;
 }
 
 // actionPayload is same as the payload in processChartGroups

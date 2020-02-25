@@ -331,7 +331,7 @@ class BarResponsiveDataBase extends React.Component {
   }
 
   getGroupingStackStr = () => {
-    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
     return JSON.stringify(groupingStack);
   }
 
@@ -485,8 +485,7 @@ class BarResponsiveDataBase extends React.Component {
     // Maybe just store the "temp" grouping (non-default) of controls of the dashboard in redux store
     if (this.props.handleGroupSelect) {
       let stacks = node.props.stackValue;
-      // For bar chart, we need to add the series field also      
-      this.props.handleGroupSelect(stacks, this.props.data.dataProps.seriesName);
+      this.props.handleGroupSelect(stacks);
     }
   }
   
@@ -497,7 +496,7 @@ class BarResponsiveDataBase extends React.Component {
         return <div></div>;
       }
 
-      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.props.data.dataProps.categories];
+      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping : [this.props.data.dataProps.categories];
 
       return this.renderChartContentsUngroupedData(
         this.props.apiData.data, 

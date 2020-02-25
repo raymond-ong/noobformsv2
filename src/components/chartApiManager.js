@@ -52,7 +52,7 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
     if (!currGroupingsArr) {
         return retList;
     }
-    let currGroupingStr = JSON.stringify(currGroupingsArr.groupStack);
+    let currGroupingStr = JSON.stringify(currGroupingsArr);
     for (let currCtrlId in datasetFilters) {
         if (currCtrlId !== controlId) {
             continue;
@@ -102,7 +102,7 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
     setIsLoading(true);
     let postObj = {...controlData.data.dataProps}; // make a new copy
     if (!!currControlGrouping) {
-        postObj.Groupings = [...currControlGrouping.groupStack];
+        postObj.Groupings = [...currControlGrouping];
         // if (currControlGrouping.seriesName) {
         //     postObj.Groupings.push(currControlGrouping.seriesName);
         // }

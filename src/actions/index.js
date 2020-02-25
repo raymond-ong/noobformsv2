@@ -272,12 +272,11 @@ export function clickChartSlice(sliceInfo, seriesInfo, groupingStackStr, dataset
 }
 
 
-export function selectChartGroup(groupVal, seriesName, controlData) {
+export function selectChartGroup(groupVal, controlData) {
   return {
     type: SELECT_CHART_GROUP,
     payload: {
       groupVal,
-      seriesName,
       controlData
     }
   };
