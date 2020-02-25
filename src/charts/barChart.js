@@ -204,7 +204,7 @@ const formatBarchartData = (data, groupings, seriesName, aggregation) => {
       findRetList = {
         name: currCategoryVal, 
         origCatObj: currCategoryObj,
-        //origSeriesName: seriesName
+        origSeriesName: seriesName // we need this later for filtering
       };
       retList.push(findRetList);
     }
@@ -305,6 +305,8 @@ class BarResponsiveDataBase extends React.Component {
 
   handleClick = (data, index, seriesVal) => {
     console.log('Bar clicked ', index, seriesVal);
+    // TODO: Do not use this
+    // Instead, check the redux store filter objects and calculate the index based on the current grouping selected
     this.setState({
       activeCategoryIndex: index,
       activeSeries: seriesVal
@@ -314,25 +316,27 @@ class BarResponsiveDataBase extends React.Component {
     // origObj e.g. {vendor: "Yokogawa", "PRM Device Status": "Normal"} ...basically the filter for this bar
     // unlike pie chart, origObj is not readily available at this point so we need to build it
     let origObj = {
-      ...data.origCatObj,
+      ...data.origCatObj,      
     };
+
+    let seriesInfo = {[data.origSeriesName]: seriesVal};
 
     if (this.props.handleChartClick) {
       // A control can have 1 filter per grouping level
       // we store the grouping stack as string to make it easier to compare
       let groupingStackStr = this.getGroupingStackStr();
 
-      this.props.handleChartClick({origObj}, groupingStackStr);
+      this.props.handleChartClick({origObj}, seriesInfo, groupingStackStr);
     }
   }
 
   getGroupingStackStr = () => {
-    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
     return JSON.stringify(groupingStack);
   }
 
 // For rendering an individual bar (group) inside a barchart
-  renderBars = (uniqSeriesVals, formattedData) => {
+  renderBars = (uniqSeriesVals, activeIndex, activeSeries) => {
     let stackId = this.props.data.stacked === true ? 'a' : null;
     //console.log("renderBars", uniqSeriesNames); // Normal, Error, Warning
     return uniqSeriesVals.map((seriesVal, seriesIndex) => {
@@ -345,23 +349,24 @@ class BarResponsiveDataBase extends React.Component {
           stackId={stackId}
           onClick={(data, index) => this.handleClick(data, index, seriesVal)}
         >
-        <LabelList dataKey={"name"} content={this.renderCustomizedLabel} mySeriesName={seriesVal}/>    
+        <LabelList dataKey={"name"} content={(props) => this.renderCustomizedLabel(props, activeIndex, activeSeries)} mySeriesName={seriesVal}/>    
       </Bar>
     }
     );      
   }
 
-  renderCustomizedLabel = (props) => {    
+  renderCustomizedLabel = (props, activeIndex, activeSeries) => {    
     const {
       x, y, width, height, value, mySeriesName, index
     } = props;    
 
-    if (this.state.activeCategoryIndex !== index || 
-        this.state.activeSeries !== mySeriesName) {
+    // Do not use the state activeIndex
+    // Parse this.props.datasetFilters to get the active index
+    if (activeIndex !== index || 
+      activeSeries !== mySeriesName) {
       return null;
     }  
     
-    debugger
     const xyOffset = 1;
     const sideLen = 8;
     let trianglePts;
@@ -384,6 +389,20 @@ class BarResponsiveDataBase extends React.Component {
     );
   };
 
+  getDataIndex = (data, filter) => {    
+    return data.findIndex(d => {
+      let currDataCatObj = d.origCatObj;
+      for (let prop in filter) {
+        let propVal = filter[prop];
+        if (currDataCatObj[prop] !== propVal) {
+            return false;
+        }
+      }
+
+      return true;
+    });
+  }
+
   // Input data sample:
   // {PRM Device Status: "GOOD", Vendor: "Yokogawa", Model: "EJA", count: 100},
   // {PRM Device Status: "BAD", Vendor: "Yokogawa", Model: "EJA", count: 100},
@@ -401,8 +420,17 @@ class BarResponsiveDataBase extends React.Component {
   // aggregation: "count"
   renderChartContentsUngroupedData = (data, groupings, seriesName, aggregation) => {
     let uniqSeriesVals = getUniqueValues(data, seriesName); // Good, bad, fair, e.g.
-    debugger
-    let formattedData = formatBarchartData(data, groupings, seriesName, aggregation)
+    let formattedData = formatBarchartData(data, groupings, seriesName, aggregation);
+    // Calculate the active index and series first
+    let stackStr = this.getGroupingStackStr();
+    let filterAtGroup = this.findFilterAtGroup(stackStr);
+    let activeIndex, activeSeries;
+
+    if (filterAtGroup && filterAtGroup.sliceInfo && filterAtGroup.sliceInfo.origObj) {
+      debugger
+      activeIndex = this.getDataIndex(formattedData, filterAtGroup.sliceInfo.origObj);
+      activeSeries = filterAtGroup.seriesInfo && Object.values(filterAtGroup.seriesInfo)[0];
+    }
 
     return (
       <BarChart
@@ -418,14 +446,35 @@ class BarResponsiveDataBase extends React.Component {
         <Legend  verticalAlign="top" wrapperStyle={{
         paddingBottom: "20px"
         }}/>
-          {this.renderBars(uniqSeriesVals)}   
+          {this.renderBars(uniqSeriesVals, activeIndex, activeSeries)}   
 
       </BarChart>
     )
   }  
 
+  findFilterAtGroup = (newStackStr) => {
+    if (!this.props.datasetFilters) {
+      return null;
+    }
+
+    let controlFilters = this.props.datasetFilters[this.props.i];
+    if (!controlFilters) {
+      return null;
+    }
+
+    return controlFilters[newStackStr];
+  }
+
   onGroupSelect(value, node) {
     console.log("[Barchart] onGroupSelect", value, node.props);
+
+    // calculate the new activeIndex/series from the new groupValue
+    // let stackStr = JSON.stringify(node.props.stackValue);
+    // let filterAtNewGroup = findFilterAtGroup(stackStr);
+    // if (filterAtNewGroup) {
+    //   // Find the index from the data
+    // }
+
     this.setState({
       groupingBoundVal: value,
     });
@@ -448,7 +497,7 @@ class BarResponsiveDataBase extends React.Component {
         return <div></div>;
       }
 
-      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping : [this.props.data.dataProps.categories];
+      let grouping = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.props.data.dataProps.categories];
 
       return this.renderChartContentsUngroupedData(
         this.props.apiData.data, 

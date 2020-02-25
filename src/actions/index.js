@@ -258,11 +258,12 @@ export function selectDashboardTree(hierarchyNode) {
 }
 
 
-export function clickChartSlice(sliceInfo, groupingStackStr, datasetId, controlId) {
+export function clickChartSlice(sliceInfo, seriesInfo, groupingStackStr, datasetId, controlId) {
   return {
     type: CLICK_CHART_SLICE,
     payload: {
       sliceInfo,
+      seriesInfo,
       groupingStackStr,
       datasetId,
       controlId

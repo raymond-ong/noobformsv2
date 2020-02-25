@@ -14,11 +14,12 @@ export const getOtherControlFilters = (controlId, datasetFilters, includeCarryOv
         let stacks = Object.keys(controlFilterInfo);
         let longestStack = stacks.reduce((r, e) => r.length < e.length ? e : r, "");
         
-        let sliceInfo = controlFilterInfo[longestStack];
-        if (!sliceInfo) {
+        let stackInfo = controlFilterInfo[longestStack];
+        if (!stackInfo) {
             continue;
         }
 
+        let sliceInfo = stackInfo.sliceInfo;
         for (let prop in sliceInfo.origObj) {
             retList.push({
                 Name: prop,
@@ -26,14 +27,17 @@ export const getOtherControlFilters = (controlId, datasetFilters, includeCarryOv
             });
         }
 
-        // if (includeCarryOver) {
-        //     for (let prop in sliceInfo.carryOverFilters) {
-        //         retList.push({
-        //             Name: prop,
-        //             Value: sliceInfo.carryOverFilters[prop]
-        //         });
-        //     }    
-        // }
+        let seriesInfo = stackInfo.seriesInfo;
+        if (!seriesInfo) {
+            continue;
+        }
+
+        for (let prop in seriesInfo) {
+            retList.push({
+                Name: prop,
+                Value: seriesInfo[prop]
+            });
+        }
     }
 
     return retList;
@@ -48,7 +52,7 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
     if (!currGroupingsArr) {
         return retList;
     }
-    let currGroupingStr = JSON.stringify(currGroupingsArr);
+    let currGroupingStr = JSON.stringify(currGroupingsArr.groupStack);
     for (let currCtrlId in datasetFilters) {
         if (currCtrlId !== controlId) {
             continue;
@@ -59,17 +63,30 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
                 continue;
             }
 
-            let sliceInfo = controlFilterInfo[stack];
-            if (!sliceInfo) {
+            let stackInfo = controlFilterInfo[stack];
+            if (!stackInfo) {
                 continue;
             }
 
+            let sliceInfo = stackInfo.sliceInfo;
             for (let prop in sliceInfo.origObj) {
                 retList.push({
                     Name: prop,
                     Value: sliceInfo.origObj[prop]
                 });
-            }       
+            }
+    
+            let seriesInfo = stackInfo.seriesInfo;
+            if (!seriesInfo) {
+                continue;
+            }
+    
+            for (let prop in seriesInfo) {
+                retList.push({
+                    Name: prop,
+                    Value: seriesInfo[prop]
+                });
+            }
         }                
     }
     // TODO: There can be duplicates if there are 3 levels of grouping
@@ -81,11 +98,11 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
 // This class is responsible for making API calls to get data, or handling click or grouping events
 export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata) => {
     console.log('[DEBUG] fetchData ReportControl', controlData.i);
-    debugger
+    
     setIsLoading(true);
     let postObj = {...controlData.data.dataProps}; // make a new copy
     if (!!currControlGrouping) {
-        postObj.Groupings = [...currControlGrouping];
+        postObj.Groupings = [...currControlGrouping.groupStack];
         // if (currControlGrouping.seriesName) {
         //     postObj.Groupings.push(currControlGrouping.seriesName);
         // }
@@ -106,6 +123,7 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
         let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters);
+        debugger
         let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping : null);
         postObj.RequestParams = postObj.RequestParams.concat(otherControlFilters);
         postObj.RequestParams = postObj.RequestParams.concat(ownHigherLevelFilters);

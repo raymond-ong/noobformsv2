@@ -75,6 +75,7 @@ class DashboardContent extends DesignerContentbase {
                     <td>Control ID</td>
                     <td>Stack ID</td>
                     <td>Own Filter</td>
+                    <td>Own Series</td>
                     {/* <td>Carryover Filter</td> */}
                 </tr>
             </thead>
@@ -86,11 +87,14 @@ class DashboardContent extends DesignerContentbase {
                         let currControlFilter = currDatasetFilters[currCtrlId];   
                         return Object.keys(currControlFilter).map((currStackStr, iStack) => {
                             let currStackFilter = currControlFilter[currStackStr];
+                            let sliceInfo = currStackFilter.sliceInfo;
+                            let seriesInfo = currStackFilter.seriesInfo;
                             return <tr key={`filterTable-${iStack}`} style={{border: "1px solid gray"}}>
                                 <td>Dataset: {datasetId}, </td>
                                 <td>ControlId: {currCtrlId}, </td>
                                 <td>Group: {currStackStr}, </td>
-                                <td>{JSON.stringify(currStackFilter.origObj)}</td>
+                                <td>{JSON.stringify(sliceInfo.origObj)}</td>
+                                <td>{JSON.stringify(seriesInfo)}</td>
                                 {/* <td>{JSON.stringify(currStackFilter.carryOverFilters)}</td> */}
                             </tr>
                         })

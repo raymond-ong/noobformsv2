@@ -7,8 +7,8 @@ const defaultState = {
     // structure:
     // {
     //     <datasetId1>: {
-    //             <controlId1>: {groupingStackStr1: sliceInfo, groupingStackStr2: sliceInfo }
-    //             <controlId2>: {groupingStackStr1: sliceInfo, groupingStackStr2: sliceInfo }
+    //             <controlId1>: {groupingStackStr1: {sliceInfo, seriesInfo}, groupingStackStr2: {sliceInfo, seriesInfo} }
+    //             <controlId2>: {groupingStackStr1: {sliceInfo, seriesInfo}, groupingStackStr2: {sliceInfo, seriesInfo} }
     //         },
     // }
     chartClickFilters: {},   // DatasetId vs list of filters. Should clear this when new node is selected
@@ -21,7 +21,7 @@ const findOtherControlFilters = (filtersRoot, datasetFilters, controlId) => {
 }
 
 const processChartClick = (filtersRoot, actionPayload) => {
-    let {sliceInfo, groupingStackStr, datasetId, controlId} = actionPayload;
+    let {sliceInfo, seriesInfo, groupingStackStr, datasetId, controlId} = actionPayload;
     if (!filtersRoot[datasetId]) {
         filtersRoot[datasetId] = {};
     }
@@ -42,29 +42,35 @@ const processChartClick = (filtersRoot, actionPayload) => {
     //     sliceInfoClone.carryOverFilters[otherFilter.Name] = otherFilter.Value;
     // })
 
-    controlFilters[groupingStackStr] = sliceInfoClone;
+    controlFilters[groupingStackStr] = {
+        sliceInfo: sliceInfoClone,
+        seriesInfo
+    };
     filtersRoot[datasetId] = {...datasetFilters}; // to force re-render (expectation: only controls belonging to this datasetId)
 }
 
 const processChartGroups = (groupings, actionPayload) => {
     // Just replace the grouping for the controlId directly
-    let {controlData, groupVal} = actionPayload;
-    //groupings[controlData.i] = groupVal;
-    groupings[controlData.i] = groupVal;
+    let {controlData, seriesName, groupVal} = actionPayload;
+    groupings[controlData.i] = {
+        groupStack: groupVal,
+        seriesName // seems like we don't need this here...we only need this during filtering
+    };
 }
 
 // actionPayload is same as the payload in processChartGroups
 // chartClickFilters is the state's old chartClickFilters
 // if there are updates, return the new chartClickFilters; otherwise return null
 const removeLowerLevelFilters = (actionPayload, filtersRoot) => {
+    //debugger;
     let {controlData, groupVal} = actionPayload;
     let groupValStr = JSON.stringify(groupVal);
     // find filter for this Id
-    if (!controlData || !controlData.i || !controlData.dataProps) {
+    if (!controlData || !controlData.i || !controlData.data.dataProps) {
         return null; // sanity check only
     }
 
-    let datasetFilters = filtersRoot[controlData.dataProps.datasetId];
+    let datasetFilters = filtersRoot[controlData.data.dataProps.datasetId];
     if (!datasetFilters) {
         return null;
     }
@@ -79,7 +85,7 @@ const removeLowerLevelFilters = (actionPayload, filtersRoot) => {
             delete controlFilters[g];
         })
 
-        filtersRoot[controlData.dataProps.datasetId] = {...datasetFilters}; // to force re-render (expectation: only controls belonging to this datasetId)
+        filtersRoot[controlData.data.dataProps.datasetId] = {...datasetFilters}; // to force re-render (expectation: only controls belonging to this datasetId)
 
         return filtersRoot;
     }

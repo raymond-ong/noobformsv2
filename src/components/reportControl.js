@@ -14,10 +14,14 @@ const ROW_HEIGHT = 40;
 const CONTROL_PADDING = 20;
 const GRID_GAP = 5;
 
-
-const handleChartClick = (sliceInfo, groupingStackStr, controlData, clickChartSlice) => {
+// a. sliceInfo: the category(ies) of pie chart/bar chart (e.g. vendor="Yokogawa"+model="EJA")
+// b.seriesInfo: only applicable to bar chart, e.g. PRM device status = Normal
+// c. groupingStackStr: e.g. "[vendor,model]"
+// For sending request to API, we only need a and b
+// For calculating the active index, we need a, b and c
+const handleChartClick = (sliceInfo, seriesInfo, groupingStackStr, controlData, clickChartSlice) => {
     // Fire a redux action
-    clickChartSlice(sliceInfo, groupingStackStr, controlData.data.dataProps.datasetId, controlData.i);
+    clickChartSlice(sliceInfo, seriesInfo, groupingStackStr, controlData.data.dataProps.datasetId, controlData.i);
 }
 
 const handleGroupSelect = (groupingValue, seriesName, controlData, selectChartGroup) => {
@@ -43,7 +47,7 @@ const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChar
         controlData.apiData = apiData;        
         controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
         controlData.currControlGrouping = currControlGrouping;
-        controlData.handleChartClick = (sliceInfo, groupingStackStr) => handleChartClick(sliceInfo, groupingStackStr, controlData, clickChartSlice);
+        controlData.handleChartClick = (sliceInfo, seriesInfo, groupingStackStr) => handleChartClick(sliceInfo, seriesInfo, groupingStackStr, controlData, clickChartSlice);
         controlData.handleGroupSelect = (groupValue, seriesName) => handleGroupSelect(groupValue, seriesName, controlData, selectChartGroup);
         controlData.metadata = metadata;
     }

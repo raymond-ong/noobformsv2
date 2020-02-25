@@ -9,6 +9,7 @@ export const filterObj = (obj, fields) => {
     return _.pick(obj, fields);
 } 
 
+// For Pie only, there is no series
 export const calculateActiveIndex = (datasetFilter, data, controlId, groupingStackStr) => {
     if (!datasetFilter) {
         return null;
@@ -18,10 +19,12 @@ export const calculateActiveIndex = (datasetFilter, data, controlId, groupingSta
     if (!controlIdFilter) {
         return null
     }
-    let sliceInfo = controlIdFilter[groupingStackStr];
-    if (!sliceInfo) {
+    let stackInfo = controlIdFilter[groupingStackStr];
+    if (!stackInfo) {
         return null;
     }
+
+    let sliceInfo = stackInfo.sliceInfo;
 
     let dataIndex = data.findIndex(d => {
         // this data must satisfy all filter criteria

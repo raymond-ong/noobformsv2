@@ -172,7 +172,7 @@ export class PieResponsiveDataBase extends React.Component {
     //let initialGroupingVal = props.dataProps? getDefaultGrouping(props.dataProps.categories) : null;
     let initialGroupingVal = props.data.dataProps? props.data.dataProps.categories : null;
     this.state = {
-      activeIndex: props.activeIndex,
+      activeIndex: props.activeIndex, // not used anymore
       groupingBoundVal: initialGroupingVal, // bound to treedropdown
       //groupingBoundValStack: initialGroupingVal ? [initialGroupingVal] : null, // same as groupingBoundVal but in stack format, store this also, for convenience
     };
@@ -189,12 +189,12 @@ export class PieResponsiveDataBase extends React.Component {
       // we store the grouping stack as string to make it easier to compare
       let groupingStackStr = this.getGroupingStackStr();
 
-      this.props.handleChartClick(sectorInfo, groupingStackStr);
+      this.props.handleChartClick(sectorInfo, null, groupingStackStr);
     }
   }
 
   getGroupingStackStr = () => {
-    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping : [this.state.groupingBoundVal];
+    let groupingStack = this.props.currControlGrouping ? this.props.currControlGrouping.groupStack : [this.state.groupingBoundVal];
     return JSON.stringify(groupingStack);
   }
 
@@ -214,7 +214,7 @@ export class PieResponsiveDataBase extends React.Component {
   }
 
   formatApiData(apiData, dataProps, currControlGrouping) {
-    let grouping = currControlGrouping ? currControlGrouping : [dataProps.categories];
+    let grouping = currControlGrouping ? currControlGrouping.groupStack : [dataProps.categories];
     return apiData.map(d => {
       let extractedName = extractName(grouping, d);
 
