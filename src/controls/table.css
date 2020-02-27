@@ -14,27 +14,36 @@
 
 .noobTable tr th,
 .noobTable tfoot tr td {
-    border: 1px solid lightgray;
+    /* border: 1px solid #acb; */
+    border: 1px solid #aaa;
     padding: 5px;
-    background-color: dimgray;
+    background-color: gray;
+    /* background-color: #ddd; */
     text-align: center;
-    color: white;
+    color: #fff;
     word-break: break-all;
 }
 
 .noobTable tr td {
-    border: 1px solid gray;
+    border: 1px solid #aaa;
+    /* border: 1px solid #ddd; */
     padding: 5px;
     word-break: break-all;
 }
+
+/* put stripe on alternate row */
+.noobTable tr:nth-child(odd) {background-color: #fff;}
+
 
 .noobTable tfoot tr td {
     
 }
 
 .pagination {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    /* border: 1px solid lightgray; */    
+    background-color: white;
 }
 
 .pagination button,
@@ -47,4 +56,9 @@
 
 .noobTable thead input {
     border-radius: 3px;
+}
+
+.colFilter {
+    /* padding-top: 5px; */
+    border-top: none;
 }

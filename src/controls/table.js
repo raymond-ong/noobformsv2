@@ -3,12 +3,13 @@ import './common.css';
 import './table.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 import { useTable, usePagination, useFilters, useSortBy } from 'react-table';
+import splitWord from '../helper/wordSplitter';
 
 const statuses = ['Good', 'Bad', 'Fair', 'Uncertain']
 
-const getData = () => {
+const getSampleData = () => {
     let retList = [];
-    let nData = 20;
+    let nData = 2;
     for (let iArea = 0; iArea < 10; iArea++) {
         for (let i = 0; i < nData; i++) {
         retList.push({
@@ -47,7 +48,7 @@ const computeKpi = (kpiName, info) => {
     return `${good / totalTargets * 100.00}%`
 }
 
-const columns = [
+const sampleColumns = [
     {
         Header: 'Target Info',
         Footer: 'Target Summary',    
@@ -89,69 +90,88 @@ const columns = [
         },
     
         {
-            Header: 'KPI 1 - Dummy KPI with a very long name',
+            //Header: 'KPI 1 - Dummy KPI with a very long name',
+            Header: 'KPI 1',
             accessor: 'kpi1',
             Footer: info => computeKpi('kpi1', info),
             colType: 'kpi'
         },
         {
-            Header: 'KPI 2 - Dummy KPI with a very long name',
+            // Header: 'KPI 2 - Dummy KPI with a very long name',
+            Header: 'KPI 2',
             accessor: 'kpi2',
             Footer: info => computeKpi('kpi2', info),
             colType: 'kpi'
         },
         {
-            Header: 'KPI 3 - Dummy KPI with a very long name',
+            //Header: 'KPI 3 - Dummy KPI with a very long name',
+            Header: 'KPI 3',
             accessor: 'kpi3',
             Footer: info => computeKpi('kpi3', info),
             colType: 'kpi'
         },
-        {
-            Header: 'KPI 4 - Dummy KPI with a very long name',
-            accessor: 'kpi4',
-            Footer: info => computeKpi('kpi4', info),
-            colType: 'kpi'
-        },
-        {
-            Header: 'KPI 5 - Dummy KPI with a very long name',
-            accessor: 'kpi5',
-            Footer: info => computeKpi('kpi5', info),
-            colType: 'kpi'
-        },
-        {
-            Header: 'KPI 6 - Dummy KPI with a very long name',
-            accessor: 'kpi6',
-            Footer: info => computeKpi('kpi6', info),
-            colType: 'kpi'
-        },
-        {
-            Header: 'KPI 7 - Dummy KPI with a very long name',
-            accessor: 'kpi7',
-            Footer: info => computeKpi('kpi7', info),
-            colType: 'kpi'
-        },
-        {
-            Header: 'KPI 8 - Dummy KPI with a very long name',
-            accessor: 'kpi8',
-            Footer: info => computeKpi('kpi8', info),
-            colType: 'kpi'
-        },
-        {
-            Header: 'KPI 9 - Dummy KPI with a very long name',
-            accessor: 'kpi9',
-            Footer: info => computeKpi('kpi9', info),
-            colType: 'kpi'
-        },
-        {
-            Header: 'KPI 10 - Dummy KPI with a very long name',
-            accessor: 'kpi10',
-            Footer: info => computeKpi('kpi10', info),
-            colType: 'kpi'
-        },
+        // {
+        //     Header: 'KPI 4 - Dummy KPI with a very long name',
+        //     accessor: 'kpi4',
+        //     Footer: info => computeKpi('kpi4', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     Header: 'KPI 5 - Dummy KPI with a very long name',
+        //     accessor: 'kpi5',
+        //     Footer: info => computeKpi('kpi5', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     Header: 'KPI 6 - Dummy KPI with a very long name',
+        //     accessor: 'kpi6',
+        //     Footer: info => computeKpi('kpi6', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     Header: 'KPI 7 - Dummy KPI with a very long name',
+        //     accessor: 'kpi7',
+        //     Footer: info => computeKpi('kpi7', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     Header: 'KPI 8 - Dummy KPI with a very long name',
+        //     accessor: 'kpi8',
+        //     Footer: info => computeKpi('kpi8', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     Header: 'KPI 9 - Dummy KPI with a very long name',
+        //     accessor: 'kpi9',
+        //     Footer: info => computeKpi('kpi9', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     Header: 'KPI 10 - Dummy KPI with a very long name',
+        //     accessor: 'kpi10',
+        //     Footer: info => computeKpi('kpi10', info),
+        //     colType: 'kpi'
+        // },
 
         ]
     },
 ];
+
+const generateColumns = (data) => {
+    if (!Array.isArray(data)) {
+        return [];
+    }
+    let firstData = data[0];
+    let retList = [];
+    for (let prop in firstData) {
+        retList.push({
+            Header: splitWord(prop),
+            accessor: prop
+        });
+    }
+
+    return retList;
+}
 
 const getAdditionalCellProps = (cell) => {
     if (cell.column.colType !== 'kpi') {
@@ -260,17 +280,32 @@ function DefaultColumnFilter({
     )
   }
   
+const hasFilterableColumn = (headerGroup) => {
+    let findFilterableColumn = headerGroup.headers.find(col => col.canFilter);
+    return !!findFilterableColumn;
+}
 
 const Table = (props) => {
     let classNames = 'noobTableContainer ';
     if (props.selected === true) {
         classNames += ' ctrl-selected'
     }
-    
-    const totalCols = getTotalNumColumns(columns);
 
-    const memoColumns = React.useMemo(() => columns, []);
-    const memoData = React.useMemo(() => getData(), []);
+    let columnsToUse, dataToUse;
+    if (props.designMode) {
+    // if (true) {
+        columnsToUse = sampleColumns;
+        dataToUse = getSampleData();
+    }
+    else {
+        dataToUse = props.apiData? props.apiData.data : [];
+        columnsToUse = props.apiData? generateColumns(props.apiData.data) : [];
+        debugger
+    }
+
+    const totalCols = getTotalNumColumns(columnsToUse);
+    const memoColumns = React.useMemo(() => columnsToUse, [props.apiData]);
+    const memoData = React.useMemo(() => dataToUse, [props.apiData]);
     const filterTypes = React.useMemo(
         () => ({
           // Or, override the default text filter to use
@@ -292,6 +327,8 @@ const Table = (props) => {
     const defaultColumn = React.useMemo(
         () => ({
           // Let's set up our default Filter UI
+          // Filter UI can vary depending on column type
+          // E.g. numeric, dropdown
           Filter: DefaultColumnFilter,
         }),
         []
@@ -349,11 +386,16 @@ const Table = (props) => {
         });
     })
 
+    if (!dataToUse) {
+        return <div>Loading data...</div>
+    }
+
     return <div className={classNames}>
         <div className="controlLabel">{props.data.label}</div>
         <table className="noobTable" {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
+                <>
                 <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => {
                     let thisWidth = 100.0 / totalCols;// 17 = number of columns + extra columns from colspan
@@ -375,13 +417,20 @@ const Table = (props) => {
                         : ''}
                     </span>
                     {/* Render the columns filter UI */}
-                    <div>{column.canFilter ? column.render('Filter') : null}</div>
+                    {/* <div>{column.canFilter ? column.render('Filter') : null}</div> */}
                     </th>
                     )
                     }
                 )                
                 }
                 </tr>
+
+                {hasFilterableColumn(headerGroup) && <tr {...headerGroup.getHeaderGroupProps()}>{headerGroup.headers.map(column => {
+                        return <th><div className="colFilter">{column.canFilter ? column.render('Filter') : null}</div></th>
+                        })
+                    }                
+                </tr>}
+                </>
             ))}
             </thead>
             <tbody {...getTableBodyProps()}>
@@ -398,10 +447,10 @@ const Table = (props) => {
                 )}
             )}
             <tr>
-            <td colSpan="20" style={{backgroundColor: 'lightblue'}}>Custom Content! Found {rows.length} records!</td>
+            <td colSpan="20" style={{backgroundColor: '#ccddee'}}>Found {rows.length} records</td>
             </tr>
             </tbody>
-            <tfoot>
+            {/* <tfoot>
                 {footerGroups.map(group => (
                 <tr {...group.getFooterGroupProps()}>
                     {group.headers.map(column => (
@@ -409,7 +458,7 @@ const Table = (props) => {
                     ))}
                 </tr>
                 ))}
-            </tfoot>
+            </tfoot> */}
         </table>
         {/* for the paginator...maybe separate into its own function */}
         {pageCount > 0 && 
@@ -454,7 +503,7 @@ const Table = (props) => {
                     setPageSize(Number(e.target.value))
                 }}
                 >
-                {[50, 10, 20, 30, 40].map(pageSize => (
+                {[5, 10, 20, 30, 40].map(pageSize => (
                     <option key={pageSize} value={pageSize}>
                     Show {pageSize}
                     </option>
@@ -464,3 +513,37 @@ const Table = (props) => {
         </div>
     }
 export default noobControlHoc(Table);
+
+
+// For the properties panel
+export const tableProps = [
+    {
+      name: 'dataProps', 
+      propType: 'section',
+    },
+    {
+      name: 'datasetId', 
+      propType: 'number',
+    },
+    {
+      name: 'requestType', 
+      propType: 'metadata',
+      metadataField: 'requestTypes',
+      metadataPropType: 'dropdown'
+    },
+    {
+      name: 'columns', 
+      propType: 'metadata',
+      metadataField: 'dimensions',
+      metadataPropType: 'treeDropdown',
+      multiple: true,
+    },
+    {
+        name: 'aggregation', 
+        propType: 'metadata',
+        metadataField: null,
+        metadataPropType: 'textbox',
+        toolTip: 'Only count is supported in this version. Also, aggregation may not be applicable, depending on Request Type.',
+        readOnly: true
+      },
+];

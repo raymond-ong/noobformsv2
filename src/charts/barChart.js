@@ -227,7 +227,7 @@ class CustomizedAxisTick extends PureComponent {
    
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-45)">{payload.value}</text>
+        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)">{payload.value}</text>
       </g>
     );
   }
@@ -243,7 +243,7 @@ class CustomizedAxisTickTrial extends PureComponent {
     
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-45)">{Object.values(jsonObj).join(' / ')}</text>
+        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)">{Object.values(jsonObj).join(' / ')}</text>
       </g>
     );
   }
@@ -576,6 +576,14 @@ export const barProps = [
     propType: 'metadata',
     metadataField: 'dimensions',
     metadataPropType: 'treeDropdown'
+  },
+  {
+    name: 'aggregation', 
+    propType: 'metadata',
+    metadataField: null,
+    metadataPropType: 'textbox',
+    toolTip: 'Only count is supported in this version',
+    readOnly: true
   },
 
 ];

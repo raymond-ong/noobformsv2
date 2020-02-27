@@ -11,6 +11,7 @@ import {sectionProps} from '../controls/section';
 import {labelProps} from '../controls/label';
 import {pieProps} from '../charts/pieChart';
 import {barProps} from '../charts/barChart';
+import {tableProps} from '../controls/table';
 import * as constants from '../constants';
 import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown, FormCheckbox} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
@@ -44,6 +45,9 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
             break;
         case 'barchart':
             specialProps = barProps;
+            break;
+        case 'table':
+            specialProps = tableProps;
             break;
         default:
             break;
@@ -188,7 +192,7 @@ const renderMetadataField = (metaFieldName, metadata, metaSpecialProps, controlI
                     key={controlId+'_'+metaFieldName}
                     name={namePrefix+metaFieldName}
                     label={splitWord(metaFieldName)+":"}
-                    options={getMetadataOptions(metadata, metaSpecialProps.metadataField)}
+                    options={getMetadataOptions(metadata, metaSpecialProps.metadataField)}                    
                 />
         case 'treeDropdown':
             return <FormTreeDropDown
@@ -198,6 +202,15 @@ const renderMetadataField = (metaFieldName, metadata, metaSpecialProps, controlI
                 isRequired={false}
                 label={splitWord(metaFieldName)+":"}
                 dropdownStyle={{ height: 300, overflow: 'auto' }}
+                multiple={metaSpecialProps.multiple}
+                />
+        case 'textbox':
+            return <FormText
+                key={controlId+'_'+metaFieldName}
+                name={namePrefix+metaFieldName}
+                label={splitWord(metaFieldName)+":"}
+                toolTip={metaSpecialProps.toolTip}
+                readOnly={metaSpecialProps.readOnly}
                 />
         default:
             break;

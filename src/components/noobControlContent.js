@@ -55,7 +55,8 @@ export const getContentDiv = (controlData, mode) => {
                 content = <ReportTable {...controlData}/> 
             }
             else {
-                content = <Table {...controlData}/> 
+                let designMode = mode !== 'dashboard';
+                content = <Table {...controlData} designMode={designMode}/> 
             }
             
             break;

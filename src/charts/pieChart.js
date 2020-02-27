@@ -414,6 +414,7 @@ export const pieProps = [
   {
     name: 'datasetId', 
     propType: 'number',
+    toolTip: 'Put the same datasetId for all controls that are linked. When a filter is applied in one control, other linked controls will also be filtered.'
   },
   {
     name: 'requestType', 
@@ -427,15 +428,22 @@ export const pieProps = [
     metadataField: 'dimensions',
     metadataPropType: 'treeDropdown'
   },
-
+  // {
+  //   // TODO: this is for aggregation dropdown
+  //   // Value depends on the selected dimension
+  //   name: 'aggregation', 
+  //   propType: 'metadata',
+  //   metadataField: null,
+  //   metadataPropType: 'dropdown',
+  //   metadataAssoc: 'categories',
+  //   metadataAssocField: 'aggregations'
+  // },
   {
-    // TODO: this is for aggregation dropdown
-    // Value depends on the selected dimension
     name: 'aggregation', 
     propType: 'metadata',
     metadataField: null,
-    metadataPropType: 'dropdown',
-    metadataAssoc: 'categories',
-    metadataAssocField: 'aggregations'
+    metadataPropType: 'textbox',
+    toolTip: 'Only count is supported in this version',
+    readOnly: true
   },
 ];

@@ -58,18 +58,19 @@ const generateDefaultLayout = (metadata) => {
   //     }},
 
   // [3 new] Pie Chart
-  {i: 'ctrl-pie0X', x: 0, y: 2, w: 6, h: 6, ctrlType: 'pie',       
+  {i: 'ctrl-pie0X', x: 0, y: 2, w: 6, h: 8, ctrlType: 'pie',       
       data: {
           label: 'Pie:',
           dataProps: {
             datasetId: 0,
             requestType: 'GetDeviceCounts',
             categories: '',
+            aggregation: 'count'
           }
       }},
 
   // [4 new] Bar Chart
-  {i: 'ctrl-bar0X', x: 0, y: 8, w: 6, h: 6, ctrlType: 'barchart',       
+  {i: 'ctrl-bar0X', x: 6, y: 2, w: 6, h: 8, ctrlType: 'barchart',       
       data: {
           label: 'Bar:',
           stacked: false,
@@ -83,15 +84,25 @@ const generateDefaultLayout = (metadata) => {
       }},
 
   //[2 NEW] Gauge chart
-  {i: 'ctrl-gauge0x', x: 6, y: 2, w: 6, h: 6, ctrlType: 'gauge',       
+  {i: 'ctrl-gauge0x', x: 0, y: 14, w: 6, h: 4, ctrlType: 'gauge',       
       data: {
           label: 'Gauge:',
           percent: 95.5
   }},
 
   // Image Map
-  {i: 'ctrl-imageMap0X', x: 6, y:8, w: 6, h: 6,ctrlType: 'imageMap', data: {
+  {i: 'ctrl-imageMap0X', x: 6, y:14, w: 6, h: 4,ctrlType: 'imageMap', data: {
     label: 'Image Map:'
+  }},
+
+  {i: 'ctrl-table0X', x: 0, y:10, w: 12, h: 4,ctrlType: 'table', data: {
+    label: 'Table:',
+    dataProps: {
+      columns: [],
+      datasetId: 0,
+      requestType: 'GetDeviceDetails',
+      aggregation: 'count'
+    }
   }},
 
 
