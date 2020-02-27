@@ -14,9 +14,19 @@ export const getMetadataOptions = (metadata, name) => {
     });
 }
 
-export const getMetadataTreeDropdownOptions = (metadata, name) => {
-    let treeFields = metadata[name];
-    return convertApiMetadataDims(treeFields);
+export const getMetadataTreeDropdownOptions = (metadata, names) => {
+    let retList = [];
+    if (!Array.isArray(names)) {
+        return retList;
+    }
+    
+    names.forEach(name => {        
+        let treeFields = metadata[name];
+        let treeOptions = convertApiMetadataDims(treeFields);
+        retList = retList.concat(treeOptions);        
+    });    
+
+    return retList;
 }
 
 const convertApiMetadataDims = (apiMetadataDims, parent=null) => {

@@ -1,4 +1,3 @@
-
 import React, {useEffect, useState} from "react";
 import _ from "lodash";
 import { Responsive, WidthProvider } from "react-grid-layout";
@@ -18,6 +17,8 @@ import Combo from '../controls/combo';
 
 import {connect} from 'react-redux';
 
+// TODO: Delete this whole file...this is just for playing with RGL library
+// But we ended up implementing our own designer
 
 //const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const ResponsiveReactGridLayout = Responsive;

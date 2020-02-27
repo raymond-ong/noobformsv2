@@ -1,8 +1,10 @@
 import { SELECT_TOOLPANEL_TREE, 
           SELECT_CONTROL, 
+          SELECT_PAGE,
           UPDATE_DESIGNER_LAYOUT,
           OPEN_LAYOUT,
           UPDATE_CONTROL_PROPS,
+          UPDATE_LAYOUT_PROPS,
           DELETE_CONTROL,
           SAVE_DESIGNER_LAYOUT,
           deleteControl} from "../actions/index";
@@ -191,7 +193,8 @@ const generateDefaultLayout = (metadata) => {
 
 const defaultLayoutData = {
   columns: 12,
-  rows: 20
+  rows: 20,
+  pageFilterFields: []
 }
 
 // This is the default layout for the Dashboard
@@ -231,7 +234,7 @@ const generateDefaultDashboard = () => {
 
 
 const defaultState = {
-    toolPanelTreeSelected: null,
+    toolPanelTreeSelected: null, // to delete...this is used inside the RGL tab only
     //selectedControlId: null, // Don't put here. Just put inside the controls data. This is to avoid rendering all controls.
     // It is OK to put the selectedControlId inside the reducer for showing the Control Props
     resizingControlId: null, // try to just use local state to keep track. The whole designer only needs to know after resizing.
@@ -243,7 +246,9 @@ const defaultState = {
     dashLayoutData: {},
 
     // For the metadata in configuring the data sources
-    metadata: OLD_DUMMY_DATA
+    metadata: OLD_DUMMY_DATA,
+
+    pageSelected: false
 }
 
 const defaultControlData = {
@@ -378,6 +383,23 @@ const setControlSelected = (controlId, newLayout) => {
   });  
 }
 
+const unselectAllControls = (newLayout) => {
+  let affectedControls = [];
+  newLayout.forEach(control => {
+    if (control.selected) {      
+        affectedControls.push({...control, selected: false});
+      }
+    }
+  );
+
+  // Remove the old control and push the new objects
+  affectedControls.forEach(ctrl => {
+    let index = newLayout.findIndex(x => x.i === ctrl.i);
+    newLayout.splice(index, 1);
+    newLayout.push(ctrl);
+  });  
+}
+
 const updateControlProps = (updatedControl, newLayout) => {
   let findControlIndex = newLayout.findIndex(ctrl => ctrl.i === updatedControl.i);
   if (findControlIndex < 0) {
@@ -388,6 +410,12 @@ const updateControlProps = (updatedControl, newLayout) => {
   // Remove the old control and push the new object
   newLayout.splice(findControlIndex, 1);
   newLayout.push(newControl);
+}
+
+const updateLayoutProps = (updatedLayoutProps) => {
+  return {...updatedLayoutProps, 
+    rows: parseInt(updatedLayoutProps.rows)
+  };
 }
 
 const handleDeleteControl = (deletedControl, newLayout) => {
@@ -408,9 +436,17 @@ export default function(state = defaultState, action) {
       };
     case SELECT_CONTROL:
       let newStateSelectCtrl = {...state};
+      newStateSelectCtrl.pageSelected = false;
       //newStateSelectCtrl.layout = [...state.layout]; // No need. If you do this, the entire designer will rerender, but only the empty controls will rerender
       setControlSelected(action.payload, newStateSelectCtrl.layout);
       return newStateSelectCtrl;
+    case SELECT_PAGE:
+      // a. unselect selected controls
+      // b. 
+      let newStateSelectPage = {...state};
+      newStateSelectPage.pageSelected = true;
+      unselectAllControls(newStateSelectPage.layout);
+      return newStateSelectPage;  
     case UPDATE_DESIGNER_LAYOUT:
         let updatedControls = action.payload;
         let newState = {
@@ -431,6 +467,15 @@ export default function(state = defaultState, action) {
         updateControlProps(action.payload, newStateUpdProps.layout); 
 
         return newStateUpdProps;
+    case UPDATE_LAYOUT_PROPS:
+      let newStateUpdLayoutProps = {
+        ...state,          
+      };
+
+      debugger
+      newStateUpdLayoutProps.layoutData = updateLayoutProps(action.payload); 
+
+      return newStateUpdLayoutProps;
     case DELETE_CONTROL:
       let newStateDeleteControl = {
         ...state,          

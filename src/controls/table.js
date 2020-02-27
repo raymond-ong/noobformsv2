@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import './common.css';
 import './table.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
@@ -300,7 +300,6 @@ const Table = (props) => {
     else {
         dataToUse = props.apiData? props.apiData.data : [];
         columnsToUse = props.apiData? generateColumns(props.apiData.data) : [];
-        debugger
     }
 
     const totalCols = getTotalNumColumns(columnsToUse);
@@ -395,7 +394,7 @@ const Table = (props) => {
         <table className="noobTable" {...getTableProps()}>
             <thead>
             {headerGroups.map((headerGroup, iHeaderGrp) => (
-                <>
+                <Fragment key={`headerGroup_${iHeaderGrp}`}>
                 <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => {
                     let thisWidth = 100.0 / totalCols;
@@ -426,11 +425,11 @@ const Table = (props) => {
                 </tr>
 
                 {hasFilterableColumn(headerGroup) && <tr key={`headerGroupFilter_${iHeaderGrp}`}>{headerGroup.headers.map(column => {
-                        return <th><div className="colFilter">{column.canFilter ? column.render('Filter') : null}</div></th>
+                        return <th key={`headerGroupFilter_${iHeaderGrp}_${column.id}`}><div className="colFilter">{column.canFilter ? column.render('Filter') : null}</div></th>
                         })
                     }                
                 </tr>}
-                </>
+                </Fragment>
             ))}
             </thead>
             <tbody {...getTableBodyProps()}>

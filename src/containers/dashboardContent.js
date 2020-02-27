@@ -58,11 +58,13 @@ class DashboardContent extends DesignerContentbase {
             controls: findLayout && JSON.parse(findLayout.layoutJson),
             layoutData: findLayout && {
                 rows: findLayout.numRows,
-                columns: findLayout.numCols
+                columns: findLayout.numCols,
+                pageFilterFields: findLayout.pageFilterFields && JSON.parse(findLayout.pageFilterFields)
             }
         }
     }
 
+    // This is for debugging only!
     renderDatasetFilters = () => {
         if (!this.props.chartClickFilters || Object.keys(this.props.chartClickFilters).length <= 0) {
             return null;
@@ -106,12 +108,17 @@ class DashboardContent extends DesignerContentbase {
         </table>)
     }
 
+    renderPageFilters = () => {
+
+    }
+
     renderForm = (layoutName, layoutObj, metadata) => {
         if (!this.props.selectedNode || !this.props.selectedNode.key) {
             return <div className="ui message orange">Please select a node from the treeview on the left!</div>
         }
         return <div>
             {/* {"[DEBUG] Layout Name: " + layoutName} */}
+            {this.renderPageFilters()}
             {this.renderDatasetFilters()}
             <ReportForm
                 containerWidth={this.state.rightPixels}

@@ -8,7 +8,7 @@ import DesignerContentbase from './designerContentBase';
 import Toolbar from '../components/toolbar';
 import NoobForm from '../components/noobForm';
 import './designerCommon.css';
-import {saveLayout, openLayout} from '../actions';
+import {saveLayout, openLayout, selectedPage} from '../actions';
 import ShowMessage, {NotifType} from '../helper/notification';
 
 import {connect} from 'react-redux';
@@ -44,9 +44,11 @@ class formsDesignerContent extends DesignerContentbase {
                 {key:'designertb_save', icon: 'save', text: 'Save', callback: this.saveCallback},
                 {key:'designertb_saveas', icon: 'save outline', text: 'Save As...', callback: this.saveAsCallback},
                 {key:'designertb_open', icon: 'open folder outline', text: 'Open...', callback: this.openCallback},
+                
             ],
             'right': [
-                {key:'designertb_preview', icon: 'eye', text: 'Hold to Preview', disabled: true},
+                //{key:'designertb_preview', icon: 'eye', text: 'Hold to Preview', disabled: true},
+                {key:'designertb_configPage', icon: 'window maximize outline', text: 'Configure Page Settings', callback: this.configPageSettings},
             ]
         }
 
@@ -56,6 +58,11 @@ class formsDesignerContent extends DesignerContentbase {
             showOpenForm: false,
             openedLayoutName: null,            
         }
+    }
+
+    configPageSettings = () => {
+        // Fire a redux action to select the page, and unselect any selected control
+        this.props.selectedPage();
     }
 
     saveCallback = () => {
@@ -154,6 +161,7 @@ class formsDesignerContent extends DesignerContentbase {
                 columns: layoutFromApi.numCols,
                 rows: layoutFromApi.numRows,
                 name: layoutFromApi.name,
+                pageFilterFields: layoutFromApi.pageFilterFields && JSON.parse(layoutFromApi.pageFilterFields),
             },
             title: layoutFromApi.name,
             titleTooltip: "Last saved on " + layoutFromApi.lastUpdateDate
@@ -204,6 +212,7 @@ class formsDesignerContent extends DesignerContentbase {
 }
 
 const mapStateToProps = (state) => {
+    debugger
     return {
         layout: state.designer.layout,
         layoutData: state.designer.layoutData,
@@ -213,7 +222,7 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ saveLayout, openLayout }, dispatch);
+    return bindActionCreators({ saveLayout, openLayout, selectedPage }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(formsDesignerContent);

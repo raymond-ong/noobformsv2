@@ -17,10 +17,12 @@ export const FETCH_HIERARCHYVIEWS = "FETCH_HIERARCHYVIEWS"
 export const FETCH_DIMENSIONS = "FETCH_DIMENSIONS"
 export const FETCH_HIERARCHYKPI = "FETCH_HIERARCHYKPI"
 export const SELECT_CONTROL = "SELECT_CONTROL"
+export const SELECT_PAGE = "SELECT_PAGE"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
 export const OPEN_LAYOUT = "OPEN_LAYOUT";
 export const SAVE_DESIGNER_LAYOUT = "SAVE_DESIGNER_LAYOUT";
 export const UPDATE_CONTROL_PROPS = "UPDATE_CONTROL_PROPS";
+export const UPDATE_LAYOUT_PROPS = "UPDATE_LAYOUT_PROPS";
 export const DELETE_CONTROL = "DELETE_CONTROL";
 export const SAVE_HIER_DESIGN_NODE = "SAVE_HIER_DESIGN_NODE";
 export const SAVE_HIERARCHYVIEW = "SAVE_HIERARCHYVIEW";
@@ -164,6 +166,13 @@ export const selectedControl = (controlId) => {
   }
 }
 
+export const selectedPage = () => {
+  return {
+    type: SELECT_PAGE,
+    payload: null
+  }
+}
+
 // For UI update only, not yet persisted to the storage like DB or browser storage
 // Assumption is that validations have been performed on the updated controls
 export const updateLayout = (updatedControls) => {
@@ -194,7 +203,8 @@ export const saveLayout = (layout, name, layoutData) => async dispatch => {
       name,
       layoutJson: JSON.stringify(layout),
       numRows: layoutData.rows,
-      numCols: layoutData.columns
+      numCols: layoutData.columns,
+      pageFilterFields: JSON.stringify(layoutData.pageFilterFields)
     });  
   }
   catch(err) {
@@ -238,6 +248,14 @@ export const updateControlProps = (newControlData) => {
   return {
     type: UPDATE_CONTROL_PROPS,
     payload: newControlData
+  }
+}
+
+export const updateLayoutProps = (newLayoutProps) => {
+  debugger
+  return {
+    type: UPDATE_LAYOUT_PROPS,
+    payload: newLayoutProps
   }
 }
 

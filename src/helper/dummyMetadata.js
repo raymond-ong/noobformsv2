@@ -44,8 +44,9 @@ export const DUMMY_APR_METADATA = {
 		{
 			// Let the user select/modify the Analysis Period when viewing the pages
 			name: 'AnalysisPeriod',   
-			dataTypes: ['Date Range'],   
-			enumValues: ['Latest value only', 'Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range']
+			dataType: 'Date Range',   
+      enumValues: ['Latest value only', 'Last 1 day', 'Last 7 days', 'Last 30 days', 'Custom Range'],
+      defaultValue: 'Last 30 days'
 		},
 	],
 	// the groupings is for UI organization only.
@@ -185,7 +186,7 @@ export const DUMMY_APR_METADATA = {
 			dataType: "group",
 			items: [
 				{
-					name: "Timestamp",
+					name: "AlarmTimestamp",
 					dataType: "datetime",
 				},
 				{

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
-import {updateControlProps, deleteControl} from '../actions';
+import {updateControlProps, deleteControl, updateLayoutProps} from '../actions';
 
 import './propertiesPanel.css';
 import {getToolItemByName} from '../components/toolbox';
@@ -16,10 +16,10 @@ import * as constants from '../constants';
 import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown, FormCheckbox} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 import ShowMessage, {NotifType} from '../helper/notification';
-import {Divider, Header, Icon} from 'semantic-ui-react';
+import {Divider, Header, Icon, Message} from 'semantic-ui-react';
 import {getMetadataOptions, getMetadataTreeDropdownOptions} from '../helper/metadataManager';
 
-const PREFIX_DATAPROPS = 'dataProps.';
+const PREFIX_DATAPROPS = 'dataProps.'; // Purpose: React hook form, during form submit, will nest the controls with this prefix inside dataProps field.
 
 const renderDivider = (name, icon) => {
     return <Divider horizontal>
@@ -53,7 +53,7 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
             break;
     }
 
-    return <Form className="propsFormContainer ui small form" key='form' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
+    return <Form className="propsFormContainer ui small form" key='formControlProps' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
             <div className="propsForm">
             {renderCommonProps(selectedControl)}
             {renderProps(specialProps, selectedControl.data, selectedControl.i, metadata)}
@@ -198,7 +198,7 @@ const renderMetadataField = (metaFieldName, metadata, metaSpecialProps, controlI
             return <FormTreeDropDown
                 key={controlId+'_'+metaFieldName}
                 name={namePrefix+metaFieldName}
-                treeData={getMetadataTreeDropdownOptions(metadata, metaSpecialProps.metadataField)} 
+                treeData={getMetadataTreeDropdownOptions(metadata, [metaSpecialProps.metadataField])} 
                 isRequired={false}
                 label={splitWord(metaFieldName)+":"}
                 dropdownStyle={{ height: 300, overflow: 'auto' }}
@@ -219,14 +219,80 @@ const renderMetadataField = (metaFieldName, metadata, metaSpecialProps, controlI
     return null;
 }
 
-const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteControl}) => {
-    if (!selectedControl) {
-        return <div className="ui message warning">No control selected in the Designer</div>
+// This is the function that will be called when the form component mounts
+// Use this function to set the initial values
+const setLayoutValues = (setValueFunc, layoutData) => {
+    if (!layoutData || !setValueFunc) {
+        return;
+    }
+
+    debugger
+    for (var prop in layoutData) {
+        setValueFunc(prop, layoutData[prop]);
+    }
+}
+
+const renderLayoutPropsForm = (layoutData, metadata, onSubmit) => {
+    return <Form className="propsFormContainer ui small form" key='formLayoutProps' onSubmit={onSubmit} inputObj={layoutData} setControlValues={setLayoutValues}>
+            <div className="propsForm">
+            {renderLayoutProps(layoutData, metadata)}
+            </div>
+            <div className="footerToolbar">
+                <button key='submitBtn' type="submit" className="ui button secondary mini">Apply</button>
+            </div>
+    </Form>
+}
+
+const renderLayoutProps = (layoutData, metadata) => {
+    let retList = [];
+    for (var prop in layoutData) {
+        switch(prop) {
+            case 'columns':
+                retList.push(<FormText key={`layout_${prop}_prop`}
+                numeric
+                name={prop}
+                label={splitWord(prop)+':'}
+                readOnly
+                toolTip={"For this version, column size cannot be changed"}
+                />);
+                break;
+            case 'rows':
+                retList.push(<FormText key={`layout_${prop}_prop`}
+                numeric
+                name={prop}
+                label={splitWord(prop)+':'}
+                />);
+                break;
+            case 'pageFilterFields':
+                // get the items from the metadata
+                retList.push(<FormTreeDropDown 
+                    key='pageFilterFields'
+                    name='pageFilterFields'
+                    treeData={getMetadataTreeDropdownOptions(metadata, ['requestParams', 'dimensions',])} 
+                    isRequired={false}
+                    label={"Page Filter Fields:"}
+                    dropdownStyle={{ height: 300, overflow: 'auto' }}
+                    multiple
+                    />);
+                break;
+            default:
+                break;
+        }
+    }
+
+    return retList;
+}
+
+const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteControl, selectedPage, layoutData, updateLayoutProps}) => {
+    if (!selectedControl && !selectedPage) {
+        // return <div className="ui message warning">No object selected in the Designer. Please select any control or click [Configure Page Settings] button to see the layout settings</div>
+        return <Message header='No object selected in the Designer' 
+                        content='Please select either any control or click [Configure Page Settings] button to configure the layout'/>
     }
 
     // Declare this function inline so that it has access to updateControlProps
-    let onSubmit = (submittedData, evt) => {
-        console.log('submit', submittedData);
+    const onSubmit = (submittedData, evt) => {
+        console.log('submit control props', submittedData);
         let formattedData = {
             i: submittedData.controlId,
             data: submittedData
@@ -240,10 +306,21 @@ const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteC
         ShowMessage('Control Properties Applied!', NotifType.success, '');
     }
 
-    let onDelete = () => {
+    const onSubmitLayoutForm = (submittedData) => {
+        console.log('submit layout props', submittedData);   
+        // Fire redux action to update store
+        updateLayoutProps(submittedData);
+        ShowMessage('Layout Properties Applied!', NotifType.success, '');        
+    }
+
+    const onDelete = () => {
         deleteControl(selectedControl)
         ShowMessage('Control Deleted!', NotifType.success, '');
     };
+
+    if (selectedPage) {
+        return renderLayoutPropsForm(layoutData, metadata, onSubmitLayoutForm);
+    }
 
     return renderControlProps(selectedControl, metadata, onSubmit, onDelete);
 }
@@ -251,13 +328,15 @@ const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteC
 const mapStateToProps = (state) => {
     return {
         selectedControl: state.designer.layout.find(c => c.selected === true),
+        selectedPage: state.designer.pageSelected,
+        layoutData: state.designer.layoutData, // This just contains the number of rows, cols and filterFields selected by the user
         metadata: state.mainApp.masterMetadata
     }
   }
 
 //We just let the individual controls take care of everything
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ updateControlProps, deleteControl }, dispatch);
+    return bindActionCreators({ updateControlProps, deleteControl, updateLayoutProps }, dispatch);
 }
 
 

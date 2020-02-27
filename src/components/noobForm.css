@@ -22,6 +22,13 @@
     /* grid-template-rows: repeat(auto-fit, minmax(50px, 1fr)) */
 }
 
+.page-selected {
+    border: 4px solid #8888FF;
+    /* outline: 3px solid #55AA55; */
+    /* outline: 3px solid #EE5555; */
+    transition: border 0.2s;
+}
+
 .noobControl {
     border: 1px dashed gray;
     /* needed to position the resizer */

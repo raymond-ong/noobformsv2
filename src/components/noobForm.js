@@ -889,7 +889,7 @@ class NoobForm extends React.Component {
     }
 
     render() {
-        console.log('render NoobForm...', this.props.containerWidth);
+        console.log('render NoobForm...', this.props.selectedPage);
         let {controls, layoutData} = this.props;
         let controlsList = this.renderControls(layoutData, controls, this.props.containerWidth);
         let controlIds = controlsList.map(c => c.id);
@@ -898,10 +898,15 @@ class NoobForm extends React.Component {
         var divStyle = this.props.containerWidth > WIDTH_LARGE ?
         {'gridTemplateColumns': `repeat(${layoutData.columns}, 1fr)`} : 
         {'gridTemplateColumns': '1fr'};
+
+        let classNames = "noobForm ";
+        if (this.props.selectedPage) {
+            classNames += "page-selected";
+        }
     
         return (
         <div id="noobForm"
-            className="noobForm" 
+            className={classNames}
             onMouseLeave={(e) => {this.onMouseLeave(e, controlIds)}}
 
             onMouseUp={(e) => {this.onMouseUp(e, controlIds)}}
@@ -910,7 +915,7 @@ class NoobForm extends React.Component {
             onMouseMove={(e) => {this.onMouseMove(e, controlIds)}}
             onTouchMove={(e) => {this.onMouseMove(e, controlIds)}}
 
-            onMouseDown={(e) => {console.log('[noobForm] MouseDown')}}
+            //onMouseDown={(e) => {console.log('[noobForm] MouseDown')}}
             style={divStyle}>
             {controlsJsx}            
         </div>    
@@ -918,8 +923,14 @@ class NoobForm extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        selectedPage: state.designer.pageSelected,
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({ updateLayout }, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(NoobForm);
+export default connect(mapStateToProps, mapDispatchToProps)(NoobForm);
