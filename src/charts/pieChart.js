@@ -262,11 +262,24 @@ export class PieResponsiveDataBase extends React.Component {
     </Pie>;    
   }
 
+  componentDidUpdate(previousProps, previousState) {
+    // If the layout name changes, the constructor may not be called again (I think if the ID did not change).
+    // So we perform the updates here
+    if (previousProps.layoutName !== this.props.layoutName) {
+      let initialGroupingVal = this.props.data.dataProps? this.props.data.dataProps.categories : null;
+      this.setState({
+        groupingBoundVal: initialGroupingVal
+      });
+    }
+  }
+
   render() {
     let classNames = 'reChartContainer';
     if (this.props.selected === true) {
         classNames += ' ctrl-selected'
     }    
+
+    console.log('[pieChart] render');
 
     return <div id="pieContainer1" className={classNames}>
       <div className="controlLabel">{this.props.data.label}</div>
@@ -277,6 +290,7 @@ export class PieResponsiveDataBase extends React.Component {
           value={this.state.groupingBoundVal}
           onSelect={this.onGroupSelect}
           treeDefaultExpandAll
+          key={`treedropdown-${this.props.i}`}
         />}
         {this.props.designMode && <TreeDropdown 
           treeData={sampleGroups} 

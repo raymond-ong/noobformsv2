@@ -28,7 +28,7 @@ const handleGroupSelect = (groupingValue, controlData, selectChartGroup) => {
     selectChartGroup(groupingValue, controlData);
 }
 
-const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping, metadata}) => {
+const ReportControl = ({layoutName, controlData, containerWidth, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping, metadata}) => {
     // [a] Data Preparations
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
@@ -37,7 +37,7 @@ const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChar
         if (controlData.data && controlData.data.dataProps) {                        
             fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata);
         }
-    }, [datasetFilters, currControlGrouping]); 
+    }, [datasetFilters, currControlGrouping, layoutName]); 
 
 
     // [b] UI Preparations
@@ -50,6 +50,7 @@ const ReportControl = ({controlData, containerWidth, clickChartSlice, selectChar
         controlData.handleChartClick = (sliceInfo, seriesInfo, groupingStackStr) => handleChartClick(sliceInfo, seriesInfo, groupingStackStr, controlData, clickChartSlice);
         controlData.handleGroupSelect = (groupValue) => handleGroupSelect(groupValue, controlData, selectChartGroup);
         controlData.metadata = metadata;
+        controlData.layoutName = layoutName;
     }
 
     let classNames = 'reportControl';

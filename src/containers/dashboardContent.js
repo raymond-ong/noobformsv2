@@ -118,6 +118,7 @@ class DashboardContent extends DesignerContentbase {
                 layoutData={layoutObj.layoutData}
                 controls={layoutObj.controls}
                 metadata={metadata}
+                layoutName={layoutName}
             />
         </div>
     }

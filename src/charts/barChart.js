@@ -510,6 +510,17 @@ class BarResponsiveDataBase extends React.Component {
     }
   }
 
+  componentDidUpdate(previousProps, previousState) {
+    // If the layout name changes, the constructor may not be called again (I think if the ID did not change).
+    // So we perform the updates here
+    if (previousProps.layoutName !== this.props.layoutName) {
+      let initialGroupingVal = this.props.data.dataProps? this.props.data.dataProps.categories : null;
+      this.setState({
+        groupingBoundVal: initialGroupingVal
+      });
+    }
+  }
+
   render() {
     let classNames = 'reChartContainer';
     if (this.props.selected === true) {
