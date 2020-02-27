@@ -89,27 +89,27 @@ const sampleColumns = [
             colType: 'kpi'
         },
     
-        {
-            //Header: 'KPI 1 - Dummy KPI with a very long name',
-            Header: 'KPI 1',
-            accessor: 'kpi1',
-            Footer: info => computeKpi('kpi1', info),
-            colType: 'kpi'
-        },
-        {
-            // Header: 'KPI 2 - Dummy KPI with a very long name',
-            Header: 'KPI 2',
-            accessor: 'kpi2',
-            Footer: info => computeKpi('kpi2', info),
-            colType: 'kpi'
-        },
-        {
-            //Header: 'KPI 3 - Dummy KPI with a very long name',
-            Header: 'KPI 3',
-            accessor: 'kpi3',
-            Footer: info => computeKpi('kpi3', info),
-            colType: 'kpi'
-        },
+        // {
+        //     //Header: 'KPI 1 - Dummy KPI with a very long name',
+        //     Header: 'KPI 1',
+        //     accessor: 'kpi1',
+        //     Footer: info => computeKpi('kpi1', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     // Header: 'KPI 2 - Dummy KPI with a very long name',
+        //     Header: 'KPI 2',
+        //     accessor: 'kpi2',
+        //     Footer: info => computeKpi('kpi2', info),
+        //     colType: 'kpi'
+        // },
+        // {
+        //     //Header: 'KPI 3 - Dummy KPI with a very long name',
+        //     Header: 'KPI 3',
+        //     accessor: 'kpi3',
+        //     Footer: info => computeKpi('kpi3', info),
+        //     colType: 'kpi'
+        // },
         // {
         //     Header: 'KPI 4 - Dummy KPI with a very long name',
         //     accessor: 'kpi4',
@@ -394,11 +394,11 @@ const Table = (props) => {
         <div className="controlLabel">{props.data.label}</div>
         <table className="noobTable" {...getTableProps()}>
             <thead>
-            {headerGroups.map(headerGroup => (
+            {headerGroups.map((headerGroup, iHeaderGrp) => (
                 <>
                 <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => {
-                    let thisWidth = 100.0 / totalCols;// 17 = number of columns + extra columns from colspan
+                    let thisWidth = 100.0 / totalCols;
                     if (column.customColSpan) {
                         thisWidth = thisWidth * column.customColSpan
                     }
@@ -425,7 +425,7 @@ const Table = (props) => {
                 }
                 </tr>
 
-                {hasFilterableColumn(headerGroup) && <tr {...headerGroup.getHeaderGroupProps()}>{headerGroup.headers.map(column => {
+                {hasFilterableColumn(headerGroup) && <tr key={`headerGroupFilter_${iHeaderGrp}`}>{headerGroup.headers.map(column => {
                         return <th><div className="colFilter">{column.canFilter ? column.render('Filter') : null}</div></th>
                         })
                     }                

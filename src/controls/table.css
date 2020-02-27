@@ -7,9 +7,11 @@
 
 
 .noobTable {
-    display: block;
+    /* Do not put display: block, table will not take up 100% width */
+    /* display: block; */
     width: 100%;
     overflow: auto;     
+    border: 1px solid red;
 }
 
 .noobTable tr th,

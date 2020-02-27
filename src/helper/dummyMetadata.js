@@ -58,7 +58,7 @@ export const DUMMY_APR_METADATA = {
 			dataType: "group",
 			items: [
 				{
-					name: "DeviceID",
+					name: "DeviceId",
 					dataType: "string",		
 					aggregations: ["count"],
 					// requestTypes: ["GetDeviceDetails", "GetDeviceCounts"]
