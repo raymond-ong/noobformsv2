@@ -252,7 +252,6 @@ export const updateControlProps = (newControlData) => {
 }
 
 export const updateLayoutProps = (newLayoutProps) => {
-  debugger
   return {
     type: UPDATE_LAYOUT_PROPS,
     payload: newLayoutProps

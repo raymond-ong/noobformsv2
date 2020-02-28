@@ -57,7 +57,7 @@ class NavBarMobile extends Component {
                     onClick={this.handleSidebarHide}>
                     <div className="ui menu inverted fixed top">
                         <div className="header item">
-                            My Dashboard
+                            {/* My Dashboard */}
                         </div>
                         <a className="item right" onClick={this.handleSidebarToggle}>
                             <i className="icon sidebar"/>
@@ -75,7 +75,7 @@ const NavBarDesktop = (props) => {
     // Note: putting fixed makes the menu position to be absolute. therefore child elemnets need to adjust manually
     return <div className="ui menu inverted fixed top" style={{'backgroundImage': 'linear-gradient(#454545, black)'}}>
         <div className="header item">
-            My Dashboard
+            {/* My Dashboard */}
         </div>
         {getNavBarMenuItemElements(props.menuClickDispatcher, props.activeItem, true)}
     </div>;
@@ -111,13 +111,18 @@ const getNavbarChildren = (children) => {
 //const settingsChildren = []; // TODO, for 2nd level children
 
 const navBarMenuItems = [
-    { name: 'home',     title: 'Home',      icon: 'home',   alignment: '', },
+    { name: 'mapView',     title: 'Map View',      icon: 'map pin',   alignment: '', },
+    { name: 'analysisView',     title: 'Analysis',      icon: 'braille',   alignment: '', },
+    { name: 'home',     title: 'Plant Manager View',      icon: 'home',   alignment: '', },
+    { name: 'downloadCenter',     title: 'Download Center',      icon: 'cloud donwload',   alignment: '', },
+
     { name: 'formsDesigner', title: 'Page Designer',  icon: 'edit',   alignment: '' },
-    { name: 'dashboardDesigner', title: '(to be deleted)',  icon: 'chart area',   alignment: '' },    
     { name: 'hierarchyDesigner', title: 'Hierarchy Designer',  icon: 'list',   alignment: '' },
     { name: 'dataSources', title: 'Data Sources',  icon: 'database',   alignment: '' },
-    { name: 'dataDesigner', title: 'Dataset Designer (to be deleted)',  icon: 'cube',   alignment: '' },
-    { name: 'trialPage', title: 'Trial Page',  icon: 'gavel',    alignment: '' },
+
+    { name: 'dashboardDesigner', title: '(delete)',  icon: 'chart area',   alignment: '' },    
+    { name: 'dataDesigner', title: '(delete)',  icon: 'cube',   alignment: '' },
+    { name: 'trialPage', title: '(trial)',  icon: 'gavel',    alignment: '' },
     { name: 'settings', title: 'Settings',  icon: 'cog',    alignment: 'right' },
 ]
 

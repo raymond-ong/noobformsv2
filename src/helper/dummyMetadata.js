@@ -1,6 +1,8 @@
 export const DUMMY_APR_METADATA = {
 	name: "PRM APR",
-	server: "http://localhost:60000/api/data",
+  server: "http://localhost:60000/api/data",
+  //server: "http://10.48.100.175:5000/device",
+  //server: "http://localhost:7000/api/device",
 	// Will help the server 
 	requestTypes: [
 		{

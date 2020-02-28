@@ -7,6 +7,9 @@ import DesignerContent from './dashboardDesignerContent';
 import FormsDesignerContent from './formsDesignerContent';
 import SettingsContent from './settingsContent';
 import HierarchyDesigner from './hierarchyDesigner';
+import MapViewContent from './mapViewContent';
+import AnalysisViewContent from './analysisViewContent';
+import DownloadCenterContent from './downloadCenterContent';
 import {connect} from 'react-redux';
 import {Tab} from 'semantic-ui-react';
 import DataDesignerContent from './dataDesignerContent';
@@ -14,6 +17,22 @@ import DataSourcesContent from './dataSourceContent';
 import TrialPage from './trialPage';
 
 const panes = [
+    {
+        menuItem: 'MapViewContent',
+        pane: (
+        <Tab.Pane key='mapView' style={{height: '100%', width: '100%', padding: '0px'}}>
+            <MapViewContent/>
+        </Tab.Pane>
+        ),
+    },
+    {
+      menuItem: 'AnalysisViewContent',
+      pane: (
+      <Tab.Pane key='analysisView' style={{height: '100%', width: '100%', padding: '0px'}}>
+          <AnalysisViewContent/>
+      </Tab.Pane>
+      ),
+  },
     {
         menuItem: 'Home',
         pane: (
@@ -24,18 +43,18 @@ const panes = [
         ),
     },
     {
-        menuItem: 'FormsDesigner',
+      menuItem: 'DownloadCenterContent',
+      pane: (
+      <Tab.Pane key='downloadCenter' style={{height: '100%', width: '100%', padding: '0px'}}>
+          <DownloadCenterContent/>
+      </Tab.Pane>
+      ),
+  },
+    {
+        menuItem: 'formsDesigner',
         pane: (
           <Tab.Pane key='formsDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
             <FormsDesignerContent defaultSizes={[25, 75]}/>
-          </Tab.Pane>
-        ),
-      },
-      {
-        menuItem: 'dashboardDesigner',
-        pane: (
-          <Tab.Pane key='dashboardDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
-            <DesignerContent/>
           </Tab.Pane>
         ),
       },
@@ -55,6 +74,14 @@ const panes = [
           </Tab.Pane>
         ),
       },          
+      {
+        menuItem: 'dashboardDesigner',
+        pane: (
+          <Tab.Pane key='dashboardDesigner' style={{height: '100%', width: '100%', padding: '0px'}}>
+            <DesignerContent/>
+          </Tab.Pane>
+        ),
+      },
       {
         menuItem: 'dataDesigner',
         pane: (

@@ -10,8 +10,8 @@ import {DUMMY_APR_METADATA} from '../helper/dummyMetadata';
 
 // Assumption: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'formsDesigner',
-    tabIndex: 1,
+    activeMenu: 'home',
+    tabIndex: 2,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
@@ -25,14 +25,18 @@ const defaultState = {
 
 // TODO: Should move this to a constant location
 const tabIndexMapping = {
-  home: 0,
-  formsDesigner: 1,
-  dashboardDesigner: 2,
-  hierarchyDesigner: 3,
-  dataSources: 4,
-  dataDesigner: 5,
-  trialPage: 6,
-  settings: 7
+  mapView: 0,
+  analysisView: 1,  
+  home: 2,
+  downloadCenter: 3,
+  formsDesigner: 4,
+  hierarchyDesigner: 5,
+  dataSources: 6,
+
+  dashboardDesigner: 7,
+  dataDesigner: 8,
+  trialPage: 9,
+  settings: 10
 }
 
 export default function(state = defaultState, action) {

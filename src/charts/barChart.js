@@ -427,7 +427,6 @@ class BarResponsiveDataBase extends React.Component {
     let activeIndex, activeSeries;
 
     if (filterAtGroup && filterAtGroup.sliceInfo && filterAtGroup.sliceInfo.origObj) {
-      debugger
       activeIndex = this.getDataIndex(formattedData, filterAtGroup.sliceInfo.origObj);
       activeSeries = filterAtGroup.seriesInfo && Object.values(filterAtGroup.seriesInfo)[0];
     }

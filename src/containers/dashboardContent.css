@@ -6,3 +6,22 @@
 #dashboardFiltersTable thead td{
     background-color: lightgray;
 }
+
+.pageToolbar {
+    background-color: lightgray;
+    display: grid;
+    grid-template-columns: 1fr 130px;
+    width: 100%;
+    height: 100%;
+}
+
+.toolbarButtonContainer {
+    text-align: end;
+}
+
+.pageToolbarFieldContainer {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
+}

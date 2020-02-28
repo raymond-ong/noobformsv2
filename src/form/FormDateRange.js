@@ -3,16 +3,24 @@ import '../controls/datepicker.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import { Label} from "semantic-ui-react";
+import { Label, Dropdown} from "semantic-ui-react";
 import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
 
+export const dateRangeDropdownOptions = [
+    { key: 'Latest value only', text: 'Latest value only', value: 'Latest value only' },
+    { key: 'Last 1 day', text: 'Last 1 day', value: 'Last 1 day' },
+    { key: 'Last 7 days', text: 'Last 7 days', value: 'Last 7 days' },
+    { key: 'Last 30 days', text: 'Last 30 days', value: 'Last 30 days' },
+    { key: 'Custom Range', text: 'Custom Range', value: 'Custom Range' },
+];
 
-const FormDateRange = ({ name, ...rest }) => {
+const FormDateRange = ({ name, label, initialValue, ...rest }) => {
     //const [startDate, setStartDate] = useState(new Date());
     // No need to set initial values
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [disableDatePicker, setDisableDatePicker] = useState(true);
     const { register, setValue, unregister, errors } = useContext(FormContext);
 
     function handleChangeStart([date, evt]) {
@@ -29,8 +37,40 @@ const FormDateRange = ({ name, ...rest }) => {
         }
     }
 
-    return <div className="datepickerGrid">
-                <div className className="dateLabel">Start:</div>
+    function handleChangeValue([, props]) {
+        if (props.value === 'Custom Range') {
+            setDisableDatePicker(false);
+        }
+        else {
+            setStartDate(null);
+            setEndDate(null);
+        }
+
+        return { value: props.value};
+      }
+
+    return <>
+                <div className="dateLabel">{label}</div>
+
+                <RHFInput
+                    as={<Dropdown 
+                        fluid                 
+                        selection   
+                        options={dateRangeDropdownOptions} 
+                        defaultValue={initialValue ? initialValue : dateRangeDropdownOptions[0].value}         
+                     />
+                    }
+
+                name={name+"Value"}
+                //value={name}
+                //type="daterange"
+                register={register}
+                unregister={unregister}
+                setValue={setValue}
+                onChangeEvent={handleChangeValue}
+                />
+                
+                <div className="dateLabel">Start:</div>
                 <div className="datepickerWrapper">
                 <RHFInput
                     as={<DatePicker
@@ -40,6 +80,7 @@ const FormDateRange = ({ name, ...rest }) => {
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
+                    disabled={disableDatePicker}
                     />}
 
                 name={name+"Start"}
@@ -49,7 +90,6 @@ const FormDateRange = ({ name, ...rest }) => {
                 unregister={unregister}
                 setValue={setValue}
                 onChangeEvent={handleChangeStart}
-
                 />
             </div>
             <div className="dateLabel">End:</div>
@@ -63,6 +103,7 @@ const FormDateRange = ({ name, ...rest }) => {
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
+                disabled={disableDatePicker}
                 />}
 
             name={name + "End"}
@@ -75,6 +116,6 @@ const FormDateRange = ({ name, ...rest }) => {
 
             />
         </div>
-        </div>
+        </>
 }
-export default noobControlHoc(FormDateRange);
+export default FormDateRange

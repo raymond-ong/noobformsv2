@@ -1,6 +1,6 @@
 .datepickerGrid {
-    display: grid;
-    grid-template-columns: max-content 1fr;
+    /* display: grid;
+    grid-template-columns: max-content 1fr max-content 1fr max-content 1fr; */
 }
 
 .dateLabel {
@@ -10,7 +10,7 @@
     /* align to the center vertically */
     display: flex; 
     align-items: center; 
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 .react-datepicker-wrapper {
@@ -26,6 +26,6 @@
     width: 100%;
 }
 
-.datepickerWrapperEnd {
+/* .datepickerWrapperEnd {
     padding-top: 5px;
-}
+} */

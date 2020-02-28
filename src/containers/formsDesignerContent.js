@@ -66,7 +66,7 @@ class formsDesignerContent extends DesignerContentbase {
     }
 
     saveCallback = () => {
-        console.log('Save callback');
+        console.log('Save callback', this.props.layoutData);
         // If untitled, call Save As callback
         if (!this.props.layoutData.name) {
             this.saveAsCallback();
@@ -158,9 +158,9 @@ class formsDesignerContent extends DesignerContentbase {
         return {
             controls: JSON.parse(layoutFromApi.layoutJson),
             layoutData: {
+                name: layoutFromApi.name,
                 columns: layoutFromApi.numCols,
                 rows: layoutFromApi.numRows,
-                name: layoutFromApi.name,
                 pageFilterFields: layoutFromApi.pageFilterFields && JSON.parse(layoutFromApi.pageFilterFields),
             },
             title: layoutFromApi.name,
@@ -212,7 +212,6 @@ class formsDesignerContent extends DesignerContentbase {
 }
 
 const mapStateToProps = (state) => {
-    debugger
     return {
         layout: state.designer.layout,
         layoutData: state.designer.layoutData,

@@ -247,6 +247,13 @@ const renderLayoutProps = (layoutData, metadata) => {
     let retList = [];
     for (var prop in layoutData) {
         switch(prop) {
+            case 'name':
+                retList.push(<FormText key={`layout_${prop}_prop`}
+                name={prop}
+                label={splitWord(prop)+':'}
+                readOnly
+                />);
+                break;
             case 'columns':
                 retList.push(<FormText key={`layout_${prop}_prop`}
                 numeric
@@ -261,6 +268,7 @@ const renderLayoutProps = (layoutData, metadata) => {
                 numeric
                 name={prop}
                 label={splitWord(prop)+':'}
+                toolTip={"For now, there is no validation. Make sure the value provided is sufficient. Otherwise some existing controls might be deleted."}
                 />);
                 break;
             case 'pageFilterFields':

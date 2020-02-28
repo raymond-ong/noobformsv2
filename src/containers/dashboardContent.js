@@ -9,7 +9,9 @@ import {selectDashboardTree} from '../actions';
 import {findInheritedPage} from '../containers/hierarchyConfigPanel';
 import {reconstructHierarchyStack} from '../helper/treefilter';
 import './dashboardContent.css';
+import { Button } from 'semantic-ui-react';
 //import ShowMessage, { NotifType } from '../helper/notification';
+import Form, {FormDateRange, FormFilterInput} from '../form/Form';
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
 
@@ -20,6 +22,9 @@ class DashboardContent extends DesignerContentbase {
 
     constructor(props) {
         super(props);
+        this.state = {
+            pageFilters: []
+        };
     }
 
     onSelect = (selectedKeys, info) => {
@@ -108,8 +113,63 @@ class DashboardContent extends DesignerContentbase {
         </table>)
     }
 
-    renderPageFilters = () => {
+    onSubmitFilter = (filterData) => {
+        console.log('[dashboard filter submit]', filterData);
+    }
 
+    // Renders 1 filter
+    renderPageFilter = (filterName, metadata) => {
+        // Find the metadata first, then get the datatype, then render the filter based on the datatype
+        // TODO: check the metadata
+        if (filterName.toLocaleLowerCase() === 'analysisperiod') {
+            return <FormDateRange key={'pageFilter_'+filterName} name={filterName} label="Analysis Period:"
+            />
+        }
+        else {
+            return <FormFilterInput key={'pageFilter_'+filterName} name={filterName}/>
+        }
+    }
+
+    setPageFilterControlValues = (setValueFunc, pageFilterFields) => {
+        if (!Array.isArray(pageFilterFields)) {
+            return;
+        }
+
+        pageFilterFields.forEach(filterName => {
+            if (filterName.toLocaleLowerCase() === 'analysisperiod') {
+                setValueFunc("AnalysisPeriodValue", "Latest value only")
+            }
+            else {
+                // setValueFunc("Pa", "Latest value only")
+            }
+        });
+    }
+
+    renderPageToolbar = (layoutObj, metadata) => {
+        debugger
+        if (!Array.isArray(layoutObj.layoutData.pageFilterFields)) {
+            return null;
+        }
+
+        return <Form className="pageToolbar" 
+            key='formDataDesigner' 
+            onSubmit={(formData) => {this.onSubmitFilter(formData)}} 
+            // onSubmit={data => {debugger}}
+            setControlValues={this.setPageFilterControlValues}
+            // watchedField={[]}
+            // // inputObj: set it to the loaded data source when saving is implemented
+            inputObj={layoutObj.layoutData.pageFilterFields} 
+            // setStateCb={setStateCb}
+            >
+            <div className="pageToolbarFieldContainer">
+            {layoutObj.layoutData.pageFilterFields.map(pageFilter => {
+                return (this.renderPageFilter(pageFilter, metadata));
+            })}
+            </div>    
+            <div className="toolbarButtonContainer">
+            <Button primary fluid={false} size='small'>Apply Filter</Button>
+            </div>  
+            </Form>
     }
 
     renderForm = (layoutName, layoutObj, metadata) => {
@@ -118,7 +178,7 @@ class DashboardContent extends DesignerContentbase {
         }
         return <div>
             {/* {"[DEBUG] Layout Name: " + layoutName} */}
-            {this.renderPageFilters()}
+            {this.renderPageToolbar(layoutObj)}
             {this.renderDatasetFilters()}
             <ReportForm
                 containerWidth={this.state.rightPixels}

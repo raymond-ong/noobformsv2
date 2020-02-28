@@ -472,7 +472,6 @@ export default function(state = defaultState, action) {
         ...state,          
       };
 
-      debugger
       newStateUpdLayoutProps.layoutData = updateLayoutProps(action.payload); 
 
       return newStateUpdLayoutProps;
