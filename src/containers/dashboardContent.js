@@ -23,6 +23,7 @@ class DashboardContent extends DesignerContentbase {
     constructor(props) {
         super(props);
         this.state = {
+            ...this.state,
             pageFilters: []
         };
     }
