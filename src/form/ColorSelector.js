@@ -28,7 +28,7 @@ function FormColorSelector({ name, rules, label, intialcolor, ...rest }) {
                     <i className="ui icon info circle"/>
                     </div>} />
             </label>
-            <div className="ui icon input fluid">                
+            <div className="ui icon input fluid">
             <RHFInput
                 as={<input  key={name} 
                     // name={name}

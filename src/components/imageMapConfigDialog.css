@@ -17,6 +17,7 @@
 
 .imageMapForm {
     /* border: 1px solid red; */
+    padding-right: 10px;
 }
 
 .formBodyImgMapConfig {
@@ -30,4 +31,10 @@
 .imageContainer {
     /* border: 1px solid green; */
     overflow: auto;
+}
+
+.coordContainer {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; */
+    grid-template-columns: min-content minmax(auto, 1fr) min-content minmax(auto, 50px) min-content minmax(auto, 50px) min-content minmax(auto, 1fr)
 }

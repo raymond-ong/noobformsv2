@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Modal, Header, Button, Icon, Image} from 'semantic-ui-react';
-import Form, {Text as FormText, Dropdown as FormDropdown} from '../form/Form';
+import Form, {Text as FormText, Dropdown as FormDropdown, FormImageCoord} from '../form/Form';
 import './imageMapConfigDialog.css';
 import ImageMapper from '../controls/imageMapperLib';
 
@@ -50,6 +50,20 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
         setCoords(DEFAULT_COORDS);
     }
 
+    const renderCoordsForm = () => {
+        console.log('renderCoordsForm', map.areas)
+        return <div className="coordContainer">
+        {map.areas.map(area => {
+            return <FormImageCoord key={"formImageArea-" + area.name} name={area.name}
+                x={area.coords[0]}
+                y={area.coords[1]}
+                color={area.preFillColor}
+                />
+            })
+        }
+        </div>
+    }
+
     // console.log('SaveAsDialog render', myState[KEY_NAME]);
 
     return <Modal open={true}    
@@ -71,13 +85,12 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
                         options={[]}
                         size="small"
                     />
-
                     <Button toggle type="button" active={addingHotspot} onClick={handleHostpotBtnClick} disabled={addingHotspot}>
                         <Icon name="plus"/>
                         {addingHotspot ? "Click on a spot in image" : "Add Hotspot"}
                     </Button>
                     {addingHotspot && <div>{`Image coords: ${coords.x}, ${coords.y}`}</div>}
-
+                    {renderCoordsForm()}
                 </div>
 
                 <div className="footerToolbarImgMapConfig">
@@ -98,7 +111,8 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
                 <ImageMapper src='https://react.semantic-ui.com/images/avatar/large/rachel.png'
                             onImageMouseMove={handleMouseMove}
                             onImageClick={handleMouseClick}
-                            map={map}/>
+                            map={map}
+                />                
             </div>
         </div>
     </Modal.Content>
