@@ -96,7 +96,7 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
 }
 
 // This class is responsible for making API calls to get data, or handling click or grouping events
-export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata) => {
+export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata, pageFilters) => {
     console.log('[DEBUG] fetchData ReportControl', controlData.i);
     
     setIsLoading(true);
@@ -131,6 +131,11 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         // It will look weird to see a pie chart with just one wedge. Show also the other inactive slices.
         // Ideally, the groupings of each control should not overlap. This will only happen if there are overlaps.
     }
+
+    if (Array.isArray(pageFilters)) {
+        postObj.RequestParams = postObj.RequestParams.concat(pageFilters);
+    }
+
 
     const result = await axios
         .post(metadata.server, postObj)

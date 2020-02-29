@@ -28,16 +28,16 @@ const handleGroupSelect = (groupingValue, controlData, selectChartGroup) => {
     selectChartGroup(groupingValue, controlData);
 }
 
-const ReportControl = ({layoutName, controlData, containerWidth, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping, metadata}) => {
+const ReportControl = ({layoutName, controlData, containerWidth, clickChartSlice, selectChartGroup, datasetFilters, currControlGrouping, metadata, pageFilters}) => {
     // [a] Data Preparations
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {        
         if (controlData.data && controlData.data.dataProps) {                        
-            fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata);
+            fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata, pageFilters);
         }
-    }, [datasetFilters, currControlGrouping, layoutName]); 
+    }, [datasetFilters, currControlGrouping, layoutName, pageFilters]); 
 
 
     // [b] UI Preparations

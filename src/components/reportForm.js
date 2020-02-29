@@ -108,6 +108,7 @@ class ReportForm extends React.Component {
                 numCols={numCols}
                 metadata={this.props.metadata}
                 layoutName={this.props.layoutName}
+                pageFilters={this.props.pageFilters}
                 />
     }
 

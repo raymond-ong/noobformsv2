@@ -12,6 +12,7 @@ import './dashboardContent.css';
 import { Button } from 'semantic-ui-react';
 //import ShowMessage, { NotifType } from '../helper/notification';
 import Form, {FormDateRange, FormFilterInput} from '../form/Form';
+import {dateRangeDropdownOptions} from '../form/FormDateRange';
 
 const DEFAULT_SPLIT_SIZES = [15, 85];
 
@@ -114,8 +115,36 @@ class DashboardContent extends DesignerContentbase {
         </table>)
     }
 
-    onSubmitFilter = (filterData) => {
+    // For now, just hard code "analysis period". No time to implement proper checking!
+    onSubmitFilter = (filterData, layoutObj) => {
         console.log('[dashboard filter submit]', filterData);
+        if (!Array.isArray(layoutObj.layoutData.pageFilterFields)) {
+            return;
+        }
+        let pageFiltersFormatted = [];
+        layoutObj.layoutData.pageFilterFields.forEach(layoutFilter => {
+            if (layoutFilter.toLocaleLowerCase() === 'analysisperiod') {
+                pageFiltersFormatted.push({
+                    name: "Analysis Period",
+                    value: filterData.AnalysisPeriodValue,
+                    startDate: filterData.AnalysisPeriodStart,
+                    endDate: filterData.AnalysisPeriodEnd
+                });
+            }
+            else if (!!filterData[layoutFilter] && filterData[layoutFilter].length > 0){
+                pageFiltersFormatted.push({
+                    name: layoutFilter,
+                    value: filterData[layoutFilter]
+                });
+            }
+    
+        });
+
+        debugger
+
+        this.setState({
+            pageFilters: pageFiltersFormatted
+        })
     }
 
     // Renders 1 filter
@@ -138,10 +167,7 @@ class DashboardContent extends DesignerContentbase {
 
         pageFilterFields.forEach(filterName => {
             if (filterName.toLocaleLowerCase() === 'analysisperiod') {
-                setValueFunc("AnalysisPeriodValue", "Latest value only")
-            }
-            else {
-                // setValueFunc("Pa", "Latest value only")
+                setValueFunc("AnalysisPeriodValue", dateRangeDropdownOptions[0].value)
             }
         });
     }
@@ -154,7 +180,7 @@ class DashboardContent extends DesignerContentbase {
 
         return <Form className="pageToolbar" 
             key='formDataDesigner' 
-            onSubmit={(formData) => {this.onSubmitFilter(formData)}} 
+            onSubmit={(formData) => {this.onSubmitFilter(formData, layoutObj)}} 
             // onSubmit={data => {debugger}}
             setControlValues={this.setPageFilterControlValues}
             // watchedField={[]}
@@ -187,6 +213,7 @@ class DashboardContent extends DesignerContentbase {
                 controls={layoutObj.controls}
                 metadata={metadata}
                 layoutName={layoutName}
+                pageFilters={this.state.pageFilters}
             />
         </div>
     }
