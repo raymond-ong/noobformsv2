@@ -173,8 +173,7 @@ class DashboardContent extends DesignerContentbase {
     }
 
     renderPageToolbar = (layoutObj, metadata) => {
-        debugger
-        if (!Array.isArray(layoutObj.layoutData.pageFilterFields)) {
+        if (!layoutObj || !layoutObj.layoutData || !Array.isArray(layoutObj.layoutData.pageFilterFields)) {
             return null;
         }
 

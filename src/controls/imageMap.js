@@ -135,3 +135,17 @@ class ImageMap extends React.Component {
 }
 
 export default noobControlHoc(ImageMap);
+
+// Properties Panel Portion
+const configBtnOnClick = () => {
+
+    console.log('configBtnOnClick');
+}
+export const imageMapProps = [
+    {
+      name: 'imageProps', 
+      propType: 'popupConfig',
+      buttonName: 'Configure Image...',
+      btnOnclick: configBtnOnClick
+    },
+];

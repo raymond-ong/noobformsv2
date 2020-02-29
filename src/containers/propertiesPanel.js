@@ -12,12 +12,14 @@ import {labelProps} from '../controls/label';
 import {pieProps} from '../charts/pieChart';
 import {barProps} from '../charts/barChart';
 import {tableProps} from '../controls/table';
+import {imageMapProps} from '../controls/imageMap';
 import * as constants from '../constants';
 import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown, FormCheckbox} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 import ShowMessage, {NotifType} from '../helper/notification';
-import {Divider, Header, Icon, Message} from 'semantic-ui-react';
+import {Divider, Header, Icon, Message, Button} from 'semantic-ui-react';
 import {getMetadataOptions, getMetadataTreeDropdownOptions} from '../helper/metadataManager';
+import ImageMapConfigDialog from '../components/imageMapConfigDialog';
 
 const PREFIX_DATAPROPS = 'dataProps.'; // Purpose: React hook form, during form submit, will nest the controls with this prefix inside dataProps field.
 
@@ -49,6 +51,9 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
         case 'table':
             specialProps = tableProps;
             break;
+        case 'imageMap':
+            specialProps = imageMapProps;
+            break;
         default:
             break;
     }
@@ -64,6 +69,7 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
                 <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
                 <button key='submitBtn' type="submit" className="ui button secondary mini">Apply</button>
             </div>
+            <ImageMapConfigDialog />
         </Form>
 }
 
@@ -169,6 +175,13 @@ const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix
                     break;
                 case 'metadata':
                     retList.push(renderMetadataField(key, metadata, foundSpecialProp, controlId, namePrefix));
+                    break;
+                case 'popupConfig':
+                    retList.push(<Button 
+                        type="button" 
+                        key={`${foundSpecialProp.name}Btn`} 
+                        primary
+                        onClick={foundSpecialProp.btnOnclick}>{foundSpecialProp.buttonName}</Button>);
                     break;
                 default:
                     break;            

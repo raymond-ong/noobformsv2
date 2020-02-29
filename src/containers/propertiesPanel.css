@@ -3,8 +3,7 @@
 }
 
 .propsForm {
-    background-color: white;
-    height: 100%;
+    background-color: white;    
     overflow: auto;
     padding: 5px;
     height: calc(100% - 40px);

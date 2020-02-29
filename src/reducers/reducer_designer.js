@@ -94,7 +94,19 @@ const generateDefaultLayout = (metadata) => {
 
   // Image Map
   {i: 'ctrl-imageMap0X', x: 6, y:14, w: 6, h: 4,ctrlType: 'imageMap', data: {
-    label: 'Image Map:'
+    label: 'Image Map:',
+    imageProps: {
+      image: '',
+      hotspots: [
+        {
+          name: '',
+          x: 10,
+          y: 10,
+          r: 10,
+          color: 'red'
+        }
+      ]
+    }
   }},
 
   {i: 'ctrl-table0X', x: 0, y:10, w: 12, h: 4,ctrlType: 'table', data: {

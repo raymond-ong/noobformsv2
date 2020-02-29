@@ -1,0 +1,33 @@
+.imageMapConfigDialog {
+    /* height: 700px; */
+}
+
+.imageMapContent {
+    width: 100%;
+    height: 100%;
+}
+
+.imageMapContentContainer {
+    display: grid;
+    grid-template-columns: 500px 1fr;
+    /* border: 1px solid blue; */
+    width: 100%;
+    height: 100%;
+}
+
+.imageMapForm {
+    /* border: 1px solid red; */
+}
+
+.formBodyImgMapConfig {
+    height: calc(100% - 40px);
+}
+
+.footerToolbarImgMapConfig {
+
+}
+
+.imageContainer {
+    /* border: 1px solid green; */
+    overflow: auto;
+}
