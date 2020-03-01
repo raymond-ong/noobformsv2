@@ -43,6 +43,10 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
     const handleMouseClick = (evt) => {
         console.log('handleMouseClick');
         setAddingHotspot(false);
+        if (coords.x  < 0 || coords.y < 0) {
+            return;
+        }
+        
         map.areas.push({
             name: DEFAULT_NAME, shape: "circle", coords: [coords.x, coords.y, 15 ], preFillColor: "blue"
         });
@@ -73,7 +77,7 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
     >
     <Modal.Content className="imageMapContent">
         <div className="imageMapContentContainer">
-            <Form className="imageMapForm" onSubmit={(args) => onOpen(args[KEY_NAME])} 
+            <Form className="imageMapForm" onSubmit={(args) => console.log(args)} 
             watchedField={KEY_NAME}
             setStateCb={setMyState}>        
                 <div className="formBodyImgMapConfig">
