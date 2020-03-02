@@ -3,7 +3,7 @@ import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
 import { Form as SemanticForm } from "semantic-ui-react";
 
-function FormDropDown({ name, label, multiple, isRequired,...rest }) {
+function FormDropDown({ name, label, multiple, isRequired, fluid,...rest }) {
   const { register, setValue, unregister } = useContext(FormContext);
 
   function handleChange([, props]) {
@@ -19,7 +19,7 @@ function FormDropDown({ name, label, multiple, isRequired,...rest }) {
         <RHFInput
         as={<SemanticForm.Dropdown 
             key={name}
-            fluid 
+            fluid={fluid}
             multiple={multiple}
             search
             selection             

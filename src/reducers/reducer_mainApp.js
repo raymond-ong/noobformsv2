@@ -5,13 +5,14 @@ import { CLICK_MENU,
   FETCH_HIERARCHYVIEWS,
   FETCH_AVAILABLEDATA, 
   FETCH_SAVEDLAYOUTS,
+  FETCH_IMAGES,
   SAVE_DESIGNER_LAYOUT } from "../actions/index";
 import {DUMMY_APR_METADATA} from '../helper/dummyMetadata';
 
 // Assumption: All these data is for 1 tenant only
 const defaultState = {
-    activeMenu: 'formsDesigner',
-    tabIndex: 4,
+    activeMenu: 'settings',
+    tabIndex: 10,
     // temp state only, until react-grid-layout fixes the bug for onDrop parameters
     draggingToolItem: null,
     toolPanelTreeSelected: null,
@@ -20,7 +21,8 @@ const defaultState = {
     masterLayouts: null,
     masterHierarchyViews: null,
     // For the data retrieval
-    masterMetadata: DUMMY_APR_METADATA
+    masterMetadata: DUMMY_APR_METADATA,
+    masterImages: []
 }
 
 // TODO: Should move this to a constant location
@@ -40,7 +42,7 @@ const tabIndexMapping = {
 }
 
 export default function(state = defaultState, action) {
-  if ([CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA, SAVE_DESIGNER_LAYOUT, FETCH_HIERARCHYVIEWS].includes(action.type)) {
+  if ([CLICK_MENU, DRAG_TOOLITEM_START, SELECT_TOOLPANEL_TREE, FETCH_HIERARCHY, FETCH_AVAILABLEDATA, SAVE_DESIGNER_LAYOUT, FETCH_HIERARCHYVIEWS, FETCH_IMAGES].includes(action.type)) {
     console.log('[DEBUG] reducer_mainApp', action, state);
   }
   switch (action.type) {
@@ -81,7 +83,11 @@ export default function(state = defaultState, action) {
         ...state,
         masterHierarchyViews: action.payload.data
       }
-
+    case FETCH_IMAGES:
+      return {
+        ...state,
+        masterImages: action.payload.data
+      }
   }
   return state;
 }

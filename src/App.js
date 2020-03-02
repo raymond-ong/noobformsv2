@@ -10,7 +10,8 @@ import {fetchHierarchy,
     fetchHierarchyViews, 
     fetchDimensions,
     fetchHierarchyKpi,
-    fetchHierarchyConso} from './actions';
+    fetchHierarchyConso,
+    fetchImages} from './actions';
 import {connect} from 'react-redux';
 
 import TouchBackend from 'react-dnd-touch-backend';
@@ -38,6 +39,7 @@ class App extends React.Component {
         this.props.fetchSavedLayouts();
         this.props.fetchHierarchyKpi();
         this.props.fetchDimensions();
+        this.props.fetchImages();
         //ConfigureToast();
         //ShowMessage("Welcome!", "Start by dragging components from the toolbox to the Designer!");
     }
@@ -73,4 +75,5 @@ export default connect(null, {fetchHierarchy,
     fetchHierarchyViews, 
     fetchHierarchyKpi, 
     fetchHierarchyConso,
-    fetchDimensions})(App);
+    fetchDimensions,
+    fetchImages})(App);

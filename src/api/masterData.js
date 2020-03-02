@@ -15,3 +15,18 @@ export default axios.create({
     baseURL: getDocUrlWithoutPort() || 'http://localhost:60000/api'
     //baseURL: 'http://localhost:3001'
 });
+
+
+const getDocUrlWithoutPortFrontEnd = () => {
+    const temp = document.URL.replace("http://", '');
+    var toks = temp.split(':');
+    if (toks && toks.length > 0) {
+        return `http://${toks[0]}:5000`;
+    }
+
+    return null;
+}
+
+export const aprFrontEndApi = axios.create({
+    baseURL: getDocUrlWithoutPortFrontEnd() || 'http://localhost:5000'
+});

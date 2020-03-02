@@ -1,4 +1,4 @@
-import masterData from '../api/masterData';
+import masterData, {aprFrontEndApi} from '../api/masterData';
 import _ from 'lodash';
 import {sanitizeTreeData} from '../helper/treefilter';
 
@@ -16,6 +16,7 @@ export const FETCH_SAVEDLAYOUTS = "FETCH_SAVEDLAYOUTS"
 export const FETCH_HIERARCHYVIEWS = "FETCH_HIERARCHYVIEWS"
 export const FETCH_DIMENSIONS = "FETCH_DIMENSIONS"
 export const FETCH_HIERARCHYKPI = "FETCH_HIERARCHYKPI"
+export const FETCH_IMAGES = "FETCH_IMAGES"
 export const SELECT_CONTROL = "SELECT_CONTROL"
 export const SELECT_PAGE = "SELECT_PAGE"
 export const UPDATE_DESIGNER_LAYOUT = "UPDATE_DESIGNER_LAYOUT";
@@ -157,6 +158,23 @@ export const fetchHierarchyKpi = () => async dispatch => {
     type: FETCH_HIERARCHYKPI,
     payload: response
   });
+}
+
+export const fetchImages = () => async dispatch => { 
+  console.log('[action] fetchImages');
+  const response = await aprFrontEndApi.get('getfilelist')
+
+  dispatch({
+    type: FETCH_IMAGES,
+    payload: response
+  });
+}
+
+export const deleteImage = (filename) => async dispatch => { 
+  console.log('[action] fetchImages');
+  const response = await aprFrontEndApi.post('deletefile', {
+    name: filename
+  })
 }
 
 export const selectedControl = (controlId) => {

@@ -19,6 +19,7 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
     //const [startDate, setStartDate] = useState(new Date());
     // No need to set initial values
     const { register, setValue, unregister, errors } = useContext(FormContext);
+    const [currColor, setCurrColor] = useState(color);
 
     function handleChangeValue([, props]) {
         return { value: props.value};
@@ -70,19 +71,22 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                         </input>
                     }
 
-                name={name + "y"}
+                name={name + ".y"}
                 register={register}
                 unregister={unregister}
                 setValue={setValue}
                 />
 
                 <div className="dateLabel">Color:</div>
+                <div className="ui icon input fluid">
                 <RHFInput
                     as={<input  
                         key={name} 
                         className="ui small" 
                         defaultValue={color}
-                        readOnly
+                        onInput = {(e) => {
+                            setCurrColor(e.target.value);
+                        }}
                         {...rest}>
                         </input>
                     }
@@ -92,6 +96,10 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                 unregister={unregister}
                 setValue={setValue}
                 />
+                <i className={`ui icon large square`} style={{color: currColor}}/>
+                </div>
+
+                <i className="ui icon trash alternate btnImageFormCoordDelete" />
 
         </>
 }
