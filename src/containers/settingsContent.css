@@ -1,0 +1,30 @@
+. settingsContentContainer {
+
+}
+
+.segmentTitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.hiddenFrame {
+    position:absolute; top:-1px; left:-1px; width:1px; height:1px;
+}
+
+.deleteImageForm {
+
+}
+
+.uploadImageForm {
+    display: block;
+}
+
+.fileInputImageUpload {
+    display: block;
+    width: 100%;
+}
+
+.submitBtnImageUpload {
+    padding-top: 10px !important;
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import {updateControlProps, deleteControl, updateLayoutProps} from '../actions';
@@ -32,7 +32,7 @@ const renderDivider = (name, icon) => {
     </Divider>
 }
 
-const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
+const renderControlProps = (selectedControl, metadata, onSubmit, onDelete, onCloseOpenConfigDialog, showConfigDialog)  => {
     let specialProps = [];
     switch(selectedControl.ctrlType) {
         case 'section':
@@ -61,15 +61,19 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete)  => {
     return <Form className="propsFormContainer ui small form" key='formControlProps' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
             <div className="propsForm">
             {renderCommonProps(selectedControl)}
-            {renderProps(specialProps, selectedControl.data, selectedControl.i, metadata)}
+            {renderProps(specialProps, selectedControl.data, selectedControl.i, metadata, '', onCloseOpenConfigDialog)}
             {selectedControl.data.dataProps && renderDivider("Data Config", "database")}
-            {selectedControl.data.dataProps && renderProps(specialProps, selectedControl.data.dataProps, selectedControl.i, metadata, PREFIX_DATAPROPS)}
+            {selectedControl.data.dataProps && renderProps(specialProps, selectedControl.data.dataProps, selectedControl.i, metadata, PREFIX_DATAPROPS, onCloseOpenConfigDialog)}
             </div>
             <div className="footerToolbar">
                 <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
                 <button key='submitBtn' type="submit" className="ui button secondary mini">Apply</button>
             </div>
-            <ImageMapConfigDialog />
+            <ImageMapConfigDialog 
+                //onClose={}
+                showOpenForm={showConfigDialog}
+                onCloseOpenConfigDialog={onCloseOpenConfigDialog}
+            />
         </Form>
 }
 
@@ -120,7 +124,7 @@ const setControlValues = (setValueFunc, selectedControl) => {
 }
 
 // namePrefix: set to 'dataProps.' for dataProps. Purpose is to nest the value.
-const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix="") => {
+const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix, onCloseOpenConfigDialog) => {
     if (!controlProps) {
         return;
     }
@@ -181,7 +185,8 @@ const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix
                         type="button" 
                         key={`${foundSpecialProp.name}Btn`} 
                         primary
-                        onClick={foundSpecialProp.btnOnclick}>{foundSpecialProp.buttonName}</Button>);
+                        onClick={() => onCloseOpenConfigDialog(true)}
+                        >{foundSpecialProp.buttonName}</Button>);
                     break;
                 default:
                     break;            
@@ -304,11 +309,13 @@ const renderLayoutProps = (layoutData, metadata) => {
     return retList;
 }
 
+// TODO: Refactor this class
+// Nest all functions inside this big function so that they have access to the props and state, and no need to pass each time
 const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteControl, selectedPage, layoutData, updateLayoutProps}) => {
-    if (!selectedControl && !selectedPage) {
-        // return <div className="ui message warning">No object selected in the Designer. Please select any control or click [Configure Page Settings] button to see the layout settings</div>
-        return <Message header='No object selected in the Designer' 
-                        content='Please select either any control or click [Configure Page Settings] button to configure the layout'/>
+    const [showConfigDialog, setShowConfigDialog] = useState(false);
+
+    const onCloseOpenConfigDialog = (bShow) => {
+        setShowConfigDialog(bShow);
     }
 
     // Declare this function inline so that it has access to updateControlProps
@@ -339,11 +346,17 @@ const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteC
         ShowMessage('Control Deleted!', NotifType.success, '');
     };
 
+    if (!selectedControl && !selectedPage) {
+        // return <div className="ui message warning">No object selected in the Designer. Please select any control or click [Configure Page Settings] button to see the layout settings</div>
+        return <Message header='No object selected in the Designer' 
+                        content='Please select either any control or click [Configure Page Settings] button to configure the layout'/>
+    }
+
     if (selectedPage) {
         return renderLayoutPropsForm(layoutData, metadata, onSubmitLayoutForm);
     }
 
-    return renderControlProps(selectedControl, metadata, onSubmit, onDelete);
+    return renderControlProps(selectedControl, metadata, onSubmit, onDelete, onCloseOpenConfigDialog, showConfigDialog);
 }
 
 const mapStateToProps = (state) => {

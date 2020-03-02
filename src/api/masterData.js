@@ -27,6 +27,10 @@ const getDocUrlWithoutPortFrontEnd = () => {
     return null;
 }
 
+export const getAprBaseUrl = () => {
+    return getDocUrlWithoutPortFrontEnd() || 'http://localhost:5000';
+}
+
 export const aprFrontEndApi = axios.create({
-    baseURL: getDocUrlWithoutPortFrontEnd() || 'http://localhost:5000'
+    baseURL: getAprBaseUrl()
 });

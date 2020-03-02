@@ -47,6 +47,11 @@
     clear: none; 
 }
 
+.imageContainer img {
+    /* border: 1px solid lightgray;     */
+    cursor: pointer;
+}
+
 .coordContainer {
     padding-top: 10px;
     display: grid;

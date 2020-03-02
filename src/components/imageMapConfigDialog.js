@@ -1,34 +1,54 @@
 import React, {useState} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {Modal, Header, Button, Icon, Image} from 'semantic-ui-react';
 import Form, {Text as FormText, Dropdown as FormDropdown, FormImageCoord} from '../form/Form';
 import './imageMapConfigDialog.css';
 import ImageMapper from '../controls/imageMapperLib';
+import {convertToDropdownOptions} from '../containers/settingsContent';
+import {getAprBaseUrl} from '../api/masterData';
 
-const KEY_NAME = "dropdownImages";
-
-const dummyImages = [
-    { key: 'Latest value only', text: 'Latest value only', value: 'Latest value only' },
-];
+const KEY_NAME = "dropdownImage";
 
 const DEFAULTMAP = {
 	name: "imageConfigMap",
-    areas: []
+    areas: [],
+    count: 0
 }
 
 const DEFAULT_COORDS = {x: -1, y: -1};
 const DEFAULT_NAME = 'SPOT X';
 
-const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
+const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, inputMapConfig}) => {
     // Watch the state, to disable the Save button if it's empty
-    const [myState, setMyState] = useState({
-        [KEY_NAME]: null});
+    const [myState, setMyState] = useState(null); // bound to the dropdown watch field
+    // TODO: Remove all existing hostpots if user changed the image?
+    //const [imageName, setImageName] = useState(null); // our own tracking
 
     const [addingHotspot, setAddingHotspot] = useState(false);
     const [coords, setCoords] = useState(DEFAULT_COORDS); // Current mouse move coordinates
-    const [map, setMap] = useState(DEFAULTMAP); // For the image mapper
+    const [map, setMap] = useState(inputMapConfig || DEFAULTMAP); // For the image mapper
+    const reduxStoreImages = useSelector(state => state.mainApp.masterImages);
+    const dispatch = useDispatch();
 
     const handleHostpotBtnClick = () => {
         setAddingHotspot(!addingHotspot);
+    }
+
+    // This will be the "permanent name" of the spot.
+    // Purpose is just for unique identifier.
+    // The user can still change the "display name" though
+    const generateSpotName = () => {
+        if (!map || !Array.isArray(map.areas)) {
+            return "SPOT 0";
+        }
+        let candidateVal = 0;
+        while(true) {
+            let candidateName = `SPOT ${candidateVal}`;
+            if (!map.areas.find(a => a.name === candidateName)) {
+                return candidateName;
+            }
+            candidateVal++;
+        }
     }
 
     const handleMouseMove = (evt) => {
@@ -37,21 +57,29 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
         }     
         const coords = { x: evt.nativeEvent.layerX, y: evt.nativeEvent.layerY };
         //console.log('handleMouseMove', coords);
-        setCoords(coords);
+        //setCoords(coords);
     }
 
     const handleMouseClick = (evt) => {
-        console.log('handleMouseClick');
+        const currCoords = { x: evt.nativeEvent.layerX, y: evt.nativeEvent.layerY };
+        console.log('handleMouseClick', currCoords);
         setAddingHotspot(false);
-        if (coords.x  < 0 || coords.y < 0) {
+        if (!addingHotspot) {
+            return;
+        }
+        if (currCoords.x  < 0 || currCoords.y < 0) {
             return;
         }
         
-        map.areas.push({
-            name: DEFAULT_NAME, shape: "circle", coords: [coords.x, coords.y, 15 ], preFillColor: "blue"
+        let mapClone = {...map};
+        setMap(mapClone);
+        mapClone.areas = [...map.areas];
+        //mapClone.count = mapClone.areas.count;
+        mapClone.areas.push({
+            name: generateSpotName(), shape: "circle", coords: [currCoords.x, currCoords.y, 15 ], preFillColor: "red"
         });
 
-        setCoords(DEFAULT_COORDS);
+        //setCoords(DEFAULT_COORDS);
     }
 
     const renderCoordsForm = () => {
@@ -68,28 +96,65 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
         </div>
     }
 
-    // console.log('SaveAsDialog render', myState[KEY_NAME]);
+    const handleChangeImage = (evt, data) => {
+        // Does not work. Anticipate changes using watchFields
+        debugger
+    }
 
-    return <Modal open={true}    
+    const handleClose = () => {
+        if (!onCloseOpenConfigDialog) {
+            return;
+        }
+        onCloseOpenConfigDialog(false);
+    }
+
+    const handleSubmit = (formData) => {
+        console.log('handleSubmit', formData);
+        if (!onCloseOpenConfigDialog) {
+            return;
+        }        
+    }
+
+    // This function is called every render to initialize the values
+    const setHotspotValues = (setValueFunc, mapAreas) => {
+        if (!map || !Array.isArray(map.areas)) {
+            return;
+        }
+
+        debugger
+        map.areas.forEach(area => {
+            setValueFunc(area.name+'.name', area.name); // this is just the display name
+            setValueFunc(area.name+'.x', area.coords[0]);
+            setValueFunc(area.name+'.y', area.coords[1]);
+            setValueFunc(area.name+'.color', area.preFillColor);
+        });
+    }
+
+    console.log('ImageMapConfigDialog render', map);
+
+    return <Modal open={showOpenForm}  
         closeOnDimmerClick={true}
         className="imageMapConfigDialog"
         size="fullscreen"
     >
     <Modal.Content className="imageMapContent">
         <div className="imageMapContentContainer">
-            <Form className="imageMapForm" onSubmit={(args) => console.log(args)} 
-            watchedField={KEY_NAME}
-            setStateCb={setMyState}>        
+            <Form className="imageMapForm" onSubmit={handleSubmit} 
+                watchedField={'dropdownImage'}
+                setStateCb={setMyState}
+                setControlValues={setHotspotValues}
+                inputObj={map}>
                 <div className="formBodyImgMapConfig">
                     <h4>Configure ImageMap Control</h4>
 
-                    <FormDropdown key={'dropdownImages'}
-                        name={KEY_NAME}
+                    <FormDropdown key={'dropdownImage'}
+                        name={'dropdownImage'}
                         label="Select Image:"
-                        options={[]}
+                        options={convertToDropdownOptions(reduxStoreImages)}
                         size="small"
+                        // onChange={handleChangeImage}
                     />
-                    <Button toggle type="button" active={addingHotspot} onClick={handleHostpotBtnClick} disabled={addingHotspot}>
+                    <Button toggle type="button" active={addingHotspot} onClick={handleHostpotBtnClick} disabled={addingHotspot || !myState || !myState.dropdownImage}>
                         <Icon name="plus"/>
                         {addingHotspot ? "Click on a spot in image" : "Add Hotspot"}
                     </Button>
@@ -99,24 +164,25 @@ const ImageMapConfigDialog = ({showOpenForm, onOpen, onClose}) => {
 
                 <div className="footerToolbarImgMapConfig">
                 <Modal.Actions>
-                    <Button floated={'left'} 
-                            color='green' 
-                            type="submit"      
+                    <Button floated={'left'}
+                            color='green'
+                            type="submit"
                     >
                         Apply
                     </Button>
-                    <Button floated={'left'} onClick={onClose}>
+                    <Button floated={'left'} onClick={() => handleClose()}>
                         Close            
                     </Button>
                 </Modal.Actions>
                 </div>
             </Form>
             <div className="imageContainer">
-                <ImageMapper src='https://react.semantic-ui.com/images/avatar/large/rachel.png'
+                {!!myState && !!myState.dropdownImage &&
+                <ImageMapper src={`${getAprBaseUrl()}/files/${myState.dropdownImage}`}
                             onImageMouseMove={handleMouseMove}
                             onImageClick={handleMouseClick}
                             map={map}
-                />                
+                />}          
             </div>
         </div>
     </Modal.Content>

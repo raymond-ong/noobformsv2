@@ -15,6 +15,14 @@ export const conditionOptions = [
     { key: 'NotIn', text: 'Not In', value: 'NotIn', disabled: true },
 ];
 
+const handleChangeName = (e, name) => {
+    debugger
+    return {
+        //[name+".name"]: e[0].target.value
+        value: e[0].target.value
+    }
+}
+
 const FormImageCoord = ({ name, x, y, color, ...rest }) => {
     //const [startDate, setStartDate] = useState(new Date());
     // No need to set initial values
@@ -25,6 +33,11 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
         return { value: props.value};
       }
 
+    const handleChangeColor = ([e]) => {
+        setCurrColor(e.target.value);
+        return { value: e.target.value};
+    }
+
     return <>
                 <div className="dateLabel">Name:</div>
                 <RHFInput
@@ -32,7 +45,6 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                         key={name} 
                         className="ui small" 
                         defaultValue={name}
-                        readOnly
                         {...rest}>
                         </input>
                     }
@@ -41,6 +53,7 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                 register={register}
                 unregister={unregister}
                 setValue={setValue}
+                onChangeEvent={(e) => handleChangeName(e, name)}
                 />
                 
                 <div className="dateLabel">X:</div>
@@ -84,9 +97,9 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                         key={name} 
                         className="ui small" 
                         defaultValue={color}
-                        onInput = {(e) => {
-                            setCurrColor(e.target.value);
-                        }}
+                        // onInput = {(e) => {
+                        //     setCurrColor(e.target.value);
+                        // }}
                         {...rest}>
                         </input>
                     }
@@ -95,6 +108,7 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                 register={register}
                 unregister={unregister}
                 setValue={setValue}
+                onChangeEvent={(e) => handleChangeColor(e, name)}
                 />
                 <i className={`ui icon large square`} style={{color: currColor}}/>
                 </div>

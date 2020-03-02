@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import { Form as SemanticForm, Segment, Button} from "semantic-ui-react";
 import Form, {Dropdown as FormDropDown} from '../form/Form';
 import './settingsContent.css';
@@ -8,7 +8,7 @@ import {deleteImage, fetchImages} from '../actions';
 
 
 
-const convertToDropdownOptions = (imagesStrArr) => {
+export const convertToDropdownOptions = (imagesStrArr) => {
     if (!Array.isArray(imagesStrArr)) {
         return [];
     }
@@ -50,19 +50,19 @@ const SettingsContent = () => {
     
 
     return <div className="settingsContentContainer">
-        <iframe name="hiddenFrame" class="hiddenFrame"></iframe>
+        <iframe name="hiddenFrame" className="hiddenFrame"></iframe>
         <Segment>
             <div className="segmentTitle">Upload Image</div>
             <form method="post" 
                 className="uploadImageForm"
-                enctype="multipart/form-data" 
+                encType="multipart/form-data" 
                 action="http://localhost:5000/fileupload" 
                 target="hiddenFrame"
                 onSubmit={handleFormSubmit}>
-                <input class="ui button fileInputImageUpload" type="file" name="uploadedFile" accept="image/*"/>
+                <input className="ui button fileInputImageUpload" type="file" name="uploadedFile" accept="image/*"/>
                 <br/>
                 <br/>
-                <input class="ui button primary submitBtnImageUpload" type="submit" name="upload"/>
+                <input className="ui button primary submitBtnImageUpload" type="submit" name="upload"/>
             </form>
         </Segment>
 

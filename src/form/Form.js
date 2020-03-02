@@ -29,7 +29,7 @@ function Form({ children, onSubmit, inputObj, setControlValues, watchedField, se
         // The controls' values are not really bound to any state or props so we have to update it here
         if (setControlValues) {
           setControlValues(setValue, inputObj);
-        }        
+        }
     }, inputObjVals)
 
     useEffect(() => {
