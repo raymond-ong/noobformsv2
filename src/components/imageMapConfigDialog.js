@@ -21,7 +21,6 @@ const DEFAULT_NAME = 'SPOT X';
 const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, selectedControl}) => {
     let initialImage, initialMap;
     if (selectedControl && selectedControl.data && selectedControl.data.imageProps) {
-        debugger
         initialImage = selectedControl.data.imageProps.image;
         initialMap = selectedControl.data.imageProps.map;
     }
@@ -114,7 +113,6 @@ const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, selectedCo
 
     const handleChangeImage = (evt, data) => {
         // Does not work. Anticipate changes using watchFields
-        debugger
     }
 
     const handleClose = () => {

@@ -37,6 +37,7 @@ export const getContentDiv = (controlData, mode) => {
     // Also this should be floated. We don't want to resize or move the parent
     let content = null;
     let isReporting = document.URL.toLowerCase().endsWith("reporting");
+    let designMode = mode !== 'dashboard';
     switch(controlData.ctrlType) {
         case 'section':
             content = <Section {...controlData}></Section>
@@ -80,8 +81,7 @@ export const getContentDiv = (controlData, mode) => {
             if (isReporting) {
                 content = <BarChartForReport {...controlData}/>                
             }
-            else {
-                let designMode = mode !== 'dashboard';
+            else {                
                 content = <BarResponsiveData {...controlData} designMode={designMode}/>
             }            
             break;
@@ -102,7 +102,7 @@ export const getContentDiv = (controlData, mode) => {
             content = <DcBar {...controlData}/>
             break;
         case 'imageMap':
-            content = <ImageMap {...controlData}/>
+            content = <ImageMap {...controlData} designMode={designMode}/>
             break;
         case 'date':
             content = <Datepicker {...controlData}/>

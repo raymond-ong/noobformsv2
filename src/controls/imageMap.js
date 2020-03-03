@@ -2,6 +2,7 @@ import React from 'react';
 import ImageMapper from './imageMapperLib';
 import './imageMap.css';
 import noobControlHoc from '../hoc/noobControlsHoc';
+import {getAprBaseUrl} from '../api/masterData';
 
 // Should use different names if there are more than 1 instance of maps in the web page
 // Otherwise the mouse pointer will have conflicts
@@ -27,7 +28,7 @@ const MAP2 ={
     ]
 };
 
-
+const DEFAULT_IMG = 'layout.gif'; // This image can be accessed from http://localhost:3000/layout.gif, and deployed inside the public folder of this React App
 
 class ImageMap extends React.Component {
     constructor(props) {
@@ -65,7 +66,7 @@ class ImageMap extends React.Component {
     componentDidMount() {
         var img = new Image();
         img.onload = this.imageLoadHandler;
-        img.src="http://1.bp.blogspot.com/-IiQzSfQwqys/UMc798CtfzI/AAAAAAAAAG0/IQCyIR2eZeU/s1600/layout.gif";
+        img.src = this.getImageUrl();
     }
 
     enterArea(area) {
@@ -105,8 +106,49 @@ class ImageMap extends React.Component {
             }
         }
     }
+
+    getImageUrl() {
+        return this.props.data && this.props.data.imageProps && this.props.data.imageProps.image ? 
+                    `${getAprBaseUrl()}/files/${this.props.data.imageProps.image}` 
+                    : DEFAULT_IMG;
+    }
+
+    getMapToUse() {
+        if (this.props.data && this.props.data.imageProps && this.props.data.imageProps.image) {
+            return this.props.data && this.props.data.imageProps && this.props.data.imageProps.map;
+        }
+
+        return this.props.useOther ? MAP2 : MAP;
+    }
+
+    getTooltip(areaName) {
+        // debugger
+        if (!this.props.apiData || !this.props.apiData.data) {
+            return areaName;
+        }
+        
+        let findApiData = this.props.apiData.data.find(a => a.name === areaName);
+        if (!findApiData) {
+            return areaName;
+        }
+
+        let tipStr = '';
+        for (var prop in findApiData) {
+            if (prop === "name") {
+                tipStr += areaName;
+            }
+            else {
+                tipStr += `, ${prop}: ${findApiData[prop]}`;
+            }
+        }
+        
+        return tipStr;
+    }
     
     render() {
+        let imageUrl = this.getImageUrl();
+        let mapToUse = this.getMapToUse();
+
         if (!this.state.imageLoaded) {
             return <div>Loading Image...</div>;
         }
@@ -115,8 +157,8 @@ class ImageMap extends React.Component {
         console.log("[ImageMap] Computed W, H: ", computedSize, "max Width: ", this.props.maxWidth);
 
         return <div style={{ position: "relative" }} className={classNames}>
-            <ImageMapper src="http://1.bp.blogspot.com/-IiQzSfQwqys/UMc798CtfzI/AAAAAAAAAG0/IQCyIR2eZeU/s1600/layout.gif"
-                map={this.props.useOther ? MAP2 : MAP}
+            <ImageMapper src={imageUrl}
+                map={mapToUse}
                 onMouseEnter={area => this.enterArea(area)}
                 onMouseLeave={area => this.leaveArea(area)}
                 width={computedSize.w} // get it from the container width
@@ -127,7 +169,8 @@ class ImageMap extends React.Component {
         </ImageMapper>
         {this.state.hoveredArea && (
             <span className="imageMapToolTip" style={{ ...this.getTipPosition(this.state.hoveredArea) }}>
-                {this.state.hoveredArea.name}                
+                {/* {this.state.hoveredArea.name} */}
+                {this.getTooltip(this.state.hoveredArea.name)}
             </span>
         )}
         </div>
@@ -148,4 +191,27 @@ export const imageMapProps = [
       buttonName: 'Configure Image...',
       btnOnclick: configBtnOnClick
     },
+    {
+        name: 'dataProps', 
+        propType: 'section',
+    },
+    {
+        name: 'datasetId', 
+        propType: 'number',
+        toolTip: 'Put the same datasetId for all controls that are linked. When a filter is applied in one control, other linked controls will also be filtered.'
+    },
+    {
+        name: 'requestType', 
+        propType: 'metadata',
+        metadataField: 'requestTypes',
+        metadataPropType: 'dropdown'
+    },
+    {
+        name: 'columns', 
+        propType: 'metadata',
+        metadataField: 'dimensions',
+        metadataPropType: 'treeDropdown',
+        multiple: true,
+      },
+  
 ];

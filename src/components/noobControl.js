@@ -155,9 +155,9 @@ const NoobControl = ({controlData, resizerMouseDown, resizingControlId,
             }}
         />
         <NoobControlContent 
-            controlSelected={() => selectedControl(controlData.i)}
-            maxWidth={ctrlStyle.maxWidth}
+            controlSelected={() => selectedControl(controlData.i)}            
             {...controlData} 
+            maxWidth={ctrlStyle.maxWidth}
         />
         <div className="resizePlaceholder"></div>      
         {renderResizer(controlData.i, resizerMouseDown)}  

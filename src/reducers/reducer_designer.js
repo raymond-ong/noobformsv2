@@ -11,6 +11,7 @@ import { SELECT_TOOLPANEL_TREE,
           deleteControl} from "../actions/index";
 
 import {DUMMY_APR_METADATA, OLD_DUMMY_DATA, dropdownOptions, dropdownOptionsFew} from '../helper/dummyMetadata';
+import {uuidv4} from '../helper/util';
 
 // Note: if using CSS grid to populate the layout, the items must be sorted by row and column
 // This is for the Forms layout
@@ -23,6 +24,8 @@ const generateDefaultLayout = (metadata) => {
     return [];
   }
 
+  const suffix = '-'+ uuidv4();
+
   // [1] Section
   return [
   // {i: 'ctrl-combo0', x: 0, y: 0, w: 3, h: 1, ctrlType: 'combo', data: {
@@ -32,19 +35,19 @@ const generateDefaultLayout = (metadata) => {
   // }},
 
 
-  {i: 'ctrl-section0X', x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
-      title: 'Default Section',
-      //backgroundColor: 'lightsteelblue'
-      level: 1
-  }},
+  // {i: 'ctrl-section0'+suffix, x: 0, y: 0, w: 12, h: 1, ctrlType: 'section', data: {
+  //     title: 'Default Section',
+  //     //backgroundColor: 'lightsteelblue'
+  //     level: 1
+  // }},
 
-  {i: 'ctrl-label0X', x: 0, y: 1, w: 12, h: 1,ctrlType: 'label', data: {
-    label: 'This is the default sample layout. In the Page Designer, chart data being displayed below are sample data only!',
-    color: 'black',
-    backgroundColor: 'khaki',
-    fontSize: '14',
-    icon: 'lightbulb'
-  }},
+  // {i: 'ctrl-label0X'+suffix, x: 0, y: 1, w: 12, h: 1,ctrlType: 'label', data: {
+  //   label: 'This is the default sample layout. In the Page Designer, chart data being displayed below are sample data only!',
+  //   color: 'black',
+  //   backgroundColor: 'khaki',
+  //   fontSize: '14',
+  //   icon: 'lightbulb'
+  // }},
 
   //[2] Description
   // {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
@@ -61,7 +64,7 @@ const generateDefaultLayout = (metadata) => {
   //     }},
 
   // [3 new] Pie Chart
-  {i: 'ctrl-pie0X', x: 0, y: 2, w: 6, h: 8, ctrlType: 'pie',       
+  {i: 'ctrl-pie0X'+suffix, x: 0, y: 2, w: 6, h: 8, ctrlType: 'pie',       
       data: {
           label: 'Pie:',
           dataProps: {
@@ -72,48 +75,53 @@ const generateDefaultLayout = (metadata) => {
           }
       }},
 
-  // [4 new] Bar Chart
-  {i: 'ctrl-bar0X', x: 6, y: 2, w: 6, h: 8, ctrlType: 'barchart',       
-      data: {
-          label: 'Bar:',
-          stacked: false,
-          dataProps: {
-            datasetId: 0,
-            requestType: 'GetDeviceCounts',
-            categories: '', // For a vertical bar chart, this is the X-axis
-            seriesName: '', // For a vertical bar chart, this is the Y-axis (e.g. count)
-            aggregation: 'count'
-          }
-      }},
+  // // [4 new] Bar Chart
+  // {i: 'ctrl-bar0X'+suffix, x: 6, y: 2, w: 6, h: 8, ctrlType: 'barchart',       
+  //     data: {
+  //         label: 'Bar:',
+  //         stacked: false,
+  //         dataProps: {
+  //           datasetId: 0,
+  //           requestType: 'GetDeviceCounts',
+  //           categories: '', // For a vertical bar chart, this is the X-axis
+  //           seriesName: '', // For a vertical bar chart, this is the Y-axis (e.g. count)
+  //           aggregation: 'count'
+  //         }
+  //     }},
 
-  //[2 NEW] Gauge chart
-  {i: 'ctrl-gauge0x', x: 0, y: 14, w: 6, h: 4, ctrlType: 'gauge',       
-      data: {
-          label: 'Gauge:',
-          percent: 95.5
-  }},
+  // //[2 NEW] Gauge chart
+  // {i: 'ctrl-gauge0x'+suffix, x: 0, y: 14, w: 6, h: 4, ctrlType: 'gauge',       
+  //     data: {
+  //         label: 'Gauge:',
+  //         percent: 95.5
+  // }},
 
-  // Image Map
-  {i: 'ctrl-imageMap0X', x: 6, y:14, w: 6, h: 4,ctrlType: 'imageMap', data: {
+  // // Image Map
+  {i: 'ctrl-imageMap0Y'+suffix, x: 6, y:14, w: 6, h: 4,ctrlType: 'imageMap', data: {
     label: 'Image Map:',
+    dataProps: {
+      datasetId: 1,
+      requestType: 'GetPlantKpi',
+      columns: []
+    },
     imageProps: {
       image: '',
       map: {        
           name: '',
           areas: []
       }
-    }
+    },
   }},
 
-  {i: 'ctrl-table0X', x: 0, y:10, w: 12, h: 4,ctrlType: 'table', data: {
-    label: 'Table:',
-    dataProps: {
-      columns: [],
-      datasetId: 0,
-      requestType: 'GetDeviceDetails',
-      aggregation: 'count'
-    }
-  }},
+  // {i: 'ctrl-table0X'+suffix, x: 0, y:10, w: 12, h: 4,ctrlType: 'table', data: {
+  //   label: 'Table:',
+  //   dataProps: {
+  //     columns: [],
+  //     datasetId: 0,
+  //     requestType: 'GetDeviceDetails',
+  //     aggregation: 'count'
+  //   }
+  // }},
 
 
   // // [3] Date
@@ -278,12 +286,21 @@ const defaultControlData = {
     label: 'Textbox:'
   },
   'table': {
-    label: 'Table:'
+    label: 'Table:',
+    dataProps: {
+      columns: [],
+      datasetId: 0,
+      requestType: 'GetDeviceDetails',
+      aggregation: 'count'
+    }
   },
   'pie' : {
     label: 'Pie:',
     dataProps: {
-
+      datasetId: 0,
+      requestType: 'GetDeviceCounts',
+      categories: '',
+      aggregation: 'count'
     }
   },
   'barchart' : {
@@ -304,6 +321,11 @@ const defaultControlData = {
   },
   'imageMap': {
     label: 'Image Map:',
+    dataProps: {
+      datasetId: 1,
+      requestType: 'GetPlantKpi',
+      columns: []
+    },    
     imageProps: {
       image: '',
       map: {        

@@ -58,7 +58,12 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete, onClo
             break;
     }
 
-    return <Form className="propsFormContainer ui small form" key='formControlProps' onSubmit={onSubmit} inputObj={selectedControl} setControlValues={setControlValues}>
+    return <>
+            <Form className="propsFormContainer ui small form" 
+            key='formControlProps' 
+            onSubmit={onSubmit} 
+            inputObj={selectedControl} 
+            setControlValues={setControlValues}>
             <div className="propsForm">
             {renderCommonProps(selectedControl)}
             {renderProps(specialProps, selectedControl.data, selectedControl.i, metadata, '', onCloseOpenConfigDialog)}
@@ -69,13 +74,15 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete, onClo
                 <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
                 <button key='submitBtn' type="submit" className="ui button secondary mini">Apply</button>
             </div>
-            {selectedControl.ctrlType === 'imageMap' && <ImageMapConfigDialog 
-                //onClose={}
-                showOpenForm={showConfigDialog}
-                onCloseOpenConfigDialog={onCloseOpenConfigDialog}
-                selectedControl={selectedControl}
-            />}
         </Form>
+        {selectedControl.ctrlType === 'imageMap' && <ImageMapConfigDialog 
+        //onClose={}
+        showOpenForm={showConfigDialog}
+        onCloseOpenConfigDialog={onCloseOpenConfigDialog}
+        selectedControl={selectedControl}
+        />}
+        </>
+    
 }
 
 const renderCommonProps = selectedControl => {
@@ -245,7 +252,6 @@ const setLayoutValues = (setValueFunc, layoutData) => {
         return;
     }
 
-    debugger
     for (var prop in layoutData) {
         setValueFunc(prop, layoutData[prop]);
     }
@@ -322,6 +328,7 @@ const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteC
     // Declare this function inline so that it has access to updateControlProps
     const onSubmit = (submittedData, evt) => {
         console.log('submit control props', submittedData);
+        debugger
         let formattedData = {
             i: submittedData.controlId,
             data: submittedData
@@ -329,6 +336,10 @@ const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteC
     
         delete formattedData.data.controlId;
         delete formattedData.data.controlType;
+        if (selectedControl.data.imageProps) {
+            // manually bring back the imageProps because the data is not found inside this form
+            formattedData.data.imageProps = {...selectedControl.data.imageProps};
+        }
     
         // Fire redux action to update store
         updateControlProps(formattedData);

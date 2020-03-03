@@ -33,18 +33,19 @@ const ReportControl = ({layoutName, controlData, containerWidth, clickChartSlice
     const [apiData, setApiData] = useState();
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
-    useEffect(() => {        
+    useEffect(() => {     
+        debugger   
         if (controlData.data && controlData.data.dataProps) {                        
             fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata, pageFilters);
         }
     }, [datasetFilters, currControlGrouping, layoutName, pageFilters]); 
 
 
-    // [b] UI Preparations
+    // [b] UI Preparations    
     if (controlData.data && controlData.data.dataProps && !isLoading) {
         // TODO: not sure if this would affect the global object (permanently stored to the global object)
         // If yes, just clone this object
-        controlData.apiData = apiData;        
+        controlData.apiData = apiData;
         controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
         controlData.currControlGrouping = currControlGrouping;
         controlData.handleChartClick = (sliceInfo, seriesInfo, groupingStackStr) => handleChartClick(sliceInfo, seriesInfo, groupingStackStr, controlData, clickChartSlice);

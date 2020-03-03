@@ -45,10 +45,10 @@ export default class ImageMapper extends Component {
 			prop => this.props[prop] !== nextProps[prop]
 		);
 
-		//debugger
 		//return !isEqual(this.props.map, this.state.map) || propChanged;
 		return !isEqual(this.props.map, this.state.map) || 
 				propChanged ||
+				!isEqual(this.props.map.name, nextProps.map.name) ||
 				!isEqual(this.props.map.areas, nextProps.map.areas);
 	}
 

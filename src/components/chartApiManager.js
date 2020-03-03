@@ -95,6 +95,18 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
     return retList;
 }
 
+const composeImageMapParams = (controlData) => {
+    debugger
+    if (!controlData.data.imageProps || !Array.isArray(controlData.data.imageProps.map.areas)) {
+        return null;
+    }
+
+    return {
+        name: "Hotspots",
+        values: controlData.data.imageProps.map.areas.map(a => a.name)
+    };
+}
+
 // This class is responsible for making API calls to get data, or handling click or grouping events
 export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata, pageFilters) => {
     console.log('[DEBUG] fetchData ReportControl', controlData.i);
@@ -107,9 +119,12 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         //     postObj.Groupings.push(currControlGrouping.seriesName);
         // }
     }
-    else {
+    else if (!!controlData.data.dataProps.categories) {
         // categories is a string value
         postObj.Groupings = [controlData.data.dataProps.categories];
+    }
+    else {
+        postObj.Groupings = [];
     }
 
     if (controlData.data.dataProps.seriesName) {
@@ -123,7 +138,6 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
         let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters);
-        debugger
         let ownHigherLevelFilters = getOwnControlHigherLevelFilters(controlData.i, datasetFilters, currControlGrouping ? currControlGrouping : null);
         postObj.RequestParams = postObj.RequestParams.concat(otherControlFilters);
         postObj.RequestParams = postObj.RequestParams.concat(ownHigherLevelFilters);
@@ -134,6 +148,13 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
 
     if (Array.isArray(pageFilters)) {
         postObj.RequestParams = postObj.RequestParams.concat(pageFilters);
+    }
+
+    if (controlData.ctrlType === 'imageMap') {
+        let imagePropParams = composeImageMapParams(controlData);
+        if (imagePropParams) {
+            postObj.RequestParams.push(imagePropParams);
+        }        
     }
 
 

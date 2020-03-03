@@ -24,6 +24,7 @@ function Form({ children, onSubmit, inputObj, setControlValues, watchedField, se
 
     useEffect(() => {
       // Called when input object changes
+      // TODO: If the form is for rendering control props, inputObjVals can be different size, which useEffect will complain
       console.log('Form useEffect1', watchedValue);
         // Set the initial values
         // The controls' values are not really bound to any state or props so we have to update it here

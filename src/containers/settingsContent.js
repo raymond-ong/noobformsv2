@@ -44,8 +44,6 @@ const SettingsContent = () => {
             ShowMessage("Deleted Image!");
             dispatch(fetchImages());
         });
-    
-        debugger;
     }
     
 
