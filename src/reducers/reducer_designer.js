@@ -7,6 +7,7 @@ import { SELECT_TOOLPANEL_TREE,
           UPDATE_LAYOUT_PROPS,
           DELETE_CONTROL,
           SAVE_DESIGNER_LAYOUT,
+          APPLY_IMAGEMAP_PROPS,
           deleteControl} from "../actions/index";
 
 import {DUMMY_APR_METADATA, OLD_DUMMY_DATA, dropdownOptions, dropdownOptionsFew} from '../helper/dummyMetadata';
@@ -97,15 +98,10 @@ const generateDefaultLayout = (metadata) => {
     label: 'Image Map:',
     imageProps: {
       image: '',
-      hotspots: [
-        {
+      map: {        
           name: '',
-          x: 10,
-          y: 10,
-          r: 10,
-          color: 'red'
-        }
-      ]
+          areas: []
+      }
     }
   }},
 
@@ -308,6 +304,13 @@ const defaultControlData = {
   },
   'imageMap': {
     label: 'Image Map:',
+    imageProps: {
+      image: '',
+      map: {        
+          name: '',
+          areas: []
+      }
+    }    
   },
  
 }
@@ -424,6 +427,23 @@ const updateControlProps = (updatedControl, newLayout) => {
   newLayout.push(newControl);
 }
 
+const updateControlImgMapProps = (actionPayload, newLayout) => {
+  let {image, newMap, updatedControl} = actionPayload;
+  let findControlIndex = newLayout.findIndex(ctrl => ctrl.i === updatedControl.i);
+  if (findControlIndex < 0) {
+    return;
+  }
+
+  let newControl = {...newLayout[findControlIndex], data: updatedControl.data};
+  newControl.data.imageProps = {
+    image: image,
+    map: newMap
+  }
+  // Remove the old control and push the new object
+  newLayout.splice(findControlIndex, 1);
+  newLayout.push(newControl);
+}
+
 const updateLayoutProps = (updatedLayoutProps) => {
   return {...updatedLayoutProps, 
     rows: parseInt(updatedLayoutProps.rows)
@@ -479,6 +499,14 @@ export default function(state = defaultState, action) {
         updateControlProps(action.payload, newStateUpdProps.layout); 
 
         return newStateUpdProps;
+    case APPLY_IMAGEMAP_PROPS:
+      let newStateUpdImageMapProps = {
+        ...state,          
+      };
+
+      updateControlImgMapProps(action.payload, newStateUpdImageMapProps.layout); 
+
+      return newStateUpdImageMapProps;
     case UPDATE_LAYOUT_PROPS:
       let newStateUpdLayoutProps = {
         ...state,          
@@ -505,6 +533,7 @@ export default function(state = defaultState, action) {
         layout: [...action.payload.controls],
         layoutData: action.payload.layoutData,
       }
+      
   }
   return state;
 }

@@ -30,6 +30,7 @@ export const SAVE_HIERARCHYVIEW = "SAVE_HIERARCHYVIEW";
 export const SELECT_DASHBOARD_TREE = "SELECT_DASHBOARD_TREE";
 export const CLICK_CHART_SLICE = "CLICK_CHART_SLICE";
 export const SELECT_CHART_GROUP = "SELECT_CHART_GROUP";
+export const APPLY_IMAGEMAP_PROPS = "APPLY_IMAGEMAP_PROPS";
 
 export function menuClicked(menuName) { 
     return {
@@ -313,6 +314,18 @@ export function selectChartGroup(groupVal, controlData) {
     payload: {
       groupVal,
       controlData
+    }
+  };
+}
+
+
+export function applyImageMapProps(image, newMap, updatedControl) {
+  return {
+    type: APPLY_IMAGEMAP_PROPS,
+    payload: {
+      image,
+      newMap,
+      updatedControl
     }
   };
 }

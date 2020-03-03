@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {Modal, Header, Button, Icon, Image} from 'semantic-ui-react';
 import Form, {Text as FormText, Dropdown as FormDropdown, FormImageCoord} from '../form/Form';
@@ -6,29 +6,46 @@ import './imageMapConfigDialog.css';
 import ImageMapper from '../controls/imageMapperLib';
 import {convertToDropdownOptions} from '../containers/settingsContent';
 import {getAprBaseUrl} from '../api/masterData';
+import {applyImageMapProps} from '../actions';
 
 const KEY_NAME = "dropdownImage";
 
 const DEFAULTMAP = {
 	name: "imageConfigMap",
     areas: [],
-    count: 0
 }
 
 const DEFAULT_COORDS = {x: -1, y: -1};
 const DEFAULT_NAME = 'SPOT X';
 
-const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, inputMapConfig}) => {
+const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, selectedControl}) => {
+    let initialImage, initialMap;
+    if (selectedControl && selectedControl.data && selectedControl.data.imageProps) {
+        debugger
+        initialImage = selectedControl.data.imageProps.image;
+        initialMap = selectedControl.data.imageProps.map;
+    }
+
     // Watch the state, to disable the Save button if it's empty
-    const [myState, setMyState] = useState(null); // bound to the dropdown watch field
+    const [myState, setMyState] = useState({dropdownImage: initialImage}); // bound to the dropdown watch field
     // TODO: Remove all existing hostpots if user changed the image?
     //const [imageName, setImageName] = useState(null); // our own tracking
 
     const [addingHotspot, setAddingHotspot] = useState(false);
     const [coords, setCoords] = useState(DEFAULT_COORDS); // Current mouse move coordinates
-    const [map, setMap] = useState(inputMapConfig || DEFAULTMAP); // For the image mapper
+    const [map, setMap] = useState(initialMap || DEFAULTMAP); // For the image mapper
     const reduxStoreImages = useSelector(state => state.mainApp.masterImages);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        console.log("imagemap config useEffect", initialMap);
+        if (initialImage) {
+            setMyState({dropdownImage: initialImage});
+        }
+        if (initialMap) {
+            setMap(initialMap);
+        }
+    }, [initialImage, initialMap]);
 
     const handleHostpotBtnClick = () => {
         setAddingHotspot(!addingHotspot);
@@ -74,7 +91,6 @@ const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, inputMapCo
         let mapClone = {...map};
         setMap(mapClone);
         mapClone.areas = [...map.areas];
-        //mapClone.count = mapClone.areas.count;
         mapClone.areas.push({
             name: generateSpotName(), shape: "circle", coords: [currCoords.x, currCoords.y, 15 ], preFillColor: "red"
         });
@@ -109,19 +125,50 @@ const ImageMapConfigDialog = ({showOpenForm, onCloseOpenConfigDialog, inputMapCo
     }
 
     const handleSubmit = (formData) => {
-        console.log('handleSubmit', formData);
-        if (!onCloseOpenConfigDialog) {
-            return;
-        }        
+        console.log('handleSubmit, formData:', formData);
+        let image = null;
+        let areas = [];
+
+        for (let prop in formData) {
+            if (prop === "dropdownImage") {
+                image = formData[prop];
+            }
+            else {
+                let areaData = formData[prop];
+                areas.push({
+                    name: areaData.name,
+                    shape: "circle", 
+                    coords: [areaData.x, areaData.y, 15 ], 
+                    preFillColor: areaData.color
+                })
+            }
+        }
+        
+        let newMap = {
+            name: `${selectedControl.i}-imageConfigMap`,
+            areas: areas
+        };
+
+        console.log('handleSubmit, newMap:', newMap);
+        setMap(newMap);
+        
+        //console.log('handleSubmit, map', map);
+        // Fire a redux action
+        dispatch(applyImageMapProps(image, newMap, selectedControl));        
     }
 
     // This function is called every render to initialize the values
-    const setHotspotValues = (setValueFunc, mapAreas) => {
+    const setHotspotValues = (setValueFunc, mapParam) => {
         if (!map || !Array.isArray(map.areas)) {
             return;
         }
 
-        debugger
+        // if (!Array.isArray(mapParam)) {
+        //     return;
+        // }
+
+        setValueFunc('dropdownImage', myState.dropdownImage);
+
         map.areas.forEach(area => {
             setValueFunc(area.name+'.name', area.name); // this is just the display name
             setValueFunc(area.name+'.x', area.coords[0]);

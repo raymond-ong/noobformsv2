@@ -69,11 +69,12 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete, onClo
                 <button key='deleteBtn' type="button" className="ui negative button mini" onClick={onDelete}>Delete</button>
                 <button key='submitBtn' type="submit" className="ui button secondary mini">Apply</button>
             </div>
-            <ImageMapConfigDialog 
+            {selectedControl.ctrlType === 'imageMap' && <ImageMapConfigDialog 
                 //onClose={}
                 showOpenForm={showConfigDialog}
                 onCloseOpenConfigDialog={onCloseOpenConfigDialog}
-            />
+                selectedControl={selectedControl}
+            />}
         </Form>
 }
 
