@@ -65,5 +65,6 @@ export { default as FormRadio } from "./FormRadio";
 export { default as FormDateRange } from "./FormDateRange";
 export { default as FormFilterInput } from "./FormFilterInput";
 export { default as FormImageCoord} from "./FormImageCoord";
+export { default as FormRichText} from "./FormRichText";
 
 export default Form;

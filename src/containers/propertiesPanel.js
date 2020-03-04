@@ -13,8 +13,9 @@ import {pieProps} from '../charts/pieChart';
 import {barProps} from '../charts/barChart';
 import {tableProps} from '../controls/table';
 import {imageMapProps} from '../controls/imageMap';
+import {richTextProps} from '../controls/richtext';
 import * as constants from '../constants';
-import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown, FormCheckbox} from '../form/Form';
+import Form, {Text as FormText, IconSelector, ColorSelector, FormTreeDropDown, FormCheckbox, FormRichText} from '../form/Form';
 import FormDropDown from '../form/FormDropDown';
 import ShowMessage, {NotifType} from '../helper/notification';
 import {Divider, Header, Icon, Message, Button} from 'semantic-ui-react';
@@ -53,6 +54,9 @@ const renderControlProps = (selectedControl, metadata, onSubmit, onDelete, onClo
             break;
         case 'imageMap':
             specialProps = imageMapProps;
+            break;
+        case 'richtext':
+            specialProps = richTextProps;
             break;
         default:
             break;
@@ -196,6 +200,14 @@ const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix
                         onClick={() => onCloseOpenConfigDialog(true)}
                         >{foundSpecialProp.buttonName}</Button>);
                     break;
+                case 'richText':
+                    retList.push(<FormRichText 
+                        label={splitWord(key)+':'}
+                        name={namePrefix+key}
+                        key={`${foundSpecialProp.name}Btn`}
+                        initialData={controlProps.richTextData}
+                    />);
+                    break;
                 default:
                     break;            
             }
@@ -328,7 +340,6 @@ const PropertiesPanel = ({selectedControl, metadata, updateControlProps, deleteC
     // Declare this function inline so that it has access to updateControlProps
     const onSubmit = (submittedData, evt) => {
         console.log('submit control props', submittedData);
-        debugger
         let formattedData = {
             i: submittedData.controlId,
             data: submittedData

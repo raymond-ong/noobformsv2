@@ -1,13 +1,75 @@
-import React from 'react';
-import './common.css';
-import './richtext.css';
+import React, { useContext, useState, useEffect } from "react";
+import { FormContext } from "./Form";
+import { RHFInput } from "react-hook-form-input";
+import { Form as SemanticForm, Popup } from "semantic-ui-react";
 import 'draft-js/dist/Draft.css';
-import { stateFromHTML } from 'draft-js-import-html'
+import { Editor, EditorState, RichUtils, ContentState, convertToRaw, convertFromRaw } from 'draft-js';
 
+//rules: for isRequired
+function FormRichText({ name, rules, label, toolTip, initialData, ...rest }) {
+    const { register, setValue, unregister } = useContext(FormContext);
 
-import noobControlHoc from '../hoc/noobControlsHoc';
+    let initialState;
+    debugger
+    if (initialData) {
+        initialState = EditorState.createWithContent(convertFromRaw(initialData));
+    }
+    else {
+        initialState = EditorState.createEmpty();
+    }
+    const [editorState, setEditorState] = useState(initialState);
 
-import { Editor, EditorState, RichUtils, ContentState } from 'draft-js';
+    // useEffect(() => {
+    //     console.log('[DEBUG] useEffect formRichtext');        
+    //     if (initialData) {
+    //         setEditorState(EditorState.createWithContent(convertFromRaw(initialData)));
+    //     }
+    //   }, []);
+  
+    const handleChange = ([e]) => {
+        const contentState = editorState.getCurrentContent();
+        const rawContent = convertToRaw(contentState);
+        setEditorState(e);
+        return {
+            value: rawContent
+        };
+    }
+
+    return (<SemanticForm.Field>
+        {label && <label>
+            <span key={'label-'+name}>{label}</span>
+            &nbsp;
+            {!!toolTip && <Popup 
+                inverted
+                basic
+                size='tiny' style={{opacity: '0.8'}} 
+                content={toolTip}
+                trigger={<div style={{display: 'inline-block', color: 'gray'}}>
+                <i className="ui icon info circle"/>
+                </div>} />
+            }
+        </label>}
+        <RHFInput
+            as={<Editor  
+                    key={name} 
+                    editorState={editorState}
+                    {...rest}>                        
+                    </Editor>
+            }
+
+        defaultValue=""
+        name={name}      
+        register={register}
+        unregister={unregister}
+        setValue={setValue}
+        rules={rules}
+        onChangeEvent={handleChange}
+        />
+    </SemanticForm.Field>
+    );
+}
+
+export default FormRichText;
 
 const styleMap = {
     CODE: {
@@ -25,27 +87,11 @@ const styleMap = {
     }
   }
 
-// const options = {
-//     entityStyleFn: ( entity ) => {
-//       debugger
-//         if ( entity.get('type').toLowerCase() === 'link' ) {
-//             const data = entity.getData();
-//             return {
-//                 element: 'a',
-//                 attributes: {
-//                     href: data.url,
-//                     target: data.targetOption
-//                 }
-//             };
-//         } 
-//     }
-// };
-
-class RichText extends React.Component {
+class RichText4Form extends React.Component {
     constructor(props) {
         super(props);
         //this.state = {editorState: EditorState.createEmpty()};
-        //this.state = {editorState: EditorState.createWithContent(ContentState.createFromText('Hello'))};
+        this.state = {editorState: EditorState.createWithContent(ContentState.createFromText('Hello'))};
         //let html = '<div><h5>I am an H5 Tag</h5><h4>I am an H4 Tag</h4><p><a href="www.google.com">www.google.com</a></p></div>';
         //let html = '<p>First sentence</p><p>Second sentence</p><a href="www.google.com">www.google.com</a></p>';
         let html = '<table><thead><tr><td><b><i>Hello</i></b></td><td>World</td></tr></thead></table>';
@@ -64,10 +110,13 @@ class RichText extends React.Component {
             }
           }
         }
-        this.state = {editorState: EditorState.createWithContent(stateFromHTML(html, options))};
+        //this.state = {editorState: EditorState.createWithContent(stateFromHTML(html, options))};
 
         this.focus = () => this.refs.editor.focus();
-        this.onChange = (editorState) => this.setState({editorState});
+        this.onChange = (editorState) => {
+            debugger
+            this.setState({editorState});
+        }
 
         this.handleKeyCommand = (command) => this._handleKeyCommand(command);
         this.onTab = (e) => this._onTab(e);
@@ -111,10 +160,6 @@ class RichText extends React.Component {
     //https://github.com/jpuri/react-draft-wysiwyg/issues/4
     //https://codepen.io/Kiwka/pen/YNYvyG
     render() {
-        let classNames = 'mainContainer ';
-        if (this.props.selected === true) {
-            classNames += ' ctrl-selected'
-        }
         const {editorState} = this.state;
 
         // If the user changes block type before entering any text, we can
@@ -127,37 +172,32 @@ class RichText extends React.Component {
           }
         }
 
-        return (
-            <div className={classNames}>
-                <div className="controlLabel">{this.props.data.label}</div>
-                <div className="RichEditor-root">
-                    {/* <div className="toolBarStrip"> */}
-                        {/* Inline Controls: Bold, Italic etc */}
-                        {/* <InlineStyleControls
-                        editorState={editorState}
-                        onToggle={this.toggleInlineStyle}
-                        /> */}
-                        {/* Block Controls: H1, H2, BlockQuote, Code etc */}
-                        {/* <BlockStyleControls
-                        editorState={editorState}
-                        onToggle={this.toggleBlockType}
-                        />
-                    </div> */}
+        return (<div className="RichEditor-root">
+                <div className="toolBarStrip">
+                    {/* Inline Controls: Bold, Italic etc */}
+                    <InlineStyleControls
+                    editorState={editorState}
+                    onToggle={this.toggleInlineStyle}
+                    />
+                    {/* Block Controls: H1, H2, BlockQuote, Code etc */}
+                    <BlockStyleControls
+                    editorState={editorState}
+                    onToggle={this.toggleBlockType}
+                    />
+                </div>
 
-                    <div className={className} onClick={this.focus}>
-                        <Editor
-                        blockStyleFn={getBlockStyle}
-                        customStyleMap={styleMap}
-                        editorState={editorState}
-                        handleKeyCommand={this.handleKeyCommand}
-                        onChange={this.onChange}
-                        onTab={this.onTab}
-                        placeholder={this.props.data.placeholder}
-                        ref="editor"
-                        spellCheck={true}
-                        backgroundColor={'red'}
-                        />
-                    </div>
+                <div className={className} onClick={this.focus}>
+                    <Editor
+                    blockStyleFn={getBlockStyle}
+                    customStyleMap={styleMap}
+                    editorState={editorState}
+                    handleKeyCommand={this.handleKeyCommand}
+                    onChange={this.onChange}
+                    onTab={this.onTab}
+                    ref="editor"
+                    spellCheck={true}
+                    backgroundColor={'red'}
+                    />
                 </div>
             </div>
         );
@@ -243,13 +283,3 @@ class StyleButton extends React.Component {
       </div>
     );
   };
-
-export default noobControlHoc(RichText);
-
-// Image Props section
-export const richTextProps = [
-  {
-    name: 'richTextData', 
-    propType: 'richText',
-  },
-]

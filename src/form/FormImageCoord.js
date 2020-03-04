@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import { Label, Dropdown} from "semantic-ui-react";
 import { FormContext } from "./Form";
 import { RHFInput } from "react-hook-form-input";
+import ShowMessage, { NotifType } from '../helper/notification';
 
 export const conditionOptions = [
     { key: 'Equal', text: '=', value: 'Equal' },
@@ -16,7 +17,6 @@ export const conditionOptions = [
 ];
 
 const handleChangeName = (e, name) => {
-    debugger
     return {
         //[name+".name"]: e[0].target.value
         value: e[0].target.value
@@ -113,7 +113,7 @@ const FormImageCoord = ({ name, x, y, color, ...rest }) => {
                 <i className={`ui icon large square`} style={{color: currColor}}/>
                 </div>
 
-                <i className="ui icon trash alternate btnImageFormCoordDelete" />
+                <i className="ui icon trash alternate btnImageFormCoordDelete" onClick={e => ShowMessage("Sorry, not yet implemented!", NotifType.danger)}/>
 
         </>
 }

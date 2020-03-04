@@ -50,11 +50,12 @@ const generateDefaultLayout = (metadata) => {
   // }},
 
   //[2] Description
-  // {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
-  //     data: {
-  //         label: 'Description:',
-  //         placeholder: 'Enter Description...'
-  //     }},
+  {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
+      data: {
+          label: 'Description:',
+          placeholder: 'Enter Description...',
+          richTextData: null
+      }},
 
   // [2 NEW] Gauge chart
   // {i: 'ctrl-gauge0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'gauge',       
@@ -64,16 +65,16 @@ const generateDefaultLayout = (metadata) => {
   //     }},
 
   // [3 new] Pie Chart
-  {i: 'ctrl-pie0X'+suffix, x: 0, y: 2, w: 6, h: 8, ctrlType: 'pie',       
-      data: {
-          label: 'Pie:',
-          dataProps: {
-            datasetId: 0,
-            requestType: 'GetDeviceCounts',
-            categories: '',
-            aggregation: 'count'
-          }
-      }},
+  // {i: 'ctrl-pie0X'+suffix, x: 0, y: 2, w: 6, h: 8, ctrlType: 'pie',       
+  //     data: {
+  //         label: 'Pie:',
+  //         dataProps: {
+  //           datasetId: 0,
+  //           requestType: 'GetDeviceCounts',
+  //           categories: '',
+  //           aggregation: 'count'
+  //         }
+  //     }},
 
   // // [4 new] Bar Chart
   // {i: 'ctrl-bar0X'+suffix, x: 6, y: 2, w: 6, h: 8, ctrlType: 'barchart',       
@@ -97,21 +98,21 @@ const generateDefaultLayout = (metadata) => {
   // }},
 
   // // Image Map
-  {i: 'ctrl-imageMap0Y'+suffix, x: 6, y:14, w: 6, h: 4,ctrlType: 'imageMap', data: {
-    label: 'Image Map:',
-    dataProps: {
-      datasetId: 1,
-      requestType: 'GetPlantKpi',
-      columns: []
-    },
-    imageProps: {
-      image: '',
-      map: {        
-          name: '',
-          areas: []
-      }
-    },
-  }},
+  // {i: 'ctrl-imageMap0Y'+suffix, x: 6, y:14, w: 6, h: 4,ctrlType: 'imageMap', data: {
+  //   label: 'Image Map:',
+  //   dataProps: {
+  //     datasetId: 1,
+  //     requestType: 'GetPlantKpi',
+  //     columns: []
+  //   },
+  //   imageProps: {
+  //     image: '',
+  //     map: {        
+  //         name: '',
+  //         areas: []
+  //     }
+  //   },
+  // }},
 
   // {i: 'ctrl-table0X'+suffix, x: 0, y:10, w: 12, h: 4,ctrlType: 'table', data: {
   //   label: 'Table:',
