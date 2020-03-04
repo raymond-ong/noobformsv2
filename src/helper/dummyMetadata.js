@@ -38,6 +38,10 @@ export const DUMMY_APR_METADATA = {
 		{
 			name: "GetAlarmTrendValues",
 			description: "For line charts, e.g. number of alarms per month/week/year"
+    },
+    {
+			name: "GetComments",
+			description: "For getting the comments (text string) of the given alarm type"
 		},
 	],
 	
@@ -205,7 +209,7 @@ export const DUMMY_APR_METADATA = {
 					aggregations: ["count"],
 				},
 				{
-					name: "Message",
+					name: "Alarm Message",
 					dataType: "string",
 					aggregations: ["count"],
 				},

@@ -86,5 +86,26 @@ export const richTextProps = [
   {
     name: 'richTextData', 
     propType: 'richText',
+    toolTip: 'Optional. This data will not be shown if this control is configured to show contents from API.'
+  },
+  {
+    name: 'dataProps', 
+    propType: 'section',
+  },
+  {
+    name: 'datasetId', 
+    propType: 'number',
+  },
+  {
+    name: 'requestType', 
+    propType: 'metadata',
+    metadataField: 'requestTypes',
+    metadataPropType: 'dropdown'
+  },
+  {
+    name: 'filterName', 
+    propType: 'metadata',
+    metadataField: 'dimensions',
+    metadataPropType: 'treeDropdown'
   },
 ]

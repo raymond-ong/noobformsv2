@@ -205,6 +205,7 @@ const renderProps = (specialProps, controlProps, controlId, metadata, namePrefix
                         label={splitWord(key)+':'}
                         name={namePrefix+key}
                         key={`${foundSpecialProp.name}Btn`}
+                        toolTip={foundSpecialProp.toolTip}
                         initialData={controlProps.richTextData}
                     />);
                     break;

@@ -54,7 +54,14 @@ const generateDefaultLayout = (metadata) => {
       data: {
           label: 'Description:',
           placeholder: 'Enter Description...',
-          richTextData: null
+          richTextData: null,
+          dataProps: {
+            datasetId: 1,
+            requestType: 'GetComments',
+            //categories: '',
+            filterName: null,
+            filterValue: null
+          }
       }},
 
   // [2 NEW] Gauge chart
