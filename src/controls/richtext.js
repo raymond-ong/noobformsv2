@@ -39,6 +39,10 @@ const RichText = (props) => {
     }
     const [editorState, setEditorState] = useState(initialState);
 
+    useEffect(() => {      
+      setEditorState(initialState)
+    }, [props.data.richTextData]);
+
     //https://github.com/jpuri/react-draft-wysiwyg/issues/4
     //https://codepen.io/Kiwka/pen/YNYvyG
     let classNames = 'richTextMainContainer ';
