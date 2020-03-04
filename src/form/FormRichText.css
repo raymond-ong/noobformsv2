@@ -4,6 +4,10 @@
     /* font-family: 'Georgia', serif; */
     font-size: 14px;
     padding: 5px;
+
+    /* Ray: added to make the designer mode rich text use up entire height */
+    /* height: 100%;
+    overflow: auto; */
   }
   
   .RichEditor-editor {
@@ -15,8 +19,8 @@
   
   .RichEditor-editor .public-DraftEditorPlaceholder-root,
   .RichEditor-editor .public-DraftEditor-content {
-    margin: 0 -15px -15px;
-    padding: 5px 15px;
+    margin: 0 0px 0px;
+    padding: 5px 5px 15px 5px;
   }
   
   .RichEditor-editor .public-DraftEditor-content {

@@ -96,7 +96,6 @@ const getOwnControlHigherLevelFilters = (controlId, datasetFilters, currGrouping
 }
 
 const composeImageMapParams = (controlData) => {
-    debugger
     if (!controlData.data.imageProps || !Array.isArray(controlData.data.imageProps.map.areas)) {
         return null;
     }

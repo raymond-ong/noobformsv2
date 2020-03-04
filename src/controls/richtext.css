@@ -1,97 +1,13 @@
-/*
-.editorWrapper {
-    border: 1px solid red;
-    overflow: auto;    
-}
-
-.editorClass {
-    border: 1px solid blue;
-    height: auto;
-}
-*/
-
-.RichEditor-root {
-    /* We set the background color to semi-transparent to allow visual cues for drag operations */
-    /* For the height, we subtract 30px to give way to the label? Basically avoid overlapping when user types a lot of things */
-    background: rgba(255,255,255,0.5);
-    border: 1px solid #ddd;
-    font-size: 14px;
-    padding: 5px;
-    display: flex;
-    flex-flow: column;
-    height: calc(100% - 30px);
-    width: 100%;
-    flex: 1;
-
-  }
-  
-  .RichEditor-editor {
-    /* border-top: 1px solid #ddd; */
-    cursor: text;
-    margin-top: 0px;
-    flex: 1;
-    overflow: auto;
-  }
-  
-  .RichEditor-editor .public-DraftEditorPlaceholder-root,
-  .RichEditor-editor .public-DraftEditor-content {    
-    padding: 5px;
-  }
-  
-  .RichEditor-editor .public-DraftEditor-content {
-    min-height: 1px;
-  }
-  
-  .RichEditor-hidePlaceholder .public-DraftEditorPlaceholder-root {
-    display: none;
-  }
-  
-  .RichEditor-editor .RichEditor-blockquote {
-    border-left: 5px solid #eee;
-    color: #666;
-    font-family: 'Hoefler Text', 'Georgia', serif;
-    font-style: italic;
-    margin: 5px 0;
-    padding: 5px 5px;
-  }
-  
-  /* for code block */
-  .RichEditor-editor .public-DraftStyleDefault-pre {
-    background-color: rgba(0, 0, 0, 0.05);
-    font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
-    font-size: 16px;
-    padding: 2px 20px;
-  }
-  
-  .RichEditor-controls {
-    font-family: 'Helvetica', sans-serif;
-    font-size: 14px;
-    margin-bottom: 0px;
-    user-select: none;
-    display: inline-block;
-  }
-  
-  .RichEditor-styleButton {
-    color: #999;
-    cursor: pointer;
-    margin-right: 16px;
-    padding: 2px 0;
-    display: inline-block;
-  }
-  
-  .RichEditor-activeButton {
-    color: #5890ff;
-  }
-
-
-  /* .toolBarStrip {
-      display: inline-block
-  } */
-
-.mainContainer {
+.richTextMainContainer {
     height: 100%;
     width: 100%;
     display: flex;
     flex-flow: column;
-    position: absolute; /* to take up 100% height and width*/
+    /* position: absolute; to take up 100% height and width */
+}
+
+.designerRichTextEditor {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
