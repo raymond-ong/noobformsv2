@@ -1,13 +1,13 @@
 import React from 'react';
 import './common.css';
-import './richtext.css';
+//import './richtext.css';
 import 'draft-js/dist/Draft.css';
 import { stateFromHTML } from 'draft-js-import-html'
 
 
 import noobControlHoc from '../hoc/noobControlsHoc';
 
-import { Editor, EditorState, RichUtils, ContentState } from 'draft-js';
+import { Editor, EditorState, RichUtils, ContentState, convertFromRaw } from 'draft-js';
 
 const styleMap = {
     CODE: {
@@ -25,22 +25,8 @@ const styleMap = {
     }
   }
 
-// const options = {
-//     entityStyleFn: ( entity ) => {
-//       debugger
-//         if ( entity.get('type').toLowerCase() === 'link' ) {
-//             const data = entity.getData();
-//             return {
-//                 element: 'a',
-//                 attributes: {
-//                     href: data.url,
-//                     target: data.targetOption
-//                 }
-//             };
-//         } 
-//     }
-// };
-
+// This is now just a Read-only component.
+// Let the user modify the contents at the Properties Panel area
 class RichText extends React.Component {
     constructor(props) {
         super(props);
@@ -48,65 +34,34 @@ class RichText extends React.Component {
         //this.state = {editorState: EditorState.createWithContent(ContentState.createFromText('Hello'))};
         //let html = '<div><h5>I am an H5 Tag</h5><h4>I am an H4 Tag</h4><p><a href="www.google.com">www.google.com</a></p></div>';
         //let html = '<p>First sentence</p><p>Second sentence</p><a href="www.google.com">www.google.com</a></p>';
-        let html = '<table><thead><tr><td><b><i>Hello</i></b></td><td>World</td></tr></thead></table>';
-        let options = {
-          entityStyleFn: entity => {
-            const entityType = entity.get('type').toLowerCase();
-            if (entityType === 'link') {
-              const data = entity.getData();
-              return {
-                element: 'a',
-                attributes: {
-                  target: data.targetOption,
-                  href: data.url
-                }
-              };
-            }
-          }
+        // let html = '<table><thead><tr><td><b><i>Hello</i></b></td><td>World</td></tr></thead></table>';
+        // let options = {
+        //   entityStyleFn: entity => {
+        //     const entityType = entity.get('type').toLowerCase();
+        //     if (entityType === 'link') {
+        //       const data = entity.getData();
+        //       return {
+        //         element: 'a',
+        //         attributes: {
+        //           target: data.targetOption,
+        //           href: data.url
+        //         }
+        //       };
+        //     }
+        //   }
+        // }
+        // this.state = {editorState: EditorState.createWithContent(stateFromHTML(html, options))};
+        let initialState;
+        debugger
+        if (props.data.richTextData) {
+            initialState = EditorState.createWithContent(convertFromRaw(props.data.richTextData));
         }
-        this.state = {editorState: EditorState.createWithContent(stateFromHTML(html, options))};
-
-        this.focus = () => this.refs.editor.focus();
-        this.onChange = (editorState) => this.setState({editorState});
-
-        this.handleKeyCommand = (command) => this._handleKeyCommand(command);
-        this.onTab = (e) => this._onTab(e);
-        this.toggleBlockType = (type) => this._toggleBlockType(type);
-        this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
+        else {
+            //initialState = EditorState.createEmpty();
+            initialState = EditorState.createWithContent(ContentState.createFromText('Hello\r\nworld')); // to test if it can handle new line
+        }
+        this.state = {editorState: initialState};
     }
-
-    _handleKeyCommand(command) {
-        const {editorState} = this.state;
-        const newState = RichUtils.handleKeyCommand(editorState, command);
-        if (newState) {
-          this.onChange(newState);
-          return true;
-        }
-        return false;
-      }
-
-      _onTab(e) {
-        const maxDepth = 4;
-        this.onChange(RichUtils.onTab(e, this.state.editorState, maxDepth));
-      }
-
-      _toggleBlockType(blockType) {
-        this.onChange(
-          RichUtils.toggleBlockType(
-            this.state.editorState,
-            blockType
-          )
-        );
-      }
-
-      _toggleInlineStyle(inlineStyle) {
-        this.onChange(
-          RichUtils.toggleInlineStyle(
-            this.state.editorState,
-            inlineStyle
-          )
-        );
-      }
 
     //https://github.com/jpuri/react-draft-wysiwyg/issues/4
     //https://codepen.io/Kiwka/pen/YNYvyG
@@ -131,31 +86,15 @@ class RichText extends React.Component {
             <div className={classNames}>
                 <div className="controlLabel">{this.props.data.label}</div>
                 <div className="RichEditor-root">
-                    {/* <div className="toolBarStrip"> */}
-                        {/* Inline Controls: Bold, Italic etc */}
-                        {/* <InlineStyleControls
-                        editorState={editorState}
-                        onToggle={this.toggleInlineStyle}
-                        /> */}
-                        {/* Block Controls: H1, H2, BlockQuote, Code etc */}
-                        {/* <BlockStyleControls
-                        editorState={editorState}
-                        onToggle={this.toggleBlockType}
-                        />
-                    </div> */}
-
-                    <div className={className} onClick={this.focus}>
+                    <div className={className}>
                         <Editor
                         blockStyleFn={getBlockStyle}
                         customStyleMap={styleMap}
                         editorState={editorState}
-                        handleKeyCommand={this.handleKeyCommand}
-                        onChange={this.onChange}
-                        onTab={this.onTab}
                         placeholder={this.props.data.placeholder}
                         ref="editor"
                         spellCheck={true}
-                        backgroundColor={'red'}
+                        readOnly
                         />
                     </div>
                 </div>
@@ -163,86 +102,6 @@ class RichText extends React.Component {
         );
     }    
 }
-
-class StyleButton extends React.Component {
-    constructor() {
-      super();
-      this.onToggle = (e) => {
-        e.preventDefault();
-        this.props.onToggle(this.props.style);
-      };
-    }
-
-    render() {
-      let className = 'RichEditor-styleButton';
-      if (this.props.active) {
-        className += ' RichEditor-activeButton';
-      }
-
-      return (
-        <span className={className} onMouseDown={this.onToggle}>
-          {this.props.label}
-        </span>
-      );
-    }
-  }
-
-  const BLOCK_TYPES = [
-    {label: 'H1', style: 'header-one'},
-    {label: 'H2', style: 'header-two'},
-    {label: 'H3', style: 'header-three'},
-    {label: 'Quote', style: 'blockquote'},
-    {label: 'UL', style: 'unordered-list-item'},
-    {label: 'OL', style: 'ordered-list-item'},
-    {label: 'Code', style: 'code-block'},
-  ];
-
-  const BlockStyleControls = (props) => {
-    const {editorState} = props;
-    const selection = editorState.getSelection();
-    const blockType = editorState
-      .getCurrentContent()
-      .getBlockForKey(selection.getStartKey())
-      .getType();
-
-    return (
-      <div className="RichEditor-controls">
-        {BLOCK_TYPES.map((type) =>
-          <StyleButton
-            key={type.label}
-            active={type.style === blockType}
-            label={type.label}
-            onToggle={props.onToggle}
-            style={type.style}
-          />
-        )}
-      </div>
-    );
-  };
-
-  var INLINE_STYLES = [
-    {label: 'Bold', style: 'BOLD'},
-    {label: 'Italic', style: 'ITALIC'},
-    {label: 'Underline', style: 'UNDERLINE'},
-    {label: 'Monospace', style: 'CODE'},
-  ];
-
-  const InlineStyleControls = (props) => {
-    var currentStyle = props.editorState.getCurrentInlineStyle();
-    return (
-      <div className="RichEditor-controls">
-        {INLINE_STYLES.map(type =>
-          <StyleButton
-            key={type.label}
-            active={currentStyle.has(type.style)}
-            label={type.label}
-            onToggle={props.onToggle}
-            style={type.style}
-          />
-        )}
-      </div>
-    );
-  };
 
 export default noobControlHoc(RichText);
 

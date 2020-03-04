@@ -50,12 +50,12 @@ const generateDefaultLayout = (metadata) => {
   // }},
 
   //[2] Description
-  {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
-      data: {
-          label: 'Description:',
-          placeholder: 'Enter Description...',
-          richTextData: null
-      }},
+  // {i: 'ctrl-richText0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'richtext',       
+  //     data: {
+  //         label: 'Description:',
+  //         placeholder: 'Enter Description...',
+  //         richTextData: null
+  //     }},
 
   // [2 NEW] Gauge chart
   // {i: 'ctrl-gauge0', x: 0, y: 1, w: 3, h: 4, ctrlType: 'gauge',       

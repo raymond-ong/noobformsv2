@@ -34,7 +34,6 @@ const ReportControl = ({layoutName, controlData, containerWidth, clickChartSlice
     const [isLoading, setIsLoading] = useState(!!controlData.dataProps);
 
     useEffect(() => {     
-        debugger   
         if (controlData.data && controlData.data.dataProps) {                        
             fetchData(controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata, pageFilters);
         }
