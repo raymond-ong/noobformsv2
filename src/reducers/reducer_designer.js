@@ -58,7 +58,6 @@ const generateDefaultLayout = (metadata) => {
           dataProps: {
             datasetId: 1,
             requestType: 'GetComments',
-            //categories: '',
             filterName: null,
             filterValue: null
           }
@@ -282,7 +281,14 @@ const defaultControlData = {
   },
   'richtext': {
     label: 'Rich Text:',
-    placeholder: 'Enter value...'
+    placeholder: 'Enter value...',
+    richTextData: null,
+    dataProps: {
+      datasetId: 1,
+      requestType: 'GetComments',
+      filterName: null,
+      filterValue: null
+    }
   },
   'combo': {
     placeholder: 'Please select...',
