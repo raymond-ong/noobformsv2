@@ -106,6 +106,20 @@ const composeImageMapParams = (controlData) => {
     };
 }
 
+// Filter name and value are currently set as direct fields inside postObj (i.e. postObj.filterName, postObj.filterValue)
+// We need to move these 2 fields into RequestParams
+const ReformatControlFilters = (postObj) => {
+    if (postObj.filterName && postObj.filterValue && Array.isArray(postObj.RequestParams)) {
+        postObj.RequestParams.push({
+            name: postObj.filterName,
+            value: postObj.filterValue
+        })
+    }
+
+    delete postObj.filterName;
+    delete postObj.filterValue;
+}
+
 // This class is responsible for making API calls to get data, or handling click or grouping events
 export const fetchData = async (controlData, setIsLoading, setApiData, datasetFilters, currControlGrouping, metadata, pageFilters) => {
     console.log('[DEBUG] fetchData ReportControl', controlData.i);
@@ -134,6 +148,8 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         postObj.RequestParams = [];
     }
 
+    ReformatControlFilters(postObj);
+
     if (datasetFilters) {
         // Send a filter that excludes current control's filters
         let otherControlFilters = getOtherControlFilters(controlData.i, datasetFilters);
@@ -143,9 +159,10 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         // TODO: if in the final request params, if there are properties that overlap with the current group's own current filter, REMOVE it. 
         // It will look weird to see a pie chart with just one wedge. Show also the other inactive slices.
         // Ideally, the groupings of each control should not overlap. This will only happen if there are overlaps.
-    }
+    }    
 
     if (Array.isArray(pageFilters)) {
+        // TODO: Only add those filters that do not conflict with the control-lev filters if there is no existing
         postObj.RequestParams = postObj.RequestParams.concat(pageFilters);
     }
 
@@ -165,6 +182,7 @@ export const fetchData = async (controlData, setIsLoading, setApiData, datasetFi
         });
 
     if (result && result.data) {
+        debugger
         setApiData(result.data);
     }
     setIsLoading(false);

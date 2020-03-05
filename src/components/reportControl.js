@@ -44,6 +44,7 @@ const ReportControl = ({layoutName, controlData, containerWidth, clickChartSlice
     if (controlData.data && controlData.data.dataProps && !isLoading) {
         // TODO: not sure if this would affect the global object (permanently stored to the global object)
         // If yes, just clone this object
+        debugger
         controlData.apiData = apiData;
         controlData.datasetFilters = datasetFilters; // don't put this inside dataProps to avoid sending it over the network
         controlData.currControlGrouping = currControlGrouping;

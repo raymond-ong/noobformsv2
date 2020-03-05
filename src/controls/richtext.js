@@ -29,8 +29,13 @@ const styleMap = {
 // Let the user modify the contents at the Properties Panel area
 const RichText = (props) => {
     let initialState;
-    debugger
-    if (props.data.richTextData) {
+    
+    let apiDataAvailable = props.apiData && props.apiData.data && Array.isArray(props.apiData.data) && props.apiData.data.length > 0;
+    if (apiDataAvailable) {    
+      debugger 
+      initialState = EditorState.createWithContent(ContentState.createFromText(props.apiData.data[0]));
+    }
+    else if (props.data.richTextData) {
         initialState = EditorState.createWithContent(convertFromRaw(props.data.richTextData));
     }
     else {
@@ -41,7 +46,7 @@ const RichText = (props) => {
 
     useEffect(() => {      
       setEditorState(initialState)
-    }, [props.data.richTextData]);
+    }, [props.data.richTextData, apiDataAvailable]);
 
     //https://github.com/jpuri/react-draft-wysiwyg/issues/4
     //https://codepen.io/Kiwka/pen/YNYvyG
