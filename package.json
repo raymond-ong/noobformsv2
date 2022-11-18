@@ -25,7 +25,7 @@
     "react-image-mapper": "0.0.15",
     "react-notifications-component": "^2.2.3",
     "react-redux": "^7.1.1",
-    "react-scripts": "3.1.0",
+    "react-scripts": "5.0.1",
     "react-scrollspy": "^3.4.0",
     "react-split": "^2.0.7",
     "react-table": "^7.0.0-rc.15",
